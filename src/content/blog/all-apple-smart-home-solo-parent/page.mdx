@@ -2,6 +2,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json'
+import Callout from '@/components/Callout'
+import AmazonGearGrid from '@/components/AmazonGearGrid'
 
 export const metadata = createMetadata(rawMetadata)
 
@@ -9,54 +11,96 @@ export const metadata = createMetadata(rawMetadata)
 
 I have two toddlers, no partner in the house, and a job that requires deep focus. The math on that doesn't work unless the house itself helps. So I made the house help.
 
-Over the past year I've wired the entire place with Aqara cameras, Apple TVs, smart plugs, and Siri automations — all funneled through Apple's Home app. The goal was a single ecosystem where every device talks to every other device and I can monitor, control, and automate everything from my watch, my phone, my laptop, or my Vision Pro.
+Over the past year I've wired the entire place with Aqara cameras, Apple TVs, smart plugs, and Siri automations — all funneled through Apple's Home app. The goal was a single system where every device talks to every other device and I can monitor, control, and automate everything from my watch, my phone, my laptop, or my Vision Pro.
 
 The hardware side worked. The software side is a disaster. More on that below.
 
-<Image src="https://zackproser.b-cdn.net/images/apple-smart-home-hero.webp" alt="Pixel art overhead cutaway view of a two-story house at night with glowing camera icons in each room, a parent holding a toddler in the hallway, Apple devices on tables, and colored smart lights in every window" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/apple-smart-home-hero-v2.webp" alt="Pixel art isometric cutaway of a two-story house at night, a glowing camera in each room, a parent holding a toddler in the living room with a second child beside them, smart devices glowing on tables, and outdoor cameras lighting the backyard fence" width={1200} height={1200} />
 
 ## Why All-Apple
 
-I didn't start with a thesis about ecosystem lock-in. I started with a problem: I need to see my kids at all times, from any device, with zero friction.
+I didn't start with a thesis about platform lock-in. I started with a problem: I need to see my kids at all times, from any device, with zero friction.
 
 That means the cameras need to work with the Home app. The Home app needs to work on my iPhone, my Apple Watch, my MacBook, and my Vision Pro. The Apple TVs need to respond to Siri. The smart plugs need to show up in Home so I can schedule them. Every device I add needs to slot into the same control plane.
 
-Apple's HomeKit is that control plane. Everything routes through it. One app, one ecosystem, one authentication layer. When it works, I say "Hey Siri, show me the nursery" on my watch and get a live camera feed in two seconds. When it doesn't work — which is most of the time — I want to throw the watch into the yard.
+Apple's HomeKit is that control plane. Everything routes through it. One app, one platform, one authentication layer. When it works, I say "Hey Siri, show me the nursery" on my watch and get a live camera feed in two seconds. When it doesn't work — which is most of the time — I want to throw the watch into the yard.
 
 I chose the lock-in deliberately. The alternative was stitching together four different apps, three different cloud backends, and a home automation server I'd need to maintain. I have two toddlers. I don't have time to run a Kubernetes cluster for my light switches.
 
-<Image src="https://zackproser.b-cdn.net/images/apple-home-control-plane-diagram.webp" alt="Pixel art network diagram showing Apple Watch, iPhone, MacBook, and Vision Pro all connected by glowing lines to a central Apple Home hub icon, with camera and smart plug icons branching off it" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/apple-home-control-plane-diagram-v2.webp" alt="Pixel art network diagram showing Apple Watch, iPhone, MacBook, and Vision Pro all connected by glowing lines to a central Apple Home hub icon, with camera and smart plug icons branching off it" width={1200} height={1200} />
 
 ## The Equipment List
 
-Here's everything I bought to wire the house. All Amazon links are affiliate links.
+Here's everything I bought to wire the house. The Amazon links below are affiliate links — I run the gear myself, and I earn a small commission if you buy through them.
 
-**Cameras:**
-- [Aqara Camera Hub G3](https://amzn.to/3PX3aHS) (×4) — Indoor pan-and-tilt cameras with HomeKit Secure Video. One in the living room, kitchen, and each kid's room.
-- Aqara Camera G5 Wi-Fi Outdoor (×2) — Weather-rated outdoor cameras bolted to the backyard fence.
-- Aqara Video Doorbell G4 (×3) — Two on the front door covering the whole front of the house, one on the side door covering the car and kitchen entrance.
+<AmazonGearGrid
+  campaign="all-apple-smart-home-solo-parent"
+  items={[
+    {
+      name: 'Aqara Camera Hub G3',
+      why: 'Pan-and-tilt indoor cameras with HomeKit Secure Video. One each in the living room, kitchen, and both kids’ rooms.',
+      href: 'https://www.amazon.com/dp/B09J2CP8YS/?tag=zackproser-20',
+      icon: 'camera',
+      meta: '4× indoor',
+      owned: true,
+    },
+    {
+      name: 'Aqara Camera Hub G5 Pro',
+      why: 'Weather-rated 4MP outdoor cameras bolted to the backyard fence. The true-color night vision is the standout.',
+      href: 'https://www.amazon.com/dp/B0DPX7539M/?tag=zackproser-20',
+      icon: 'video',
+      meta: '2× outdoor',
+      owned: true,
+    },
+    {
+      name: 'Aqara Smart Doorbell Camera G410',
+      why: '2K HomeKit doorbell with a built-in Matter hub. I see whoever’s at the door on my watch before they ring.',
+      href: 'https://www.amazon.com/dp/B0F6CJF9M9/?tag=zackproser-20',
+      icon: 'doorbell',
+      owned: true,
+    },
+    {
+      name: 'eero Outdoor 7',
+      why: 'Weatherproof mesh node mounted at the fence line. Without it the outdoor cameras drop signal constantly.',
+      href: 'https://www.amazon.com/dp/B0CHJBJLHN/?tag=zackproser-20',
+      icon: 'wifi',
+      owned: true,
+    },
+    {
+      name: 'Apple TV 4K',
+      why: 'Doubles as entertainment and HomeKit hub. The Siri endpoints I lean on for hands-free TV during diaper changes.',
+      href: 'https://www.amazon.com/s?k=Apple+TV+4K&tag=zackproser-20',
+      icon: 'tv',
+      meta: '2× hubs',
+      owned: true,
+    },
+    {
+      name: 'HomePod',
+      why: 'Living-room voice control and music. Another always-listening Siri endpoint, for better or worse.',
+      href: 'https://www.amazon.com/s?k=Apple+HomePod&tag=zackproser-20',
+      icon: 'speaker',
+      owned: true,
+    },
+    {
+      name: 'Linkind Matter Smart Plug',
+      why: 'Cheap Matter plugs running the bedroom water fountain and the outdoor bug zappers on Home-app schedules.',
+      href: 'https://www.amazon.com/dp/B0C36WXGP1/?tag=zackproser-20',
+      icon: 'plug',
+      meta: '4-pack',
+      owned: true,
+    },
+  ]}
+/>
 
-**Networking:**
-- [Eero Outdoor WiFi Repeater](https://amzn.to/3PX3aHS) — Mounted outside on the fence to serve the outdoor cameras, plus my phone and laptop when I'm working in the backyard. Without this, the G5 cameras would drop signal constantly.
+Apple doesn't sell the Apple TV 4K or HomePod through Amazon directly, so those two links land on current Apple listings rather than a single product page. Everything else points straight at the exact model I run. Two more things are on the bench waiting to be installed — Govee light strips and Aqara motion sensors — and I cover both in the [planned upgrades](#whats-next-planned-upgrades) at the end.
 
-**Entertainment & Hubs:**
-- Apple TV 4K (×2) — One in the living room, one in the bedroom. Both serve as HomeKit hubs and Siri endpoints.
-- HomePod — In the living room for Siri voice commands and music.
+## Wi-Fi Backbone: The eero Outdoor 7
 
-**Smart Plugs & Automation:**
-- Smart plugs (×3) — One on the bedroom water fountain, two on outdoor bug zappers. All on timed automations through the Home app.
+None of the outdoor cameras work without reliable Wi-Fi at the fence line. My indoor router's signal was too weak by the time it reached the backyard — the G5 Pro cameras would connect, stream for thirty seconds, then drop. Useless for actual monitoring.
 
-**Planned Additions:**
-- Govee smart light strips and bulbs — For every room, voice-controlled lighting
-- Aqara motion sensors — For hallways, stairway, and kitchen. Automatic nighttime lighting.
+The [eero Outdoor 7](https://www.amazon.com/dp/B0CHJBJLHN/?tag=zackproser-20) fixed that. It's mounted outside, weatherproof-rated to IP66, and extends the mesh network to the entire backyard. Both fence cameras now hold a solid connection 24/7, including during rain and snow. The node also covers the patio, which means I can work outside on my laptop without the connection dying every time a cloud passes.
 
-## Wi-Fi Backbone: The Eero Outdoor Repeater
-
-None of the outdoor cameras work without reliable Wi-Fi at the fence line. My indoor router's signal was too weak by the time it reached the backyard — the G5 cameras would connect, stream for thirty seconds, then drop. Useless for actual monitoring.
-
-The [Eero outdoor repeater](https://amzn.to/3PX3aHS) fixed that. It's mounted outside, weather-rated, and extends the mesh network to the entire backyard. Both G5 fence cameras now hold a solid connection 24/7, including during rain and snow. The repeater also covers the patio, which means I can work outside on my laptop without the connection dying every time a cloud passes.
-
-If you're putting cameras on a fence or detached structure more than 30 feet from your house, a dedicated outdoor mesh node is non-optional. Indoor routers don't have the range, and powerline adapters are inconsistent. The Eero mounts flat on a wall or fence, runs on standard outdoor-rated power, and meshes automatically with the indoor Eero units.
+If you're putting cameras on a fence or detached structure more than 30 feet from your house, a dedicated outdoor mesh node is the only thing that works. Indoor routers don't have the range, and powerline adapters are inconsistent. The eero mounts flat on a wall or fence, runs on a standard outdoor-rated PoE+ adapter, and meshes automatically with the indoor eero units.
 
 ## Indoor Cameras: Aqara G3s Everywhere
 
@@ -71,21 +115,21 @@ The G3 is a pan-and-tilt camera with HomeKit Secure Video support. That means th
 
 The pan-and-tilt matters for the kids' rooms. When one of them is moving around the crib at 2 AM, I can rotate the camera from my phone without getting out of bed to see what they're doing. Are they standing up? Did they throw the blanket out? Are they actually crying or just sleep-babbling? The camera answers those questions without me walking down the hall and risking waking the other one.
 
-<Image src="https://zackproser.b-cdn.net/images/aqara-g3-kids-room-night.webp" alt="Pixel art of a dark nursery at night viewed through a camera lens with infrared green tint, showing a toddler standing in a crib, a dresser with a small glowing camera on top, and a nightlight on the wall" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/aqara-g3-kids-room-night-v2.webp" alt="Pixel art of a dark nursery at night viewed through a camera lens with infrared green tint, showing a toddler standing in a crib, a dresser with a small glowing camera on top, and a nightlight on the wall" width={1200} height={1200} />
 
-## Outdoor Cameras: Aqara G5 Wi-Fi on the Fence
+## Outdoor Cameras: Aqara G5 Pro on the Fence
 
-Two Aqara G5 Wi-Fi cameras are mounted directly to the wooden fence in the backyard. One covers the left side — the swing set and the sandbox. The other covers the right side — the patio and the back door.
+Two [Aqara G5 Pro](https://www.amazon.com/dp/B0DPX7539M/?tag=zackproser-20) cameras are mounted directly to the wooden fence in the backyard. One covers the left side — the swing set and the sandbox. The other covers the right side — the patio and the back door.
 
-I bolted them straight into the fence posts with lag screws. No fancy mounting brackets. The G5 is weather-rated, and the fence gives them height and angle without needing to drill into the house.
+I bolted them straight into the fence posts with lag screws. No fancy mounting brackets. The G5 Pro is weather-rated, and the fence gives them height and angle without needing to drill into the house.
 
 The night vision on these cameras is absurd. It always looks like daytime. I've pulled up the backyard feed at 11 PM and had to check the clock because the image was so bright and clear. IR LEDs plus a decent sensor means the raccoons raiding the trash cans at 3 AM show up in vivid detail. More importantly, it means I can see the backyard clearly if the kids are playing outside and I need to step inside for thirty seconds to grab something.
 
-<Image src="https://zackproser.b-cdn.net/images/aqara-g5-fence-night-vision.webp" alt="Pixel art split view: left side shows a dark backyard at night with a fence and trees, right side shows the same scene through a camera with bright green-white night vision clarity, a swing set and sandbox visible in sharp detail" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/aqara-g5-fence-night-vision-v2.webp" alt="Pixel art split view: left side shows a dark backyard at night with a fence and trees, right side shows the same scene through a camera with bright green-white night vision clarity, a swing set and sandbox visible in sharp detail" width={1200} height={1200} />
 
 ## Doorbell Cameras: Front and Side Coverage
 
-Two Aqara doorbell cameras face out the front door. Together they cover the entire front of the house — the porch, the driveway, the walkway from the street. A third doorbell camera watches the side door, covering my car and the path anyone would take to reach the kitchen entrance.
+Two [Aqara G410](https://www.amazon.com/dp/B0F6CJF9M9/?tag=zackproser-20) doorbell cameras face out the front door. Together they cover the entire front of the house — the porch, the driveway, the walkway from the street. A third doorbell camera watches the side door, covering my car and the path anyone would take to reach the kitchen entrance.
 
 The doorbell cameras serve a different function than the indoor and backyard cameras. Those are for watching the kids. The doorbell cameras are for knowing who's at the house. Package deliveries, visitors, the occasional person I don't recognize walking up the driveway — I see all of it as a notification on my watch before they ring the bell. That matters when both kids are napping and the doorbell would wake them.
 
@@ -103,7 +147,7 @@ Here's how the pieces fit together in practice.
 
 **On my Vision Pro**, I can pull up camera feeds while watching TV. If I'm watching something after the kids are in bed and hear a noise from the monitor, I ask Siri to show me the nursery and the feed appears as a floating window next to whatever I'm watching. I wrote about the Vision Pro multitasking setup in detail in [How to Play Steam Link on Vision Pro While Watching TV](/blog/play-steam-link-vision-pro-while-watching-tv) — the same spatial computing that lets me game and watch TV simultaneously lets me monitor the kids' rooms without interrupting anything.
 
-<Image src="https://zackproser.b-cdn.net/images/apple-devices-camera-montage.webp" alt="Pixel art four-panel grid showing the same nursery camera feed displayed on four different devices: an Apple Watch on a wrist, an iPhone on a nightstand, a MacBook on a desk, and a floating window in Apple Vision Pro with a TV show visible behind it" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/apple-devices-camera-montage-v2.webp" alt="Pixel art four-panel grid showing the same nursery camera feed displayed on four different devices: an Apple Watch on a wrist, an iPhone on a nightstand, a MacBook on a desk, and a floating window in Apple Vision Pro with a TV show visible behind it" width={1200} height={1200} />
 
 ## Apple TV and Siri: Hands-Free When It Works
 
@@ -115,15 +159,15 @@ At the end of the night, when the kids are finally asleep and I collapse onto th
 
 ## Smart Plugs and Automations
 
-I have a white noise water fountain in my bedroom. It helps me sleep. Running it 24 hours a day wastes electricity and burns out the pump. So I put it on a smart plug and automated it through the Home app.
+I have a white noise water fountain in my bedroom. It helps me sleep. Running it 24 hours a day wastes electricity and burns out the pump. So I put it on a [Linkind Matter smart plug](https://www.amazon.com/dp/B0C36WXGP1/?tag=zackproser-20) and automated it through the Home app.
 
-Every night at 10 PM, the fountain turns on. Every morning at 7 AM, it turns off. I never touch it. The Home app handles the schedule. The plug cost $15 and saved me from one more thing to remember.
+Every night at 10 PM, the fountain turns on. Every morning at 7 AM, it turns off. I never touch it. The Home app handles the schedule. The plugs come four to a pack for the price of a couple of coffees, and each one saves me from remembering one more thing.
 
 I did the same thing with two bug zappers outside. They're on smart plugs with evening-to-morning schedules. The bugs get zapped when it matters. The zappers shut off during the day when nobody's outside and the bugs aren't active.
 
 The automation layer in the Home app is basic but functional for timed schedules. Set a time, pick an action, choose which days. For the things I've automated so far — fountain, bug zappers — that's all I need.
 
-<Image src="https://zackproser.b-cdn.net/images/smart-plug-automation-timeline.webp" alt="Pixel art timeline showing a 24-hour clock cycle with icons: at 10 PM a water fountain glows on and bug zappers activate, at 7 AM they switch off, with a crescent moon and stars on the night side and a sun on the day side" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/smart-plug-automation-timeline-v2.webp" alt="Pixel art timeline showing a 24-hour clock cycle with icons: at 10 PM a water fountain glows on and bug zappers activate, at 7 AM they switch off, with a crescent moon and stars on the night side and a sun on the day side" width={1200} height={1200} />
 
 ## Siri Is Infuriating Garbage (May 2026)
 
@@ -141,31 +185,31 @@ The worst part is the inconsistency. The same command that worked yesterday at 8
 
 When I'm alone with two toddlers, one screaming and one climbing something, and I ask Siri to show me a camera feed — and Siri fails — that failure cascades. I now need to find my phone, unlock it, open the Home app, find the room, tap the camera, and wait for the feed to load. That's thirty seconds I don't have. The whole point of the voice interface was to eliminate those thirty seconds. Siri makes the promise and breaks it nine times out of ten.
 
-Apple, if anyone there reads this: fix Siri. The hardware ecosystem you've built is genuinely good. The cameras work. The HomeKit protocol works. The Home app is fine. The Apple TVs are solid. The watch integration is clever. All of it is undermined by a voice assistant that cannot reliably execute basic commands. This is the weakest link in the entire Apple ecosystem, and it has been for years. The hardware earns trust. Siri destroys it.
+Apple, if anyone there reads this: fix Siri. The hardware you've built is genuinely good. The cameras work. The HomeKit protocol works. The Home app is fine. The Apple TVs are solid. The watch integration is clever. All of it is undermined by a voice assistant that cannot reliably execute basic commands. This is the weakest link in the whole all-Apple house, and it has been for years. The hardware earns trust. Siri destroys it.
 
-<Image src="https://zackproser.b-cdn.net/images/siri-error-montage.webp" alt="Pixel art comic strip of four panels: panel 1 shows a parent holding a crying toddler asking Siri for help, panel 2 shows Siri responding with a red error bubble, panel 3 shows the parent frustrated trying again, panel 4 shows the parent giving up and reaching for their phone" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/siri-error-montage-v2.webp" alt="Pixel art comic strip of four panels: panel 1 shows a parent holding a crying toddler asking Siri for help, panel 2 shows Siri responding with a red error bubble, panel 3 shows the parent frustrated trying again, panel 4 shows the parent giving up and reaching for their phone" width={1200} height={1200} />
 
-## What's Next: Planned Upgrades
+<h2 id="whats-next-planned-upgrades">What's Next: Planned Upgrades</h2>
 
 The foundation is in place. The cameras, the Apple TVs, the smart plugs, the automations — the hardware layer works. The next phase is expanding what the house can do on its own.
 
-**Govee indoor lights.** I bought Govee smart light strips and bulbs for every room. Once they're wired up and added to HomeKit, I'll be able to say "Turn on the lights" or "Turn off the lights" per room. Right now, walking through the house at night with a toddler on my hip means fumbling for light switches in the dark. Voice-controlled lighting in every room eliminates that.
+**Govee indoor lights.** I bought [Govee smart light strips](https://www.amazon.com/dp/B0D7MHH79D/?tag=zackproser-20) for every room. Once they're wired up and added to HomeKit, I'll be able to say "Turn on the lights" or "Turn off the lights" per room. Right now, walking through the house at night with a toddler on my hip means fumbling for light switches in the dark. Voice-controlled lighting in every room eliminates that.
 
-**Motion sensors.** I bought Aqara motion sensors but haven't installed them yet. The plan: mount them in the hallway, the stairway, and the kitchen. At night, when someone walks through, the lights turn on automatically. No voice command needed, no switch to find. The sensor triggers the light, the light turns off after a timeout. The house responds to presence instead of waiting for instructions.
+**Motion sensors.** I bought [Aqara motion sensors](https://www.amazon.com/dp/B09QKVMMTB/?tag=zackproser-20) but haven't installed them yet. The plan: mount them in the hallway, the stairway, and the kitchen. At night, when someone walks through, the lights turn on automatically. No voice command needed, no switch to find. The sensor triggers the light, the light turns off after a timeout. The house responds to presence instead of waiting for instructions.
 
 **Better automations.** Right now my automations are simple time-based schedules. The next step is condition-based automations — if motion is detected in the hallway after 9 PM, turn on the hallway light at 20% brightness. If no motion for five minutes, turn it off. If the front door camera detects a person, send a notification and turn on the porch light. The Home app supports these triggers. I haven't built them yet because the motion sensors aren't mounted.
 
 **Timer-based routines.** Bedtime routine for the kids follows the same sequence every night. Bath, pajamas, books, bed. I want to automate the environmental side of that sequence: at 7:30 PM, dim the kids' room lights to 30%, turn on the white noise machine, and set the thermostat down two degrees. One automation that runs the same way every night, so I don't have to remember any of it.
 
-<Image src="https://zackproser.b-cdn.net/images/smart-home-future-upgrades.webp" alt="Pixel art blueprint-style diagram of a house floor plan with dotted lines showing planned additions: motion sensor icons in hallways, smart light bulbs in each room, and automation flow arrows connecting sensors to lights with clock and moon icons" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/smart-home-future-upgrades-v2.webp" alt="Pixel art blueprint-style diagram of a house floor plan with dotted lines showing planned additions: motion sensor icons in hallways, smart light bulbs in each room, and automation flow arrows connecting sensors to lights with clock and moon icons" width={1200} height={1200} />
 
 ## The Honest Assessment
 
-The hardware is right. Aqara cameras are reliable, the video quality is good, the HomeKit integration works, and the night vision on the G5 outdoor cameras is exceptional. The Apple TVs serve double duty as entertainment devices and HomeKit hubs. The smart plugs do exactly what they need to do. Every physical device I've installed has performed as expected.
+The hardware is right. Aqara cameras are reliable, the video quality is good, the HomeKit integration works, and the night vision on the G5 Pro outdoor cameras is exceptional. The Apple TVs serve double duty as entertainment devices and HomeKit hubs. The smart plugs do exactly what they need to do. Every physical device I've installed has performed as expected.
 
 The software is the bottleneck. Siri is unreliable to the point of being a liability. The Home app occasionally forgets devices exist and needs to be force-quit and reopened. HomeKit Secure Video sometimes takes 15 seconds to load a feed that should be instant. Automations occasionally don't fire, with no error message and no log to check.
 
-I chose the Apple ecosystem because the integration promise was the strongest. One company, one platform, one app that controls everything. That promise holds at the hardware and protocol level. It collapses at the software level. The devices are talking to each other correctly. The software layer that's supposed to make them accessible to a human — especially a human whose hands are full of toddlers — is the part that fails.
+I chose the all-Apple route because the integration promise was the strongest. One company, one platform, one app that controls everything. That promise holds at the hardware and protocol level. It collapses at the software level. The devices are talking to each other correctly. The software layer that's supposed to make them accessible to a human — especially a human whose hands are full of toddlers — is the part that fails.
 
 I got the right hardware in place. I'm waiting for the software to catch up. Apple needs to reinvest serious engineering time in getting Siri and the Home app to be as reliable as the devices they control. The hardware team shipped a good product. The software team needs to match them.
 
