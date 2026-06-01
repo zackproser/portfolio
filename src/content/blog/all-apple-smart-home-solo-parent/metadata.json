@@ -1,8 +1,8 @@
 {
-  "title": "The All-Apple House: Building a Smart Home to Survive Solo Parenting Two Toddlers",
+  "title": "The All-Apple House: A Paradise for Two Toddlers and an Aging Hacker",
   "author": "Zachary Proser",
   "date": "2026-05-24",
-  "description": "I wired my entire house with Aqara cameras, Apple TVs, smart plugs, and Siri automations to keep two toddlers safe while solo parenting. The hardware is solid. The software is infuriating.",
+  "description": "I wired my new place into an all-Apple smart home: Aqara cameras inside and out, a full eero mesh plus an outdoor repeater, Apple TVs, HomePod minis, smart plugs, and Siri automations. A paradise for two toddlers and an aging hacker. The hardware is solid. Siri is infuriating.",
   "image": "https://zackproser.b-cdn.net/images/apple-smart-home-hero-v2.webp",
   "type": "blog",
   "tags": ["apple", "smart-home", "parenting", "aqara", "homekit", "siri", "apple-tv", "vision-pro", "automation"]
