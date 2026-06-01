@@ -60,6 +60,10 @@ export const speakingEngagements = [
     image: 'https://zackproser.b-cdn.net/images/aie-london-workshop-nick-zack.webp',
     audience: 'AI engineers and developers',
     topics: ['Claude Code', 'Skills', 'Agent Workflows', 'Team Productivity', 'Developer Tools'],
+    gallery: [
+      { src: 'https://zackproser.b-cdn.net/images/aie-london-workshop-workos-room.webp', alt: 'Packed room for the Skills at Scale workshop at AI Engineering London' },
+      { src: 'https://zackproser.b-cdn.net/images/aie-london-workshop-evidence.webp', alt: 'Teaching backtick evidence patterns during the workshop' },
+    ],
     links: [
       {
         type: 'youtube',
@@ -118,6 +122,12 @@ export const speakingEngagements = [
     imagePosition: 'top',
     audience: 'Engineers and technical leaders',
     topics: ['Claude Code', 'Cowork', 'AI-Assisted Development', 'ICP Research', 'GTM Automation', 'Context Management'],
+    gallery: [
+      { src: 'https://zackproser.b-cdn.net/images/workshop-audience-coding-v2.webp', alt: 'Attendees coding along during the Claude Cowork workshop' },
+      { src: 'https://zackproser.b-cdn.net/images/workshop-qa-lydia-zack-v2.webp', alt: "Q&A with Lydia from Anthropic's Claude Code team" },
+      { src: 'https://zackproser.b-cdn.net/images/walking-talking-ai.webp', alt: 'Walking-and-talking development demo' },
+      { src: 'https://zackproser.b-cdn.net/images/oura-and-claude.webp', alt: 'Oura MCP project demoed in the workshop' },
+    ],
     links: [
       {
         type: 'youtube',
@@ -184,6 +194,12 @@ export const speakingEngagements = [
     image: a16z1,
     audience: '~125 attendees',
     topics: ['Infrastructure as Code', 'Pinecone', 'AWS', 'Pulumi', 'Production Deployment'],
+    gallery: [
+      { src: 'https://zackproser.b-cdn.net/images/a16z-2.webp', alt: 'Presenting the Pinecone AWS Reference Architecture at a16z' },
+      { src: 'https://zackproser.b-cdn.net/images/a16z-4.webp', alt: 'Walking through infrastructure as code with Pulumi' },
+      { src: 'https://zackproser.b-cdn.net/images/a16z-6.webp', alt: 'The mountaineering metaphor for getting from prototype to production' },
+      { src: 'https://zackproser.b-cdn.net/images/a16z-9.webp', alt: 'Talking with attendees at the Pinecone & Cohere meetup' },
+    ],
     links: [
       {
         type: 'blog',
@@ -231,6 +247,12 @@ export const speakingEngagements = [
     image: claudeSkills,
     audience: 'WorkOS team (internal)',
     topics: ['Claude Skills', 'Runbooks', 'AI Workflows', 'Knowledge Sharing'],
+    gallery: [
+      { src: 'https://zackproser.b-cdn.net/images/zack-holding-mic.webp', alt: 'Presenting Claude Skills as self-documenting runbooks at WorkOS' },
+      { src: 'https://zackproser.b-cdn.net/images/nick-presenting.webp', alt: 'Nick co-presenting the internal Skills training' },
+      { src: 'https://zackproser.b-cdn.net/images/agent-skills-architecture.webp', alt: 'Diagram of the Claude Skills architecture' },
+      { src: 'https://zackproser.b-cdn.net/images/workos-office.webp', alt: 'The WorkOS office during the training session' },
+    ],
     links: [
       {
         type: 'blog',
