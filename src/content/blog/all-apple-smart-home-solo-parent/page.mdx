@@ -86,7 +86,9 @@ The night vision on these is absurd. It looks like daytime. I've pulled up the b
 
 Two [Aqara G410](https://www.amazon.com/dp/B0F6CJF9M9/?tag=zackproser-20) doorbell cameras face out the front, covering the porch, the driveway, and the walk up from the street. A third watches the side door and the path to the kitchen entrance.
 
-These do a different job than the kid cameras. Package deliveries, visitors, the occasional person I don't recognize coming up the driveway — I get all of it as a notification on my watch before they ever press the bell. That matters when both kids are napping and a doorbell chime would undo an hour of work.
+These do a different job than the kid cameras: they tell me who's at the house. When someone actually rings, it works well — the chime plays inside on the doorbell's own unit, and Home usually throws an alert too, so I know before I'm even at the door. That matters when both kids are napping and a surprise knock would undo an hour of work.
+
+The motion alerts are the weak spot. Aqara's detection is decent but far too trigger-happy — it'll fire fifteen notifications in a row every time my own fat ass walks in front of a door, or every time I carry a kid inside. So I've learned to trust the doorbell ring and tune the motion pings out, which is exactly backwards from how it should work.
 
 ## The Nanny-Cam Setup HomeKit Should Ship by Default
 
@@ -122,6 +124,14 @@ The kids have come to love it. My daughter was scared of the camera at first, un
 
 <Image src="https://zackproser.b-cdn.net/images/aqara-two-way-talk-v3.webp" alt="Pixel art of a toddler in a sunlit playroom looking up and smiling toward a small wall-mounted camera, with a soft speech-bubble glow coming from the camera indicating a parent's voice" width={1200} height={1200} />
 
+## Watching From Another Country
+
+The first time I pulled up the cameras from overseas, I half-expected it not to work. It does, and it's worth understanding why, because the design is better than I assumed.
+
+There's no special cellular link involved. When I'm away, my request goes end-to-end encrypted from my phone to a home hub sitting in the house — one of the HomePod minis or an Apple TV — through Apple's Identity Service, and the hub forwards it on to the actual cameras and accessories. For video, the hub is purely a relay: it passes the encrypted stream through without ever decrypting it, and HomeKit Secure Video routes through iCloud, also end-to-end encrypted. The keys live in my iCloud Keychain, synced across my own devices and nobody else's. ([Apple documents the whole chain](https://support.apple.com/guide/security/communication-security-sec3a881ccb1/web) if you want the gory detail.)
+
+So from a hotel on another continent, over whatever Wi-Fi or cellular I happen to be on, I open the Home app and watch my house in real time — and the only things on earth that can decrypt that feed are devices I own. This is the rare case where the software side gets it exactly right.
+
 ## Apple TV: Screen Time on Purpose
 
 The living room [Apple TV 4K](https://www.amazon.com/s?k=Apple+TV+4K&tag=zackproser-20) does more than stream — it's also a HomeKit hub. But its day job is screen time, and I'm deliberate about that.
@@ -132,9 +142,9 @@ When it works. Siri on the Apple TV routinely can't find the TV it is sitting ne
 
 ## Smart Plugs and Automations
 
-There's a white-noise water fountain in my bedroom that helps me sleep. Running it 24 hours a day wastes power and burns out the pump, so it's on a [Linkind Matter smart plug](https://www.amazon.com/dp/B0C36WXGP1/?tag=zackproser-20) automated through the Home app: on at 10 PM, off at 7 AM, never touched. Two more plugs run the outdoor bug zappers on an evening-to-morning schedule, so they zap when it matters and shut off during the day when nobody's outside.
+There's a white-noise water fountain in my bedroom that helps me sleep. Running it 24 hours a day wastes power and burns out the pump, so it's on a [Linkind Matter smart plug](https://www.amazon.com/dp/B0C36WXGP1/?tag=zackproser-20) automated through the Home app: on at 10 PM, off at 7 AM, never touched. Two more plugs run the outdoor bug zappers. I leave those running, honestly — but the point is I *could* knock them off on a schedule any time I want, without walking outside to unplug a thing.
 
-The plugs come four to a pack for the price of a couple of coffees, and the Home app's automation layer is basic but reliable for timed schedules. For fountains and bug zappers, that's all I need.
+The plugs come four to a pack for the price of a couple of coffees, and the Home app's automation layer is basic but reliable for timed schedules. For the fountain, that's all I need; for everything else, it's a switch I can flip from my phone.
 
 <Image src="https://zackproser.b-cdn.net/images/smart-plug-automation-timeline-v2.webp" alt="Pixel art timeline showing a 24-hour clock cycle: at 10 PM a water fountain and bug zappers switch on, at 7 AM they switch off, with a moon and stars on the night side and a sun on the day side" width={1200} height={1200} />
 
@@ -144,13 +154,14 @@ I have to be blunt here, because everything above sounds great and the daily rea
 
 Most of my voice commands run against two [HomePod minis](https://www.amazon.com/s?k=Apple+HomePod+mini&tag=zackproser-20) — one in the living room doubling as a speaker, the same setup in the bedroom — plus the Apple TVs. Siri fails most of the time. The failure modes are varied and all infuriating:
 
+- **"Sorry, I couldn't do that."** No reason, no context, nothing — or "[device] isn't responding." This is the single most common thing Siri says to me, and it tells me exactly nothing about what went wrong or what to try instead.
 - **"I'm having trouble connecting to the network."** I'm on Wi-Fi, three feet from an eero. Everything else works.
 - **"I couldn't find that device."** It's right there in the Home app. It's in the list. Siri can't find it.
 - **It can't find the TV it's sitting next to** and actively playing media on.
 - **Long pause, spinner, nothing.** The request just evaporates — no error, no feedback.
 - **It mishears constantly.** My daughter's name isn't remotely close to "Siri," and Siri trips on it all day anyway.
 
-And the one I find hardest to forgive — because I understand exactly why it's hard and still can't accept it — is device arbitration. Say "Hey Siri" in a room that has a phone, a HomePod mini, and a Vision Pro on my face, and the wrong device answers as often as not. If I'm in the Vision Pro, that one should win, every single time: my entire attention is inside it, and it's where I want the camera feed to appear. Instead the request gets grabbed by whatever device feels like it, and the feed pops up somewhere I'm not even looking.
+And the one I find hardest to forgive — because I understand exactly why it's hard and still can't accept it — is device arbitration. Say "Hey Siri" in a room that has a phone, a HomePod mini, and a Vision Pro on my face, and the wrong device answers as often as not. If I'm in the Vision Pro, that one should win, every single time: my entire attention is inside it, and it's where I want the camera feed to appear. Instead the request gets grabbed by whatever device feels like it. And when it picks wrong, it doesn't even fail gracefully — the hub that grabbed it just answers that it can't show cameras, or that the device isn't responding, rather than handing off to the screen I'm actually staring through.
 
 When I'm alone with two toddlers — one screaming, one climbing something — and I ask Siri to show me a camera and it fails, that failure cascades. Now I have to find my phone, unlock it, open the Home app, find the room, tap the camera, and wait for the feed. That's thirty seconds I don't have. The whole point of the voice interface was to delete those thirty seconds. Siri makes the promise and breaks it most of the time.
 
@@ -162,7 +173,7 @@ Apple, if anyone there reads this: fix Siri. The hardware is genuinely good. The
 
 The foundation is in. The next phase is letting the house do more on its own.
 
-**Govee lights.** I have [Govee smart light strips](https://www.amazon.com/dp/B0D7MHH79D/?tag=zackproser-20) waiting to go into every room. Once they're added to HomeKit, walking through the house at night with a toddler on my hip stops meaning fumbling for switches in the dark.
+**Govee lights.** I'm a fan of [Govee strips](https://www.amazon.com/dp/B0D7MHH79D/?tag=zackproser-20) — the light quality and performance are genuinely good, and setup in Govee's own app is painless. Getting them into Apple Home is the hit-or-miss part, and it's a Matter problem more than a Govee one. Adding a Matter device to Home is a whole dance: knock the device off the network and out of the Govee app first, reinstall it, then scan a Matter QR code that only the newest generation even ships with. About a third of the time the pairing just times out and fails outright — and then the exact same attempt works fine on the second try. I've got strips going into more rooms; I've made peace with the dance. Once they're in, walking through the house at night with a toddler on my hip stops meaning fumbling for switches in the dark.
 
 **Motion sensors.** I have [Aqara motion sensors](https://www.amazon.com/dp/B09QKVMMTB/?tag=zackproser-20) in a box, bound for the hallway, the stairway, and the kitchen. The plan is presence-based lighting: someone walks through at night, the light comes up soft, then drops after a timeout. No command, no switch to find — the house just responds.
 
@@ -176,4 +187,4 @@ The hardware is right. The Aqara cameras are reliable, the video is good, the ni
 
 The software is the bottleneck. Siri is unreliable to the point of being a liability. The Home app occasionally forgets a device exists until I force-quit it. Secure Video sometimes takes fifteen seconds to load a feed that should be instant. The crying detection I'd most like to trust fires on laughter. The pieces are all there; the layer that's supposed to make them usable by a human with their hands full is the part that falls short.
 
-I built the right house. I'm waiting on the software to catch up to it. In the meantime the cameras work, the network holds, the automations run, and the bug zappers turn themselves off — and from any screen in or out of the house, I can open one app and see that my kids are exactly where they should be. That's enough to make this place a paradise. It would be a better one if Siri would just do her job.
+I built the right house. I'm waiting on the software to catch up to it. In the meantime the cameras work, the network holds, the fountain turns itself on and off — and from any screen, in the house or on another continent, I can open one app and see that my kids are exactly where they should be. That's enough to make this place a paradise. It would be a better one if Siri would just do her job.
