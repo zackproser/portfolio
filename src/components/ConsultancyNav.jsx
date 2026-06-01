@@ -13,6 +13,8 @@ export const navItems = [
   { name: 'Writing', href: '/blog' },
   { name: 'Projects', href: '/projects' },
   { name: 'Videos', href: '/videos' },
+  { name: 'Speaking', href: '/speaking' },
+  { name: 'Workshops', href: '/workshops' },
   { name: 'Playground', href: '/demos' },
   { name: 'About', href: '/about' },
   { name: 'Partnerships', href: '/partnerships' },
@@ -61,7 +63,7 @@ export function ConsultancyNav() {
                       flex-col lg:flex-row lg:flex gap-4 lg:gap-8 items-center border-t lg:border-t-0 border-parchment-300 dark:border-slate-700
                       ${menuOpen ? 'flex py-4 shadow-lg' : 'hidden'} lg:flex`}
         >
-          <div className="flex flex-col lg:flex-row gap-3 lg:gap-8 items-center w-full lg:w-auto">
+          <div className="flex flex-col lg:flex-row gap-3 lg:gap-6 items-center w-full lg:w-auto">
             {navItems.map((item) => {
               const active = isActive(pathname, item.href)
               return (
