@@ -73,7 +73,7 @@ export default function GearSpotlight({
     <aside className="not-prose my-10">
       {/* gradient ring */}
       <div className="rounded-2xl bg-gradient-to-br from-amber-400/60 via-zinc-300/30 to-cyan-400/50 p-px shadow-lg dark:from-amber-500/40 dark:via-zinc-700/40 dark:to-cyan-500/30">
-        <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-950">
+        <div className="relative overflow-clip rounded-2xl bg-white dark:bg-zinc-950">
           {/* soft glow */}
           <div
             aria-hidden
