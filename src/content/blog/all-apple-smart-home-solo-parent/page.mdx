@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json'
 import GearSpotlight from '@/components/GearSpotlight'
+import ReadNextCard from '@/components/ReadNextCard'
 
 export const metadata = createMetadata(rawMetadata)
 
@@ -110,11 +111,19 @@ What I want is a threshold I can set: if there are N genuine crying alerts betwe
 
 Here's the part that's almost worth the price of admission on its own.
 
-Every camera — indoor, outdoor, both doorbells — lands in one Home app, and that app is everywhere I am. On my Apple Watch when I'm in another room. On my Vision Pro, pulled up with my voice in the middle of a show or a gaming session. On my laptop when I'm working on the patio during naptime and think I hear someone stirring inside. I launch one app and see the entire house, inside and out, on a single screen.
+Every camera — indoor, outdoor, both doorbells — lands in one Home app, and that app is everywhere I am. On my Apple Watch when I'm in another room. On my Vision Pro, pulled up with my voice in the middle of a show or a <Link href="/blog/play-steam-link-vision-pro-while-watching-tv">gaming session</Link>. On my laptop when I'm working on the patio during naptime and think I hear someone stirring inside. I launch one app and see the entire house, inside and out, on a single screen.
 
 When you're solo with two kids, that single pane of glass is the whole game. I don't care which device is in my hand. I glance, I confirm everyone is where they should be, and I get back to what I was doing.
 
 <Image src="https://zackproser.b-cdn.net/images/apple-devices-camera-montage-v6.webp" alt="Pixel art on a dark background: an orange iPhone, an orange Apple Watch Ultra, an Apple Vision Pro headset with a floating panel, and a slate laptop all showing the same grid of indoor and outdoor camera feeds, connected by glowing cyan lines to a single home icon" width={1200} height={1200} />
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/vision-pro-couch-back-view-v4.webp"
+  imageAlt="Wearing the Vision Pro on the couch with an Xbox controller, a TV show on one floating screen and a game on another"
+  title="How to Play Steam Link on Vision Pro While Watching TV"
+  description="The same spatial-computing setup that lets me check the cameras mid-show is what I use to game on a giant virtual screen and watch TV at the same time. Here's the full rig and how to wire it up."
+  href="/blog/play-steam-link-vision-pro-while-watching-tv"
+/>
 
 ## Talking Through the Cameras
 
