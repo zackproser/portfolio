@@ -10,7 +10,7 @@ export const metadata = createMetadata(rawMetadata)
 
 When I decided it was best to become a solo parent, I wanted my new place to be a paradise — for two toddlers, and for the aging hacker raising them.
 
-So over the past few months I wired it: Aqara cameras inside and out, Apple TV and HomePod minis, smart plugs, an eero mesh in every room, and a pile of Siri automations, all funneled through Apple's Home app. One app to watch the kids, control the house, and automate the boring parts — from my watch, my phone, my laptop, or my Vision Pro.
+So over the past few months I wired it: Aqara cameras inside and out, Apple TV and HomePod minis, smart plugs, an eero 7 mesh with an outdoor node, and a pile of Siri automations, all funneled through Apple's Home app. One app to watch the kids, control the house, and automate the boring parts — from my watch, my phone, my laptop, or my Vision Pro.
 
 <Image src="https://zackproser.b-cdn.net/images/apple-smart-home-hero-v4.webp" alt="Pixel art isometric cutaway of a two-story house at night: a single parent kneeling with two toddlers playing by the fireplace in the living room, a glowing camera in each room, a bunk bed upstairs, and cameras on the backyard fence by the swing set" width={1200} height={1200} />
 
@@ -26,20 +26,20 @@ Everything here rides on Wi-Fi, so that's where I started.
 
 My ISP is fine. The router they shipped was not — the usual rented black box that can't cover a whole house and chokes the moment you put more than a handful of devices on it. I have a lot more than a handful: cameras inside and out, plugs, hubs, the Apple gear, the things still in their boxes. And I work outside a lot — naptime on the patio with a laptop is some of my best focus time of the week — so I needed coverage that didn't stop at the back wall.
 
-So I tore out the stock router and put in a full [eero mesh](https://www.amazon.com/dp/B0D955ZMSR/?tag=zackproser-20) through the house, plus one [eero Outdoor 7](https://www.amazon.com/dp/B0CHJBJLHN/?tag=zackproser-20) node mounted at the fence line for the backyard and the patio.
+So I added one [eero 7 set](https://www.amazon.com/dp/B0D955ZMSR/?tag=zackproser-20): the main unit wired by Ethernet to the router downstairs, a second in my upstairs office, a third in my upstairs bedroom — plus one [eero Outdoor 7](https://www.amazon.com/dp/B0CHJBJLHN/?tag=zackproser-20) node for the yard and the patio.
 
 <GearSpotlight
   campaign="all-apple-smart-home-solo-parent"
   image="https://zackproser.b-cdn.net/images/gear-eero-7.webp"
   imageAlt="Amazon eero 7 mesh Wi-Fi 7 routers"
   eyebrow="The backbone"
-  name="eero (full mesh) + eero Outdoor 7"
-  why="The mesh that gave every camera, plug, and hub a stable connection — and let me work outside without the signal dying at the back wall."
-  specs={["Wi-Fi 7", "Whole-home mesh", "IP66 outdoor node"]}
+  name="eero 7 (3-pack) + eero Outdoor 7"
+  why="A three-unit set gave every camera, plug, and hub a stable connection, and the outdoor node blankets the entire yard — more coverage than I need, full signal everywhere outside."
+  specs={["Wi-Fi 7", "3 indoor units", "IP66 outdoor node"]}
   href="https://www.amazon.com/dp/B0D955ZMSR/?tag=zackproser-20"
 />
 
-The indoor mesh keeps the whole device list on a solid connection instead of dropping things at random. The outdoor node is the one that earns its keep: my old router's signal was too weak by the time it reached the backyard, so the fence cameras would connect, stream for thirty seconds, then drop — useless for actually watching the kids. Now both fence cameras hold a connection 24/7, through rain and snow, and the patio is covered well enough that I can work out there during naps without the laptop dropping every time a cloud passes.
+The three indoor units keep the whole device list on a solid connection instead of dropping things at random. The outdoor node is the one that earns its keep: the stock router's signal was too weak by the time it reached the backyard, so the fence cameras would connect, stream for thirty seconds, then drop — useless for actually watching the kids. Now a single outdoor unit blankets the entire outside space — more coverage than I'll ever need. Both fence cameras hold a connection 24/7 through rain and snow, every device gets full signal out there, and I can work on the patio during naps without the laptop dropping every time a cloud passes.
 
 If you're putting cameras on a fence or a detached structure more than thirty feet from the house, a dedicated outdoor node is the only thing that reliably works. Indoor routers don't have the range, and powerline adapters are a coin flip.
 
@@ -134,6 +134,8 @@ There's no special cellular link involved. When I'm away, my request goes end-to
 
 So from a hotel on another continent, over whatever Wi-Fi or cellular I happen to be on, I open the Home app and watch my house in real time — and the only things on earth that can decrypt that feed are devices I own. This is the rare case where the software side gets it exactly right.
 
+<Image src="https://zackproser.b-cdn.net/images/home-app-remote-access-v1.webp" alt="Pixel art diagram of secure remote Home app access: a traveler with a phone beside a globe on the left, an end-to-end-encrypted path marked with padlocks and a key leading through a locked cloud relay in the center, into a home with a hub puck that fans out to the cameras on the right" width={1200} height={1200} />
+
 ## Apple TV: Screen Time on Purpose
 
 The living room [Apple TV 4K](https://www.amazon.com/s?k=Apple+TV+4K&tag=zackproser-20) does more than stream — it's also a HomeKit hub. But its day job is screen time, and I'm deliberate about that.
@@ -169,7 +171,7 @@ When I'm alone with two toddlers — one screaming, one climbing something — a
 
 Apple, if anyone there reads this: fix Siri. The hardware is genuinely good. The cameras work. The HomeKit protocol works. The Home app is fine. The Apple TVs and HomePod minis are solid speakers and hubs. All of it is undermined by a voice assistant that can't reliably execute a basic command. It's the weakest link in the whole all-Apple house, and it has been for years. The hardware earns trust. Siri spends it.
 
-<Image src="https://zackproser.b-cdn.net/images/siri-homepod-mini-fail-v3.webp" alt="Pixel art of a HomePod mini glowing on a shelf next to a television that is playing a show, a voice command floating toward it, and the response coming back as a dim error glyph instead of an action" width={1200} height={1200} />
+<Image src="https://zackproser.b-cdn.net/images/siri-homepod-mini-fail-v4.webp" alt="Pixel art of a HomePod mini glowing on a shelf next to a television that is playing a show, a voice command floating toward it, and the response coming back as a dim error glyph instead of an action" width={1200} height={1200} />
 
 ## What's Next
 
