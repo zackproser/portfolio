@@ -12,7 +12,7 @@ When I decided it was best to become a solo parent, I wanted my new place to be 
 
 So over the past few months I wired it: Aqara cameras inside and out, Apple TV and HomePod minis, smart plugs, an eero mesh in every room, and a pile of Siri automations, all funneled through Apple's Home app. One app to watch the kids, control the house, and automate the boring parts — from my watch, my phone, my laptop, or my Vision Pro.
 
-<Image src="https://zackproser.b-cdn.net/images/apple-smart-home-hero-v2.webp" alt="Pixel art isometric cutaway of a two-story house at night, a glowing camera in each room, a parent holding a toddler in the living room with a second child beside them, smart devices glowing on tables, and outdoor cameras lighting the backyard fence" width={1200} height={1200} />
+<Image src="https://zackproser.b-cdn.net/images/apple-smart-home-hero-v3.webp" alt="Pixel art isometric cutaway of a two-story house at night: a single parent kneeling with two toddlers playing by the fireplace in the living room, a glowing camera in each room, a bunk bed upstairs, and cameras on the backyard fence by the swing set" width={1200} height={1200} />
 
 When it works, it's genuinely magic. I can be mid-diaper-change on the living room couch, one kid pinned in front of me, and say "Hey Siri, turn on the TV and play Spidey and His Amazing Friends" to buy thirty seconds of calm from the other one. No remote, no phone, no free hand required. I've spent the last stretch <Link href="/blog/wisprflow-review">writing code by voice</Link> for my day job, and running the house hands-free is the same trick aimed at a different kind of state change — same speed, same no-hands freedom.
 
@@ -51,7 +51,7 @@ That means the cameras need to work with the Home app. The Home app needs to wor
 
 Apple's HomeKit is that control plane. Everything routes through it. One app, one platform, one login.
 
-<Image src="https://zackproser.b-cdn.net/images/apple-home-control-plane-diagram-v2.webp" alt="Pixel art network diagram showing Apple Watch, iPhone, MacBook, and Vision Pro all connected by glowing lines to a central Apple Home hub icon, with camera and smart plug icons branching off it" width={1200} height={1200} />
+<Image src="https://zackproser.b-cdn.net/images/apple-home-control-plane-diagram-v3.webp" alt="Pixel art network diagram showing Apple Watch, iPhone, MacBook, and Vision Pro all connected by glowing lines to a central Apple Home hub icon, with camera and smart plug icons branching off it" width={1200} height={1200} />
 
 I chose the lock-in deliberately. The alternative was stitching together four different apps, three cloud backends, and a home-automation server I'd have to babysit. I have two toddlers. I don't have time to run a Kubernetes cluster for my light switches.
 
@@ -114,7 +114,7 @@ Every camera — indoor, outdoor, both doorbells — lands in one Home app, and 
 
 When you're solo with two kids, that single pane of glass is the whole game. I don't care which device is in my hand. I glance, I confirm everyone is where they should be, and I get back to what I was doing.
 
-<Image src="https://zackproser.b-cdn.net/images/apple-devices-camera-montage-v5.webp" alt="Premium product render on a dark background: an orange iPhone 17 Pro Max, an orange Apple Watch Ultra, an Apple Vision Pro panel, and a slate 14-inch MacBook Pro all showing the same grid of indoor and outdoor camera feeds, connected by glowing cyan threads to a single home icon" width={1200} height={1200} />
+<Image src="https://zackproser.b-cdn.net/images/apple-devices-camera-montage-v6.webp" alt="Pixel art on a dark background: an orange iPhone, an orange Apple Watch Ultra, an Apple Vision Pro headset with a floating panel, and a slate laptop all showing the same grid of indoor and outdoor camera feeds, connected by glowing cyan lines to a single home icon" width={1200} height={1200} />
 
 ## Talking Through the Cameras
 
@@ -181,7 +181,7 @@ The foundation is in. The next phase is letting the house do more on its own.
 
 **Better automations.** Right now everything is time-based. The next step is condition-based: motion in the hallway after 9 PM turns on the hallway light at 20%; a person at the front door turns on the porch light and pings my watch; the bedtime sequence dims the kids' rooms, starts the sound machines, and nudges the thermostat down a couple degrees on its own.
 
-<Image src="https://zackproser.b-cdn.net/images/smart-home-future-upgrades-v2.webp" alt="Pixel art blueprint-style floor plan glowing on a dark background, with dotted lines marking planned additions: motion sensors in hallways, smart light bulbs in each room, and arrows connecting sensors to lights" width={1200} height={1200} />
+<Image src="https://zackproser.b-cdn.net/images/smart-home-future-upgrades-v3.webp" alt="Pixel art blueprint-style floor plan glowing on a dark background, with dotted lines marking planned additions: motion sensors in hallways, smart light bulbs in each room, and arrows connecting sensors to lights" width={1200} height={1200} />
 
 ## The Honest Assessment
 
