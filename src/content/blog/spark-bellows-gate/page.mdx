@@ -1,0 +1,87 @@
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# I Am the Spark, the Bellows, and the Gate
+
+<Image src="https://zackproser.b-cdn.net/images/spark-bellows-gate-hero.webp" alt="Pixel art of a lone blacksmith at a glowing forge at night: a shower of sparks rising on the left, a great bellows feeding the fire in the middle, and a finished blade passing through a glowing gate on the right" width={1200} height={675} />
+
+A stranger online dinged us last week. We'd shipped a post written by the [blog bot I built on Cloudflare](/blog/how-my-ai-assistant-ships-blog-posts) — a system that drafts posts, including one about itself and about the [Applied AI Showcase](/blog/workos-applied-ai-showcase) we'd just run. His complaint wasn't that the writing was wrong, or boring, or inaccurate. It was that he now reads everything with a flinch. He's become suspicious of all writing, he said. He knows he's *supposed* to think it's cool that AI helped — but instead he catches himself interrogating every sentence. *Was this one AI? Was this one? What about this?*
+
+I don't agree with the take, but I understand the reflex. And I want to say it plainly: that is the wrong question.
+
+I've written more or less every day for twenty-plus years. People [ask me how I write so fast](/blog/how-do-you-write-so-fast), and the honest answer has never had much to do with typing speed. It has to do with how an idea moves from the world, through me, and onto the page. The tools at the end of that pipeline have changed a dozen times. The pipeline hasn't.
+
+## What MG showed me
+
+A while back — when the AI wave was first cresting, before the latest agentic patterns landed — I was on a call with our founder, MG. He pulled up a video of a cymbal factory. Zildjian, the company whose cymbals you've heard on basically every record you love.
+
+The line is almost entirely automated. Bronze gets cast, pressed, hammered, and lathed by machine at a pace no room full of people could match. Except for one step. Every single cymbal — every one — gets picked up at the end by a person. A craftsman who is also a musician. They play it. They listen. They decide whether it's good enough to carry the name.
+
+"This screams craft to me," MG said. "It doesn't matter that it's being produced so quickly."
+
+That sentence has been rattling around in my head ever since.
+
+<div style={{ aspectRatio: '16 / 9', margin: '2rem 0', borderRadius: '8px', overflow: 'hidden' }}>
+  <iframe
+    src="https://www.youtube.com/embed/mAfd-in2WaE"
+    title="How a Zildjian cymbal is made"
+    style={{ width: '100%', height: '100%', border: 0 }}
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    loading="lazy"
+  />
+</div>
+
+It gave me the language I'd been missing for what I actually do now. Three jobs, and a machine can touch the middle one but never the ends.
+
+## I am the spark
+
+<Image src="https://zackproser.b-cdn.net/images/spark-bellows-gate-spark.webp" alt="Pixel art of a single bright ember rising from a dark forge, a silhouetted figure watching it, the spark glowing amber against deep blue night" width={1200} height={675} />
+
+I'm still the one who has to be alive in the world. Talking to people. Dealing with people. Sitting inside systems long enough to feel where they chafe. Having thoughts and feelings about all of it. An idea doesn't come from a model. It comes from friction — a conversation, a problem, a thing somebody said that won't leave me alone.
+
+Rick Rubin describes this in <a href="https://www.amazon.com/dp/0593652886/?tag=zackproser-20" target="_blank" rel="sponsored nofollow noopener noreferrer">The Creative Act</a> as something closer to weather than to work. Ideas arrive; your job is to notice them and keep the ones that won't let go. That's the part no pipeline reaches. I carry an idea around for days, sometimes weeks. It nags me. It surfaces at inconvenient times. And eventually I don't *decide* it needs to be written — I *know* it does. That recognition is the spark. It's still mine, and it's still struck by hand.
+
+## I am the bellows
+
+<Image src="https://zackproser.b-cdn.net/images/spark-bellows-gate-bellows.webp" alt="Pixel art of two strong hands working a great leather bellows, feeding air into a forge fire that flares from dull coals into a tall bright flame" width={1200} height={675} />
+
+I have a whole spread of ways to write now, from the heavily automated to hand-assembling MDX element by element. On the automated end, I'll let a tool scaffold a start — a rough draft, what Anne Lamott would call a <a href="https://www.amazon.com/dp/0385480016/?tag=zackproser-20" target="_blank" rel="sponsored nofollow noopener noreferrer">shitty first draft</a>. She's right that you have to let yourself write a bad one before you can write a good one. A model is very good at handing me a bad one fast.
+
+The draft is not the work, though. The draft is the coals. The work is everything after, and that part is all me. I read it and I go: *that's right, in this one narrow way — but these three things are off, and this over here is not at all what I meant, and this paragraph is technically fine but we have to go much deeper, and expand this, and cut that, and fan this one line until it actually catches.*
+
+I do the same thing to code, to systems, to prose. I'm the bellows: the steady, directed pressure that turns an ember into something with heat and shape. The skill is knowing which flame to feed and which to smother — and that judgment is twenty years deep. A model can hand me coals all day long. It cannot tell me which ones are worth blowing on.
+
+## I am the gate
+
+<Image src="https://zackproser.b-cdn.net/images/spark-bellows-gate-gate.webp" alt="Pixel art of a finished glowing blade passing through a narrow stone gate lit by torches, a figure inspecting it closely before it leaves the forge" width={1200} height={675} />
+
+I wish I knew blacksmithing well enough to have the right word for the last step — the final inspection, the thing that decides whether the blade leaves the shop or goes back in the fire.
+
+I'm the gate. I'm the one who hits publish, and it is on me — entirely on me — if what comes out the other side is trash. Not the model. Not the pipeline. Me. The byline is mine. The reputation that took two decades to build rides on every single thing I let through. The cymbal gets played one more time before it goes in the box, and I'm the one playing it.
+
+## The artifact is the only thing that was ever real
+
+Here is what I actually believe, after all of it.
+
+If an experienced operator arrives at the same artifact they would have made by hand anyway — because their distilled experience and their command of real tools and real patterns let them compress the creation time fifteen-fold or more — and the result is excellent, accurate, useful, and beautiful, I genuinely do not see the problem.
+
+"Is this AI?" is the wrong question because you cannot answer it from the artifact, and the artifact is the only thing that reaches the reader. Put two posts side by side. One was written on index cards in pen and ink, transcribed into MDX by hand, every element hand-coded, staged, and published. The other was talked through with Claude, run through a pipeline to a rough shape, then hand-edited, read fourteen times, polished, and *then* published. You cannot tell which is which. And if you can't tell — if the only real difference is how long it took and how the maker's hands happened to move — then the question was never about quality. It was about purity. Purity is a much worse standard than excellence.
+
+We have done this exact dance every time the tools changed. Writers were going to be ruined by the typewriter, because real writing lived in longhand, in ink and smudges. Then by the word processor. Then by spell check. Each time, someone was certain the soul lived in the friction we'd just removed. Each time, the good work stayed good and the bad work stayed bad, and the tool turned out to be a tool.
+
+I think this is close to inescapable. We are a tool-using species — it is load-bearing, somewhere near the core of what we are. We extend ourselves through the things we build, and then we build with the extensions. To draw the line at *this* tool, in *this* year, and declare everything downstream of it suspect, is — I'll just say it — intellectually lazy. It's a cop-out. It lets you wave a thing away without ever doing the harder work of judging it.
+
+So judge the artifact. Is it true? Is it useful? Is it beautiful? Does it help anyone? Those are difficult questions, and they are the only ones that have ever mattered.
+
+The cymbal comes off the line in a fraction of the time it used to take. A person still picks up every single one and plays it before it ships. The speed and the craft live in the same sentence. That's the whole point.
+
+I am the spark. I am the bellows. I am the gate.
+
+---
+
+*The Amazon book links above are affiliate links — these two have shaped how I think about making things, and I recommend them without reservation.*
