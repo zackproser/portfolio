@@ -70,7 +70,12 @@ const nextConfig = {
         source: '/software/teatutor-deepdive',
         destination: '/blog/teatutor-deepdive',
         permanent: true,
-      }, 
+      },
+      {
+        source: '/blog/spark-bellows-gate',
+        destination: '/blog/spark-bellows-quench',
+        permanent: true,
+      },
       {
         source: '/blog/video-reviewing-github-prs-in-terminal',
         destination: '/videos/video-reviewing-github-prs-in-terminal',
