@@ -343,7 +343,7 @@ export function buildChangeTrackingResponse(
 }
 
 // Build the webhook / Slack alert payload the monitor would fire on a change.
-export function buildAlertPayload(event: ChangeEvent): string {
+export function buildAlertPayload(event: ChangeEvent, alertChannel: string): string {
   const fieldChanges = event.fieldDiffs
     .filter((d) => d.kind === 'modified' || d.kind === 'added')
     .map((d) => ({
@@ -369,7 +369,7 @@ export function buildAlertPayload(event: ChangeEvent): string {
       linesRemoved: event.removedCount,
     },
     slack: {
-      channel: '#monitoring-alerts',
+      channel: alertChannel,
       text: `:rotating_light: *${event.pageLabel}* changed — ${event.summary}`,
     },
   }

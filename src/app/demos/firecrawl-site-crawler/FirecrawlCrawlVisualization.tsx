@@ -72,8 +72,11 @@ const ACCENT_DOT: Record<string, string> = {
 }
 
 // Derive the live status of each page given how many events have been processed.
-function statusAtEvent(events: CrawlEvent[], cursor: number): Map<string, PageStatus> {
+function statusAtEvent(events: CrawlEvent[], cursor: number, pages: CrawledPage[]): Map<string, PageStatus> {
   const map = new Map<string, PageStatus>()
+  const pagesByUrl = new Map<string, CrawledPage>()
+  pages.forEach((p) => pagesByUrl.set(p.url, p))
+  
   for (let i = 0; i <= cursor && i < events.length; i++) {
     const ev = events[i]
     switch (ev.type) {
@@ -87,7 +90,10 @@ function statusAtEvent(events: CrawlEvent[], cursor: number): Map<string, PageSt
         map.set(ev.url, 'markdown')
         break
       case 'done':
-        map.set(ev.url, 'done')
+        {
+          const page = pagesByUrl.get(ev.url)
+          map.set(ev.url, page?.status === 'error' ? 'error' : 'done')
+        }
         break
       case 'skipped':
         map.set(ev.url, 'skipped')
@@ -156,7 +162,7 @@ export default function FirecrawlCrawlVisualization({ site, result, selectedUrl,
   }, [])
 
   const currentEvent = events[Math.min(cursor, events.length - 1)]
-  const statuses = useMemo(() => statusAtEvent(events, cursor), [events, cursor])
+  const statuses = useMemo(() => statusAtEvent(events, cursor, result.pages), [events, cursor, result.pages])
 
   // Phase for the architecture diagram.
   const phase: CrawlPhase = useMemo(() => {

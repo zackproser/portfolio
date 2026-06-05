@@ -107,8 +107,8 @@ export default function FirecrawlMonitorInspector({
     [event, snapshot, modes]
   )
   const alertBody = useMemo(
-    () => (event ? buildAlertPayload(event) : ''),
-    [event]
+    () => (event ? buildAlertPayload(event, page.alertChannel) : ''),
+    [event, page.alertChannel]
   )
 
   const toggleMode = (mode: DiffMode) => {

@@ -74,18 +74,19 @@ export default function FirecrawlMonitorVisualization({
 
   const totalChecks = events.length
 
-  // Reset the whole simulation when the page or frequency changes.
-  useEffect(() => {
-    setRunUpTo(0)
-    setIsPlaying(false)
-    setPhase('idle')
-    setCountdown(FREQUENCY_SECONDS[frequency])
-  }, [page.id, frequency])
-
   const clearPhaseTimers = useCallback(() => {
     phaseTimers.current.forEach((t) => clearTimeout(t))
     phaseTimers.current = []
   }, [])
+
+  // Reset the whole simulation when the page or frequency changes.
+  useEffect(() => {
+    clearPhaseTimers()
+    setRunUpTo(0)
+    setIsPlaying(false)
+    setPhase('idle')
+    setCountdown(FREQUENCY_SECONDS[frequency])
+  }, [page.id, frequency, clearPhaseTimers])
 
   // Animate the architecture diagram through the 5 phases, then advance the
   // check pointer and select the newly-detected event.
