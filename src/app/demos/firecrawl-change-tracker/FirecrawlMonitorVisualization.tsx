@@ -29,7 +29,7 @@ type Props = {
   page: MonitoredPage
   events: ChangeEvent[]
   selectedEventId: string | null
-  onSelectEvent: (id: string) => void
+  onSelectEvent: (id: string | null) => void
   frequency: MonitorFrequency
   onFrequencyChange: (f: MonitorFrequency) => void
 }
@@ -146,6 +146,7 @@ export default function FirecrawlMonitorVisualization({
       // Restart from the beginning.
       setRunUpTo(0)
       setCountdown(FREQUENCY_SECONDS[frequency])
+      onSelectEvent(null)
       setIsPlaying(true)
       return
     }
@@ -164,6 +165,7 @@ export default function FirecrawlMonitorVisualization({
     setRunUpTo(0)
     setPhase('idle')
     setCountdown(FREQUENCY_SECONDS[frequency])
+    onSelectEvent(null)
   }
 
   // Events revealed so far, newest first for the feed.

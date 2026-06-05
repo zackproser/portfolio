@@ -210,10 +210,23 @@ export function simulateCrawl(site: SeedSite, config: CrawlConfig): CrawlResult 
       : `Mapped ${mappedLinks.length} links from sitemap.xml`,
   )
 
-  // BFS queue seeded with the start URL.
+  // BFS queue seeded with the start URL, or all mapped links if using a sitemap.
   type QueueItem = { url: string; from: string | null }
-  const queue: QueueItem[] = [{ url: site.seedUrl, from: null }]
-  visited.add(site.seedUrl)
+  const usesSitemap = site.hasSitemap && !config.ignoreSitemap
+  const queue: QueueItem[] = []
+  if (usesSitemap) {
+    // When using a sitemap, seed the queue with all mapped links that exist in our page data.
+    mappedLinks.forEach((url) => {
+      if (pagesByUrl.has(url) && !visited.has(url)) {
+        visited.add(url)
+        queue.push({ url, from: null })
+      }
+    })
+  } else {
+    // Without a sitemap, start with just the seed URL.
+    queue.push({ url: site.seedUrl, from: null })
+    visited.add(site.seedUrl)
+  }
 
   while (queue.length > 0) {
     const { url, from } = queue.shift() as QueueItem

@@ -101,13 +101,13 @@ function statusAtEvent(events: CrawlEvent[], cursor: number): Map<string, PageSt
 
 export default function FirecrawlCrawlVisualization({ site, result, selectedUrl, onSelectPage }: Props) {
   const { events } = result
-  const [cursor, setCursor] = useState<number>(events.length - 1)
+  const [cursor, setCursor] = useState<number>(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const intervalRef = useRef<number | null>(null)
 
   // Reset playback whenever the underlying simulation changes (config edit).
   useEffect(() => {
-    setCursor(events.length - 1)
+    setCursor(0)
     setIsPlaying(false)
   }, [events])
 
