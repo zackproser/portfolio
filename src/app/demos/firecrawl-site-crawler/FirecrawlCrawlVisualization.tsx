@@ -362,7 +362,10 @@ export default function FirecrawlCrawlVisualization({ site, result, selectedUrl,
         </span>
         <span>
           Raw HTML processed: {bytesToReadable(
-            visiblePages.filter((p) => p.status === 'done' || p.status === 'error').reduce((s, p) => s + p.rawHtmlBytes, 0),
+            visiblePages.filter((p) => {
+              const status = statuses.get(p.url)
+              return status === 'done' || status === 'error'
+            }).reduce((s, p) => s + p.rawHtmlBytes, 0),
           )}
         </span>
       </div>

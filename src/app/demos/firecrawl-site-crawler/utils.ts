@@ -222,6 +222,12 @@ export function simulateCrawl(site: SeedSite, config: CrawlConfig): CrawlResult 
         queue.push({ url, from: null })
       }
     })
+    // Sort by depth to maintain BFS order.
+    queue.sort((a, b) => {
+      const depthA = pagesByUrl.get(a.url)?.depth ?? 0
+      const depthB = pagesByUrl.get(b.url)?.depth ?? 0
+      return depthA - depthB
+    })
   } else {
     // Without a sitemap, start with just the seed URL.
     queue.push({ url: site.seedUrl, from: null })
