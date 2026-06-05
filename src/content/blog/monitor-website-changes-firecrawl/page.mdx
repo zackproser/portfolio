@@ -1,0 +1,189 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'monitor-website-changes';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Monitoring the web for changes with Firecrawl" width={800} height={450} />
+</AffiliateLink>
+
+A lot of the most valuable signal on the web is a single fact: this page changed. A competitor raised prices overnight. A vendor you depend on quietly dropped a deprecated endpoint from their API docs. A policy page got reworded in a way your compliance team needs to know about before a customer does.
+
+You can watch for these by hand. Bookmark the page, check it every few days, squint at it to remember what it said last time. That falls apart the moment you're tracking more than a couple of pages, and it falls apart completely when the change is buried three sections down.
+
+The programmatic version — scrape the page on a schedule, store the result, diff it against last time — is the right idea. Doing it yourself means owning the scraping, the storage, the normalization (so a reordered nav doesn't read as a "change"), and the diffing. <AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> ships that as a scrape format called `changeTracking`. You can see it run in <Link href="/demos/firecrawl-change-tracker">the interactive change-tracking demo</Link> — advance the timeline and watch changes fire.
+
+## The changeTracking format
+
+`changeTracking` is a format you request alongside the others on a normal scrape. Firecrawl remembers the previous version of the URL and tells you what moved. Here's a real request against the v2 scrape endpoint:
+
+```bash
+curl -X POST https://api.firecrawl.dev/v2/scrape \
+  -H "Authorization: Bearer fc-..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://acmecloud.io/pricing",
+    "formats": [
+      "markdown",
+      {
+        "type": "changeTracking",
+        "modes": ["git-diff", "json"],
+        "schema": {
+          "type": "object",
+          "properties": {
+            "price": { "type": "string" },
+            "availability": { "type": "string" }
+          }
+        }
+      }
+    ]
+  }'
+```
+
+You ask for `markdown` (the clean content) and `changeTracking` (what's different from last time) in one call. The `schema` is the same idea as <Link href="/blog/extract-structured-data-websites">schema-based extraction</Link> — you describe the fields you care about, and the `json` mode reports changes at the level of those fields instead of raw text.
+
+## The response
+
+The `changeTracking` object tells you where this page stands relative to the last scrape:
+
+```json
+{
+  "markdown": "# AcmeCloud Pricing\n\nPro plan — $15/mo ...",
+  "changeTracking": {
+    "previousScrapeAt": "2026-05-29T14:02:11Z",
+    "changeStatus": "changed",
+    "visibility": "visible",
+    "diff": {
+      "text": "@@ -3,3 +3,3 @@\n-Pro plan — $12/mo\n+Pro plan — $15/mo\n unlimited projects",
+      "json": { /* git-diff metadata */ }
+    },
+    "json": {
+      "price": { "previous": "$12/mo", "current": "$15/mo" },
+      "availability": { "previous": "In stock", "current": "In stock" }
+    }
+  }
+}
+```
+
+The fields that matter:
+
+- **`previousScrapeAt`** — when Firecrawl last saw this URL. Null on the first scrape.
+- **`changeStatus`** — `new` (first time seen), `same` (no change), `changed` (content moved), or `removed` (the page used to have content and now doesn't).
+- **`visibility`** — `visible` if the page is reachable through normal crawling, `hidden` if it's only reachable directly (orphaned, or pulled from a sitemap). A page flipping to `hidden` is its own signal.
+- **`diff`** — present in `git-diff` mode. A unified diff of the rendered content.
+- **`json`** — present in `json` mode. Each field you defined in the schema comes back as `{ previous, current }`.
+
+In the example above, the Pro plan went from `$12/mo` to `$15/mo`. The git-diff shows you the line that moved; the json diff hands you the two values directly, ready to drop into a Slack message or a database row without parsing anything.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## git-diff mode vs json mode
+
+They answer different questions, and there's no reason to pick just one.
+
+**`git-diff`** gives you the full text delta. Use it when you don't know in advance which part of the page will change, or when the change *is* the prose — a reworded terms-of-service clause, a removed paragraph in API docs, a new sentence in a privacy policy. It's a wide net. The tradeoff: it's noisy. A site that rotates a testimonial or stamps a "last updated" date will diff every single time, and you'll learn to ignore the alerts, which defeats the point.
+
+**`json`** narrows the page down to the fields you declared in the schema. Use it when you know exactly what you're watching — a price, a stock status, a plan name, a version number. The schema acts as a filter: a marketing copy tweak that doesn't touch the `price` field produces no change in the json diff. That's what makes it quiet enough to alert on directly.
+
+The pattern I reach for: `json` mode for the handful of fields that drive an action, `git-diff` for a periodic human review of everything else.
+
+## Scheduling the checks
+
+Change tracking only earns its keep on a schedule. A scrape gives you one snapshot; the value is in the comparison over time. The mechanics are small — scrape on an interval, look at `changeStatus`, fire an alert when it's `changed`. Here's that loop as a Cloudflare Worker on a cron trigger:
+
+```javascript
+// wrangler.toml:  [triggers]  crons = ["0 */6 * * *"]   // every 6 hours
+
+const WATCHLIST = [
+  'https://acmecloud.io/pricing',
+  'https://docs.somevendor.com/api/webhooks',
+]
+
+const PRICING_SCHEMA = {
+  type: 'object',
+  properties: {
+    price: { type: 'string' },
+    availability: { type: 'string' },
+  },
+}
+
+async function check(url, env) {
+  const res = await fetch('https://api.firecrawl.dev/v2/scrape', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${env.FIRECRAWL_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      url,
+      formats: [
+        'markdown',
+        { type: 'changeTracking', modes: ['git-diff', 'json'], schema: PRICING_SCHEMA },
+      ],
+    }),
+  })
+
+  const { data } = await res.json()
+  const tracking = data.changeTracking
+
+  // Only act on real changes. Ignore "same", "new", and noise.
+  if (tracking.changeStatus !== 'changed') return
+
+  await fetch(env.SLACK_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      text:
+        `*${url}* changed\n` +
+        Object.entries(tracking.json ?? {})
+          .filter(([, v]) => v.previous !== v.current)
+          .map(([field, v]) => `• ${field}: ${v.previous} → ${v.current}`)
+          .join('\n'),
+    }),
+  })
+}
+
+export default {
+  async scheduled(event, env) {
+    await Promise.all(WATCHLIST.map((url) => check(url, env)))
+  },
+}
+```
+
+Firecrawl holds the previous state, so the Worker stays stateless — no database, no last-seen table to maintain. Two decisions are worth thinking about:
+
+- **Frequency vs cost.** Every scrape is a credit. Hourly across a long watchlist adds up fast and rarely buys you anything — a competitor's pricing page doesn't change between 2pm and 3pm. Match the interval to how fast the thing you're watching actually moves. Six hours covers most pricing and docs use cases; daily is fine for policy pages.
+- **What to alert on.** Filtering `changeStatus === 'changed'` is the floor. The next refinement is filtering the json diff to fields that changed (the `.filter()` above), so a page-wide re-render doesn't ping you when the price held steady. Alert on the fields that drive a decision; log the rest.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Where this pays off
+
+**Competitive pricing intel.** Watch competitors' pricing and plan pages with a `json` schema for `price`, `plan`, and `availability`. You find out about a price change when it ships, not when a customer forwards you a screenshot.
+
+**Documentation drift.** If your integration depends on a third-party API, their docs are a contract that can change without a changelog entry. Track the endpoints you call. A removed parameter or a flipped default surfaces as a diff before it surfaces as a production incident.
+
+**Compliance and ToS monitoring.** Terms of service, privacy policies, and DPAs change, and "we updated our terms" emails don't always describe what actually moved. A git-diff on the pages your legal and compliance teams care about gives them the exact wording delta to review.
+
+## Crawl first, then monitor
+
+For a single known URL you scrape it directly. When you want to monitor a whole section — every page under `/docs`, an entire pricing-and-plans area — start with a crawl to enumerate the URLs, then put the pages that matter on the watchlist. You can map a site with <Link href="/demos/firecrawl-site-crawler">the site-crawler demo</Link>, then monitor the handful of pages worth tracking. For the broader picture on managed scraping versus rolling your own, see <Link href="/blog/best-web-scraping-api-2026">the web scraping API comparison</Link> and <Link href="/blog/firecrawl-vs-crawl4ai">Firecrawl vs Crawl4AI</Link>.
+
+## Try it
+
+`changeTracking` turns "did this page change?" into a field on a JSON response, and a six-line cron loop into a working monitor. Watch it run in <Link href="/demos/firecrawl-change-tracker">the interactive change-tracking demo</Link> — advance the timeline and watch the changes fire.
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl's free tier</AffiliateLink> includes 500 credits, which is enough to stand up a real watchlist and see a `changed` status come back before you spend anything.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+**Related:**
+- <Link href="/demos/firecrawl-change-tracker">Interactive change-tracking demo</Link>
+- <Link href="/blog/extract-structured-data-websites">Extracting structured data from websites</Link>
+- <Link href="/blog/best-web-scraping-api-2026">Best web scraping API in 2026</Link>
+- <Link href="/blog/firecrawl-vs-crawl4ai">Firecrawl vs Crawl4AI</Link>

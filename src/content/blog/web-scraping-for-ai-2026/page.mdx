@@ -1,0 +1,176 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'web-scraping-for-ai-2026';
+
+<Image src={rawMetadata.image} alt="The complete guide to web scraping for AI in 2026" width={1200} height={630} />
+<figcaption>Web data is the raw material for most AI systems. Getting it cleanly is the part nobody puts in the demo.</figcaption>
+
+Almost every AI system I've worked on eventually needs data off the public web. The model is the easy part now. The hard part is feeding it current, accurate, well-structured information that lives on pages that were built for human eyes, not for your pipeline.
+
+This is the map. It covers why web data matters for AI in 2026, the three ways teams get it, the core operations a modern AI team actually performs, and a decision guide for picking an approach. I've <Link href="/blog/introducing-pageripper-api">built and sold scraping infrastructure</Link>, so the tradeoffs here come from operating this stuff, not reading about it.
+
+## Why web data matters for AI in 2026
+
+Four jobs keep showing up:
+
+- **RAG corpora.** Retrieval-augmented generation is only as good as what you put in the index. Documentation sites, knowledge bases, product catalogs, support articles — most of it lives on the web in HTML, and you need it as clean text before you can chunk and embed it.
+- **Agents that read the web.** An agent answering a question often needs a live page, not a snapshot from training. That means fetching a URL on demand and turning it into something the model can reason over in one step.
+- **Training and eval data.** Fine-tuning sets, benchmark construction, and evaluation harnesses all pull from real pages. Garbage extraction means garbage labels.
+- **Monitoring.** Pricing pages, competitor docs, changelogs, regulatory filings — knowing when a page *changes* is its own use case, and it feeds alerting, re-indexing, and downstream agents.
+
+The common thread: you need the *content* of a page, stripped of navigation, ads, cookie banners, and markup noise, in a format a language model can use. That's the whole problem.
+
+## Three ways to get the data
+
+### 1. DIY parsing — Beautiful Soup, Cheerio, requests
+
+You fetch the raw HTML and parse it yourself with CSS selectors or XPath.
+
+**Strengths:** Cheap, fast, no infrastructure. For a static page whose content is in the initial HTML, a Beautiful Soup script is a few lines and runs anywhere.
+
+**Limits:** It can't run JavaScript. Most modern sites render content client-side, so a `requests.get()` returns an empty `<div id="root">` and nothing else. And every selector you write is coupled to one site's markup — the moment they ship a redesign, your parser breaks. For each new site, you write a new parser.
+
+**Use it when:** the source is static HTML with a stable structure and you're dealing with a handful of known sites.
+
+### 2. Headless browser automation — Puppeteer, Playwright
+
+You drive a real browser. It loads the page, runs the JavaScript, and hands you the fully rendered DOM.
+
+**Strengths:** It sees what a user sees. Single-page apps, infinite scroll, content that loads after a click — all reachable. You can log in, fill forms, and navigate multi-step flows.
+
+**Limits:** Running headless browsers at scale is an infrastructure project. Each instance eats 200-500MB of RAM. You'll deal with memory leaks, zombie processes, crashes, proxy rotation, a job queue, retry logic, and bot-detection arms races. I lived this for years with Pageripper, and the maintenance never stops — budget a real fraction of your build time for keeping it alive.
+
+**Use it when:** you need genuine browser interaction (auth, forms, complex navigation) and you have the team to operate the fleet.
+
+### 3. Managed scraping APIs — Firecrawl
+
+You send a URL to an API. It renders the JavaScript on its side, strips the boilerplate, and returns clean markdown — or structured JSON if you give it a schema.
+
+**Strengths:** JS rendering, content extraction, rate limiting, and anti-bot handling are someone else's problem. One API call scales from a single page to hundreds of thousands without you provisioning anything. No selectors to maintain.
+
+**Limits:** It's a paid service, and your requests pass through a third party. For scraping ten pages a month, it's overkill. For privacy-regulated data you can't send off-box, it's the wrong fit.
+
+**Use it when:** scraping is a means to an end — you're building an AI product and want clean data without owning the scraping stack.
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> is the managed option I reach for. Here's the honest one-line summary of the three:
+
+| | Setup | JS rendering | Per-site config | Scaling | Maintenance |
+|---|---|---|---|---|---|
+| **Beautiful Soup** | Minutes | No | Yes, per site | Easy (just HTTP) | Selectors rot |
+| **Puppeteer/Playwright** | Hours to weeks | Yes (you operate it) | Yes, per site | Hard (heavy browsers) | High |
+| **Managed API** | Minutes | Yes (managed) | None | Easy (an API call) | Near zero |
+
+For a deeper head-to-head on the specific tools, see <Link href="/blog/best-web-scraping-api-2026">the best web scraping API in 2026</Link> and <Link href="/blog/firecrawl-vs-crawl4ai">Firecrawl vs Crawl4AI</Link>.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## The core operations a modern AI team needs
+
+Whatever approach you pick, the work breaks down into four operations. A managed API gives you all four behind one interface, which is why I'll show the calls in that form.
+
+### Scrape one page into clean markdown
+
+The base case. Give it a URL, get back markdown with the navigation and ads removed.
+
+```bash
+POST https://api.firecrawl.dev/v1/scrape
+{
+  "url": "https://example.com/blog/post",
+  "formats": ["markdown"],
+  "onlyMainContent": true
+}
+```
+
+`onlyMainContent: true` is the flag that earns its keep — it drops headers, footers, and sidebars so what lands in your RAG index is the article, not the chrome around it.
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+const page = await app.scrapeUrl('https://example.com/blog/post', {
+  formats: ['markdown'],
+  onlyMainContent: true,
+})
+console.log(page.markdown)
+```
+
+Try the single-page case live in the <Link href="/demos/firecrawl">interactive Firecrawl demo</Link>.
+
+### Extract structured JSON via schema — no selectors
+
+This is the operation that changed how I build extraction. Instead of writing selectors, you describe the shape you want and let the model fill it in.
+
+```javascript
+const result = await app.scrapeUrl('https://example.com/product/123', {
+  formats: ['json'],
+  jsonOptions: {
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        price: { type: 'number' },
+        inStock: { type: 'boolean' },
+      },
+    },
+  },
+})
+console.log(result.json) // { name: "...", price: 49.99, inStock: true }
+```
+
+No XPath, no `.find('div.price-tag span')` that breaks on the next redesign. You declare the schema once and it works across pages with different markup. There's a full walkthrough in <Link href="/blog/extract-structured-data-websites">extracting structured data from websites</Link>, and the <Link href="/demos/firecrawl-knowledge-base">knowledge base demo</Link> shows it feeding a corpus.
+
+### Crawl or map a whole site into a corpus
+
+For RAG you rarely want one page — you want a section or an entire site. A crawl follows links and returns every page as markdown.
+
+```javascript
+const site = await app.crawlUrl('https://docs.example.com', {
+  limit: 500,
+  scrapeOptions: { formats: ['markdown'], onlyMainContent: true },
+})
+// site.data: [{ markdown, metadata }, ...] ready to chunk and embed
+```
+
+That output drops straight into a chunk-embed-index pipeline. I wrote up the full pattern in <Link href="/blog/firecrawl-for-rag-pipelines">Firecrawl for RAG pipelines</Link> and a focused guide on turning a site into <Link href="/blog/crawl-entire-website-llm-ready-data">LLM-ready data with one crawl</Link>. The <Link href="/demos/firecrawl-site-crawler">site crawler demo</Link> runs it end to end.
+
+### Monitor pages for changes
+
+The operation people forget until they need it. Re-scrape on a schedule, diff against the last version, and act when something moves. That's how you keep a RAG index fresh and how you build competitive or compliance monitoring. See <Link href="/blog/monitor-website-changes-firecrawl">monitoring website changes</Link> and the <Link href="/demos/firecrawl-change-tracker">change tracker demo</Link>.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## A practical decision guide
+
+Match the tool to the situation:
+
+- **A few static sites, stable markup, low volume.** Beautiful Soup or Cheerio. Don't pay for what a 20-line script does.
+- **Heavy interaction — login, forms, multi-step flows — and you own the infra.** Playwright or Puppeteer. You need the browser, and you're set up to run one.
+- **Many different sites, JS-heavy pages, no desire to run a browser fleet.** A managed API. This covers most AI work, where scraping stands between you and your actual product rather than being the product itself.
+- **Privacy-regulated data that can't leave your environment.** Self-hosted, usually an open-source library you operate yourself.
+
+The decision usually comes down to one question: is scraping infrastructure something you want to own and maintain? If yes, own it. If it's a tax on getting to the actual work, pay an API and move on. I dug into why I landed on a managed API for applied AI work in <Link href="/blog/why-i-use-firecrawl-applied-ai">why I use Firecrawl</Link>.
+
+## Where this is heading
+
+Two shifts are already underway. Agents are starting to scrape on demand as a normal tool call — fetch this URL, read it, decide what to do next — rather than relying on a pre-built corpus. And structured extraction is becoming the default rather than the exception: describe the shape you want, get typed JSON, skip the selector layer entirely. Both push in the same direction. The page-rendering, boilerplate-stripping, schema-filling work moves behind a single call, and AI teams spend their time on retrieval quality and product logic instead of browser babysitting.
+
+## Try it
+
+Firecrawl's free tier gives you 500 credits, enough to scrape, extract, and crawl real pages before you decide anything. Start with the <Link href="/demos/firecrawl">interactive demo</Link>, then point <AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> at a site you actually care about.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+**Related:**
+- <Link href="/blog/best-web-scraping-api-2026">Best web scraping API in 2026</Link>
+- <Link href="/blog/firecrawl-vs-crawl4ai">Firecrawl vs Crawl4AI</Link>
+- <Link href="/blog/extract-structured-data-websites">Extract structured data from websites</Link>
+- <Link href="/blog/firecrawl-for-rag-pipelines">Firecrawl for RAG pipelines</Link>
+- <Link href="/blog/crawl-entire-website-llm-ready-data">Crawl an entire website into LLM-ready data</Link>
+- <Link href="/blog/monitor-website-changes-firecrawl">Monitor website changes with Firecrawl</Link>
+- <Link href="/blog/why-i-use-firecrawl-applied-ai">Why I use Firecrawl for applied AI</Link>

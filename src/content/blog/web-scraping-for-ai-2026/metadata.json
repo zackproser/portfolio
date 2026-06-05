@@ -1,0 +1,26 @@
+{
+  "title": "The Complete Guide to Web Scraping for AI in 2026",
+  "author": "Zachary Proser",
+  "date": "2026-06-05",
+  "description": "How AI teams get clean web data in 2026: DIY parsing vs headless browsers vs managed scraping APIs. The core operations, honest tradeoffs, and a decision guide.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/web-scraping-for-ai-2026",
+  "keywords": [
+    "web scraping for ai",
+    "web scraping 2026",
+    "scraping for llm",
+    "rag web scraping",
+    "ai data pipeline",
+    "scraping api",
+    "llm-ready data",
+    "structured data extraction",
+    "headless browser scraping",
+    "firecrawl"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}
