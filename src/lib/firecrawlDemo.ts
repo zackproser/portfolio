@@ -43,9 +43,6 @@ function tick(win: Window, limit: number, windowMs: number, now: number): boolea
 export type RateResult = { ok: true } | { ok: false; retryAfterSec: number }
 
 export function checkRateLimit(ip: string, now = Date.now()): RateResult {
-  if (!tick(globalHits, GLOBAL_LIMIT, GLOBAL_WINDOW_MS, now)) {
-    return { ok: false, retryAfterSec: Math.ceil((globalHits.resetAt - now) / 1000) }
-  }
   let win = ipHits.get(ip)
   if (!win) {
     win = { count: 0, resetAt: now + PER_IP_WINDOW_MS }
@@ -53,6 +50,10 @@ export function checkRateLimit(ip: string, now = Date.now()): RateResult {
   }
   if (!tick(win, PER_IP_LIMIT, PER_IP_WINDOW_MS, now)) {
     return { ok: false, retryAfterSec: Math.ceil((win.resetAt - now) / 1000) }
+  }
+  if (!tick(globalHits, GLOBAL_LIMIT, GLOBAL_WINDOW_MS, now)) {
+    win.count -= 1
+    return { ok: false, retryAfterSec: Math.ceil((globalHits.resetAt - now) / 1000) }
   }
   // Opportunistic cleanup so the Map doesn't grow unbounded.
   if (ipHits.size > 5000) {

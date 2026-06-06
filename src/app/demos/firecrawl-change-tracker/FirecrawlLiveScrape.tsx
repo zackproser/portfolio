@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Radio,
@@ -73,6 +73,18 @@ export default function FirecrawlLiveScrape({ initialUrl, initialSchema, modes }
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<LiveData | null>(null)
   const [showSchema, setShowSchema] = useState(false)
+
+  useEffect(() => {
+    setUrl(initialUrl)
+  }, [initialUrl])
+
+  useEffect(() => {
+    setSchema(initialSchema)
+  }, [initialSchema])
+
+  useEffect(() => {
+    setUseSchema(modes.includes('json'))
+  }, [modes])
 
   const schemaValid = useMemo(() => {
     if (!useSchema) return true

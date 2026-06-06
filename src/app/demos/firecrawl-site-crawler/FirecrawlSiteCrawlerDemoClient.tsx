@@ -499,7 +499,7 @@ export default function FirecrawlSiteCrawlerDemoClient() {
           seedUrl={activeSeedUrl}
           isLive={isLive}
           result={result}
-          config={pendingConfig}
+          config={config}
           setConfig={setPendingConfig}
           selectedUrl={selectedUrl}
           onSelectPage={setSelectedUrl}

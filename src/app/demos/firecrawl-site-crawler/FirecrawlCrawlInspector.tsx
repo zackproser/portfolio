@@ -354,7 +354,7 @@ export default function FirecrawlCrawlInspector({
                   {tab === 'markdown' && <MarkdownTab page={selected} config={config} crawled={crawledPages} />}
                   {tab === 'rawclean' && <RawCleanTab page={selected} isLive={isLive} />}
                   {tab === 'code' && <CodeTab seedUrl={seedUrl} config={config} />}
-                  {tab === 'api' && <ApiTab seedUrl={seedUrl} config={config} result={result} />}
+                  {tab === 'api' && <ApiTab seedUrl={seedUrl} config={config} result={result} isLive={isLive} />}
                   {tab === 'metadata' && <MetadataTab page={selected} onSelectPage={onSelectPage} crawled={crawledPages} />}
                 </motion.div>
               </AnimatePresence>
@@ -558,11 +558,41 @@ function RawCleanTab({ page, isLive }: { page: CrawledPage; isLive: boolean }) {
 }
 
 // ── Tab: API Request ─────────────────────────────────────────────────────────
-function ApiTab({ seedUrl, config, result }: { seedUrl: string; config: CrawlConfig; result: CrawlResult }) {
+function ApiTab({ seedUrl, config, result, isLive }: { seedUrl: string; config: CrawlConfig; result: CrawlResult; isLive: boolean }) {
   const mapBody = useMemo(() => buildMapRequestBody(seedUrl), [seedUrl])
+  const scrapeBody = useMemo(() => ({
+    url: seedUrl,
+    formats: ['markdown', 'links'],
+    onlyMainContent: true,
+  }), [seedUrl])
   const crawlBody = useMemo(() => buildCrawlRequestBody(seedUrl, config), [seedUrl, config])
   const asyncResponse = { success: true, id: 'crawl_abc123', url: 'https://api.firecrawl.dev/v1/crawl/crawl_abc123' }
   const pollResponse = useMemo(() => ({ success: true, ...buildCrawlResponse(result) }), [result])
+
+  if (isLive) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50/60 p-3 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-300">
+          <Info className="h-4 w-4 shrink-0 text-orange-500" />
+          <span>
+            Live mode runs <strong>/v1/map</strong> (to discover URLs) plus one <strong>/v1/scrape</strong> on the seed page. It does not start a full crawl job.
+          </span>
+        </div>
+        <ApiBlock
+          method="POST"
+          endpoint="https://api.firecrawl.dev/v1/map"
+          body={prettyJson(mapBody)}
+          note="Discover every URL on a domain — sitemap plus on-page links — in one call."
+        />
+        <ApiBlock
+          method="POST"
+          endpoint="https://api.firecrawl.dev/v1/scrape"
+          body={prettyJson(scrapeBody)}
+          note="Scrape the seed URL with markdown and links extraction."
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
