@@ -593,6 +593,14 @@ function pyList(values: string[]): string {
   return `[${values.map((v) => `"${v.replace(/"/g, '\\"')}"`).join(', ')}]`
 }
 
+function jsString(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+}
+
+function pyString(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+}
+
 /**
  * Generate copy-pasteable Firecrawl SDK code that matches the current crawl
  * config exactly. Supports the Node (@mendable/firecrawl-js) and Python
@@ -616,7 +624,7 @@ export function buildCrawlCode(seedUrl: string, config: CrawlConfig, lang: CodeL
 const app = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY })
 
 // Crawl the whole site into clean, LLM-ready markdown.
-const result = await app.crawlUrl('${seedUrl}', {
+const result = await app.crawlUrl('${jsString(seedUrl)}', {
 ${opts.join('\n')}
 })
 
@@ -644,7 +652,7 @@ app = FirecrawlApp(api_key=os.environ["FIRECRAWL_API_KEY"])
 
 # Crawl the whole site into clean, LLM-ready markdown.
 result = app.crawl_url(
-    "${seedUrl}",
+    "${pyString(seedUrl)}",
 ${params.join('\n')}
 )
 

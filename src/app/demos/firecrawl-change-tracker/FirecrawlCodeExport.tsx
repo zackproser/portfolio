@@ -25,6 +25,14 @@ function parseSchema(schema: string): unknown | null {
   }
 }
 
+function jsString(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+}
+
+function pyString(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+}
+
 // Indent a multiline JSON blob by `spaces` for embedding inside generated code.
 function indentBlock(text: string, spaces: number): string {
   const pad = ' '.repeat(spaces)
@@ -46,7 +54,7 @@ function buildNode(url: string, modes: DiffMode[], schemaObj: unknown | null): s
 
 const app = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY })
 
-const result = await app.scrapeUrl('${url}', {
+const result = await app.scrapeUrl('${jsString(url)}', {
   formats: [
     'markdown',
     {
@@ -64,7 +72,7 @@ if (changeStatus === 'changed') {
   await fetch(process.env.ALERT_WEBHOOK_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ url: '${url}', changeStatus, previousScrapeAt, diff, json }),
+    body: JSON.stringify({ url: '${jsString(url)}', changeStatus, previousScrapeAt, diff, json }),
   })
 }`
 }
@@ -85,7 +93,7 @@ import os, json, urllib.request
 app = FirecrawlApp(api_key=os.environ["FIRECRAWL_API_KEY"])
 
 result = app.scrape_url(
-    "${url}",
+    "${pyString(url)}",
     {
         "formats": [
             "markdown",
@@ -103,7 +111,7 @@ ct = result["changeTracking"]
 # previousScrapeAt is None. The diff is populated on the next scrape.
 if ct["changeStatus"] == "changed":
     payload = json.dumps({
-        "url": "${url}",
+        "url": "${pyString(url)}",
         "changeStatus": ct["changeStatus"],
         "previousScrapeAt": ct["previousScrapeAt"],
         "diff": ct.get("diff"),
