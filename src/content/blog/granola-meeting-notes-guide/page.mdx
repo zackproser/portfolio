@@ -1,4 +1,8 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
 
 export const campaign = 'granola-meeting-notes-guide'
 
@@ -6,7 +10,7 @@ I used to dread meeting notes. Either I wasn't taking them at all (and regretted
 
 This guide covers how I use Granola for meeting notes in practice — not the marketing version, not the theoretical version, but what I actually do day-to-day.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Getting Started
 
@@ -20,7 +24,7 @@ I open Granola at the start of a meeting, select the meeting type, and hit recor
 
 One thing I appreciate: Granola doesn't try to do too much during the meeting. It's just recording and transcribing. The rewrite and structuring happens after. This keeps the app lightweight and reliable.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## After the Meeting
 
@@ -34,7 +38,7 @@ The notes are organized logically, not just a chronological dump of everything s
 
 I review the notes immediately after the meeting while the conversation is fresh. Granola highlights anything it wasn't confident about — those sections I review more carefully.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Sharing and Integration
 
@@ -48,7 +52,7 @@ I've also connected it to my calendar so meetings auto-categorize. The app knows
 
 Granola isn't a replacement for all note-taking. For brainstorms, 1:1 conversations without decisions, or quick sync-ups, I don't both starting a recording. The overhead isn't worth it for conversations that won't need a record.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## The Bottom Line
 

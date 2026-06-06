@@ -1,10 +1,14 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
 
 export const campaign = 'what-is-wisprflow'
 
 I've been coding by voice for about two years now. When people ask me what that means, I usually gesture vaguely at my microphone and say "I talk to my computer and code appears." That's the short version. The longer version involves explaining why I started, what tools I use, and why WisprFlow is the only voice coding tool I've stuck with.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## What Is WisprFlow?
 
@@ -12,7 +16,7 @@ WisprFlow is a voice-to-code application built specifically for developers. You 
 
 The accuracy is high. The latency is low. The learning curve is reasonable. These three things sound basic, but they're genuinely rare in voice coding tools.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## How It Works
 
@@ -22,7 +26,7 @@ The natural language understanding matters here. WisprFlow doesn't just transcri
 
 For complex refactoring tasks, you can chain commands. Walk through a change step by step and the context carries through. It's not magic — you're still thinking through the problem — but the friction of implementing your ideas drops significantly.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Who It's For
 
@@ -34,7 +38,7 @@ I've found it particularly useful for:
 - **Documentation comments** — writing prose by voice is faster than typing for many people
 - **Late-night coding** — when your hands are tired or you're脑子 tired but the problem is interesting
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Reality
 
