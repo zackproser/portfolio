@@ -41,7 +41,7 @@ export const metadata: Metadata = {
       'Interactive Demo',
       'LLM',
     ],
-    image: 'https://zackproser.b-cdn.net/images/firecrawl-hero.webp',
+    image: 'https://zackproser.b-cdn.net/images/fc-crawler-demo-hero.webp',
   }),
   robots: {
     index: true,

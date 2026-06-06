@@ -15,6 +15,8 @@ import {
   ArrowRight,
 } from 'lucide-react'
 
+import { track } from '@vercel/analytics'
+
 import { CATEGORY_META } from './data'
 import {
   type MonitoredPage,
@@ -27,6 +29,7 @@ import {
   buildScrapeRequest,
   buildChangeTrackingResponse,
   buildAlertPayload,
+  diffLinesToText,
   formatTimestamp,
 } from './utils'
 
@@ -75,6 +78,25 @@ function CopyButton({ text }: { text: string }) {
   )
 }
 
+// Tracked export button for output payloads (diff text, webhook payload).
+function ExportButton({ text, label, kind }: { text: string; label: string; kind: string }) {
+  const [copied, setCopied] = useState(false)
+  return (
+    <button
+      onClick={() => {
+        navigator.clipboard?.writeText(text)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 1500)
+        track('demo_export', { demo: 'change-tracker', kind })
+      }}
+      className="inline-flex items-center gap-1 rounded-md border border-orange-300 bg-orange-50 px-2 py-1 text-[10px] font-semibold text-orange-700 transition hover:bg-orange-100 dark:border-orange-800 dark:bg-orange-950/30 dark:text-orange-300 dark:hover:bg-orange-950/50"
+    >
+      {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+      {copied ? 'Copied' : label}
+    </button>
+  )
+}
+
 export default function FirecrawlMonitorInspector({
   page,
   event,
@@ -109,6 +131,10 @@ export default function FirecrawlMonitorInspector({
   const alertBody = useMemo(
     () => (event ? buildAlertPayload(event, page.alertChannel) : ''),
     [event, page.alertChannel]
+  )
+  const diffText = useMemo(
+    () => (event ? diffLinesToText(event.diffLines) : ''),
+    [event]
   )
 
   const toggleMode = (mode: DiffMode) => {
@@ -323,9 +349,12 @@ export default function FirecrawlMonitorInspector({
                         <p className="text-xs text-zinc-500 dark:text-zinc-400">
                           Line-level unified diff of the page markdown, exactly like <code className="font-mono">git diff</code>.
                         </p>
-                        <div className="flex items-center gap-3 font-mono text-[11px]">
-                          <span className="text-emerald-600 dark:text-emerald-400">+{event.addedCount}</span>
-                          <span className="text-red-600 dark:text-red-400">−{event.removedCount}</span>
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2 font-mono text-[11px]">
+                            <span className="text-emerald-600 dark:text-emerald-400">+{event.addedCount}</span>
+                            <span className="text-red-600 dark:text-red-400">−{event.removedCount}</span>
+                          </div>
+                          <ExportButton text={diffText} label="Copy diff" kind="diff" />
                         </div>
                       </div>
                       <div className="overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950">
@@ -440,7 +469,7 @@ export default function FirecrawlMonitorInspector({
                       <div>
                         <div className="mb-1.5 flex items-center justify-between">
                           <h5 className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Webhook payload</h5>
-                          <CopyButton text={alertBody} />
+                          <ExportButton text={alertBody} label="Copy webhook payload" kind="webhook" />
                         </div>
                         <pre className="max-h-[300px] overflow-auto rounded-lg border border-zinc-200 bg-zinc-50 p-3 font-mono text-[11px] leading-relaxed text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300">
                           {alertBody}

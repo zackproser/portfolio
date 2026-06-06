@@ -27,6 +27,8 @@ type Props = {
   result: CrawlResult
   selectedUrl: string | null
   onSelectPage: (url: string) => void
+  /** When set (live mode), shows this host in the footer instead of site.domain. */
+  domainOverride?: string
 }
 
 // How long each event "ticks" during auto-play, in ms.
@@ -105,8 +107,15 @@ function statusAtEvent(events: CrawlEvent[], cursor: number, pages: CrawledPage[
   return map
 }
 
-export default function FirecrawlCrawlVisualization({ site, result, selectedUrl, onSelectPage }: Props) {
+export default function FirecrawlCrawlVisualization({
+  site,
+  result,
+  selectedUrl,
+  onSelectPage,
+  domainOverride,
+}: Props) {
   const { events } = result
+  const displayDomain = domainOverride ?? site.domain
   const [cursor, setCursor] = useState<number>(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const intervalRef = useRef<number | null>(null)
@@ -358,7 +367,7 @@ export default function FirecrawlCrawlVisualization({ site, result, selectedUrl,
       {/* Footer summary */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-zinc-100 px-4 py-3 text-xs text-zinc-500 dark:border-zinc-800">
         <span>
-          Crawling <span className="font-mono text-zinc-700 dark:text-zinc-300">{site.domain}</span>
+          Crawling <span className="font-mono text-zinc-700 dark:text-zinc-300">{displayDomain}</span>
         </span>
         <span>
           Raw HTML processed: {bytesToReadable(

@@ -42,7 +42,7 @@ export const metadata: Metadata = {
       'Compliance',
       'Interactive Demo',
     ],
-    image: 'https://zackproser.b-cdn.net/images/firecrawl-hero.webp',
+    image: 'https://zackproser.b-cdn.net/images/fc-tracker-demo-hero.webp',
   }),
   robots: {
     index: true,

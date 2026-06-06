@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { track } from '@vercel/analytics'
 import {
   FileText,
   Scissors,
@@ -14,32 +15,44 @@ import {
   Eye,
   EyeOff,
   ChevronRight,
+  Terminal,
+  Copy,
+  Check,
+  Download,
 } from 'lucide-react'
 
 import type { SeedSite } from './data'
 import {
+  buildCrawlCode,
   buildCrawlRequestBody,
   buildCrawlResponse,
+  buildJsonl,
   buildMapRequestBody,
   bytesToReadable,
   prettyJson,
+  type CodeLang,
   type CrawlConfig,
   type CrawledPage,
   type CrawlFormat,
   type CrawlResult,
 } from './utils'
 
-type TabId = 'markdown' | 'rawclean' | 'api' | 'metadata'
+type TabId = 'markdown' | 'rawclean' | 'code' | 'api' | 'metadata'
 
 const TABS: { id: TabId; label: string; icon: typeof FileText }[] = [
   { id: 'markdown', label: 'Rendered Markdown', icon: FileText },
   { id: 'rawclean', label: 'Raw vs Clean', icon: Scissors },
+  { id: 'code', label: 'Code', icon: Terminal },
   { id: 'api', label: 'API Request', icon: Code2 },
   { id: 'metadata', label: 'Page Metadata', icon: Info },
 ]
 
 type Props = {
   site: SeedSite
+  /** Seed URL to crawl — the live URL when in live mode, else the sample seed. */
+  seedUrl: string
+  /** Whether the inspector is showing live data from a user-supplied URL. */
+  isLive: boolean
   result: CrawlResult
   config: CrawlConfig
   setConfig: (next: CrawlConfig) => void
@@ -49,6 +62,8 @@ type Props = {
 
 export default function FirecrawlCrawlInspector({
   site,
+  seedUrl,
+  isLive,
   result,
   config,
   setConfig,
@@ -102,9 +117,18 @@ export default function FirecrawlCrawlInspector({
         <div className="space-y-6 border-r border-zinc-100 bg-zinc-50/30 p-5 dark:border-zinc-800 dark:bg-zinc-900/30 lg:col-span-4">
           {/* Site picker hint */}
           <div className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Crawling</p>
-            <p className="mt-0.5 truncate font-mono text-xs text-zinc-800 dark:text-zinc-200">{site.seedUrl}</p>
-            <p className="mt-1 text-xs text-zinc-500">{site.description}</p>
+            <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+              Crawling
+              {isLive && (
+                <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+                  LIVE
+                </span>
+              )}
+            </p>
+            <p className="mt-0.5 truncate font-mono text-xs text-zinc-800 dark:text-zinc-200">{seedUrl}</p>
+            <p className="mt-1 text-xs text-zinc-500">
+              {isLive ? 'Live results from your URL via the Firecrawl API.' : site.description}
+            </p>
           </div>
 
           {/* Crawl config */}
@@ -242,7 +266,7 @@ export default function FirecrawlCrawlInspector({
                         />
                       </span>
                     </button>
-                    {!site.hasSitemap && (
+                    {!isLive && !site.hasSitemap && (
                       <p className="text-[10px] text-zinc-400">
                         {site.domain} has no sitemap, so discovery relies on links either way.
                       </p>
@@ -327,9 +351,10 @@ export default function FirecrawlCrawlInspector({
                     <p className="truncate font-mono text-sm text-zinc-800 dark:text-zinc-200">{selected.url}</p>
                   </div>
 
-                  {tab === 'markdown' && <MarkdownTab page={selected} config={config} />}
-                  {tab === 'rawclean' && <RawCleanTab page={selected} />}
-                  {tab === 'api' && <ApiTab site={site} config={config} result={result} />}
+                  {tab === 'markdown' && <MarkdownTab page={selected} config={config} crawled={crawledPages} />}
+                  {tab === 'rawclean' && <RawCleanTab page={selected} isLive={isLive} />}
+                  {tab === 'code' && <CodeTab seedUrl={seedUrl} config={config} />}
+                  {tab === 'api' && <ApiTab seedUrl={seedUrl} config={config} result={result} />}
                   {tab === 'metadata' && <MetadataTab page={selected} onSelectPage={onSelectPage} crawled={crawledPages} />}
                 </motion.div>
               </AnimatePresence>
@@ -341,8 +366,62 @@ export default function FirecrawlCrawlInspector({
   )
 }
 
+// ── Copy / download helpers ──────────────────────────────────────────────────
+function CopyButton({
+  text,
+  label = 'Copy',
+  onCopied,
+}: {
+  text: string
+  label?: string
+  onCopied?: () => void
+}) {
+  const [copied, setCopied] = useState(false)
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      onCopied?.()
+      setTimeout(() => setCopied(false), 1600)
+    } catch {
+      // Clipboard can be blocked; fail quietly.
+    }
+  }
+  return (
+    <button
+      onClick={copy}
+      className="inline-flex items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-xs font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+    >
+      {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+      {copied ? 'Copied' : label}
+    </button>
+  )
+}
+
 // ── Tab: Rendered Markdown ───────────────────────────────────────────────────
-function MarkdownTab({ page, config }: { page: CrawledPage; config: CrawlConfig }) {
+function MarkdownTab({
+  page,
+  config,
+  crawled,
+}: {
+  page: CrawledPage
+  config: CrawlConfig
+  crawled: CrawledPage[]
+}) {
+  const downloadJsonl = () => {
+    const jsonl = buildJsonl(crawled)
+    const blob = new Blob([jsonl], { type: 'application/x-ndjson' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'crawl-pages.jsonl'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+    track('demo_export', { demo: 'site-crawler', kind: 'jsonl' })
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50/50 p-3 text-xs text-emerald-800 dark:border-emerald-900/30 dark:bg-emerald-900/10 dark:text-emerald-200">
@@ -353,6 +432,23 @@ function MarkdownTab({ page, config }: { page: CrawledPage; config: CrawlConfig 
           Drop it straight into a chunker or an LLM prompt.
         </span>
       </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <CopyButton
+          text={page.markdown}
+          label="Copy as Markdown"
+          onCopied={() => track('demo_export', { demo: 'site-crawler', kind: 'markdown' })}
+        />
+        <button
+          onClick={downloadJsonl}
+          className="inline-flex items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-2.5 py-1 text-xs font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+        >
+          <Download className="h-3.5 w-3.5" />
+          Download all as JSONL
+        </button>
+        <span className="text-[10px] text-zinc-400">
+          JSONL = one {'{ url, markdown, metadata }'} object per crawled page, ready for RAG ingestion.
+        </span>
+      </div>
       <pre className="max-h-[360px] overflow-auto rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-xs leading-relaxed text-zinc-800 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200">
         <code>{page.markdown || '— (page skipped)'}</code>
       </pre>
@@ -360,8 +456,67 @@ function MarkdownTab({ page, config }: { page: CrawledPage; config: CrawlConfig 
   )
 }
 
+// ── Tab: Code export ─────────────────────────────────────────────────────────
+function CodeTab({ seedUrl, config }: { seedUrl: string; config: CrawlConfig }) {
+  const [lang, setLang] = useState<CodeLang>('node')
+  const code = useMemo(() => buildCrawlCode(seedUrl, config, lang), [seedUrl, config, lang])
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50/60 p-3 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-300">
+        <Terminal className="h-4 w-4 shrink-0 text-orange-500" />
+        <span>Real Firecrawl SDK code for your current settings. Change the crawl settings on the left and this updates live.</span>
+      </div>
+      <div className="flex items-center justify-between gap-2">
+        <div className="inline-flex rounded-md border border-zinc-200 p-0.5 dark:border-zinc-700">
+          {(['node', 'python'] as CodeLang[]).map((l) => (
+            <button
+              key={l}
+              onClick={() => setLang(l)}
+              className={`rounded px-2.5 py-1 text-xs font-medium transition ${
+                lang === l
+                  ? 'bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'
+                  : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
+              }`}
+            >
+              {l === 'node' ? 'Node.js' : 'Python'}
+            </button>
+          ))}
+        </div>
+        <CopyButton
+          text={code}
+          label="Copy code"
+          onCopied={() => track('demo_code_copy', { demo: 'site-crawler', lang })}
+        />
+      </div>
+      <p className="font-mono text-[10px] text-zinc-400">
+        {lang === 'node' ? 'npm i @mendable/firecrawl-js' : 'pip install firecrawl-py'}
+      </p>
+      <pre className="max-h-[360px] overflow-auto rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-[11px] leading-relaxed text-zinc-200">
+        <code>{code}</code>
+      </pre>
+    </div>
+  )
+}
+
 // ── Tab: Raw vs Clean ────────────────────────────────────────────────────────
-function RawCleanTab({ page }: { page: CrawledPage }) {
+function RawCleanTab({ page, isLive }: { page: CrawledPage; isLive: boolean }) {
+  if (isLive) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50/60 p-3 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-300">
+          <Scissors className="h-4 w-4 shrink-0 text-orange-500" />
+          <span>
+            Live results already come back chrome-stripped with <strong>onlyMainContent</strong>, so there is no raw
+            version to compare here. Try a sample site to see the before/after split.
+          </span>
+        </div>
+        <pre className="max-h-[320px] overflow-auto rounded-lg border border-emerald-200/60 bg-emerald-50/30 p-3 text-[11px] leading-relaxed text-zinc-700 dark:border-emerald-900/30 dark:bg-emerald-950/10 dark:text-zinc-300">
+          <code>{page.markdown || '— (no markdown)'}</code>
+        </pre>
+      </div>
+    )
+  }
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50/60 p-3 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-300">
@@ -403,9 +558,9 @@ function RawCleanTab({ page }: { page: CrawledPage }) {
 }
 
 // ── Tab: API Request ─────────────────────────────────────────────────────────
-function ApiTab({ site, config, result }: { site: SeedSite; config: CrawlConfig; result: CrawlResult }) {
-  const mapBody = useMemo(() => buildMapRequestBody(site), [site])
-  const crawlBody = useMemo(() => buildCrawlRequestBody(site, config), [site, config])
+function ApiTab({ seedUrl, config, result }: { seedUrl: string; config: CrawlConfig; result: CrawlResult }) {
+  const mapBody = useMemo(() => buildMapRequestBody(seedUrl), [seedUrl])
+  const crawlBody = useMemo(() => buildCrawlRequestBody(seedUrl, config), [seedUrl, config])
   const asyncResponse = { success: true, id: 'crawl_abc123', url: 'https://api.firecrawl.dev/v1/crawl/crawl_abc123' }
   const pollResponse = useMemo(() => ({ success: true, ...buildCrawlResponse(result) }), [result])
 

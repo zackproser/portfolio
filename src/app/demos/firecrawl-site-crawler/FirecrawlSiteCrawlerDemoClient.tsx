@@ -1,7 +1,9 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { track } from '@vercel/analytics'
 import {
@@ -16,17 +18,28 @@ import {
   Filter,
   Coins,
   Sparkles,
+  Loader2,
+  Zap,
+  AlertTriangle,
 } from 'lucide-react'
 
 import Newsletter from '@/components/Newsletter'
 import { getAffiliateLink, type AffiliatePlacement } from '@/lib/affiliate'
 
 import { SEED_SITES } from './data'
-import { DEFAULT_CONFIG, simulateCrawl, type CrawlConfig } from './utils'
+import {
+  DEFAULT_CONFIG,
+  simulateCrawl,
+  buildLiveResult,
+  type CrawlConfig,
+  type CrawlResult,
+  type LiveCrawlData,
+} from './utils'
 import FirecrawlCrawlVisualization from './FirecrawlCrawlVisualization'
 import FirecrawlCrawlInspector from './FirecrawlCrawlInspector'
 
 const CAMPAIGN = 'firecrawl-site-crawler'
+const HERO_IMAGE = 'https://zackproser.b-cdn.net/images/fc-crawler-demo-hero.webp'
 
 function affiliateHref(placement: AffiliatePlacement) {
   return getAffiliateLink({ product: 'firecrawl', campaign: CAMPAIGN, medium: 'demo', placement })
@@ -37,19 +50,50 @@ function trackAffiliate(placement: string) {
 }
 
 export default function FirecrawlSiteCrawlerDemoClient() {
-  const [siteIndex, setSiteIndex] = useState(0)
+  const searchParams = useSearchParams()
+
+  // ── Deep-link: read initial state from the URL on mount only. ──────────────
+  const initial = useMemo(() => {
+    const clamp = (n: number, lo: number, hi: number, fallback: number) =>
+      Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : fallback
+    const siteParam = clamp(parseInt(searchParams.get('site') ?? '', 10), 0, SEED_SITES.length - 1, 0)
+    const depthParam = clamp(parseInt(searchParams.get('depth') ?? '', 10), 0, 3, DEFAULT_CONFIG.maxDepth)
+    const limitParam = clamp(parseInt(searchParams.get('limit') ?? '', 10), 1, 25, DEFAULT_CONFIG.limit)
+    const mainParam = searchParams.get('mainContent')
+    const embed = searchParams.get('embed') === '1'
+    return { siteParam, depthParam, limitParam, mainParam, embed }
+    // Read once on mount; later writes go through replaceState, not navigation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const isEmbed = initial.embed
+
+  const [siteIndex, setSiteIndex] = useState(initial.siteParam)
   const site = SEED_SITES[siteIndex]
 
   // Shared crawl config. Selecting a new site resets it to that site's defaults.
   const [config, setConfig] = useState<CrawlConfig>({
     ...DEFAULT_CONFIG,
-    includePaths: site.defaultIncludePaths,
-    excludePaths: site.defaultExcludePaths,
+    maxDepth: initial.depthParam,
+    limit: initial.limitParam,
+    onlyMainContent: initial.mainParam === null ? DEFAULT_CONFIG.onlyMainContent : initial.mainParam === '1',
+    includePaths: SEED_SITES[initial.siteParam].defaultIncludePaths,
+    excludePaths: SEED_SITES[initial.siteParam].defaultExcludePaths,
   })
 
   const [pendingConfig, setPendingConfig] = useState<CrawlConfig>(config)
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null)
   const [showIntroDetails, setShowIntroDetails] = useState(false)
+
+  // ── Live mode state ────────────────────────────────────────────────────────
+  const [liveUrl, setLiveUrl] = useState('')
+  const [liveResult, setLiveResult] = useState<CrawlResult | null>(null)
+  const [liveSeedUrl, setLiveSeedUrl] = useState('')
+  const [isLoadingLive, setIsLoadingLive] = useState(false)
+  const [liveError, setLiveError] = useState<string | null>(null)
+  // null = unknown, true/false once we learn from a 503.
+  const [liveUnavailable, setLiveUnavailable] = useState(false)
+  const isLive = liveResult !== null
 
   // Debounce config edits so dragging a slider doesn't thrash the simulation.
   useEffect(() => {
@@ -58,7 +102,35 @@ export default function FirecrawlSiteCrawlerDemoClient() {
   }, [pendingConfig])
 
   // Re-run the (pure) simulation whenever the committed config or site changes.
-  const result = useMemo(() => simulateCrawl(site, config), [site, config])
+  const simResult = useMemo(() => simulateCrawl(site, config), [site, config])
+
+  // The active result + seed URL depend on whether we're in live mode.
+  const result = isLive ? (liveResult as CrawlResult) : simResult
+  const activeSeedUrl = isLive ? liveSeedUrl : site.seedUrl
+  const liveDomain = useMemo(() => {
+    try {
+      return new URL(liveSeedUrl).host
+    } catch {
+      return liveSeedUrl
+    }
+  }, [liveSeedUrl])
+
+  // ── Deep-link: write shareable state to the URL on change (no navigation). ──
+  const didMount = useRef(false)
+  useEffect(() => {
+    if (!didMount.current) {
+      didMount.current = true
+      return
+    }
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    params.set('site', String(siteIndex))
+    params.set('depth', String(config.maxDepth))
+    params.set('limit', String(config.limit))
+    params.set('mainContent', config.onlyMainContent ? '1' : '0')
+    if (isEmbed) params.set('embed', '1')
+    window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`)
+  }, [siteIndex, config.maxDepth, config.limit, config.onlyMainContent, isEmbed])
 
   const handleSelectSite = (index: number) => {
     const next = SEED_SITES[index]
@@ -71,11 +143,75 @@ export default function FirecrawlSiteCrawlerDemoClient() {
     setConfig(nextConfig)
     setPendingConfig(nextConfig)
     setSelectedUrl(null)
+    // Leaving live mode when a sample site is chosen.
+    setLiveResult(null)
+    setLiveError(null)
+  }
+
+  const runLive = useCallback(async () => {
+    const trimmed = liveUrl.trim()
+    if (!trimmed || isLoadingLive) return
+    setIsLoadingLive(true)
+    setLiveError(null)
+    track('demo_live_run', { demo: 'site-crawler' })
+    try {
+      const res = await fetch('/api/firecrawl-demo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'crawl', url: trimmed }),
+      })
+      if (res.status === 503) {
+        setLiveUnavailable(true)
+        setLiveError('Live mode is unavailable on this deployment. The sample sites still work.')
+        return
+      }
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setLiveError(
+          (json && typeof json.error === 'string' && json.error) ||
+            'The live crawl failed. Try a different public URL.',
+        )
+        return
+      }
+      const data = json.data as LiveCrawlData
+      if (!data || !data.seed) {
+        setLiveError('The live crawl returned no data. Try a different public URL.')
+        return
+      }
+      setLiveResult(buildLiveResult(data))
+      setLiveSeedUrl(data.seed.url)
+      setSelectedUrl(data.seed.url)
+    } catch {
+      setLiveError('Could not reach the live endpoint. Check your connection and try again.')
+    } finally {
+      setIsLoadingLive(false)
+    }
+  }, [liveUrl, isLoadingLive])
+
+  const exitLiveMode = () => {
+    setLiveResult(null)
+    setLiveError(null)
+    setSelectedUrl(null)
   }
 
   return (
-    <div className="space-y-6">
+    <div className={isEmbed ? 'space-y-5' : 'space-y-6'}>
+      {/* Hero banner image (hidden in embed mode) */}
+      {!isEmbed && (
+        <div className="overflow-hidden rounded-xl">
+          <Image
+            src={HERO_IMAGE}
+            alt="Firecrawl site crawler"
+            width={1200}
+            height={1200}
+            priority
+            className="h-auto max-h-64 w-full rounded-xl object-cover"
+          />
+        </div>
+      )}
+
       {/* Hero */}
+      {!isEmbed && (
       <div className="space-y-3 pt-4 text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-orange-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
           <Flame className="h-3.5 w-3.5" />
@@ -89,6 +225,7 @@ export default function FirecrawlSiteCrawlerDemoClient() {
           straight into a RAG pipeline.
         </p>
       </div>
+      )}
 
       {/* Hero affiliate card */}
       <div className="mx-auto max-w-3xl">
@@ -115,6 +252,7 @@ export default function FirecrawlSiteCrawlerDemoClient() {
       </div>
 
       {/* Intro card: what + how */}
+      {!isEmbed && (
       <div className="mx-auto max-w-4xl">
         <div className="relative overflow-hidden rounded-2xl border border-orange-200/60 bg-gradient-to-br from-orange-50 via-amber-50 to-rose-50 p-[1px] shadow-lg shadow-orange-500/10 dark:border-transparent dark:from-orange-600 dark:via-rose-600 dark:to-amber-700 dark:shadow-orange-500/20">
           <div className="relative rounded-[15px] bg-gradient-to-br from-white via-orange-50/50 to-rose-50/50 p-5 dark:from-slate-900 dark:via-rose-950/80 dark:to-slate-900 sm:p-6">
@@ -205,9 +343,97 @@ export default function FirecrawlSiteCrawlerDemoClient() {
           </div>
         </div>
       </div>
+      )}
+
+      {/* Live mode + sample-site toggle */}
+      <div className="mx-auto max-w-4xl space-y-3">
+        {!liveUnavailable && (
+          <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900/50">
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <h4 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
+                <Zap className="h-3.5 w-3.5 text-orange-500" />
+                Run on your own URL
+              </h4>
+              {isLive && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                  Live
+                </span>
+              )}
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                runLive()
+              }}
+              className="flex flex-col gap-2 sm:flex-row"
+            >
+              <input
+                type="url"
+                inputMode="url"
+                value={liveUrl}
+                onChange={(e) => setLiveUrl(e.target.value)}
+                placeholder="https://your-docs-site.com"
+                className="flex-1 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
+              />
+              <button
+                type="submit"
+                disabled={isLoadingLive || !liveUrl.trim()}
+                className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-orange-500 to-rose-500 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoadingLive ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Crawling...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="h-4 w-4" />
+                    Run live
+                  </>
+                )}
+              </button>
+            </form>
+            {isLoadingLive && (
+              <p className="mt-2 text-xs text-zinc-500">
+                Mapping the site and scraping the seed page with the real Firecrawl API — this can take 10-20 seconds.
+              </p>
+            )}
+            {liveError && (
+              <div className="mt-2 flex items-start gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-300">
+                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                <span>{liveError}</span>
+              </div>
+            )}
+            {isLive && (
+              <div className="mt-2 flex items-center justify-between gap-2 text-xs">
+                <span className="truncate text-zinc-500">
+                  Showing live results for{' '}
+                  <span className="font-mono text-zinc-700 dark:text-zinc-300">{liveSeedUrl}</span>
+                </span>
+                <button
+                  onClick={exitLiveMode}
+                  className="shrink-0 font-semibold text-orange-600 underline-offset-2 hover:underline dark:text-orange-400"
+                >
+                  Back to sample sites
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+        {liveUnavailable && (
+          <p className="text-center text-xs text-zinc-500">
+            Live mode is unavailable on this deployment. The sample sites below still work.
+          </p>
+        )}
+      </div>
 
       {/* Site picker */}
-      <div className="mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row">
+      <div
+        className={`mx-auto flex max-w-4xl flex-col gap-3 sm:flex-row ${
+          isLive ? 'opacity-60' : ''
+        }`}
+      >
         {SEED_SITES.map((s, i) => {
           const isActive = i === siteIndex
           return (
@@ -238,6 +464,7 @@ export default function FirecrawlSiteCrawlerDemoClient() {
         site={site}
         result={result}
         selectedUrl={selectedUrl}
+        domainOverride={isLive ? liveDomain : undefined}
         onSelectPage={(url) => {
           setSelectedUrl(url)
           if (typeof document !== 'undefined') {
@@ -269,6 +496,8 @@ export default function FirecrawlSiteCrawlerDemoClient() {
       <div id="crawl-inspector">
         <FirecrawlCrawlInspector
           site={site}
+          seedUrl={activeSeedUrl}
+          isLive={isLive}
           result={result}
           config={pendingConfig}
           setConfig={setPendingConfig}

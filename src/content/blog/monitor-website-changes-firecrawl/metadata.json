@@ -3,7 +3,8 @@
   "author": "Zachary Proser",
   "date": "2026-06-05",
   "description": "Detect when web pages change — competitor pricing, vendor docs, policy pages — with Firecrawl's changeTracking format. Git-diff and field-level JSON diffs, scheduling, and alerting.",
-  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/fc-monitor-hero.webp",
+  "type": "blog",
   "slug": "/blog/monitor-website-changes-firecrawl",
   "keywords": [
     "website change monitoring",

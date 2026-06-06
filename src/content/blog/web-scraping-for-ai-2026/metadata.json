@@ -3,7 +3,8 @@
   "author": "Zachary Proser",
   "date": "2026-06-05",
   "description": "How AI teams get clean web data in 2026: DIY parsing vs headless browsers vs managed scraping APIs. The core operations, honest tradeoffs, and a decision guide.",
-  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/fc-guide-hero.webp",
+  "type": "blog",
   "slug": "/blog/web-scraping-for-ai-2026",
   "keywords": [
     "web scraping for ai",

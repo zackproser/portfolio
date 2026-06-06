@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Flame,
@@ -23,11 +25,17 @@ import { getAffiliateLink } from '@/lib/affiliate'
 import { MONITORED_PAGES, CATEGORY_META } from './data'
 import FirecrawlMonitorVisualization from './FirecrawlMonitorVisualization'
 import FirecrawlMonitorInspector from './FirecrawlMonitorInspector'
+import FirecrawlLiveScrape from './FirecrawlLiveScrape'
+import FirecrawlCodeExport from './FirecrawlCodeExport'
 import {
   buildChangeEvents,
   type DiffMode,
   type MonitorFrequency,
 } from './utils'
+
+const HERO_IMAGE = 'https://zackproser.b-cdn.net/images/fc-tracker-demo-hero.webp'
+
+const VALID_FREQUENCIES: MonitorFrequency[] = ['hourly', 'daily', 'weekly']
 
 const CAMPAIGN = 'firecrawl-change-tracker'
 
@@ -43,11 +51,40 @@ const CATEGORY_BADGE: Record<string, string> = {
 }
 
 export default function FirecrawlChangeTrackerDemoClient() {
+  const searchParams = useSearchParams()
+  const embed = searchParams.get('embed') === '1'
+
+  // Resolve deep-link params once on mount. `page` is an index or page id,
+  // `mode` is the active diff mode, `freq` is the monitoring frequency.
+  const initial = useMemo(() => {
+    const pageParam = searchParams.get('page')
+    let pageId = MONITORED_PAGES[0].id
+    if (pageParam) {
+      const byId = MONITORED_PAGES.find((p) => p.id === pageParam)
+      const asIndex = Number.parseInt(pageParam, 10)
+      if (byId) pageId = byId.id
+      else if (!Number.isNaN(asIndex) && MONITORED_PAGES[asIndex]) pageId = MONITORED_PAGES[asIndex].id
+    }
+
+    const modeParam = searchParams.get('mode')
+    let modes: DiffMode[] = ['git-diff', 'json']
+    if (modeParam === 'git-diff' || modeParam === 'json') modes = [modeParam]
+
+    const freqParam = searchParams.get('freq') as MonitorFrequency | null
+    const frequency: MonitorFrequency =
+      freqParam && VALID_FREQUENCIES.includes(freqParam) ? freqParam : 'daily'
+
+    return { pageId, modes, frequency }
+    // Intentionally read params only on mount; subsequent state changes write
+    // back to the URL via the effect below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Shared state across visualization + inspector.
-  const [selectedPageId, setSelectedPageId] = useState(MONITORED_PAGES[0].id)
+  const [selectedPageId, setSelectedPageId] = useState(initial.pageId)
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
-  const [modes, setModes] = useState<DiffMode[]>(['git-diff', 'json'])
-  const [frequency, setFrequency] = useState<MonitorFrequency>('daily')
+  const [modes, setModes] = useState<DiffMode[]>(initial.modes)
+  const [frequency, setFrequency] = useState<MonitorFrequency>(initial.frequency)
   const [showIntroDetails, setShowIntroDetails] = useState(false)
 
   const page = useMemo(
@@ -65,6 +102,20 @@ export default function FirecrawlChangeTrackerDemoClient() {
     setSelectedEventId(null)
     setSchema(page.schema)
   }, [page])
+
+  // Write shareable state back to the URL without a navigation/scroll.
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    params.set('page', selectedPageId)
+    params.set('freq', frequency)
+    // Only encode `mode` when a single diff mode is active; both is the default.
+    if (modes.length === 1) params.set('mode', modes[0])
+    else params.delete('mode')
+    if (embed) params.set('embed', '1')
+    const query = params.toString()
+    window.history.replaceState(null, '', query ? `?${query}` : window.location.pathname)
+  }, [selectedPageId, frequency, modes, embed])
 
   const selectedEvent = useMemo(
     () => events.find((e) => e.id === selectedEventId) ?? null,
@@ -104,18 +155,35 @@ export default function FirecrawlChangeTrackerDemoClient() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className={embed ? 'space-y-4' : 'space-y-6'}>
+      {/* Hero image — full-width banner, hidden in embed mode */}
+      {!embed && (
+        <div className="mx-auto max-w-5xl overflow-hidden rounded-xl">
+          <Image
+            src={HERO_IMAGE}
+            alt="Firecrawl change-tracking demo"
+            width={1200}
+            height={1200}
+            priority
+            className="w-full max-h-64 object-cover rounded-xl"
+          />
+        </div>
+      )}
+
       {/* Hero header */}
-      <div className="space-y-3 pt-4 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
-          Monitor any website for changes
-        </h1>
-        <p className="mx-auto max-w-2xl text-base text-zinc-600 dark:text-zinc-400">
-          Know the instant a page changes — pricing, docs, competitors, compliance. Watch a scheduled scrape detect a change, compute the diff, and fire an alert.
-        </p>
-      </div>
+      {!embed && (
+        <div className="space-y-3 pt-4 text-center">
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
+            Monitor any website for changes
+          </h1>
+          <p className="mx-auto max-w-2xl text-base text-zinc-600 dark:text-zinc-400">
+            Know the instant a page changes — pricing, docs, competitors, compliance. Watch a scheduled scrape detect a change, compute the diff, and fire an alert.
+          </p>
+        </div>
+      )}
 
       {/* Intro card: what it is + how to use */}
+      {!embed && (
       <div className="mx-auto max-w-4xl">
         <div className="relative overflow-hidden rounded-2xl border border-orange-200/60 bg-gradient-to-br from-orange-50 via-amber-50 to-red-50 p-[1px] shadow-lg shadow-orange-500/10 dark:border-transparent dark:from-orange-600 dark:via-red-600 dark:to-rose-700 dark:shadow-orange-500/20">
           <div className="relative rounded-[15px] bg-gradient-to-br from-white via-orange-50/50 to-amber-50/50 p-5 dark:from-slate-900 dark:via-red-950/90 dark:to-slate-900 sm:p-6">
@@ -199,8 +267,10 @@ export default function FirecrawlChangeTrackerDemoClient() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Hero affiliate card */}
+      {!embed && (
       <div className="mx-auto max-w-4xl">
         <a
           href={heroLink}
@@ -224,6 +294,7 @@ export default function FirecrawlChangeTrackerDemoClient() {
           </span>
         </a>
       </div>
+      )}
 
       {/* Page selector */}
       <div className="mx-auto max-w-5xl">
@@ -262,6 +333,7 @@ export default function FirecrawlChangeTrackerDemoClient() {
       />
 
       {/* Inline CTA mid-demo */}
+      {!embed && (
       <div className="mx-auto max-w-4xl">
         <div className="flex flex-col items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-zinc-50/60 px-5 py-4 dark:border-zinc-800 dark:bg-zinc-900/40 sm:flex-row">
           <div className="flex items-center gap-3">
@@ -286,6 +358,7 @@ export default function FirecrawlChangeTrackerDemoClient() {
           </a>
         </div>
       </div>
+      )}
 
       {/* Inspector */}
       <div id="inspector">
@@ -302,7 +375,18 @@ export default function FirecrawlChangeTrackerDemoClient() {
         />
       </div>
 
+      {/* Code export — current config as runnable Node.js / Python */}
+      <div className="mx-auto w-full max-w-7xl">
+        <FirecrawlCodeExport url={page.url} modes={modes} schema={schema} />
+      </div>
+
+      {/* Live mode — scrape a real URL through the Firecrawl API */}
+      <div className="mx-auto w-full max-w-7xl">
+        <FirecrawlLiveScrape initialUrl={page.url} initialSchema={schema} modes={modes} />
+      </div>
+
       {/* Closing trust / CTA section */}
+      {!embed && (
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 via-transparent to-red-50/30 dark:from-orange-950/20 dark:via-transparent dark:to-red-950/10" />
         <div className="relative mx-auto max-w-4xl px-6 py-12 md:py-16">
@@ -355,7 +439,9 @@ export default function FirecrawlChangeTrackerDemoClient() {
           </div>
         </div>
       </section>
+      )}
 
+      {!embed && (
       <div className="mt-8">
         <Newsletter
           title="Build with web data"
@@ -366,6 +452,7 @@ export default function FirecrawlChangeTrackerDemoClient() {
           tags={['interest:web-scraping', 'source:demo']}
         />
       </div>
+      )}
     </div>
   )
 }

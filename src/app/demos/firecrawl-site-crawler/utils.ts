@@ -364,13 +364,13 @@ function buildSkipped(
 }
 
 /** Build the exact POST /v1/crawl request body for a given config. */
-export function buildCrawlRequestBody(site: SeedSite, config: CrawlConfig) {
+export function buildCrawlRequestBody(seedUrl: string, config: CrawlConfig) {
   const scrapeOptions: Record<string, unknown> = {
     formats: config.formats,
     onlyMainContent: config.onlyMainContent,
   }
   const body: Record<string, unknown> = {
-    url: site.seedUrl,
+    url: seedUrl,
   }
   if (config.includePaths.length > 0) body.includePaths = config.includePaths
   if (config.excludePaths.length > 0) body.excludePaths = config.excludePaths
@@ -382,8 +382,8 @@ export function buildCrawlRequestBody(site: SeedSite, config: CrawlConfig) {
 }
 
 /** Build the /v1/map request body. */
-export function buildMapRequestBody(site: SeedSite) {
-  return { url: site.seedUrl }
+export function buildMapRequestBody(seedUrl: string) {
+  return { url: seedUrl }
 }
 
 /** Pretty-print a JSON object with 2-space indentation. */
@@ -414,4 +414,265 @@ export function buildCrawlResponse(result: CrawlResult) {
     creditsUsed: completed.length,
     data: sample,
   }
+}
+
+// ── Live mode ────────────────────────────────────────────────────────────────
+
+/** Shape of the live /api/firecrawl-demo crawl response payload. */
+export interface LiveCrawlData {
+  links: string[]
+  seed: {
+    url: string
+    markdown: string
+    title?: string
+    statusCode?: number
+    discoveredLinks: string[]
+  }
+}
+
+/** Derive a path (with query) from a full URL, falling back to the raw string. */
+function urlToPath(url: string): string {
+  try {
+    const u = new URL(url)
+    return (u.pathname || '/') + (u.search || '')
+  } catch {
+    return url
+  }
+}
+
+/** Short title from a URL path, used when the live response has no <title>. */
+function titleFromUrl(url: string): string {
+  const path = urlToPath(url)
+  if (path === '/' || path === '') return 'Home'
+  const last = path.split('/').filter(Boolean).pop() ?? path
+  return last.replace(/[-_]/g, ' ')
+}
+
+/**
+ * Turn a live /map + /scrape response into the same CrawlResult shape the
+ * simulation produces, so the visualization and inspector render real URLs and
+ * real markdown without any other changes. The seed page (depth 0) carries the
+ * scraped markdown; every other discovered URL is shown as a depth-1 node that
+ * the real API would crawl next.
+ */
+export function buildLiveResult(data: LiveCrawlData): CrawlResult {
+  const seedUrl = data.seed.url
+  const seedMarkdown = data.seed.markdown ?? ''
+  const seedTokens = estimateTokens(seedMarkdown)
+  const seedBytes = seedMarkdown.length
+
+  const seedPage: CrawledPage = {
+    url: seedUrl,
+    path: urlToPath(seedUrl),
+    title: data.seed.title || titleFromUrl(seedUrl),
+    depth: 0,
+    statusCode: data.seed.statusCode ?? 200,
+    rawHtmlBytes: seedBytes,
+    markdown: seedMarkdown,
+    cleanMarkdown: seedMarkdown,
+    chromeMarkdown: seedMarkdown,
+    discoveredLinks: data.seed.discoveredLinks ?? [],
+    tokens: seedTokens,
+    elapsedMs: 0,
+    status: (data.seed.statusCode ?? 200) >= 400 ? 'error' : 'done',
+    discoveredFrom: null,
+  }
+
+  // Every other mapped URL becomes a depth-1 discovered node. The live call only
+  // scrapes the seed, so these are listed as queued-and-discovered, not fetched.
+  const seen = new Set<string>([seedUrl])
+  const discoveredPages: CrawledPage[] = []
+  for (const link of data.links) {
+    if (seen.has(link)) continue
+    seen.add(link)
+    discoveredPages.push({
+      url: link,
+      path: urlToPath(link),
+      title: titleFromUrl(link),
+      depth: 1,
+      statusCode: 200,
+      rawHtmlBytes: 0,
+      markdown: '',
+      cleanMarkdown: '',
+      chromeMarkdown: '',
+      discoveredLinks: [],
+      tokens: 0,
+      elapsedMs: 0,
+      status: 'queued',
+      discoveredFrom: seedUrl,
+    })
+  }
+
+  const pages = [seedPage, ...discoveredPages]
+
+  // A minimal event timeline so the scrubber and counters stay coherent.
+  const events: CrawlEvent[] = []
+  let eventIndex = 0
+  const mappedLinks = Array.from(new Set([seedUrl, ...data.links]))
+  events.push({
+    index: eventIndex++,
+    type: 'map',
+    url: seedUrl,
+    message: `Mapped ${mappedLinks.length} live URLs from /map`,
+    pagesCompleted: 0,
+    tokensExtracted: 0,
+    elapsedMs: 0,
+  })
+  events.push({
+    index: eventIndex++,
+    type: 'discovered',
+    url: seedUrl,
+    message: `Discovered ${seedPage.path} (depth 0)`,
+    pagesCompleted: 0,
+    tokensExtracted: 0,
+    elapsedMs: 0,
+  })
+  events.push({
+    index: eventIndex++,
+    type: 'rendering',
+    url: seedUrl,
+    message: `Rendering ${seedPage.path} (JS)`,
+    pagesCompleted: 0,
+    tokensExtracted: 0,
+    elapsedMs: 0,
+  })
+  events.push({
+    index: eventIndex++,
+    type: 'markdown',
+    url: seedUrl,
+    message: `Extracted markdown from ${seedPage.path} (${seedTokens} tokens)`,
+    pagesCompleted: 0,
+    tokensExtracted: seedTokens,
+    elapsedMs: 0,
+  })
+  events.push({
+    index: eventIndex++,
+    type: 'done',
+    url: seedUrl,
+    message: `Completed ${seedPage.path} (${seedPage.statusCode})`,
+    pagesCompleted: seedPage.status === 'done' ? 1 : 0,
+    tokensExtracted: seedTokens,
+    elapsedMs: 0,
+  })
+  discoveredPages.forEach((p) => {
+    events.push({
+      index: eventIndex++,
+      type: 'discovered',
+      url: p.url,
+      message: `Discovered ${p.path} (depth 1)`,
+      pagesCompleted: seedPage.status === 'done' ? 1 : 0,
+      tokensExtracted: seedTokens,
+      elapsedMs: 0,
+    })
+  })
+
+  return {
+    pages,
+    events,
+    mappedLinks,
+    totals: {
+      discovered: pages.length,
+      crawled: seedPage.status === 'done' ? 1 : 0,
+      skipped: 0,
+      tokens: seedTokens,
+      rawBytes: seedBytes,
+      elapsedMs: 0,
+    },
+  }
+}
+
+// ── Code export ──────────────────────────────────────────────────────────────
+
+export type CodeLang = 'node' | 'python'
+
+function jsArray(values: string[]): string {
+  return `[${values.map((v) => `'${v.replace(/'/g, "\\'")}'`).join(', ')}]`
+}
+
+function pyList(values: string[]): string {
+  return `[${values.map((v) => `"${v.replace(/"/g, '\\"')}"`).join(', ')}]`
+}
+
+/**
+ * Generate copy-pasteable Firecrawl SDK code that matches the current crawl
+ * config exactly. Supports the Node (@mendable/firecrawl-js) and Python
+ * (firecrawl-py) SDKs.
+ */
+export function buildCrawlCode(seedUrl: string, config: CrawlConfig, lang: CodeLang): string {
+  if (lang === 'node') {
+    const opts: string[] = []
+    if (config.includePaths.length > 0) opts.push(`  includePaths: ${jsArray(config.includePaths)},`)
+    if (config.excludePaths.length > 0) opts.push(`  excludePaths: ${jsArray(config.excludePaths)},`)
+    opts.push(`  maxDepth: ${config.maxDepth},`)
+    opts.push(`  limit: ${config.limit},`)
+    if (config.ignoreSitemap) opts.push(`  ignoreSitemap: true,`)
+    opts.push(`  scrapeOptions: {`)
+    opts.push(`    formats: ${jsArray(config.formats)},`)
+    opts.push(`    onlyMainContent: ${config.onlyMainContent},`)
+    opts.push(`  },`)
+
+    return `import FirecrawlApp from '@mendable/firecrawl-js'
+
+const app = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY })
+
+// Crawl the whole site into clean, LLM-ready markdown.
+const result = await app.crawlUrl('${seedUrl}', {
+${opts.join('\n')}
+})
+
+for (const page of result.data) {
+  console.log(page.metadata.sourceURL, page.markdown.length, 'chars')
+}`
+  }
+
+  // Python
+  const params: string[] = []
+  if (config.includePaths.length > 0) params.push(`    include_paths=${pyList(config.includePaths)},`)
+  if (config.excludePaths.length > 0) params.push(`    exclude_paths=${pyList(config.excludePaths)},`)
+  params.push(`    max_depth=${config.maxDepth},`)
+  params.push(`    limit=${config.limit},`)
+  if (config.ignoreSitemap) params.push(`    ignore_sitemap=True,`)
+  params.push(`    scrape_options=ScrapeOptions(`)
+  params.push(`        formats=${pyList(config.formats)},`)
+  params.push(`        only_main_content=${config.onlyMainContent ? 'True' : 'False'},`)
+  params.push(`    ),`)
+
+  return `import os
+from firecrawl import FirecrawlApp, ScrapeOptions
+
+app = FirecrawlApp(api_key=os.environ["FIRECRAWL_API_KEY"])
+
+# Crawl the whole site into clean, LLM-ready markdown.
+result = app.crawl_url(
+    "${seedUrl}",
+${params.join('\n')}
+)
+
+for page in result.data:
+    print(page.metadata.source_url, len(page.markdown), "chars")`
+}
+
+// ── Output exports ───────────────────────────────────────────────────────────
+
+/**
+ * Build a JSONL string with one { url, markdown, metadata } object per line —
+ * the exact shape you would stream into a RAG ingestion pipeline.
+ */
+export function buildJsonl(pages: CrawledPage[]): string {
+  return pages
+    .filter((p) => p.status === 'done' || p.status === 'error')
+    .map((p) =>
+      JSON.stringify({
+        url: p.url,
+        markdown: p.markdown,
+        metadata: {
+          title: p.title,
+          sourceURL: p.url,
+          statusCode: p.statusCode,
+          depth: p.depth,
+          tokens: p.tokens,
+        },
+      }),
+    )
+    .join('\n')
 }
