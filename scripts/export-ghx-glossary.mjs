@@ -18,7 +18,26 @@ const glossaryPath = path.join(__dirname, '../src/app/ghx/glossary.json')
 const outDir = path.resolve(
   process.argv[2] || path.join(__dirname, '../../ghx-workshop/repo/glossary'),
 )
-const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+
+function findChrome() {
+  if (process.env.CHROME_PATH) return process.env.CHROME_PATH
+  const platform = process.platform
+  const candidates =
+    platform === 'darwin'
+      ? ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome']
+      : platform === 'win32'
+        ? [
+            'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+            'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+          ]
+        : ['/usr/bin/google-chrome', '/usr/bin/chromium-browser', '/usr/bin/chromium']
+  for (const c of candidates) {
+    if (fs.existsSync(c)) return c
+  }
+  return 'chrome'
+}
+
+const CHROME = findChrome()
 const LIVE_URL = 'https://zackproser.com/ghx'
 
 const g = JSON.parse(fs.readFileSync(glossaryPath, 'utf8'))

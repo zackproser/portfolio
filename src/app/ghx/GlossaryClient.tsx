@@ -43,9 +43,10 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
   const [query, setQuery] = useState('')
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return glossary.sections
+    const trimmed = query.trim()
+    if (!trimmed) return glossary.sections
     return glossary.sections
-      .map((s) => ({ ...s, terms: s.terms.filter((t) => matches(t, query)) }))
+      .map((s) => ({ ...s, terms: s.terms.filter((t) => matches(t, trimmed)) }))
       .filter((s) => s.terms.length > 0)
   }, [glossary.sections, query])
 
@@ -86,7 +87,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
             className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-base text-zinc-900 placeholder-zinc-400 shadow-sm focus:border-[#F16025] focus:outline-none focus:ring-2 focus:ring-[#F16025]/30 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100"
           />
           <nav className="mt-2 flex gap-2 overflow-x-auto pb-1 text-sm" aria-label="Glossary levels">
-            {glossary.sections.map((s) => (
+            {filtered.map((s) => (
               <a
                 key={s.id}
                 href={`#${s.id}`}
