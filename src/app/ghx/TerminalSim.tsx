@@ -47,6 +47,8 @@ export default function TerminalSim() {
   const push = (...ls: Line[]) => setLines((prev) => [...prev, ...ls])
 
   function runClaude() {
+    timeouts.current.forEach(clearTimeout)
+    timeouts.current = []
     setStage('running')
     let t = 0
     CLAUDE_SCRIPT.forEach((step, i) => {
