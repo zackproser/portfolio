@@ -339,7 +339,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
         await navigator.share({ title: 'The AI Glossary — GHX × Mind On Fire', url })
         return
       } catch {
-        return // user closed the native sheet
+        // user closed the native sheet or share failed; fall through to clipboard
       }
     }
     try {
