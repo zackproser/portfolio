@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, Fragment } from 'react'
 import { motion, MotionConfig } from 'framer-motion'
 import { track } from '@vercel/analytics'
 import QuizMe from './QuizMe'
+import GlossaryChat from './GlossaryChat'
 import InlineDemo from './InlineDemos'
 
 // ────────────────────────────────────────────────────────────────────────
@@ -450,8 +451,16 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
         {filtered.length === 0 && (
           <div className="gg-empty">
             <span className="big">Nothing matches “{query}”.</span>
-            Try a shorter word — or ask a facilitator. Really. That&apos;s the whole point of
-            today.
+            Try a shorter word — or just ask:
+            <button
+              type="button"
+              className="gg-empty-ask"
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent('ghx-ask', { detail: query.trim() }))
+              }
+            >
+              ask the glossary: “{query}”
+            </button>
           </div>
         )}
 
@@ -596,6 +605,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
           </div>
         </footer>
       </main>
+      <GlossaryChat />
     </div>
     </MotionConfig>
   )

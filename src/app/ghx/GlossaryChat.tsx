@@ -1,0 +1,119 @@
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
+import { useChat } from 'ai/react'
+import { track } from '@vercel/analytics'
+
+// ────────────────────────────────────────────────────────────────────────
+// "Ask the glossary" — a floating chat over the whole page. Answers come
+// from /api/ghx-chat (the glossary is its entire context). The search
+// empty-state can open it pre-seeded via a window CustomEvent('ghx-ask').
+// Every question doubles as signal about what the room is struggling with.
+// ────────────────────────────────────────────────────────────────────────
+
+const SUGGESTIONS = [
+  'Which Claude should I actually use?',
+  'Is it safe to put our contracts into this?',
+  'What should I try first on Monday?',
+]
+
+export default function GlossaryChat() {
+  const [open, setOpen] = useState(false)
+  const bodyRef = useRef<HTMLDivElement>(null)
+
+  const { messages, input, setInput, handleInputChange, handleSubmit, isLoading, append } =
+    useChat({ api: '/api/ghx-chat' })
+
+  // search empty-state (or anything else) can open + seed the chat
+  useEffect(() => {
+    const onAsk = (e: Event) => {
+      const q = (e as CustomEvent<string>).detail
+      setOpen(true)
+      if (q) {
+        track('ghx_chat_question', { q: q.slice(0, 100), via: 'search' })
+        void append({ role: 'user', content: q })
+      }
+    }
+    window.addEventListener('ghx-ask', onAsk)
+    return () => window.removeEventListener('ghx-ask', onAsk)
+  }, [append])
+
+  useEffect(() => {
+    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight
+  }, [messages, open])
+
+  const ask = (q: string) => {
+    track('ghx_chat_question', { q: q.slice(0, 100), via: 'chip' })
+    void append({ role: 'user', content: q })
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        className={`gg-chat-fab ${open ? 'hidden-fab' : ''}`}
+        onClick={() => setOpen(true)}
+        aria-label="Ask the glossary a question"
+      >
+        ✦ ask anything
+      </button>
+
+      {open && (
+        <div className="gg-chat" role="dialog" aria-label="Ask the glossary">
+          <div className="gg-chat-head">
+            <span className="gg-chat-title">Ask the glossary</span>
+            <span className="gg-chat-sub">no dumb questions — really</span>
+            <button type="button" className="gg-chat-close" onClick={() => setOpen(false)} aria-label="Close chat">
+              ✕
+            </button>
+          </div>
+
+          <div className="gg-chat-body" ref={bodyRef}>
+            {messages.length === 0 && (
+              <div className="gg-chat-empty">
+                <p>
+                  Anything on this page — or anything you&apos;ve been too polite to ask out
+                  loud. Answers come from the glossary itself.
+                </p>
+                <div className="gg-chat-chips">
+                  {SUGGESTIONS.map((s) => (
+                    <button key={s} type="button" onClick={() => ask(s)}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {messages.map((m) => (
+              <div key={m.id} className={`gg-chat-msg ${m.role}`}>
+                {m.content}
+              </div>
+            ))}
+            {isLoading && messages[messages.length - 1]?.role === 'user' && (
+              <div className="gg-chat-msg assistant thinking">…</div>
+            )}
+          </div>
+
+          <form
+            className="gg-chat-input"
+            onSubmit={(e) => {
+              if (input.trim()) track('ghx_chat_question', { q: input.slice(0, 100), via: 'typed' })
+              handleSubmit(e)
+            }}
+          >
+            <input
+              value={input}
+              onChange={handleInputChange}
+              placeholder="Type a question…"
+              aria-label="Your question"
+              maxLength={500}
+            />
+            <button type="submit" disabled={isLoading || !input.trim()}>
+              →
+            </button>
+          </form>
+        </div>
+      )}
+    </>
+  )
+}
