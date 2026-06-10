@@ -151,7 +151,8 @@
         {
           "term": "Opus, Sonnet, and Haiku",
           "definition": "Claude's model tiers. Opus is the deepest thinker — strongest on hard problems, slower and pricier. Sonnet is the workhorse balance most work runs on. Haiku is fast and cheap, for high-volume simple tasks. A sane default: start on the standard tier, reach for Opus when the problem deserves it.",
-          "hear": "“Sonnet couldn't crack it — kick it to Opus and check back after lunch.”"
+          "hear": "“Sonnet couldn't crack it — kick it to Opus and check back after lunch.”",
+          "added": "2026-06-10"
         },
         {
           "term": "Prompt",
@@ -187,7 +188,8 @@
         },
         {
           "term": "Bedrock",
-          "definition": "An AWS service that runs Claude inside a company's own cloud — the same models, behind your security and compliance walls, with your data staying in your environment. It's how GHX engineering has been running Claude. When IT says “through Bedrock,” they mean Claude with enterprise plumbing."
+          "definition": "An AWS service that runs Claude inside a company's own cloud — the same models, behind your security and compliance walls, with your data staying in your environment. It's how GHX engineering has been running Claude. When IT says “through Bedrock,” they mean Claude with enterprise plumbing.",
+          "added": "2026-06-10"
         }
       ],
       "reading": {
@@ -205,7 +207,8 @@
       "terms": [
         {
           "term": "API (application programming interface)",
-          "definition": "How one piece of software asks another to do something — no screens, no clicking, just structured requests and answers. When someone “calls the Claude API,” their program is sending prompts and getting work back with no chat window involved. Every AI tool you'll see today is API calls under the hood."
+          "definition": "How one piece of software asks another to do something — no screens, no clicking, just structured requests and answers. When someone “calls the Claude API,” their program is sending prompts and getting work back with no chat window involved. Every AI tool you'll see today is API calls under the hood.",
+          "added": "2026-06-10"
         },
         {
           "term": "Tool",
@@ -307,5 +310,11 @@
         "image": "https://img.youtube.com/vi/V2PuEAeNXUU/maxresdefault.jpg"
       }
     }
-  ]
+  ],
+  "support": {
+    "from": "2026-06-17",
+    "until": "2026-07-01",
+    "headline": "Stuck on something? You have us through July 1.",
+    "body": "The Mind On Fire crew — Zack and both Nicks — is on call for GHX through July 1: questions, gotchas, “is this safe to ship?” gut-checks. Real humans, best effort, usually fast. Ask in the workshop channel from the close of the session. New terms land on this page all window — look for the “new” badge."
+  }
 }

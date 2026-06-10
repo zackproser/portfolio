@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { track } from '@vercel/analytics'
 
 // ────────────────────────────────────────────────────────────────────────
 // Interactive terminal simulator for the GHX glossary's "Terminal" entry.
@@ -60,7 +61,10 @@ export default function TerminalSim() {
       timeouts.current.push(
         window.setTimeout(() => {
           push({ kind: step.kind, text: step.text })
-          if (i === CLAUDE_SCRIPT.length - 1) setStage('done')
+          if (i === CLAUDE_SCRIPT.length - 1) {
+            setStage('done')
+            track('ghx_terminal', { step: 'done' })
+          }
         }, t),
       )
     })
@@ -74,7 +78,10 @@ export default function TerminalSim() {
 
     if (word === 'ls') {
       push({ kind: 'out', text: FILES.join('   ') })
-      if (stage === 'ls') setStage('claude')
+      if (stage === 'ls') {
+        setStage('claude')
+        track('ghx_terminal', { step: 'ls' })
+      }
     } else if (word === 'claude') {
       runClaude()
     } else if (word === 'pwd') {

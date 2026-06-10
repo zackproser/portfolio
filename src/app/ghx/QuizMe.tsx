@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { track } from '@vercel/analytics'
 
 // ────────────────────────────────────────────────────────────────────────
 // "Quiz me" — the finale's payoff. Five random terms, self-scored.
@@ -34,6 +35,7 @@ export default function QuizMe({ terms }: { terms: QuizTerm[] }) {
     setIdx(0)
     setRevealed(false)
     setScore(0)
+    track('ghx_quiz_start')
   }
 
   if (!round) {
@@ -66,9 +68,11 @@ export default function QuizMe({ terms }: { terms: QuizTerm[] }) {
 
   const t = round[idx]
   const grade = (knew: boolean) => {
+    const final = score + (knew ? 1 : 0)
     if (knew) setScore((s) => s + 1)
     setRevealed(false)
     setIdx((i) => i + 1)
+    if (idx + 1 >= round.length) track('ghx_quiz_complete', { score: final })
   }
 
   return (

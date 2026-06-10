@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, type ReactNode } from 'react'
+import { track } from '@vercel/analytics'
 import dynamic from 'next/dynamic'
 import { ContextWindowViz, AgentLoopViz, OrchestratorViz } from './Diagrams'
 import {
@@ -70,7 +71,14 @@ function TryPanel({
   const [open, setOpen] = useState(defaultOpen)
   return (
     <div className="gg-try">
-      <button type="button" className="gg-try-head" onClick={() => setOpen((o) => !o)}>
+      <button
+        type="button"
+        className="gg-try-head"
+        onClick={() => {
+          if (!open) track('ghx_demo_open', { demo: label.slice(0, 50) })
+          setOpen((o) => !o)
+        }}
+      >
         <span className="dot" />
         {label}
         <span className="hint">{open ? 'close' : hint}</span>

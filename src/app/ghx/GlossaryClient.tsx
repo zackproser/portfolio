@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, Fragment } from 'react'
 import { motion, MotionConfig } from 'framer-motion'
+import { track } from '@vercel/analytics'
 import QuizMe from './QuizMe'
 import InlineDemo from './InlineDemos'
 
@@ -27,6 +28,7 @@ interface Term {
   hear?: string
   demo?: Demo
   embed?: string
+  added?: string
 }
 
 interface Reading {
@@ -45,12 +47,33 @@ interface Section {
   reading?: Reading
 }
 
+interface Support {
+  from: string
+  until: string
+  headline: string
+  body: string
+}
+
 interface Glossary {
   title: string
   subtitle: string
   event: string
   updated: string
   sections: Section[]
+  support?: Support
+}
+
+// "new" badge for terms added in the last 21 days; SSR-safe (date check
+// runs identically on server and client within the same day).
+function isNew(added?: string) {
+  if (!added) return false
+  return Date.now() - new Date(added).getTime() < 21 * 86400 * 1000
+}
+
+function inWindow(s?: Support) {
+  if (!s) return false
+  const now = Date.now()
+  return now >= new Date(s.from).getTime() && now < new Date(s.until).getTime() + 86400 * 1000
 }
 
 // ---- helpers ---------------------------------------------------------------
@@ -283,6 +306,30 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
   const seen = useSeenTerms(q)
   const fluent = seen.size >= total
 
+  // page is statically prerendered: evaluate the support window on the
+  // client clock after mount so it appears on June 17 without a rebuild
+  // (and without a hydration mismatch)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  // ---- lightweight analytics (renewal-deck fuel) ----
+  useEffect(() => {
+    const src = new URLSearchParams(window.location.search).get('src')
+    track('ghx_visit', { src: src ?? 'direct' })
+  }, [])
+  useEffect(() => {
+    if (q.length < 2) return
+    const t = setTimeout(() => track('ghx_search', { query: q.slice(0, 60) }), 1200)
+    return () => clearTimeout(t)
+  }, [q])
+  const fluentTracked = useRef(false)
+  useEffect(() => {
+    if (fluent && !fluentTracked.current) {
+      fluentTracked.current = true
+      track('ghx_fluent', { total })
+    }
+  }, [fluent, total])
+
   return (
     <MotionConfig reducedMotion="user">
     <div className="ghx-glossary">
@@ -358,6 +405,12 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
 
       {/* body */}
       <main className="gg-measure">
+        {mounted && inWindow(glossary.support) && !q && (
+          <aside className="gg-support">
+            <p className="gg-support-head">{glossary.support!.headline}</p>
+            <p className="gg-support-body">{glossary.support!.body}</p>
+          </aside>
+        )}
         {filtered.length === 0 && (
           <div className="gg-empty">
             <span className="big">Nothing matches “{query}”.</span>
@@ -391,6 +444,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
                 >
                   <h3>
                     {t.term}
+                    {isNew(t.added) && <span className="gg-new">new</span>}
                     <a className="anchor" href={`#${slug}`} aria-label={`Link to ${t.term}`}>
                       #
                     </a>
@@ -419,6 +473,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
               <motion.a
                 href={section.reading.href}
                 className="gg-reading"
+                onClick={() => track('ghx_reading_click', { href: section.reading!.href })}
                 initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}

@@ -830,3 +830,20 @@
   .gg-jumpbar-inner .gg-search input { width: 100%; }
   .gg-jumpbar-inner .gg-search input:focus { width: 100%; }
 }
+
+/* ---------- "new" badge + async-support box ---------- */
+.gg-new {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em;
+  text-transform: uppercase; font-weight: 700; color: #fff;
+  background: var(--accent); border-radius: 999px; padding: 3px 8px;
+  position: relative; top: -3px;
+}
+.gg-support {
+  margin-top: 26px; border: 1px dashed var(--accent); border-radius: 12px;
+  background: var(--accent-soft); padding: 16px 20px;
+}
+.gg-support-head {
+  margin: 0 0 6px; font-family: var(--font-serif); font-weight: 800;
+  font-size: 18px; color: var(--fg);
+}
+.gg-support-body { margin: 0; font-size: 14px; line-height: 1.6; color: var(--fg-muted); }
