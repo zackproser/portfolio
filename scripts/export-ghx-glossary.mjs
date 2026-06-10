@@ -11,7 +11,7 @@
 import fs from 'fs'
 import path from 'path'
 import { execFileSync } from 'child_process'
-import { fileURLToPath } from 'url'
+import { fileURLToPath, pathToFileURL } from 'url'
 import https from 'https'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -192,7 +192,7 @@ execFileSync(CHROME, [
   '--disable-gpu',
   '--no-pdf-header-footer',
   `--print-to-pdf=${path.join(outDir, 'glossary.pdf')}`,
-  htmlPath,
+  pathToFileURL(htmlPath).href,
 ])
 
 const termCount = g.sections.reduce((n, s) => n + s.terms.length, 0)
