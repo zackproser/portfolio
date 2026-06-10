@@ -224,15 +224,16 @@ function useScrollSpy(ids: string[]) {
 // "n/47" chip in the jump bar and unlocks the finale at 100%.
 const SEEN_KEY = 'ghx-glossary-seen'
 
-function useSeenTerms(filterKey: string) {
+function useSeenTerms(filterKey: string, validSlugs: Set<string>) {
   const [seen, setSeen] = useState<Set<string>>(() => new Set())
   // hydrate from localStorage after mount (avoids SSR/client mismatch)
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem(SEEN_KEY) ?? '[]') as string[]
-      if (stored.length) setSeen((prev) => new Set([...prev, ...stored]))
+      const valid = stored.filter((id) => validSlugs.has(id))
+      if (valid.length) setSeen((prev) => new Set([...prev, ...valid]))
     } catch {}
-  }, [])
+  }, [validSlugs])
   useEffect(() => {
     if (seen.size) {
       try {
@@ -303,7 +304,11 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
     (n, s) => n + s.terms.filter((t) => t.embed).length,
     0,
   )
-  const seen = useSeenTerms(q)
+  const validSlugs = useMemo(
+    () => new Set(glossary.sections.flatMap((s) => s.terms.map((t) => slugify(t.term)))),
+    [glossary.sections],
+  )
+  const seen = useSeenTerms(q, validSlugs)
   const fluent = seen.size >= total
 
   // page is statically prerendered: evaluate the support window on the
@@ -444,7 +449,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
                 >
                   <h3>
                     {t.term}
-                    {isNew(t.added) && <span className="gg-new">new</span>}
+                    {mounted && isNew(t.added) && <span className="gg-new">new</span>}
                     <a className="anchor" href={`#${slug}`} aria-label={`Link to ${t.term}`}>
                       #
                     </a>
