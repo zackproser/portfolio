@@ -438,7 +438,9 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
           </div>
         )}
 
-        {filtered.map((section, si) => (
+        {filtered.map((section) => {
+          const realIndex = glossary.sections.findIndex(s => s.id === section.id)
+          return (
           <section key={section.id} id={section.id} className="gg-level">
             <div className="gg-level-head">
               <span className="gg-level-num">{'0' + section.level.replace(/\D/g, '')}</span>
@@ -447,7 +449,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
                 <span className={`gg-diff d-${section.difficulty ?? 'easy'}`}>
                   <span className="ramp" aria-hidden="true">
                     {glossary.sections.map((x, xi) => (
-                      <i key={x.id} className={xi <= si ? 'on' : ''} />
+                      <i key={x.id} className={xi <= realIndex ? 'on' : ''} />
                     ))}
                   </span>
                   {section.difficulty}
@@ -517,7 +519,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
               </motion.a>
             )}
           </section>
-        ))}
+        )})}
 
         {/* finale */}
         {!q && (
