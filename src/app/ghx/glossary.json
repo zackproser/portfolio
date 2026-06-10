@@ -50,7 +50,8 @@
           "term": "Clone",
           "definition": "Downloading your own working copy of a repo from GitHub onto your computer. Your copy; experiment freely."
         }
-      ]
+      ],
+      "difficulty": "easy"
     },
     {
       "id": "level-1",
@@ -135,7 +136,8 @@
           },
           "embed": "rag"
         }
-      ]
+      ],
+      "difficulty": "easy"
     },
     {
       "id": "level-2",
@@ -197,7 +199,8 @@
         "blurb": "If AI helped, who actually wrote it? The piece to read when the authorship question starts gnawing at you.",
         "href": "/blog/spark-bellows-quench",
         "image": "https://zackproser.b-cdn.net/images/spark-bellows-quench-hero.webp"
-      }
+      },
+      "difficulty": "medium"
     },
     {
       "id": "level-3",
@@ -206,18 +209,8 @@
       "intro": "A model alone can only talk. Everything in this section is about letting it act — safely, and your way.",
       "terms": [
         {
-          "term": "API (application programming interface)",
-          "definition": "How one piece of software asks another to do something — no screens, no clicking, just structured requests and answers. When someone “calls the Claude API,” their program is sending prompts and getting work back with no chat window involved. Every AI tool you'll see today is API calls under the hood.",
-          "added": "2026-06-10"
-        },
-        {
           "term": "Tool",
           "definition": "A specific action the model is allowed to take: read a file, run a command, search the web, post a Slack message. Models act through tools, and you control which tools they get."
-        },
-        {
-          "term": "MCP (Model Context Protocol)",
-          "definition": "The standard connector that plugs Claude into other software — Slack, Notion, your database, your CRM. One plug standard, adopted across the industry, so any AI can use any MCP-wired system. When someone asks “is there an MCP for that?” they're asking “can Claude reach that system?”",
-          "embed": "mcp"
         },
         {
           "term": "Skill",
@@ -225,18 +218,28 @@
           "embed": "skill"
         },
         {
-          "term": "Plugin",
-          "definition": "A bundle of skills, tools, and settings you install as a unit. Nick Nisi's ideation plugin — the first thing we use today — is one."
-        },
-        {
           "term": "Slash command",
           "definition": "Type / in Claude Code and a menu of your installed skills and commands pops up. It's how you invoke a skill on purpose instead of hoping Claude picks it up."
+        },
+        {
+          "term": "Plugin",
+          "definition": "A bundle of skills, tools, and settings you install as a unit. Nick Nisi's ideation plugin — the first thing we use today — is one."
         },
         {
           "term": "Ideation (a.k.a. “grill me”)",
           "definition": "A skill that interviews you, relentlessly, until it's confident it understands what you actually want — before any work starts. GHX engineering calls theirs “grill me.” It's the cheapest insurance there is against an AI confidently building the wrong thing, and it's the first thing we'll run today.",
           "hear": "“Run ideation first — don't burn tokens guessing.”",
           "embed": "ideation"
+        },
+        {
+          "term": "API (application programming interface)",
+          "definition": "How one piece of software asks another to do something — no screens, no clicking, just structured requests and answers. When someone “calls the Claude API,” their program is sending prompts and getting work back with no chat window involved. Every AI tool you'll see today is API calls under the hood.",
+          "added": "2026-06-10"
+        },
+        {
+          "term": "MCP (Model Context Protocol)",
+          "definition": "The standard connector that plugs Claude into other software — Slack, Notion, your database, your CRM. One plug standard, adopted across the industry, so any AI can use any MCP-wired system. When someone asks “is there an MCP for that?” they're asking “can Claude reach that system?”",
+          "embed": "mcp"
         }
       ],
       "reading": {
@@ -244,7 +247,8 @@
         "blurb": "You have about ten seconds to convince a user you are already solving their problem. Why the interface beats the stack, every time.",
         "href": "/blog/the-interface-matters-most",
         "image": "https://zackproser.b-cdn.net/images/interface-matters-hero.webp"
-      }
+      },
+      "difficulty": "medium"
     },
     {
       "id": "level-4",
@@ -252,6 +256,15 @@
       "name": "Agents and automation",
       "intro": "The advanced end of the room lives here. The goal: kick off a task, walk away, and come back to finished work — with evidence.",
       "terms": [
+        {
+          "term": "Workflow",
+          "definition": "Your process, written down as steps an agent can run: inputs, steps, outputs, and what “done” means. The single best thing a non-engineer can do this month is write down one workflow they're sick of doing by hand — the price-file discrepancy you chase every Monday is a great first candidate."
+        },
+        {
+          "term": "Loop",
+          "definition": "Try → check → fix → repeat, automatically, until the result meets the bar you set. The shift that matters: you stop iterating by hand and start authoring the loop that iterates for you.",
+          "hear": "“My job is to write loops now.”"
+        },
         {
           "term": "Agent",
           "definition": "A model plus a harness. The model does the reasoning and makes the decisions; the harness is everything that lets it act. When those two things run in a loop toward a goal, you have an agent.",
@@ -262,23 +275,14 @@
           "definition": "Everything around the model that lets it act: the tools, the permissions, the loop that keeps it moving. Saving a file, sending an email, deploying a service — all harness. “Working on the harness” means improving what your agent can do, without touching the model."
         },
         {
-          "term": "Orchestrator",
-          "definition": "The coordinator of several agents working one bigger job: it hands out work, checks results, and decides what happens next. An agent is one worker; an orchestrator runs the crew.",
-          "embed": "orchestrator"
-        },
-        {
           "term": "Subagent",
           "definition": "An agent that an agent spins up to handle a piece of the work — research this, summarize that — in parallel, each with its own clean context. How big jobs stay fast and focused.",
           "embed": "subagent"
         },
         {
-          "term": "Workflow",
-          "definition": "Your process, written down as steps an agent can run: inputs, steps, outputs, and what “done” means. The single best thing a non-engineer can do this month is write down one workflow they're sick of doing by hand — the price-file discrepancy you chase every Monday is a great first candidate."
-        },
-        {
-          "term": "Loop",
-          "definition": "Try → check → fix → repeat, automatically, until the result meets the bar you set. The shift that matters: you stop iterating by hand and start authoring the loop that iterates for you.",
-          "hear": "“My job is to write loops now.”"
+          "term": "Orchestrator",
+          "definition": "The coordinator of several agents working one bigger job: it hands out work, checks results, and decides what happens next. An agent is one worker; an orchestrator runs the crew.",
+          "embed": "orchestrator"
         },
         {
           "term": "Verification loop",
@@ -308,7 +312,8 @@
         "blurb": "The talk version of this whole section: interface beats stack, complete the loop, automate yourself into more value.",
         "href": "/blog/workos-applied-ai-showcase",
         "image": "https://img.youtube.com/vi/V2PuEAeNXUU/maxresdefault.jpg"
-      }
+      },
+      "difficulty": "advanced"
     }
   ],
   "support": {

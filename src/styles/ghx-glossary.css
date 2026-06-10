@@ -847,3 +847,30 @@
   font-size: 18px; color: var(--fg);
 }
 .gg-support-body { margin: 0; font-size: 14px; line-height: 1.6; color: var(--fg-muted); }
+
+/* ---------- difficulty progression (Pete: make the ramp legible) ---------- */
+.gg-path {
+  margin: 14px 0 0; font-size: 14px; line-height: 1.7; color: var(--fg-muted);
+  max-width: 58ch;
+}
+.gg-path a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed color-mix(in oklab, var(--accent) 55%, transparent); }
+.gg-path .d-easy, .gg-path .d-medium, .gg-path .d-advanced { font-weight: 700; }
+.d-easy { color: var(--good); }
+.d-medium { color: var(--accent); }
+.d-advanced { color: var(--level); }
+.gg-diff {
+  display: inline-flex; align-items: center; gap: 7px; margin-right: 14px;
+  font-weight: 700;
+}
+.gg-diff .ramp { display: inline-flex; gap: 2.5px; align-items: flex-end; }
+.gg-diff .ramp i {
+  width: 4px; border-radius: 1.5px; background: var(--border-strong); display: inline-block;
+}
+.gg-diff .ramp i:nth-child(1) { height: 4px; }
+.gg-diff .ramp i:nth-child(2) { height: 6px; }
+.gg-diff .ramp i:nth-child(3) { height: 8px; }
+.gg-diff .ramp i:nth-child(4) { height: 10px; }
+.gg-diff .ramp i:nth-child(5) { height: 12px; }
+.gg-diff.d-easy .ramp i.on { background: var(--good); }
+.gg-diff.d-medium .ramp i.on { background: var(--accent); }
+.gg-diff.d-advanced .ramp i.on { background: var(--level); }

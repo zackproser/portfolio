@@ -43,6 +43,7 @@ interface Section {
   level: string
   name: string
   intro: string
+  difficulty?: string
   terms: Term[]
   reading?: Reading
 }
@@ -360,6 +361,13 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
             No dumb questions. If you hear a word today that isn&apos;t on this page, ask — out
             loud, or by quietly pointing your phone at it.
           </p>
+          <p className="gg-path">
+            The page runs <span className="d-easy">easy</span> →{' '}
+            <span className="d-medium">medium</span> → <span className="d-advanced">advanced</span>,
+            top to bottom. Brand new? Start at <a href="#level-0">Level 0</a> and just keep
+            scrolling. Already using Claude every day? Jump to{' '}
+            <a href="#level-3">Level 3</a> or <a href="#level-4">Level 4</a>.
+          </p>
           <dl className="gg-stats">
             <div>
               <dt>Terms</dt>
@@ -436,6 +444,14 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
               <span className="gg-level-num">{'0' + section.level.replace(/\D/g, '')}</span>
               <h2 className="gg-level-name">{section.name}</h2>
               <span className="gg-level-tag">
+                <span className={`gg-diff d-${section.difficulty ?? 'easy'}`}>
+                  <span className="ramp" aria-hidden="true">
+                    {glossary.sections.map((x, xi) => (
+                      <i key={x.id} className={xi <= si ? 'on' : ''} />
+                    ))}
+                  </span>
+                  {section.difficulty}
+                </span>
                 {section.terms.length} term{section.terms.length === 1 ? '' : 's'}
               </span>
             </div>
