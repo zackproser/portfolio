@@ -171,7 +171,7 @@
 }
 
 /* ---------- level divider ---------- */
-.gg-level { padding-top: 64px; }
+.gg-level { padding-top: 64px; scroll-margin-top: 120px; }
 .gg-level-head { display: flex; align-items: baseline; gap: 18px; border-bottom: 2px solid var(--level); padding-bottom: 12px; }
 .gg-level-num {
   font-family: var(--font-serif); font-weight: 800;
