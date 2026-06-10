@@ -874,3 +874,58 @@
 .gg-diff.d-easy .ramp i.on { background: var(--good); }
 .gg-diff.d-medium .ramp i.on { background: var(--accent); }
 .gg-diff.d-advanced .ramp i.on { background: var(--level); }
+
+/* ---------- the staircase (unmissable difficulty path) ---------- */
+.gg-steps { margin-top: 30px; }
+.gg-steps-label {
+  margin: 0 0 10px; font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg-muted);
+}
+.gg-steps-label span { font-weight: 700; }
+.gg-steps-row {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+  align-items: end;
+}
+.gg-step {
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 2px;
+  border: 1px solid var(--border-strong); border-radius: 10px;
+  background: var(--bg-elevated); padding: 12px 12px 0;
+  text-decoration: none; overflow: hidden;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.gg-step:hover, .gg-step.here {
+  transform: translateY(-3px); border-color: var(--accent);
+  box-shadow: 0 8px 20px -10px rgb(0 0 0 / .3);
+}
+.gg-step-lvl {
+  font-family: var(--font-serif); font-weight: 800; font-size: 22px;
+  color: var(--fg); line-height: 1;
+}
+.gg-step-name {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--fg-muted);
+}
+.gg-step-diff {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em;
+  text-transform: uppercase; font-weight: 700; margin-bottom: 8px;
+}
+.gg-step.d-easy .gg-step-diff { color: var(--good); }
+.gg-step.d-medium .gg-step-diff { color: var(--accent); }
+.gg-step.d-advanced .gg-step-diff { color: var(--level); }
+.gg-step-bar { display: block; margin: 0 -12px; }
+.gg-step.d-easy .gg-step-bar { background: var(--good); }
+.gg-step.d-medium .gg-step-bar { background: var(--accent); }
+.gg-step.d-advanced .gg-step-bar { background: var(--level); }
+@media (max-width: 600px) {
+  .gg-steps-row { gap: 5px; }
+  .gg-step { padding: 8px 7px 0; min-width: 0; }
+  .gg-step-name { display: none; }
+  .gg-step-diff { display: none; }
+  .gg-step-lvl { font-size: 16px; margin-bottom: 6px; }
+  .gg-step-bar { margin: 0 -7px; }
+}
+
+/* difficulty-colored level markers in the jump bar */
+.gg-jumpbar-inner .lvl.d-easy { color: var(--good); }
+.gg-jumpbar-inner .lvl.d-medium { color: var(--accent); }
+.gg-jumpbar-inner .lvl.d-advanced { color: var(--level); }

@@ -361,13 +361,29 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
             No dumb questions. If you hear a word today that isn&apos;t on this page, ask — out
             loud, or by quietly pointing your phone at it.
           </p>
-          <p className="gg-path">
-            The page runs <span className="d-easy">easy</span> →{' '}
-            <span className="d-medium">medium</span> → <span className="d-advanced">advanced</span>,
-            top to bottom. Brand new? Start at <a href="#level-0">Level 0</a> and just keep
-            scrolling. Already using Claude every day? Jump to{' '}
-            <a href="#level-3">Level 3</a> or <a href="#level-4">Level 4</a>.
-          </p>
+
+          {/* the path: a staircase you can't miss — tap a step to jump */}
+          <nav className="gg-steps" aria-label="Difficulty path">
+            <p className="gg-steps-label">
+              The path runs <span className="d-easy">easy</span> →{' '}
+              <span className="d-advanced">advanced</span>. Start where you are — tap a step.
+            </p>
+            <div className="gg-steps-row">
+              {glossary.sections.map((sec, i) => (
+                <a
+                  key={sec.id}
+                  href={`#${sec.id}`}
+                  className={`gg-step d-${sec.difficulty ?? 'easy'} ${activeSection === sec.id ? 'here' : ''}`}
+                >
+                  <span className="gg-step-lvl">L{i}</span>
+                  <span className="gg-step-name">{JUMP_LABELS[sec.id]}</span>
+                  <span className="gg-step-diff">{sec.difficulty}</span>
+                  <span className="gg-step-bar" style={{ height: `${8 + i * 7}px` }} />
+                </a>
+              ))}
+            </div>
+          </nav>
+
           <dl className="gg-stats">
             <div>
               <dt>Terms</dt>
@@ -400,7 +416,8 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
         <div className="gg-measure gg-jumpbar-inner">
           {glossary.sections.map((s, i) => (
             <a key={s.id} href={`#${s.id}`} className={activeSection === s.id ? 'active' : ''}>
-              <span className="lvl">L{i}</span> {JUMP_LABELS[s.id] ?? s.name}
+              <span className={`lvl d-${s.difficulty ?? 'easy'}`}>L{i}</span>{' '}
+              {JUMP_LABELS[s.id] ?? s.name}
             </a>
           ))}
           <span className={`gg-seen ${fluent ? 'fluent' : ''}`} title="Terms you've scrolled past">
