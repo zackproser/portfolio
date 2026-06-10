@@ -46,14 +46,18 @@ export function ContextWindowViz() {
   const askRef = useRef(0)
 
   const add = (it: { text: string; kind: 'you' | 'file' | 'tok' }) => {
+    let evictedText: string | null = null
     setItems((prev) => {
       const next = [...prev, { ...it, key: keyRef.current++ }]
       if (next.length > WINDOW_SIZE) {
-        setEvicted(next[0].text)
+        evictedText = next[0].text
         return next.slice(1)
       }
       return next
     })
+    if (evictedText !== null) {
+      setEvicted(evictedText)
+    }
   }
 
   useEffect(() => {
