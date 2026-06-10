@@ -996,3 +996,42 @@
   background: var(--accent-soft); border: 1px dashed var(--accent);
   border-radius: 999px; padding: 8px 16px; cursor: pointer;
 }
+
+/* ---------- inline ask-me-anything bar ---------- */
+.gg-ask {
+  margin-top: 22px; display: flex; align-items: center; gap: 10px;
+  border: 1px solid var(--border-strong); border-radius: 999px;
+  background: var(--bg-elevated); padding: 6px 6px 6px 16px;
+  max-width: 560px;
+}
+.gg-finale .gg-ask { margin: 22px auto 0; text-align: left; }
+.gg-ask-label {
+  flex-shrink: 0; font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: .12em; text-transform: uppercase; font-weight: 700;
+  color: var(--accent); white-space: nowrap;
+}
+.gg-ask input {
+  flex: 1; min-width: 0; border: 0; background: transparent; outline: none;
+  font-family: var(--font-sans); font-size: 14px; color: var(--fg);
+}
+.gg-ask input::placeholder { color: var(--fg-subtle); }
+.gg-ask button {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 999px; border: 0;
+  background: var(--accent); color: #fff; font-size: 15px; cursor: pointer;
+  transition: transform .15s ease;
+}
+.gg-ask button:hover { transform: translateX(2px); }
+@media (max-width: 560px) {
+  .gg-ask-label { display: none; }
+}
+
+/* markdown inside chat bubbles */
+.gg-chat-msg.assistant p { margin: 0 0 8px; }
+.gg-chat-msg.assistant p:last-child { margin-bottom: 0; }
+.gg-chat-msg.assistant strong { color: var(--fg); font-weight: 700; }
+.gg-chat-msg.assistant ul, .gg-chat-msg.assistant ol { margin: 0 0 8px; padding-left: 18px; }
+.gg-chat-msg.assistant li { margin-bottom: 3px; }
+.gg-chat-msg.assistant code {
+  font-family: var(--font-mono); font-size: 12px;
+  background: var(--accent-soft); border-radius: 4px; padding: 1px 5px;
+}

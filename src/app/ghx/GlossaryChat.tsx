@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useChat } from 'ai/react'
+import ReactMarkdown from 'react-markdown'
 import { track } from '@vercel/analytics'
 
 // ────────────────────────────────────────────────────────────────────────
@@ -16,6 +17,34 @@ const SUGGESTIONS = [
   'Is it safe to put our contracts into this?',
   'What should I try first on Monday?',
 ]
+
+// Inline "ask me anything" bar — used at the top of the page and near the
+// finale. Typing + Enter (or tapping) hands off to the floating chat via
+// the same ghx-ask event the search empty-state uses.
+export function AskInline({ placement }: { placement: string }) {
+  const [q, setQ] = useState('')
+  const go = () => {
+    track('ghx_chat_question', { q: q.slice(0, 100) || '(opened)', via: placement })
+    window.dispatchEvent(new CustomEvent('ghx-ask', { detail: q.trim() }))
+    setQ('')
+  }
+  return (
+    <div className="gg-ask">
+      <span className="gg-ask-label">ask me anything</span>
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && go()}
+        placeholder="“which Claude do I use?” · “is our data safe?” · anything at all"
+        aria-label="Ask the glossary anything"
+        maxLength={500}
+      />
+      <button type="button" onClick={go} aria-label="Ask">
+        →
+      </button>
+    </div>
+  )
+}
 
 export default function GlossaryChat() {
   const [open, setOpen] = useState(false)
@@ -86,7 +115,11 @@ export default function GlossaryChat() {
             )}
             {messages.map((m) => (
               <div key={m.id} className={`gg-chat-msg ${m.role}`}>
-                {m.content}
+                {m.role === 'assistant' ? (
+                  <ReactMarkdown>{m.content}</ReactMarkdown>
+                ) : (
+                  m.content
+                )}
               </div>
             ))}
             {isLoading && messages[messages.length - 1]?.role === 'user' && (

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, Fragment } from 'react'
 import { motion, MotionConfig } from 'framer-motion'
 import { track } from '@vercel/analytics'
 import QuizMe from './QuizMe'
-import GlossaryChat from './GlossaryChat'
+import GlossaryChat, { AskInline } from './GlossaryChat'
 import InlineDemo from './InlineDemos'
 
 // ────────────────────────────────────────────────────────────────────────
@@ -363,6 +363,8 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
             loud, or by quietly pointing your phone at it.
           </p>
 
+          <AskInline placement="hero" />
+
           {/* the path: a staircase you can't miss — tap a step to jump */}
           <nav className="gg-steps" aria-label="Difficulty path">
             <p className="gg-steps-label">
@@ -575,6 +577,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
                 </motion.span>
               ))}
             </div>
+            <AskInline placement="finale" />
             <p className="gg-finale-sub">
               Keep this page — it stays live after the workshop. Next time someone says a word
               that isn&apos;t on it, that&apos;s a question worth asking out loud.
