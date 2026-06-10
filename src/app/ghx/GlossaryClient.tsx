@@ -73,7 +73,13 @@ function isNew(added?: string) {
 function inWindow(s?: Support) {
   if (!s) return false
   const now = Date.now()
-  return now >= new Date(s.from).getTime() && now < new Date(s.until).getTime() + 86400 * 1000
+  // Parse ISO date strings as local midnight, not UTC
+  const [fromY, fromM, fromD] = s.from.split('-').map(Number)
+  const [untilY, untilM, untilD] = s.until.split('-').map(Number)
+  const fromTime = new Date(fromY, fromM - 1, fromD).getTime()
+  const untilTime = new Date(untilY, untilM - 1, untilD).getTime()
+  // "through July 1" means through the end of July 1 local time
+  return now >= fromTime && now < untilTime + 86400 * 1000
 }
 
 // ---- helpers ---------------------------------------------------------------
