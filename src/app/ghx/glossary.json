@@ -109,7 +109,8 @@
         },
         {
           "term": "Reasoning (extended thinking)",
-          "definition": "Modern models can think privately before answering — working through a problem step by step, then giving you the conclusion. More thinking time costs more tokens and produces noticeably better answers on hard problems."
+          "definition": "Modern models can think privately before answering — working through a problem step by step, then giving you the conclusion. More thinking time costs more tokens and produces noticeably better answers on hard problems.",
+          "embed": "reasoning"
         },
         {
           "term": "Ultrathink",
@@ -149,11 +150,13 @@
         },
         {
           "term": "Prompt",
-          "definition": "What you ask the model. The skill of prompting is mostly the skill of being clear: state the outcome you want and what “done” looks like, not the steps you'd personally take."
+          "definition": "What you ask the model. The skill of prompting is mostly the skill of being clear: state the outcome you want and what “done” looks like, not the steps you'd personally take.",
+          "embed": "prompt-upgrade"
         },
         {
           "term": "System prompt",
-          "definition": "Standing instructions the model receives before your message — its job description for the conversation. You experience it as “why Claude behaves consistently.”"
+          "definition": "Standing instructions the model receives before your message — its job description for the conversation. You experience it as “why Claude behaves consistently.”",
+          "embed": "prompt-stack"
         },
         {
           "term": "Vibe coding",
@@ -177,7 +180,13 @@
           "definition": "Deciding what goes in front of the model: which files, which documents, which instructions, in what order. Most of the difference between “AI is magic” and “AI is useless” is context engineering.",
           "embed": "context-engineering"
         }
-      ]
+      ],
+      "reading": {
+        "title": "I Am the Spark, the Bellows, and the Quench",
+        "blurb": "If AI helped, who actually wrote it? The piece to read when the authorship question starts gnawing at you.",
+        "href": "/blog/spark-bellows-quench",
+        "image": "https://zackproser.b-cdn.net/images/spark-bellows-quench-hero.webp"
+      }
     },
     {
       "id": "level-3",
@@ -213,7 +222,13 @@
           "hear": "“Run ideation first — don't burn tokens guessing.”",
           "embed": "ideation"
         }
-      ]
+      ],
+      "reading": {
+        "title": "The Interface Matters Most",
+        "blurb": "You have about ten seconds to convince a user you are already solving their problem. Why the interface beats the stack, every time.",
+        "href": "/blog/the-interface-matters-most",
+        "image": "https://zackproser.b-cdn.net/images/interface-matters-hero.webp"
+      }
     },
     {
       "id": "level-4",
@@ -260,7 +275,8 @@
         },
         {
           "term": "Retro (agent memory)",
-          "definition": "An agent reviewing its own transcript after a job: where did I get stuck, what did I repeat, what should I remember? Those notes become memories, so next time it doesn't get stuck in the same place. Teams that do this compound; teams that don't repeat themselves."
+          "definition": "An agent reviewing its own transcript after a job: where did I get stuck, what did I repeat, what should I remember? Those notes become memories, so next time it doesn't get stuck in the same place. Teams that do this compound; teams that don't repeat themselves.",
+          "embed": "retro"
         },
         {
           "term": "Autonomous (headless)",
@@ -270,7 +286,13 @@
           "term": "Eval",
           "definition": "A scored, repeatable test of AI quality — the same questions, graded the same way, run every time something changes. How you know your AI system got better instead of just different."
         }
-      ]
+      ],
+      "reading": {
+        "title": "Applied AI: Three Learnings from Shipping",
+        "blurb": "The talk version of this whole section: interface beats stack, complete the loop, automate yourself into more value.",
+        "href": "/blog/workos-applied-ai-showcase",
+        "image": "https://img.youtube.com/vi/V2PuEAeNXUU/maxresdefault.jpg"
+      }
     }
   ]
 }

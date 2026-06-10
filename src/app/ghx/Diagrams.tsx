@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // ────────────────────────────────────────────────────────────────────────
@@ -15,7 +15,7 @@ const STREAM: Array<{ text: string; kind: 'you' | 'file' | 'tok' }> = [
   { text: 'your question', kind: 'you' },
   { text: 'CLAUDE.md', kind: 'file' },
   { text: 'contract.pdf', kind: 'file' },
-  { text: 'Claude’s answer', kind: 'tok' },
+  { text: 'Claude\u2019s answer', kind: 'tok' },
   { text: 'follow-up', kind: 'you' },
   { text: 'meeting notes', kind: 'file' },
   { text: 'revised draft', kind: 'tok' },
@@ -24,34 +24,59 @@ const STREAM: Array<{ text: string; kind: 'you' | 'file' | 'tok' }> = [
   { text: 'final answer', kind: 'tok' },
 ]
 const WINDOW_SIZE = 6
+const FEED_FILES = ['Q3-budget.xlsx', 'board-deck.pptx', 'old-notes.md']
+const FEED_ASKS = ['\u201cwhat changed?\u201d', '\u201cdraft the email\u201d', '\u201cwhy that number?\u201d']
+
+interface CwItem {
+  text: string
+  kind: 'you' | 'file' | 'tok'
+  key: number
+}
 
 export function ContextWindowViz() {
-  const [cursor, setCursor] = useState(2)
+  const [items, setItems] = useState<CwItem[]>(() =>
+    STREAM.slice(0, 3).map((s, i) => ({ ...s, key: i })),
+  )
+  const [evicted, setEvicted] = useState<string | null>(null)
+  const keyRef = useRef(3)
+  const autoRef = useRef(3)
+  const fileRef = useRef(0)
+  const askRef = useRef(0)
+
+  const add = (it: { text: string; kind: 'you' | 'file' | 'tok' }) => {
+    setItems((prev) => {
+      const next = [...prev, { ...it, key: keyRef.current++ }]
+      if (next.length > WINDOW_SIZE) {
+        setEvicted(next[0].text)
+        return next.slice(1)
+      }
+      return next
+    })
+  }
 
   useEffect(() => {
-    const t = setInterval(() => setCursor((c) => c + 1), 1900)
+    const t = setInterval(() => {
+      add(STREAM[autoRef.current++ % STREAM.length])
+    }, 2600)
     return () => clearInterval(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const items = Array.from({ length: Math.min(cursor, WINDOW_SIZE) }, (_, i) => {
-    const idx = (cursor - Math.min(cursor, WINDOW_SIZE) + i) % STREAM.length
-    return { ...STREAM[idx], key: cursor - Math.min(cursor, WINDOW_SIZE) + i }
-  })
-  const full = cursor >= WINDOW_SIZE
-
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz">
       <div className="cwviz">
         <div className="cwviz-window">
-          <span className="cwviz-label">context window · the model sees only this</span>
+          <span className="cwviz-label">context window \u00b7 the model sees only this</span>
           <AnimatePresence mode="popLayout">
             {items.map((it, i) => (
               <motion.span
                 layout
                 key={it.key}
-                className={`tok ${it.kind === 'tok' ? '' : it.kind} ${full && i === 0 ? 'old' : ''}`}
+                className={`tok ${it.kind === 'tok' ? '' : it.kind} ${
+                  items.length === WINDOW_SIZE && i === 0 ? 'old' : ''
+                }`}
                 initial={{ opacity: 0, y: 14, scale: 0.9 }}
-                animate={{ opacity: full && i === 0 ? 0.45 : 1, y: 0, scale: 1 }}
+                animate={{ opacity: items.length === WINDOW_SIZE && i === 0 ? 0.45 : 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -16, scale: 0.85, transition: { duration: 0.2 } }}
                 transition={{ duration: 0.45 }}
               >
@@ -60,9 +85,26 @@ export function ContextWindowViz() {
             ))}
           </AnimatePresence>
         </div>
+        <div className="cw-buttons">
+          <button
+            type="button"
+            onClick={() => add({ text: FEED_FILES[fileRef.current++ % FEED_FILES.length], kind: 'file' })}
+          >
+            + drop in a file
+          </button>
+          <button
+            type="button"
+            onClick={() => add({ text: FEED_ASKS[askRef.current++ % FEED_ASKS.length], kind: 'you' })}
+          >
+            + ask something
+          </button>
+          <span className="cw-evicted">
+            {evicted ? `just fell out: ${evicted}` : 'fill it up \u2014 watch what happens'}
+          </span>
+        </div>
       </div>
       <p className="viz-caption">
-        when it fills, the <strong>oldest falls out</strong> — “it forgot” usually means “it scrolled off”
+        when it fills, the <strong>oldest falls out</strong> \u2014 \u201cit forgot\u201d usually means \u201cit scrolled off\u201d
       </p>
     </div>
   )

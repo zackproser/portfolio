@@ -28,12 +28,20 @@ interface Term {
   embed?: string
 }
 
+interface Reading {
+  title: string
+  blurb: string
+  href: string
+  image: string
+}
+
 interface Section {
   id: string
   level: string
   name: string
   intro: string
   terms: Term[]
+  reading?: Reading
 }
 
 interface Glossary {
@@ -188,6 +196,31 @@ function useScrollSpy(ids: string[]) {
   return active
 }
 
+// Counts unique term entries that have scrolled into view — feeds the
+// "n/47" chip in the jump bar and unlocks the finale at 100%.
+function useSeenTerms(filterKey: string) {
+  const [seen, setSeen] = useState<Set<string>>(() => new Set())
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll<HTMLElement>('.gg-entry[id]'))
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const hits = entries.filter((e) => e.isIntersecting).map((e) => (e.target as HTMLElement).id)
+        if (hits.length) {
+          setSeen((prev) => {
+            const next = new Set(prev)
+            hits.forEach((h) => next.add(h))
+            return next.size === prev.size ? prev : next
+          })
+        }
+      },
+      { threshold: 0.6 },
+    )
+    els.forEach((el) => obs.observe(el))
+    return () => obs.disconnect()
+  }, [filterKey])
+  return seen
+}
+
 // Short labels so all five levels + search fit the jump bar on one line.
 const JUMP_LABELS: Record<string, string> = {
   'level-0': 'Computer',
@@ -226,6 +259,8 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
     (n, s) => n + s.terms.filter((t) => t.embed).length,
     0,
   )
+  const seen = useSeenTerms(q)
+  const fluent = seen.size >= total
 
   return (
     <div className="ghx-glossary">
@@ -280,6 +315,9 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
               <span className="lvl">L{i}</span> {JUMP_LABELS[s.id] ?? s.name}
             </a>
           ))}
+          <span className={`gg-seen ${fluent ? 'fluent' : ''}`} title="Terms you've scrolled past">
+            {fluent ? 'fluent ✓' : `${seen.size}/${total}`}
+          </span>
           <div className="gg-search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="7" />
@@ -354,8 +392,63 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
                 </motion.article>
               )
             })}
+
+            {section.reading && !q && (
+              <motion.a
+                href={section.reading.href}
+                className="gg-reading"
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.45, ease: 'easeOut' }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={section.reading.image} alt="" loading="lazy" />
+                <span className="gg-reading-body">
+                  <span className="gg-reading-kicker">go deeper · from Zack&apos;s writing</span>
+                  <strong>{section.reading.title}</strong>
+                  <em>{section.reading.blurb}</em>
+                  <span className="gg-reading-cta">Read it →</span>
+                </span>
+              </motion.a>
+            )}
           </section>
         ))}
+
+        {/* finale */}
+        {!q && (
+          <motion.section
+            className="gg-finale"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+          >
+            <p className="gg-kicker">
+              <span className="ghx-mark">GHX</span> you made it
+            </p>
+            <h2>
+              That&apos;s the whole vocabulary. <em>You speak AI now.</em>
+            </h2>
+            <div className="gg-finale-levels">
+              {glossary.sections.map((s, i) => (
+                <motion.span
+                  key={s.id}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: 0.15 * i }}
+                >
+                  ✓ L{i} {JUMP_LABELS[s.id]}
+                </motion.span>
+              ))}
+            </div>
+            <p className="gg-finale-sub">
+              Keep this page — it stays live after the workshop. Next time someone says a word
+              that isn&apos;t on it, that&apos;s a question worth asking out loud.
+            </p>
+          </motion.section>
+        )}
 
         {/* footer */}
         <footer className="gg-foot">

@@ -14,6 +14,10 @@ import {
   ContextEngineeringViz,
   VerificationValidationViz,
   SubagentViz,
+  ReasoningViz,
+  PromptStackViz,
+  RetroMemoryViz,
+  PromptUpgradeViz,
 } from './Visuals'
 import TerminalSim from './TerminalSim'
 
@@ -130,6 +134,14 @@ export default function InlineDemo({ kind }: { kind: string }) {
       return <VerificationValidationViz />
     case 'subagent':
       return <SubagentViz />
+    case 'reasoning':
+      return <ReasoningViz />
+    case 'prompt-stack':
+      return <PromptStackViz />
+    case 'prompt-upgrade':
+      return <PromptUpgradeViz />
+    case 'retro':
+      return <RetroMemoryViz />
     case 'embeddings':
       return (
         <TryPanel

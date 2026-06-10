@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from 'react'
 // ────────────────────────────────────────────────────────────────────────
 
 interface Line {
-  kind: 'cmd' | 'out' | 'claude' | 'hint-inline'
+  kind: 'cmd' | 'out' | 'claude' | 'result' | 'hint-inline'
   text: string
 }
 
@@ -28,6 +28,10 @@ const CLAUDE_SCRIPT: Array<{ text: string; delay: number; kind: Line['kind'] }> 
   { text: '● Read meeting-notes.md (84 lines)', delay: 1100, kind: 'claude' },
   { text: '● Read vendor-list.csv — matched 3 attendees to vendors', delay: 900, kind: 'claude' },
   { text: '✓ Wrote follow-ups.md — 3 drafts ready for your review', delay: 1200, kind: 'claude' },
+  { text: 'Here’s where things stand:', delay: 1100, kind: 'result' },
+  { text: '· Budget approved for the Q3 pilot — legal wants clause 7 reworded first', delay: 700, kind: 'result' },
+  { text: '· Deadline: revised SOW to Meditrust by Friday', delay: 700, kind: 'result' },
+  { text: '· Drafted: Meditrust (SOW), CarePoint (pricing), Stillwater (demo invite)', delay: 700, kind: 'result' },
 ]
 
 export default function TerminalSim() {
@@ -147,8 +151,11 @@ export default function TerminalSim() {
         )}
         {stage === 'done' && (
           <div className="gg-term-line moral">
-            That&apos;s the whole point: Claude Code lives where your files live. It can read
-            them, change them, and work across an entire codebase — which no chat window can do.
+            Count the apps you never opened: no doc, no spreadsheet, no PDF viewer, no
+            copy-paste between them. You asked once, in plain words, in the place where the
+            files live — and the finished work appeared. Effective AI use is{' '}
+            <strong>compression</strong>: the distance between your ask and the outcome
+            collapses to a single sentence.
           </div>
         )}
       </div>

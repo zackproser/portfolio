@@ -588,3 +588,163 @@
   font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: #fff;
   background: var(--accent); border-radius: 8px; padding: 10px 16px;
 }
+
+/* ---------- context window feed buttons ---------- */
+.cw-buttons { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.cw-buttons button {
+  font-family: var(--font-mono); font-size: 11px; color: var(--accent);
+  border: 1px dashed var(--accent); background: transparent; border-radius: 999px;
+  padding: 5px 12px; cursor: pointer; transition: all .2s ease;
+}
+.cw-buttons button:hover { background: var(--accent-soft); }
+.cw-evicted {
+  margin-left: auto; font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--fg-subtle);
+}
+
+/* ---------- reasoning ---------- */
+.rs-answer { margin: 0 0 6px; font-family: var(--font-serif); font-size: 13.5px; color: var(--fg); min-height: 3em; }
+.rs-dots { color: var(--fg-subtle); font-style: italic; }
+.rs-meta { margin: 0; font-size: 10px; color: var(--good); }
+.rs-meta.bad-note { color: var(--bad); }
+
+/* ---------- prompt stack ---------- */
+.psviz { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.ps-stack { display: flex; flex-direction: column-reverse; gap: 5px; min-width: 240px; }
+.ps-layer {
+  border: 1px solid var(--border-strong); background: var(--bg-secondary);
+  border-radius: 8px; padding: 8px 13px; font-family: var(--font-mono);
+}
+.ps-layer strong { display: block; font-size: 11.5px; color: var(--fg); }
+.ps-layer em { font-style: normal; font-size: 9.5px; color: var(--fg-muted); }
+.ps-layer.top { border-color: var(--accent); background: var(--accent-soft); }
+.ps-model {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: #fff;
+  background: var(--accent); border-radius: 8px; padding: 12px 16px; text-align: center;
+}
+.ps-model em { font-style: normal; font-weight: 400; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: rgb(255 255 255 / .85); }
+
+/* ---------- retro / memory ---------- */
+.rmviz { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.rm-run { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.rm-label {
+  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--fg-subtle); font-weight: 700; min-width: 42px;
+}
+.rm-step {
+  width: 26px; height: 26px; border-radius: 6px; display: inline-flex;
+  align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted);
+  border: 1px solid var(--border-strong); background: var(--bg-secondary);
+  transition: all .3s ease;
+}
+.rm-step.ok { color: var(--good); border-color: var(--good); }
+.rm-step.stuck { color: var(--bad); border-color: var(--bad); animation: gg-pulse 1.2s ease infinite; }
+.rm-note { font-style: normal; font-family: var(--font-mono); font-size: 9.5px; color: var(--fg-muted); }
+.rm-memory {
+  font-family: var(--font-mono); font-size: 10.5px; color: var(--fg);
+  border: 1px dashed var(--accent); background: var(--accent-soft);
+  border-radius: 999px; padding: 5px 14px;
+}
+
+/* ---------- prompt upgrade (interactive) ---------- */
+.puviz { max-width: 520px; margin: 0 auto; }
+.pu-tabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
+.pu-tab {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em;
+  color: var(--fg-muted); border: 1px solid var(--border-strong);
+  background: transparent; border-radius: 999px; padding: 6px 14px; cursor: pointer;
+  transition: all .2s ease;
+}
+.pu-tab.on { color: #fff; background: var(--accent); border-color: var(--accent); }
+.pu-prompt {
+  margin: 0 0 10px; font-family: var(--font-serif); font-style: italic;
+  font-size: 14.5px; color: var(--fg); text-align: center;
+}
+.pu-out { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.pu-out li {
+  font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted);
+  background: var(--bg-secondary); border-radius: 6px; padding: 6px 10px;
+}
+.pu-out li.good { color: var(--good); }
+.pu-verdict { margin: 10px 0 0; text-align: center; font-size: 13px; color: var(--fg-muted); }
+.pu-verdict.good { color: var(--good); font-weight: 600; }
+
+/* ---------- seen counter ---------- */
+.gg-seen {
+  margin-left: auto; flex-shrink: 0;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em;
+  color: var(--fg-subtle); border: 1px solid var(--border);
+  border-radius: 999px; padding: 5px 10px; white-space: nowrap;
+}
+.gg-seen.fluent { color: var(--good); border-color: var(--good); }
+.gg-jumpbar-inner .gg-search { margin-left: 0; }
+
+/* ---------- finale ---------- */
+.gg-finale {
+  margin-top: 80px; padding: 36px 32px;
+  border: 1px solid var(--border-strong); border-radius: 14px;
+  background: var(--bg-elevated); text-align: center;
+}
+.gg-finale .gg-kicker { justify-content: center; }
+.gg-finale h2 {
+  margin: 12px 0 0; font-family: var(--font-serif); font-weight: 800;
+  font-size: clamp(26px, 3.4vw, 38px); letter-spacing: -.02em; color: var(--fg);
+  text-wrap: balance;
+}
+.gg-finale h2 em { font-style: normal; color: var(--accent); }
+.gg-finale-levels {
+  margin-top: 18px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+}
+.gg-finale-levels span {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em;
+  color: var(--good); border: 1px solid var(--good);
+  border-radius: 999px; padding: 5px 12px;
+}
+.gg-finale-sub {
+  margin: 18px auto 0; max-width: 48ch; font-size: 14.5px; line-height: 1.6;
+  color: var(--fg-muted);
+}
+
+/* terminal result block (Claude's actual analysis output) */
+.gg-term-line.result {
+  color: #e2e8f0; padding-left: 12px; margin-left: 3px;
+  border-left: 2px solid rgb(241 96 37 / .55);
+}
+.gg-term-line.moral strong { color: #F89B6C; }
+
+/* ---------- go-deeper reading cards ---------- */
+.gg-reading {
+  display: grid; grid-template-columns: 200px 1fr; gap: 0;
+  margin-top: 28px; border: 1px solid var(--border-strong); border-radius: 12px;
+  overflow: hidden; background: var(--bg-elevated); text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.gg-reading:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 10px 26px -12px rgb(0 0 0 / .25);
+}
+.gg-reading img {
+  width: 100%; height: 100%; object-fit: cover; display: block; min-height: 150px;
+}
+.gg-reading-body { display: flex; flex-direction: column; gap: 6px; padding: 18px 20px; }
+.gg-reading-kicker {
+  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--accent); font-weight: 700;
+}
+.gg-reading-body strong {
+  font-family: var(--font-serif); font-size: 19px; font-weight: 800;
+  letter-spacing: -.01em; color: var(--fg); line-height: 1.2;
+}
+.gg-reading-body em {
+  font-style: normal; font-size: 13.5px; line-height: 1.55; color: var(--fg-muted);
+}
+.gg-reading-cta {
+  margin-top: 4px; font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 700;
+}
+@media (max-width: 600px) {
+  .gg-reading { grid-template-columns: 1fr; }
+  .gg-reading img { max-height: 150px; }
+}

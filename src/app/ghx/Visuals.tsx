@@ -464,3 +464,204 @@ export function SubagentViz() {
     </div>
   )
 }
+
+// ---- Reasoning: instant vs extended thinking ------------------------------------
+
+export function ReasoningViz() {
+  const phase = usePhase(6, 1200) // 0-1 instant answers · 2-4 thinking dots · 5 payoff
+  const thinking = Math.min(Math.max(phase - 1, 0), 3)
+  return (
+    <div className="gg-viz" aria-hidden="true">
+      <div className="vv-row">
+        <div className={`vv-card ${phase <= 1 ? 'on' : ''}`}>
+          <h6>instant answer</h6>
+          <p className="rs-answer">“Looks fine to me.”</p>
+          <p className="rs-meta bad-note">✗ missed that clause 7 conflicts with the renewal date</p>
+        </div>
+        <div className={`vv-card ${phase >= 2 ? 'on' : ''}`}>
+          <h6>extended thinking</h6>
+          <p className="rs-answer">
+            {phase < 5 ? (
+              <span className="rs-dots">{'thinking' + '.'.repeat(thinking + 1)}</span>
+            ) : (
+              '“Clause 7 conflicts with the renewal date — flag before signing.”'
+            )}
+          </p>
+          <p className="rs-meta">{phase >= 5 ? '✓ caught it · more tokens, more time, better answer' : 'working through it privately…'}</p>
+        </div>
+      </div>
+      <p className="viz-caption">
+        hard problems deserve thinking time — that&apos;s what <strong>ultrathink</strong> buys you
+      </p>
+    </div>
+  )
+}
+
+// ---- System prompt: the message stack --------------------------------------------
+
+const STACK_LAYERS = [
+  { name: 'system prompt', desc: 'its job description — set by the builder', cls: 'base' },
+  { name: 'CLAUDE.md + memory', desc: 'how your team works — set by you, once', cls: 'mid' },
+  { name: 'your message', desc: 'the ask — what you type', cls: 'top' },
+]
+
+export function PromptStackViz() {
+  const phase = usePhase(5, 1300) // 0-2 layers stack · 3 all · 4 → model
+  return (
+    <div className="gg-viz" aria-hidden="true">
+      <div className="psviz">
+        <div className="ps-stack">
+          {STACK_LAYERS.map((l, i) => (
+            <motion.div
+              key={l.name}
+              className={`ps-layer ${l.cls}`}
+              initial={false}
+              animate={{ opacity: phase >= i ? 1 : 0.15, y: phase >= i ? 0 : -8 }}
+              transition={{ duration: 0.45, ease: 'easeOut' }}
+            >
+              <strong>{l.name}</strong>
+              <em>{l.desc}</em>
+            </motion.div>
+          ))}
+        </div>
+        <motion.span
+          className="tiviz-arrow"
+          animate={{ opacity: phase >= 4 ? 1 : 0.25 }}
+        >
+          →
+        </motion.span>
+        <motion.span
+          className="ps-model"
+          animate={{ scale: phase >= 4 ? 1.05 : 1 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+        >
+          model reads
+          <br />
+          <em>all of it, every time</em>
+        </motion.span>
+      </div>
+      <p className="viz-caption">
+        your message rides on top of <strong>standing instructions</strong> — that&apos;s why Claude behaves consistently
+      </p>
+    </div>
+  )
+}
+
+// ---- Retro / agent memory ----------------------------------------------------------
+
+export function RetroMemoryViz() {
+  const phase = usePhase(6, 1300) // 0-1 run1 stuck · 2 retro writes · 3-4 run2 sails · 5 done
+  const run1Step = phase === 0 ? 2 : 3
+  return (
+    <div className="gg-viz" aria-hidden="true">
+      <div className="rmviz">
+        <div className="rm-run">
+          <span className="rm-label">run 1</span>
+          {[1, 2, 3, 4, 5].map((s) => (
+            <span
+              key={s}
+              className={`rm-step ${s < run1Step ? 'ok' : s === 3 && phase >= 1 ? 'stuck' : ''}`}
+            >
+              {s === 3 && phase >= 1 ? '✗' : s < run1Step ? '✓' : s}
+            </span>
+          ))}
+          <em className="rm-note">{phase >= 1 ? 'stuck at step 3 — twice' : 'working…'}</em>
+        </div>
+        <motion.div
+          className="rm-memory"
+          animate={{ opacity: phase >= 2 ? 1 : 0, scale: phase >= 2 ? 1 : 0.9 }}
+          transition={{ duration: 0.4 }}
+        >
+          retro → memory: “step 3 needs the auth header set first”
+        </motion.div>
+        <div className="rm-run">
+          <span className="rm-label">run 2</span>
+          {[1, 2, 3, 4, 5].map((s) => (
+            <span key={s} className={`rm-step ${phase >= 3 && s <= (phase - 2) * 2 ? 'ok' : ''}`}>
+              {phase >= 3 && s <= (phase - 2) * 2 ? '✓' : s}
+            </span>
+          ))}
+          <em className="rm-note">{phase >= 5 ? 'sailed through — never stuck there again' : phase >= 3 ? 'memory loaded…' : 'queued'}</em>
+        </div>
+      </div>
+      <p className="viz-caption">
+        agents that review their own transcripts <strong>compound</strong> — the rest repeat themselves
+      </p>
+    </div>
+  )
+}
+
+// ---- Prompt: vague vs engineered (interactive) ---------------------------------------
+
+const PU_MODES = [
+  {
+    id: 'vague',
+    tab: 'the vague ask',
+    prompt: '“make the report better”',
+    out: [
+      '? better how — shorter? friendlier? more detail?',
+      '~ rewrites everything in a generic “professional” voice',
+      '~ touches the one table you wanted left alone',
+    ],
+    verdict: 'It has to guess. You get mush, then you iterate for an hour.',
+    good: false,
+  },
+  {
+    id: 'engineered',
+    tab: 'the engineered ask',
+    prompt:
+      '“Tighten the executive summary to one page for the CFO. Keep the renewal-risk table untouched. Done = she can make the call in five minutes.”',
+    out: [
+      '✓ summary cut to one page, CFO framing',
+      '✓ renewal-risk table preserved exactly',
+      '✓ checks itself against your “done” before replying',
+    ],
+    verdict: 'Outcome + audience + what done looks like. One pass.',
+    good: true,
+  },
+]
+
+export function PromptUpgradeViz() {
+  const [mode, setMode] = useState(0)
+  const m = PU_MODES[mode]
+  return (
+    <div className="gg-viz">
+      <div className="puviz">
+        <div className="pu-tabs">
+          {PU_MODES.map((t, i) => (
+            <button
+              key={t.id}
+              type="button"
+              className={`pu-tab ${mode === i ? 'on' : ''}`}
+              onClick={() => setMode(i)}
+            >
+              {t.tab}
+            </button>
+          ))}
+        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={m.id}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+          >
+            <p className="pu-prompt">{m.prompt}</p>
+            <ul className="pu-out">
+              {m.out.map((o) => (
+                <li key={o} className={m.good ? 'good' : 'meh'}>
+                  {o}
+                </li>
+              ))}
+            </ul>
+            <p className={`pu-verdict ${m.good ? 'good' : ''}`}>{m.verdict}</p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+      <p className="viz-caption">
+        tap both — same model, <strong>wildly different result</strong>; the difference is the ask
+      </p>
+    </div>
+  )
+}
