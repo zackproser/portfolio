@@ -24,8 +24,9 @@ const SUGGESTIONS = [
 export function AskInline({ placement }: { placement: string }) {
   const [q, setQ] = useState('')
   const go = () => {
-    track('ghx_chat_question', { q: q.slice(0, 100) || '(opened)', via: placement })
-    window.dispatchEvent(new CustomEvent('ghx-ask', { detail: q.trim() }))
+    window.dispatchEvent(
+      new CustomEvent('ghx-ask', { detail: { q: q.trim(), via: placement } }),
+    )
     setQ('')
   }
   return (
@@ -56,12 +57,10 @@ export default function GlossaryChat() {
   // search empty-state (or anything else) can open + seed the chat
   useEffect(() => {
     const onAsk = (e: Event) => {
-      const q = (e as CustomEvent<string>).detail
+      const { q, via } = (e as CustomEvent<{ q: string; via: string }>).detail
       setOpen(true)
-      if (q) {
-        track('ghx_chat_question', { q: q.slice(0, 100), via: 'search' })
-        void append({ role: 'user', content: q })
-      }
+      track('ghx_chat_question', { q: q ? q.slice(0, 100) : '(opened)', via })
+      if (q) void append({ role: 'user', content: q })
     }
     window.addEventListener('ghx-ask', onAsk)
     return () => window.removeEventListener('ghx-ask', onAsk)

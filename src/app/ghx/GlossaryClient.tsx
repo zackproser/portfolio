@@ -458,7 +458,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
               type="button"
               className="gg-empty-ask"
               onClick={() =>
-                window.dispatchEvent(new CustomEvent('ghx-ask', { detail: query.trim() }))
+                window.dispatchEvent(new CustomEvent('ghx-ask', { detail: { q: query.trim(), via: 'search' } }))
               }
             >
               ask the glossary: “{query}”
