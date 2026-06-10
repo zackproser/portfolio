@@ -51,7 +51,7 @@ export default function GlossaryChat() {
   const [open, setOpen] = useState(false)
   const bodyRef = useRef<HTMLDivElement>(null)
 
-  const { messages, input, setInput, handleInputChange, handleSubmit, isLoading, append } =
+  const { messages, input, setInput, handleInputChange, handleSubmit, isLoading, append, error } =
     useChat({ api: '/api/ghx-chat' })
 
   // search empty-state (or anything else) can open + seed the chat
@@ -123,6 +123,12 @@ export default function GlossaryChat() {
             ))}
             {isLoading && messages[messages.length - 1]?.role === 'user' && (
               <div className="gg-chat-msg assistant thinking">…</div>
+            )}
+            {error && (
+              <div className="gg-chat-msg assistant error">
+                That one didn&apos;t go through — give it a few seconds and try again. If it
+                keeps happening, a facilitator is never far away.
+              </div>
             )}
           </div>
 

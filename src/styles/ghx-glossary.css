@@ -1035,3 +1035,27 @@
   font-family: var(--font-mono); font-size: 12px;
   background: var(--accent-soft); border-radius: 4px; padding: 1px 5px;
 }
+
+/* ---------- share loop ---------- */
+.gg-entry h3 .gg-share {
+  margin-left: auto; flex-shrink: 0;
+  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .1em;
+  text-transform: uppercase; font-weight: 700; color: var(--fg-subtle);
+  background: transparent; border: 1px dashed var(--border-strong);
+  border-radius: 999px; padding: 4px 11px; cursor: pointer;
+  opacity: 0; transition: opacity .12s ease, color .12s ease, border-color .12s ease;
+}
+.gg-entry:hover h3 .gg-share { opacity: 1; }
+.gg-entry h3 .gg-share:hover { color: var(--accent); border-color: var(--accent); }
+@media (hover: none) {
+  .gg-entry h3 .gg-share { opacity: 1; }
+}
+.gg-share-page {
+  margin-top: 20px; font-family: var(--font-mono); font-size: 12px;
+  letter-spacing: .08em; text-transform: uppercase; font-weight: 700;
+  color: var(--level); background: transparent;
+  border: 1px solid var(--level); border-radius: 999px;
+  padding: 11px 22px; cursor: pointer; transition: all .15s ease;
+}
+.gg-share-page:hover { color: #fff; background: var(--level); }
+.gg-chat-msg.error { border: 1px dashed var(--bad); color: var(--fg-muted); }

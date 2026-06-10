@@ -328,10 +328,34 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
+  // share loop: stamp URLs with ?src=share so arrivals attribute themselves
+  // (ghx_visit reads ?src=), fire ghx_share on the way out.
+  const [copied, setCopied] = useState<string | null>(null)
+  const share = async (what: string, slug?: string) => {
+    const url = `${window.location.origin}/ghx?src=share${slug ? `#${slug}` : ''}`
+    track('ghx_share', { what })
+    if (typeof navigator.share === 'function') {
+      try {
+        await navigator.share({ title: 'The AI Glossary — GHX × Mind On Fire', url })
+        return
+      } catch {
+        return // user closed the native sheet
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(what)
+      setTimeout(() => setCopied(null), 2000)
+    } catch {}
+  }
+
   // ---- lightweight analytics (renewal-deck fuel) ----
   useEffect(() => {
     const src = new URLSearchParams(window.location.search).get('src')
-    track('ghx_visit', { src: src ?? 'direct' })
+    track('ghx_visit', {
+      src: src ?? 'direct',
+      term: window.location.hash.slice(1) || '(none)',
+    })
   }, [])
   useEffect(() => {
     if (q.length < 2) return
@@ -508,6 +532,14 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
                     <a className="anchor" href={`#${slug}`} aria-label={`Link to ${t.term}`}>
                       #
                     </a>
+                    <button
+                      type="button"
+                      className="gg-share"
+                      onClick={() => share(slug, slug)}
+                      aria-label={`Share a link to ${t.term}`}
+                    >
+                      {copied === slug ? 'copied ✓' : 'share'}
+                    </button>
                   </h3>
                   <p className="gg-def">
                     <CrossLinkedText text={t.definition} selfSlug={slug} index={xref} />
@@ -585,6 +617,9 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
               Keep this page — it stays live after the workshop. Next time someone says a word
               that isn&apos;t on it, that&apos;s a question worth asking out loud.
             </p>
+            <button type="button" className="gg-share-page" onClick={() => share('page')}>
+              {copied === 'page' ? 'Link copied ✓' : 'Share this page inside GHX →'}
+            </button>
             <QuizMe terms={allTerms} />
           </motion.section>
         )}

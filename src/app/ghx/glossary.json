@@ -157,6 +157,12 @@
           "added": "2026-06-10"
         },
         {
+          "term": "ChatGPT (and how Claude differs)",
+          "definition": "OpenAI's chat product — the household name. Claude, from Anthropic, is the same category of tool: a frontier model behind an interface. They differ in personality, strengths, and what's built around them; today runs on Claude because of Claude Code — the version that works where your files live — and because that's what GHX has enterprise access to. If you've used ChatGPT, most of your instincts transfer.",
+          "hear": "“Is this like ChatGPT?” — yes, and the rest of this page is the longer answer.",
+          "added": "2026-06-10"
+        },
+        {
           "term": "Prompt",
           "definition": "What you ask the model. The skill of prompting is mostly the skill of being clear: state the outcome you want and what “done” looks like, not the steps you'd personally take.",
           "embed": "prompt-upgrade"

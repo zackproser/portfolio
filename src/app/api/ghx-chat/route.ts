@@ -94,6 +94,9 @@ export async function POST(req: Request) {
     system: buildSystemPrompt(),
     messages: messages.slice(-12),
     maxTokens: 450,
+    onFinish: ({ text }) => {
+      console.log(`[ghx-chat] a: ${text.slice(0, 400)}`)
+    },
   })
 
   return result.toDataStreamResponse()
