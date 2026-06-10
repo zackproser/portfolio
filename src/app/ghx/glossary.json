@@ -12,8 +12,9 @@
       "terms": [
         {
           "term": "Terminal",
-          "definition": "A window where you type instructions to your computer instead of clicking. It looks intimidating and is genuinely simple: you type, you press Enter, the computer answers. Claude Code runs here.",
-          "hear": "“Open a terminal and type claude.”"
+          "definition": "A window where you type instructions to your computer instead of hunting through menus. It looks intimidating and is genuinely simple: you type, you press Enter, the computer answers. Developers prefer it because asking is faster than clicking — and it matters double now, because typed commands are the interface an AI can drive natively. Claude Code runs here, in the same place your files live, and that's exactly what makes it the most powerful version of Claude. Try it:",
+          "hear": "“Open a terminal and type claude.”",
+          "embed": "terminal"
         },
         {
           "term": "Spotlight",
@@ -34,7 +35,8 @@
         {
           "term": "Repository (repo)",
           "definition": "A project folder that remembers every change ever made in it — what changed, who changed it, when, and why. Nothing in a repo is ever truly lost or overwritten, which makes it a safe sandbox. It's also the perfect container to point Claude at.",
-          "hear": "“It's in the repo — just point Claude at it.”"
+          "hear": "“It's in the repo — just point Claude at it.”",
+          "embed": "repo-history"
         },
         {
           "term": "Git",
@@ -93,11 +95,13 @@
         },
         {
           "term": "Inference",
-          "definition": "A model producing an answer. Training is how a model gets built (months, data centers); inference is using it (every time you hit Enter). When people say “inference is expensive,” they mean answering requires serious computing power."
+          "definition": "Two phases. Training: the model reads an enormous share of everything humans have ever written — in a loop, over and over, adjusting billions of internal dials until its predictions stop being wrong. That takes months and data centers. Inference: the dials freeze, and you use the trained network to make new predictions — every single time you press Enter. The predictions just happen to be insanely useful. Watch:",
+          "embed": "training-inference"
         },
         {
           "term": "Hallucination",
-          "definition": "When a model states something false with full confidence — citing a document it never read, inventing a number. Far rarer in current frontier models, and largely preventable: give the model the real source material and ask it to verify its work against something checkable."
+          "definition": "When a model states something false with full confidence — citing a document it never read, inventing a number. Far rarer in current frontier models, and largely preventable: give the model the real source material and ask it to verify its work against something checkable.",
+          "embed": "hallucination"
         },
         {
           "term": "Frontier model",
@@ -140,7 +144,8 @@
       "terms": [
         {
           "term": "Claude vs. Claude.ai vs. Claude Code vs. Cowork",
-          "definition": "Claude is the model family. Claude.ai is the chat website and app — talking. Claude Code is Claude in your terminal with access to your files — doing. Cowork is Claude with access to a folder, built for people who don't live in a terminal: a great on-ramp, with less power than Claude Code. When you outgrow Cowork's limits, Claude Code is the answer."
+          "definition": "Claude is the model family. Claude.ai is the chat website and app — talking. Claude Code is Claude in your terminal with access to your files — doing. Cowork is Claude with access to a folder, built for people who don't live in a terminal: a great on-ramp, with less power than Claude Code. When you outgrow Cowork's limits, Claude Code is the answer.",
+          "embed": "product-ladder"
         },
         {
           "term": "Prompt",
@@ -185,11 +190,13 @@
         },
         {
           "term": "MCP (Model Context Protocol)",
-          "definition": "The standard connector that plugs Claude into other software — Slack, Notion, your database, your CRM. One plug standard, adopted across the industry, so any AI can use any MCP-wired system. When someone asks “is there an MCP for that?” they're asking “can Claude reach that system?”"
+          "definition": "The standard connector that plugs Claude into other software — Slack, Notion, your database, your CRM. One plug standard, adopted across the industry, so any AI can use any MCP-wired system. When someone asks “is there an MCP for that?” they're asking “can Claude reach that system?”",
+          "embed": "mcp"
         },
         {
           "term": "Skill",
-          "definition": "A reusable playbook, written in plain language, that teaches Claude to do a specific task your way — “how we write release notes,” “how we review a contract.” Written once, shared with everyone, improved over time. The five skills you're taking home today are exactly this."
+          "definition": "A reusable playbook, written in plain language, that teaches Claude to do a specific task your way — “how we write release notes,” “how we review a contract.” Written once, shared with everyone, improved over time. The five skills you're taking home today are exactly this.",
+          "embed": "skill"
         },
         {
           "term": "Plugin",
@@ -202,7 +209,8 @@
         {
           "term": "Ideation (a.k.a. “grill me”)",
           "definition": "A skill that interviews you, relentlessly, until it's confident it understands what you actually want — before any work starts. GHX engineering calls theirs “grill me.” It's the cheapest insurance there is against an AI confidently building the wrong thing, and it's the first thing we'll run today.",
-          "hear": "“Run ideation first — don't burn tokens guessing.”"
+          "hear": "“Run ideation first — don't burn tokens guessing.”",
+          "embed": "ideation"
         }
       ]
     },

@@ -40,7 +40,7 @@ function findChrome() {
 
 function fetchQRCode(url, outputPath) {
   return new Promise((resolve, reject) => {
-    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1024x1024&data=${encodeURIComponent(url)}`
     https
       .get(qrApiUrl, (res) => {
         if (res.statusCode !== 200) {
@@ -182,9 +182,10 @@ const html = `<!doctype html>
 const htmlPath = path.join(outDir, 'glossary-print.html')
 fs.writeFileSync(htmlPath, html)
 
-// Generate QR code image before creating PDF
+// QR code: a committed asset — only fetch if missing, so exports work offline
+// and don't clobber the checked-in high-res version.
 const qrPath = path.join(outDir, 'qr-glossary.png')
-await fetchQRCode(LIVE_URL, qrPath)
+if (!fs.existsSync(qrPath)) await fetchQRCode(LIVE_URL, qrPath)
 
 execFileSync(CHROME, [
   '--headless',

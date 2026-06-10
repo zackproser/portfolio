@@ -3,6 +3,16 @@
 import { useState, type ReactNode } from 'react'
 import dynamic from 'next/dynamic'
 import { ContextWindowViz, AgentLoopViz, OrchestratorViz } from './Diagrams'
+import {
+  TrainingInferenceViz,
+  RepoHistoryViz,
+  ProductLadderViz,
+  McpViz,
+  SkillShareViz,
+  IdeationViz,
+  HallucinationViz,
+} from './Visuals'
+import TerminalSim from './TerminalSim'
 
 // ────────────────────────────────────────────────────────────────────────
 // "Try it right here" panels for the GHX glossary. These embed the REAL
@@ -95,6 +105,22 @@ export default function InlineDemo({ kind }: { kind: string }) {
       return <AgentLoopViz />
     case 'orchestrator':
       return <OrchestratorViz />
+    case 'terminal':
+      return <TerminalSim />
+    case 'training-inference':
+      return <TrainingInferenceViz />
+    case 'repo-history':
+      return <RepoHistoryViz />
+    case 'product-ladder':
+      return <ProductLadderViz />
+    case 'mcp':
+      return <McpViz />
+    case 'skill':
+      return <SkillShareViz />
+    case 'ideation':
+      return <IdeationViz />
+    case 'hallucination':
+      return <HallucinationViz />
     case 'embeddings':
       return (
         <TryPanel
