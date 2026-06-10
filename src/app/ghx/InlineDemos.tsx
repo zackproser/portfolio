@@ -11,6 +11,9 @@ import {
   SkillShareViz,
   IdeationViz,
   HallucinationViz,
+  ContextEngineeringViz,
+  VerificationValidationViz,
+  SubagentViz,
 } from './Visuals'
 import TerminalSim from './TerminalSim'
 
@@ -121,6 +124,12 @@ export default function InlineDemo({ kind }: { kind: string }) {
       return <IdeationViz />
     case 'hallucination':
       return <HallucinationViz />
+    case 'context-engineering':
+      return <ContextEngineeringViz />
+    case 'verification':
+      return <VerificationValidationViz />
+    case 'subagent':
+      return <SubagentViz />
     case 'embeddings':
       return (
         <TryPanel

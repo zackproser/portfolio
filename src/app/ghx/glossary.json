@@ -174,7 +174,8 @@
         },
         {
           "term": "Context engineering",
-          "definition": "Deciding what goes in front of the model: which files, which documents, which instructions, in what order. Most of the difference between “AI is magic” and “AI is useless” is context engineering."
+          "definition": "Deciding what goes in front of the model: which files, which documents, which instructions, in what order. Most of the difference between “AI is magic” and “AI is useless” is context engineering.",
+          "embed": "context-engineering"
         }
       ]
     },
@@ -236,7 +237,8 @@
         },
         {
           "term": "Subagent",
-          "definition": "An agent that an agent spins up to handle a piece of the work — research this, summarize that — in parallel, each with its own clean context. How big jobs stay fast and focused."
+          "definition": "An agent that an agent spins up to handle a piece of the work — research this, summarize that — in parallel, each with its own clean context. How big jobs stay fast and focused.",
+          "embed": "subagent"
         },
         {
           "term": "Workflow",
@@ -249,7 +251,8 @@
         },
         {
           "term": "Verification loop",
-          "definition": "The agent proving its work to itself before claiming it's done: running the tests, checking the output, comparing the result against the success criteria you gave it. The difference between “it says it's done” and “it's done.”"
+          "definition": "The agent proving its work to itself before claiming it's done: running the tests, checking the output, comparing the result against the success criteria you gave it. The difference between “it says it's done” and “it's done.”",
+          "embed": "verification"
         },
         {
           "term": "Validation loop",

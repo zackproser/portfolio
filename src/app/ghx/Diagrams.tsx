@@ -92,14 +92,9 @@ export function AgentLoopViz() {
         {nodes.map((n, i) => (
           <span key={n.label} style={{ display: 'contents' }}>
             <motion.span
-              className={`node ${n.core ? 'core' : ''}`}
-              animate={{
-                scale: n.on ? 1.07 : 1,
-                boxShadow: n.on
-                  ? '0 0 0 3px rgba(248,155,108,.45)'
-                  : '0 0 0 0px rgba(248,155,108,0)',
-              }}
-              transition={{ duration: 0.35 }}
+              className={`node ${n.core ? 'core' : ''} ${n.on ? 'on' : ''}`}
+              animate={{ scale: n.on ? 1.07 : 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 18 }}
             >
               {n.label}
               <span className="sub">{n.sub}</span>
@@ -156,12 +151,9 @@ export function OrchestratorViz() {
           {agents.map((a) => (
             <motion.span
               key={a.name}
-              className="node"
-              animate={{
-                scale: a.rework ? 1.07 : 1,
-                borderColor: a.rework ? '#F16025' : 'rgba(255,255,255,.25)',
-              }}
-              transition={{ duration: 0.3 }}
+              className={`node ${a.rework ? 'rework' : ''}`}
+              animate={{ scale: a.rework ? 1.07 : 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 18 }}
             >
               {a.name}
               <span className="sub">{a.state}</span>

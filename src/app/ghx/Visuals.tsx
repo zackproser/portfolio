@@ -158,12 +158,9 @@ export function ProductLadderViz() {
           {RUNGS.map((r, i) => (
             <motion.div
               key={r.name}
-              className="plviz-rung"
-              animate={{
-                scale: phase === i ? 1.05 : 1,
-                borderColor: phase === i ? '#F16025' : 'rgba(255,255,255,.25)',
-              }}
-              transition={{ duration: 0.35 }}
+              className={`plviz-rung ${phase === i ? 'on' : ''}`}
+              animate={{ scale: phase === i ? 1.05 : 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 18 }}
             >
               <strong>{r.name}</strong>
               <em>{r.sub}</em>
@@ -206,12 +203,9 @@ export function McpViz() {
           {SERVICES.map((s, i) => (
             <motion.span
               key={s}
-              className="mcp-svc"
-              animate={{
-                borderColor: phase === i ? '#F16025' : 'rgba(255,255,255,.25)',
-                scale: phase === i ? 1.06 : 1,
-              }}
-              transition={{ duration: 0.3 }}
+              className={`mcp-svc ${phase === i ? 'on' : ''}`}
+              animate={{ scale: phase === i ? 1.06 : 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 18 }}
             >
               {s}
             </motion.span>
@@ -246,11 +240,8 @@ export function SkillShareViz() {
           {people.map((p, i) => (
             <motion.span
               key={p}
-              className="sk-person"
-              animate={{
-                opacity: phase > i ? 1 : 0.3,
-                borderColor: phase === i + 1 ? '#F16025' : 'rgba(255,255,255,.25)',
-              }}
+              className={`sk-person ${phase === i + 1 ? 'on' : ''}`}
+              animate={{ opacity: phase > i ? 1 : 0.3 }}
               transition={{ duration: 0.3 }}
             >
               {p} <i>{phase > i ? '✓ same quality' : '…'}</i>
@@ -339,6 +330,136 @@ export function HallucinationViz() {
       </div>
       <p className="viz-caption">
         the fix is boring: <strong>hand it the real source</strong> and ask it to verify against something checkable
+      </p>
+    </div>
+  )
+}
+
+// ---- Context engineering: interactive — curate what the model sees ------------
+
+interface CeItem {
+  label: string
+  delta: number
+  help: boolean
+}
+const CE_ITEMS: CeItem[] = [
+  { label: 'CLAUDE.md — how we work', delta: 20, help: true },
+  { label: 'the actual contract', delta: 30, help: true },
+  { label: 'last meeting’s notes', delta: 20, help: true },
+  { label: 'a clear ask: “flag the renewal risks”', delta: 25, help: true },
+  { label: '47 stale email threads', delta: -25, help: false },
+  { label: 'the entire shared drive', delta: -30, help: false },
+]
+
+export function ContextEngineeringViz() {
+  const [included, setIncluded] = useState<boolean[]>(CE_ITEMS.map(() => true))
+  const score = Math.max(
+    5,
+    Math.min(100, CE_ITEMS.reduce((n, it, i) => n + (included[i] ? it.delta : 0), 0)),
+  )
+  const verdict =
+    score >= 85
+      ? 'Sharp, grounded answer — it knows exactly what matters.'
+      : score >= 50
+        ? 'Decent answer with some guessing around the edges.'
+        : 'Confidently wrong mush — it’s drowning in noise.'
+  const fill = score >= 85 ? 'var(--good)' : score >= 50 ? 'var(--accent)' : 'var(--bad)'
+
+  return (
+    <div className="gg-viz">
+      <div className="ceviz">
+        <div className="ce-items">
+          {CE_ITEMS.map((it, i) => (
+            <button
+              key={it.label}
+              type="button"
+              className={`ce-item ${included[i] ? `in ${it.help ? 'help' : 'hurt'}` : ''}`}
+              onClick={() =>
+                setIncluded((prev) => prev.map((v, j) => (j === i ? !v : v)))
+              }
+              aria-pressed={included[i]}
+            >
+              {included[i] ? '− ' : '+ '}
+              {it.label}
+            </button>
+          ))}
+        </div>
+        <div className="ce-meter">
+          <div className="ce-fill" style={{ width: `${score}%`, background: fill }} />
+        </div>
+        <p className="ce-verdict">{verdict}</p>
+      </div>
+      <p className="viz-caption">
+        tap to add or remove — <strong>more is not better</strong>; exactly enough is better
+      </p>
+    </div>
+  )
+}
+
+// ---- Verification → validation -------------------------------------------------
+
+const VV_CHECKS = ['run the tests', 'compare output to the spec', 'meet every success criterion']
+
+export function VerificationValidationViz() {
+  const phase = usePhase(6, 1300) // 0 idle · 1-3 checks · 4 evidence · 5 approved
+  return (
+    <div className="gg-viz" aria-hidden="true">
+      <div className="vvviz">
+        <div className="vv-row">
+          <div className={`vv-card ${phase >= 1 && phase <= 3 ? 'on' : ''}`}>
+            <h6>1 · verification — proves it to itself</h6>
+            <ul>
+              {VV_CHECKS.map((c, i) => (
+                <li key={c} className={phase >= i + 1 ? 'done' : ''}>
+                  {phase >= i + 1 ? '✓' : '·'} {c}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className={`vv-card ${phase >= 4 ? 'on' : ''}`}>
+            <h6>2 · validation — proves it to you</h6>
+            <ul>
+              <li className={phase >= 4 ? 'done' : ''}>{phase >= 4 ? '✓' : '·'} screen recording of it working</li>
+              <li className={phase >= 4 ? 'done' : ''}>{phase >= 4 ? '✓' : '·'} test report attached</li>
+              <li className={phase >= 4 ? 'done' : ''}>{phase >= 4 ? '✓' : '·'} before / after</li>
+            </ul>
+          </div>
+        </div>
+        <span className={`vv-human ${phase >= 5 ? 'approved' : ''}`}>
+          {phase >= 5 ? 'you: approved ✓ — without reading a line of code' : 'you: waiting on evidence…'}
+        </span>
+      </div>
+      <p className="viz-caption">
+        the difference between <strong>“it says it’s done”</strong> and <strong>“it’s done”</strong>
+      </p>
+    </div>
+  )
+}
+
+// ---- Subagent fan-out -----------------------------------------------------------
+
+const SA_JOBS = ['research the vendor', 'draft the summary', 'check the numbers']
+
+export function SubagentViz() {
+  const phase = usePhase(4, 1500) // 0 job · 1 busy · 2 done · 3 merged
+  return (
+    <div className="gg-viz" aria-hidden="true">
+      <div className="saviz">
+        <span className="sa-parent">
+          {phase === 3 ? 'one clean answer, assembled ✓' : 'one big job'}
+        </span>
+        <span className="tiviz-arrow" style={{ lineHeight: 0.7 }}>↙ ↓ ↘</span>
+        <div className="sa-workers">
+          {SA_JOBS.map((j) => (
+            <span key={j} className={`sa-worker ${phase === 1 ? 'busy' : phase >= 2 ? 'done' : ''}`}>
+              {j} {phase >= 2 ? '✓' : ''}
+              <span className="badge">own clean context</span>
+            </span>
+          ))}
+        </div>
+      </div>
+      <p className="viz-caption">
+        three workers, <strong>in parallel</strong>, none confused by the others&apos; clutter
       </p>
     </div>
   )
