@@ -16,9 +16,10 @@ import glossary from '@/app/ghx/glossary.json'
 export const maxDuration = 30
 
 // Soft per-IP limit — resets on cold start, which is fine: this is a
-// guard against runaway abuse, not billing-grade metering.
+// guard against runaway abuse, not billing-grade metering. High limit
+// accounts for shared conference WiFi where many attendees share one IP.
 const hits = new Map<string, { count: number; windowStart: number }>()
-const LIMIT = 30
+const LIMIT = 300
 const WINDOW_MS = 60 * 60 * 1000
 
 function rateLimited(ip: string): boolean {
@@ -75,6 +76,13 @@ export async function POST(req: Request) {
   const { messages } = await req.json()
   if (!Array.isArray(messages) || messages.length === 0 || messages.length > 40) {
     return new Response('Bad request', { status: 400 })
+  }
+  // Validate message content size to prevent abuse via search-seeded queries
+  const MAX_CONTENT_LENGTH = 2000
+  for (const m of messages) {
+    if (typeof m.content === 'string' && m.content.length > MAX_CONTENT_LENGTH) {
+      return new Response('Message too long', { status: 400 })
+    }
   }
 
   const lastUser = [...messages].reverse().find((m) => m.role === 'user')
