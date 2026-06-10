@@ -222,6 +222,10 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
   }, [glossary.sections, q])
 
   const total = glossary.sections.reduce((n, s) => n + s.terms.length, 0)
+  const embedCount = glossary.sections.reduce(
+    (n, s) => n + s.terms.filter((t) => t.embed).length,
+    0,
+  )
 
   return (
     <div className="ghx-glossary">
@@ -255,7 +259,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
             <div>
               <dt>Live demos inside</dt>
               <dd>
-                6<span className="unit">try them</span>
+                {embedCount}<span className="unit">try them</span>
               </dd>
             </div>
             <div>
