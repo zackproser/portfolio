@@ -153,7 +153,10 @@ function CrossLinkedText({
     let m: RegExpExecArray | null
     while ((m = index.regex.exec(text)) !== null && links < 3) {
       const hit = index.bySlugKey.get(m[1].toLowerCase())
-      if (!hit || hit.slug === selfSlug || seen.has(hit.slug)) continue
+      if (!hit || hit.slug === selfSlug || seen.has(hit.slug)) {
+        index.regex.lastIndex = m.index + m[0].length
+        continue
+      }
       out.push(text.slice(last, m.index))
       out.push({ slug: hit.slug, text: m[1] })
       seen.add(hit.slug)
