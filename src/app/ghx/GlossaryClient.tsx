@@ -271,6 +271,10 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
       .filter((s) => s.terms.length > 0)
   }, [glossary.sections, q])
 
+  const allTerms = useMemo(
+    () => glossary.sections.flatMap((s) => s.terms.map((t) => ({ term: t.term, definition: t.definition }))),
+    [glossary.sections]
+  )
   const total = glossary.sections.reduce((n, s) => n + s.terms.length, 0)
   const embedCount = glossary.sections.reduce(
     (n, s) => n + s.terms.filter((t) => t.embed).length,
@@ -470,6 +474,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
               Keep this page — it stays live after the workshop. Next time someone says a word
               that isn&apos;t on it, that&apos;s a question worth asking out loud.
             </p>
+            <QuizMe terms={allTerms} />
           </motion.section>
         )}
 
