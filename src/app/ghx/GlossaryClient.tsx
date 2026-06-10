@@ -340,6 +340,12 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
                       <span>{t.hear}</span>
                     </p>
                   )}
+                  {t.demo && (
+                    <p className="gg-demo">
+                      <span className="tag">try it live</span>
+                      <a href={t.demo.href}>{t.demo.label}</a>
+                    </p>
+                  )}
                   {t.embed && <InlineDemo kind={t.embed} />}
                 </motion.article>
               )
