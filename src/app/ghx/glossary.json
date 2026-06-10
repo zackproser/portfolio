@@ -68,16 +68,24 @@
           "term": "Token",
           "definition": "The unit a model reads and writes text in — roughly three-quarters of an English word. Model pricing, speed, and memory limits are all measured in tokens, which is why people who run AI talk about them constantly.",
           "hear": "“That run burned a lot of tokens.”",
-          "demo": { "label": "Play with the interactive tokenization demo", "href": "/demos/tokenize" }
+          "demo": {
+            "label": "Play with the interactive tokenization demo",
+            "href": "/demos/tokenize"
+          }
         },
         {
           "term": "Tokenization",
           "definition": "How text gets chopped into tokens before the model sees it. Seeing it once explains a lot — try the demo and watch your own sentences get sliced.",
-          "demo": { "label": "Try it: how models see your text", "href": "/demos/tokenize" }
+          "demo": {
+            "label": "Try it: how models see your text",
+            "href": "/demos/tokenize"
+          },
+          "embed": "tokenizer"
         },
         {
           "term": "Context window",
-          "definition": "The model's working memory: everything it can see at one moment — your conversation so far, files it has read, its instructions. It's big but finite, and when it fills up, older material falls out. Most “it forgot what I said an hour ago” mysteries are context-window mysteries."
+          "definition": "The model's working memory: everything it can see at one moment — your conversation so far, files it has read, its instructions. It's big but finite, and when it fills up, older material falls out. Most “it forgot what I said an hour ago” mysteries are context-window mysteries.",
+          "embed": "context-window"
         },
         {
           "term": "Context",
@@ -107,12 +115,20 @@
         {
           "term": "Embedding",
           "definition": "Text converted into a long list of numbers that captures its meaning, so a computer can measure that two sentences are about the same thing even when they share no words. This is how AI-powered search works.",
-          "demo": { "label": "See embeddings visualized", "href": "/demos/embeddings" }
+          "demo": {
+            "label": "See embeddings visualized",
+            "href": "/demos/embeddings"
+          },
+          "embed": "embeddings"
         },
         {
           "term": "RAG (retrieval-augmented generation)",
           "definition": "A pattern: search your own documents first, hand the best matches to the model, then have it answer. It's how an AI answers accurately from material it was never trained on — your contracts, your policies, your product docs.",
-          "demo": { "label": "Watch RAG happen step by step", "href": "/demos/rag-visualized" }
+          "demo": {
+            "label": "Watch RAG happen step by step",
+            "href": "/demos/rag-visualized"
+          },
+          "embed": "rag"
         }
       ]
     },
@@ -198,7 +214,8 @@
       "terms": [
         {
           "term": "Agent",
-          "definition": "A model plus a harness. The model does the reasoning and makes the decisions; the harness is everything that lets it act. When those two things run in a loop toward a goal, you have an agent."
+          "definition": "A model plus a harness. The model does the reasoning and makes the decisions; the harness is everything that lets it act. When those two things run in a loop toward a goal, you have an agent.",
+          "embed": "agent-loop"
         },
         {
           "term": "Harness",
@@ -206,7 +223,8 @@
         },
         {
           "term": "Orchestrator",
-          "definition": "The coordinator of several agents working one bigger job: it hands out work, checks results, and decides what happens next. An agent is one worker; an orchestrator runs the crew."
+          "definition": "The coordinator of several agents working one bigger job: it hands out work, checks results, and decides what happens next. An agent is one worker; an orchestrator runs the crew.",
+          "embed": "orchestrator"
         },
         {
           "term": "Subagent",
