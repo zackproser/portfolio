@@ -1,0 +1,247 @@
+{
+  "title": "The AI Glossary",
+  "subtitle": "Every term you've heard in a meeting and were too polite to ask about — from zero to hero, in order.",
+  "event": "GHX Collaboration Week · June 17, 2026 · Denver",
+  "updated": "2026-06-09",
+  "sections": [
+    {
+      "id": "level-0",
+      "level": "Level 0",
+      "name": "The computer stuff",
+      "intro": "Four out of five people in the room have never opened a terminal. Start here and you're caught up in five minutes.",
+      "terms": [
+        {
+          "term": "Terminal",
+          "definition": "A window where you type instructions to your computer instead of clicking. It looks intimidating and is genuinely simple: you type, you press Enter, the computer answers. Claude Code runs here.",
+          "hear": "“Open a terminal and type claude.”"
+        },
+        {
+          "term": "Spotlight",
+          "definition": "The Mac's built-in search. Press Cmd + Space, type “Terminal”, press Enter. That's how you find anything on a Mac, including the terminal itself."
+        },
+        {
+          "term": "Command",
+          "definition": "A single instruction you type into the terminal. claude is a command. So is cd (“change directory” — move into a folder). You only need a handful, ever."
+        },
+        {
+          "term": "CLI (command-line interface)",
+          "definition": "Any program you operate by typing commands rather than clicking buttons. Claude Code is a CLI. CLIs are having a comeback because they're the easiest kind of program for an AI to drive."
+        },
+        {
+          "term": "Directory",
+          "definition": "A folder. Same thing, older name. Your terminal is always “in” one directory, and Claude Code works on the files in whichever directory you start it from."
+        },
+        {
+          "term": "Repository (repo)",
+          "definition": "A project folder that remembers every change ever made in it — what changed, who changed it, when, and why. Nothing in a repo is ever truly lost or overwritten, which makes it a safe sandbox. It's also the perfect container to point Claude at.",
+          "hear": "“It's in the repo — just point Claude at it.”"
+        },
+        {
+          "term": "Git",
+          "definition": "The tool that gives a repo its memory. It records changes as “commits” — snapshots you can review, compare, or roll back to. You don't need to learn Git to work with Claude; Claude knows Git."
+        },
+        {
+          "term": "GitHub",
+          "definition": "A website that stores repos online so a team (or an AI) can share them. Think of it as the place projects live so everyone — human and agent — works from the same copy."
+        },
+        {
+          "term": "Clone",
+          "definition": "Downloading your own working copy of a repo from GitHub onto your computer. Your copy; experiment freely."
+        }
+      ]
+    },
+    {
+      "id": "level-1",
+      "level": "Level 1",
+      "name": "How the AI actually works",
+      "intro": "Everything else in this glossary builds on these eight or so ideas. They're simpler than the headlines make them sound.",
+      "terms": [
+        {
+          "term": "Model",
+          "definition": "The AI itself: a very large mathematical system, trained on enormous amounts of text, that predicts useful output one piece at a time — astonishingly well. Claude is a family of models."
+        },
+        {
+          "term": "LLM (large language model)",
+          "definition": "The kind of model Claude is — one trained primarily on language. When someone says “the LLM,” they mean the model."
+        },
+        {
+          "term": "Token",
+          "definition": "The unit a model reads and writes text in — roughly three-quarters of an English word. Model pricing, speed, and memory limits are all measured in tokens, which is why people who run AI talk about them constantly.",
+          "hear": "“That run burned a lot of tokens.”",
+          "demo": { "label": "Play with the interactive tokenization demo", "href": "/demos/tokenize" }
+        },
+        {
+          "term": "Tokenization",
+          "definition": "How text gets chopped into tokens before the model sees it. Seeing it once explains a lot — try the demo and watch your own sentences get sliced.",
+          "demo": { "label": "Try it: how models see your text", "href": "/demos/tokenize" }
+        },
+        {
+          "term": "Context window",
+          "definition": "The model's working memory: everything it can see at one moment — your conversation so far, files it has read, its instructions. It's big but finite, and when it fills up, older material falls out. Most “it forgot what I said an hour ago” mysteries are context-window mysteries."
+        },
+        {
+          "term": "Context",
+          "definition": "Whatever currently occupies the context window. “Keeping context clean” means giving the model exactly what it needs for the task and nothing else — one of the highest-value habits in this whole glossary."
+        },
+        {
+          "term": "Inference",
+          "definition": "A model producing an answer. Training is how a model gets built (months, data centers); inference is using it (every time you hit Enter). When people say “inference is expensive,” they mean answering requires serious computing power."
+        },
+        {
+          "term": "Hallucination",
+          "definition": "When a model states something false with full confidence — citing a document it never read, inventing a number. Far rarer in current frontier models, and largely preventable: give the model the real source material and ask it to verify its work against something checkable."
+        },
+        {
+          "term": "Frontier model",
+          "definition": "One of the handful of current best models from a top lab (Anthropic, OpenAI, Google). The frontier moves every few months, which is why advice from last year can be stale."
+        },
+        {
+          "term": "Reasoning (extended thinking)",
+          "definition": "Modern models can think privately before answering — working through a problem step by step, then giving you the conclusion. More thinking time costs more tokens and produces noticeably better answers on hard problems."
+        },
+        {
+          "term": "Ultrathink",
+          "definition": "A Claude keyword: include the word “ultrathink” in a request and Claude spends substantially more thinking effort on it. One word, deeper work — use it on problems that deserve it.",
+          "hear": "“I added ultrathink and it actually caught the edge case.”"
+        },
+        {
+          "term": "Embedding",
+          "definition": "Text converted into a long list of numbers that captures its meaning, so a computer can measure that two sentences are about the same thing even when they share no words. This is how AI-powered search works.",
+          "demo": { "label": "See embeddings visualized", "href": "/demos/embeddings" }
+        },
+        {
+          "term": "RAG (retrieval-augmented generation)",
+          "definition": "A pattern: search your own documents first, hand the best matches to the model, then have it answer. It's how an AI answers accurately from material it was never trained on — your contracts, your policies, your product docs.",
+          "demo": { "label": "Watch RAG happen step by step", "href": "/demos/rag-visualized" }
+        }
+      ]
+    },
+    {
+      "id": "level-2",
+      "level": "Level 2",
+      "name": "Working with Claude",
+      "intro": "The words you'll use every day once you're hands-on — including the ones that sound alike but aren't.",
+      "terms": [
+        {
+          "term": "Claude vs. Claude.ai vs. Claude Code vs. Cowork",
+          "definition": "Claude is the model family. Claude.ai is the chat website and app — talking. Claude Code is Claude in your terminal with access to your files — doing. Cowork is Claude with access to a folder, built for people who don't live in a terminal: a great on-ramp, with less power than Claude Code. When you outgrow Cowork's limits, Claude Code is the answer."
+        },
+        {
+          "term": "Prompt",
+          "definition": "What you ask the model. The skill of prompting is mostly the skill of being clear: state the outcome you want and what “done” looks like, not the steps you'd personally take."
+        },
+        {
+          "term": "System prompt",
+          "definition": "Standing instructions the model receives before your message — its job description for the conversation. You experience it as “why Claude behaves consistently.”"
+        },
+        {
+          "term": "Vibe coding",
+          "definition": "Describing what you want in plain language and letting the AI write the code, judging results by whether the thing works rather than by reading every line. It's how non-engineers ship real software now — and it's what today is about."
+        },
+        {
+          "term": "Session",
+          "definition": "One working conversation with Claude. Each session starts fresh except for whatever standing instructions and memory you've set up — which is why those matter."
+        },
+        {
+          "term": "CLAUDE.md",
+          "definition": "A plain-text file of standing instructions that Claude Code reads automatically at the start of every session in a project. It's where a team writes down “how we do things here” — and where your subject-matter experts' hard-won knowledge should go.",
+          "hear": "“Put it in the CLAUDE.md so it stops making that mistake.”"
+        },
+        {
+          "term": "Memory",
+          "definition": "Notes Claude keeps across sessions — facts about you, your project, your preferences — so you stop repeating yourself. Different from the context window: memory persists, context resets."
+        },
+        {
+          "term": "Context engineering",
+          "definition": "Deciding what goes in front of the model: which files, which documents, which instructions, in what order. Most of the difference between “AI is magic” and “AI is useless” is context engineering."
+        }
+      ]
+    },
+    {
+      "id": "level-3",
+      "level": "Level 3",
+      "name": "Giving Claude abilities",
+      "intro": "A model alone can only talk. Everything in this section is about letting it act — safely, and your way.",
+      "terms": [
+        {
+          "term": "Tool",
+          "definition": "A specific action the model is allowed to take: read a file, run a command, search the web, post a Slack message. Models act through tools, and you control which tools they get."
+        },
+        {
+          "term": "MCP (Model Context Protocol)",
+          "definition": "The standard connector that plugs Claude into other software — Slack, Notion, your database, your CRM. One plug standard, adopted across the industry, so any AI can use any MCP-wired system. When someone asks “is there an MCP for that?” they're asking “can Claude reach that system?”"
+        },
+        {
+          "term": "Skill",
+          "definition": "A reusable playbook, written in plain language, that teaches Claude to do a specific task your way — “how we write release notes,” “how we review a contract.” Written once, shared with everyone, improved over time. The five skills you're taking home today are exactly this."
+        },
+        {
+          "term": "Plugin",
+          "definition": "A bundle of skills, tools, and settings you install as a unit. Nick Nisi's ideation plugin — the first thing we use today — is one."
+        },
+        {
+          "term": "Slash command",
+          "definition": "Type / in Claude Code and a menu of your installed skills and commands pops up. It's how you invoke a skill on purpose instead of hoping Claude picks it up."
+        },
+        {
+          "term": "Ideation (a.k.a. “grill me”)",
+          "definition": "A skill that interviews you, relentlessly, until it's confident it understands what you actually want — before any work starts. GHX engineering calls theirs “grill me.” It's the cheapest insurance there is against an AI confidently building the wrong thing, and it's the first thing we'll run today.",
+          "hear": "“Run ideation first — don't burn tokens guessing.”"
+        }
+      ]
+    },
+    {
+      "id": "level-4",
+      "level": "Level 4",
+      "name": "Agents and automation",
+      "intro": "The advanced end of the room lives here. The goal: kick off a task, walk away, and come back to finished work — with evidence.",
+      "terms": [
+        {
+          "term": "Agent",
+          "definition": "A model plus a harness. The model does the reasoning and makes the decisions; the harness is everything that lets it act. When those two things run in a loop toward a goal, you have an agent."
+        },
+        {
+          "term": "Harness",
+          "definition": "Everything around the model that lets it act: the tools, the permissions, the loop that keeps it moving. Saving a file, sending an email, deploying a service — all harness. “Working on the harness” means improving what your agent can do, without touching the model."
+        },
+        {
+          "term": "Orchestrator",
+          "definition": "The coordinator of several agents working one bigger job: it hands out work, checks results, and decides what happens next. An agent is one worker; an orchestrator runs the crew."
+        },
+        {
+          "term": "Subagent",
+          "definition": "An agent that an agent spins up to handle a piece of the work — research this, summarize that — in parallel, each with its own clean context. How big jobs stay fast and focused."
+        },
+        {
+          "term": "Workflow",
+          "definition": "Your process, written down as steps an agent can run: inputs, steps, outputs, and what “done” means. The single best thing a non-engineer can do this month is write down one workflow they're sick of doing by hand."
+        },
+        {
+          "term": "Loop",
+          "definition": "Try → check → fix → repeat, automatically, until the result meets the bar you set. The shift that matters: you stop iterating by hand and start authoring the loop that iterates for you.",
+          "hear": "“My job is to write loops now.”"
+        },
+        {
+          "term": "Verification loop",
+          "definition": "The agent proving its work to itself before claiming it's done: running the tests, checking the output, comparing the result against the success criteria you gave it. The difference between “it says it's done” and “it's done.”"
+        },
+        {
+          "term": "Validation loop",
+          "definition": "The agent proving its work to a human — with evidence you can judge without reading code: a video of the feature working in a browser, a test report, a before/after. You review outcomes, the way you'd review any teammate's work."
+        },
+        {
+          "term": "Retro (agent memory)",
+          "definition": "An agent reviewing its own transcript after a job: where did I get stuck, what did I repeat, what should I remember? Those notes become memories, so next time it doesn't get stuck in the same place. Teams that do this compound; teams that don't repeat themselves."
+        },
+        {
+          "term": "Autonomous (headless)",
+          "definition": "An agent running with no human watching — kicked off by a schedule, an event, or a one-line request, reporting back when finished. The advanced goal of today: you kick off the task, it goes end to end, and you judge the evidence it brings back."
+        },
+        {
+          "term": "Eval",
+          "definition": "A scored, repeatable test of AI quality — the same questions, graded the same way, run every time something changes. How you know your AI system got better instead of just different."
+        }
+      ]
+    }
+  ]
+}

@@ -15,6 +15,7 @@ const excludeRoutePatterns = [
   /^\/success(\/|$)/,
   /^\/login(\/|$)/,
   /^\/recruiters(\/|$)/,
+  /^\/ghx(\/|$)/, // private GHX workshop leave-behind — noindex, QR-only
   /\[.*\]/, // Exclude any literal dynamic route patterns like [slug]
 ];
 

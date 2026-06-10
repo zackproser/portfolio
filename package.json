@@ -18,6 +18,7 @@
     "test:coverage": "NODE_ENV=development jest --coverage",
     "ci": "NODE_ENV=development jest && npm run lint",
     "postinstall": "prisma generate",
+    "ghx:glossary-export": "node scripts/export-ghx-glossary.mjs",
     "og:generate": "tsx scripts/og/og-image-generator.ts --verbose",
     "og:generate-for": "tsx scripts/og/og-image-generator.ts",
     "og:verify": "node scripts/og/verify-og.mjs",
