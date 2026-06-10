@@ -2,20 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useVizPhase } from './useVizPhase'
 
 // ────────────────────────────────────────────────────────────────────────
 // Self-running animated explainers for the GHX glossary — one per concept
 // that dies as text. Same navy-plate visual language as Diagrams.tsx.
 // ────────────────────────────────────────────────────────────────────────
 
-function usePhase(count: number, ms: number) {
-  const [phase, setPhase] = useState(0)
-  useEffect(() => {
-    const t = setInterval(() => setPhase((p) => (p + 1) % count), ms)
-    return () => clearInterval(t)
-  }, [count, ms])
-  return phase
-}
+
 
 // ---- Training vs inference -------------------------------------------------
 //
@@ -35,11 +29,11 @@ const TI_GUESSES = [
 const TI_ANSWER = ['Drafting your', 'follow-ups now —', 'three emails,', 'ready to review.']
 
 export function TrainingInferenceViz() {
-  const tick = usePhase(11, 1250) // 0-5 training · 6-10 inference
+  const [tick, vizRef] = useVizPhase(11, 1250) // 0-5 training · 6-10 inference
   const training = tick < 6
 
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="tiviz">
         <div className="tiviz-stage">
           <span className={`tiviz-mode ${training ? 'on' : ''}`}>step 1 · training (months, long ago)</span>
@@ -138,7 +132,7 @@ export function TrainingInferenceViz() {
 
 export function RepoHistoryViz() {
   // 0..3 commits appear, 4 = rollback highlight, 5 = recovered
-  const phase = usePhase(6, 1300)
+  const [phase, vizRef] = useVizPhase(6, 1300)
   const commits = [
     { v: 'v1', label: 'first draft' },
     { v: 'v2', label: 'legal edits' },
@@ -148,7 +142,7 @@ export function RepoHistoryViz() {
   const shown = Math.min(phase + 1, 4)
 
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="rhviz">
         {commits.slice(0, shown).map((c, i) => (
           <span key={c.v} style={{ display: 'contents' }}>
@@ -181,9 +175,9 @@ const RUNGS = [
 ]
 
 export function ProductLadderViz() {
-  const phase = usePhase(3, 1700)
+  const [phase, vizRef] = useVizPhase(3, 1700)
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="plviz">
         <div className="plviz-brain">Claude<br /><em>the same model behind all three</em></div>
         <div className="plviz-rungs">
@@ -217,9 +211,9 @@ export function ProductLadderViz() {
 const SERVICES = ['Slack', 'Notion', 'Gong', 'your database', 'your CRM']
 
 export function McpViz() {
-  const phase = usePhase(SERVICES.length, 1400)
+  const [phase, vizRef] = useVizPhase(SERVICES.length, 1400)
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="mcpviz">
         <span className="mcp-claude">Claude</span>
         <span className="mcp-cable">
@@ -254,10 +248,10 @@ export function McpViz() {
 // ---- Skill share ------------------------------------------------------------
 
 export function SkillShareViz() {
-  const phase = usePhase(4, 1400) // 0 write · 1-3 reuse by teammates
+  const [phase, vizRef] = useVizPhase(4, 1400) // 0 write · 1-3 reuse by teammates
   const people = ['you', 'teammate', 'whole team']
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="skviz">
         <motion.div
           className="sk-card"
@@ -298,13 +292,13 @@ const QA = [
 ]
 
 export function IdeationViz() {
-  const phase = usePhase(QA.length + 1, 1500)
+  const [phase, vizRef] = useVizPhase(QA.length + 1, 1500)
   const step = Math.min(phase, QA.length - 1)
   const ready = phase === QA.length
   const pct = ready ? 95 : QA[step].pct
 
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="idviz">
         <AnimatePresence mode="wait">
           <motion.p
@@ -337,9 +331,9 @@ export function IdeationViz() {
 // ---- Hallucination: grounded vs invented ---------------------------------------
 
 export function HallucinationViz() {
-  const phase = usePhase(2, 2400)
+  const [phase, vizRef] = useVizPhase(2, 2400)
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="haviz">
         <motion.div
           className="ha-card bad"
@@ -376,7 +370,7 @@ interface CeItem {
 }
 const CE_ITEMS: CeItem[] = [
   { label: 'CLAUDE.md — how we work', delta: 20, help: true },
-  { label: 'the actual contract', delta: 30, help: true },
+  { label: 'the supplier contract', delta: 30, help: true },
   { label: 'last meeting’s notes', delta: 20, help: true },
   { label: 'a clear ask: “flag the renewal risks”', delta: 25, help: true },
   { label: '47 stale email threads', delta: -25, help: false },
@@ -433,9 +427,9 @@ export function ContextEngineeringViz() {
 const VV_CHECKS = ['run the tests', 'compare output to the spec', 'meet every success criterion']
 
 export function VerificationValidationViz() {
-  const phase = usePhase(6, 1300) // 0 idle · 1-3 checks · 4 evidence · 5 approved
+  const [phase, vizRef] = useVizPhase(6, 1300) // 0 idle · 1-3 checks · 4 evidence · 5 approved
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="vvviz">
         <div className="vv-row">
           <div className={`vv-card ${phase >= 1 && phase <= 3 ? 'on' : ''}`}>
@@ -473,9 +467,9 @@ export function VerificationValidationViz() {
 const SA_JOBS = ['research the vendor', 'draft the summary', 'check the numbers']
 
 export function SubagentViz() {
-  const phase = usePhase(4, 1500) // 0 job · 1 busy · 2 done · 3 merged
+  const [phase, vizRef] = useVizPhase(4, 1500) // 0 job · 1 busy · 2 done · 3 merged
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="saviz">
         <span className="sa-parent">
           {phase === 3 ? 'one clean answer, assembled ✓' : 'one big job'}
@@ -500,10 +494,10 @@ export function SubagentViz() {
 // ---- Reasoning: instant vs extended thinking ------------------------------------
 
 export function ReasoningViz() {
-  const phase = usePhase(6, 1200) // 0-1 instant answers · 2-4 thinking dots · 5 payoff
+  const [phase, vizRef] = useVizPhase(6, 1200) // 0-1 instant answers · 2-4 thinking dots · 5 payoff
   const thinking = Math.min(Math.max(phase - 1, 0), 3)
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="vv-row">
         <div className={`vv-card ${phase <= 1 ? 'on' : ''}`}>
           <h6>instant answer</h6>
@@ -538,9 +532,9 @@ const STACK_LAYERS = [
 ]
 
 export function PromptStackViz() {
-  const phase = usePhase(5, 1300) // 0-2 layers stack · 3 all · 4 → model
+  const [phase, vizRef] = useVizPhase(5, 1300) // 0-2 layers stack · 3 all · 4 → model
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="psviz">
         <div className="ps-stack">
           {STACK_LAYERS.map((l, i) => (
@@ -582,10 +576,10 @@ export function PromptStackViz() {
 // ---- Retro / agent memory ----------------------------------------------------------
 
 export function RetroMemoryViz() {
-  const phase = usePhase(6, 1300) // 0-1 run1 stuck · 2 retro writes · 3-4 run2 sails · 5 done
+  const [phase, vizRef] = useVizPhase(6, 1300) // 0-1 run1 stuck · 2 retro writes · 3-4 run2 sails · 5 done
   const run1Step = phase === 0 ? 2 : 3
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="rmviz">
         <div className="rm-run">
           <span className="rm-label">run 1</span>

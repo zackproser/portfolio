@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useVizPhase, useOnScreen } from './useVizPhase'
 
 // ────────────────────────────────────────────────────────────────────────
 // Small, self-running animated diagrams for the GHX glossary (/ghx).
@@ -20,7 +21,7 @@ const STREAM: Array<{ text: string; kind: 'you' | 'file' | 'tok' }> = [
   { text: 'meeting notes', kind: 'file' },
   { text: 'revised draft', kind: 'tok' },
   { text: 'one more ask', kind: 'you' },
-  { text: 'spreadsheet.xlsx', kind: 'file' },
+  { text: 'price-file.csv', kind: 'file' },
   { text: 'final answer', kind: 'tok' },
 ]
 const WINDOW_SIZE = 6
@@ -40,6 +41,7 @@ export function ContextWindowViz() {
   const [evicted, setEvicted] = useState<string | null>(null)
   const keyRef = useRef(3)
   const autoRef = useRef(3)
+  const [visible, rootRef] = useOnScreen()
   const fileRef = useRef(0)
   const askRef = useRef(0)
 
@@ -55,15 +57,17 @@ export function ContextWindowViz() {
   }
 
   useEffect(() => {
+    if (!visible) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const t = setInterval(() => {
       add(STREAM[autoRef.current++ % STREAM.length])
     }, 2600)
     return () => clearInterval(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [visible])
 
   return (
-    <div className="gg-viz">
+    <div className="gg-viz" ref={rootRef}>
       <div className="cwviz">
         <div className="cwviz-window">
           <span className="cwviz-label">context window · the model sees only this</span>
@@ -115,12 +119,7 @@ export function ContextWindowViz() {
 const LOOP_STEPS = ['reason', 'act', 'check'] as const
 
 export function AgentLoopViz() {
-  const [step, setStep] = useState(0)
-
-  useEffect(() => {
-    const t = setInterval(() => setStep((s) => (s + 1) % LOOP_STEPS.length), 1300)
-    return () => clearInterval(t)
-  }, [])
+  const [step, vizRef] = useVizPhase(LOOP_STEPS.length, 1300)
 
   const nodes = [
     { label: 'model', sub: 'reasons + decides', core: true, on: step === 0 },
@@ -129,7 +128,7 @@ export function AgentLoopViz() {
   ]
 
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="alviz">
         {nodes.map((n, i) => (
           <span key={n.label} style={{ display: 'contents' }}>
@@ -157,12 +156,7 @@ export function AgentLoopViz() {
 
 export function OrchestratorViz() {
   // phases: 0 dispatch, 1 working, 2 one comes back for rework, 3 done
-  const [phase, setPhase] = useState(0)
-
-  useEffect(() => {
-    const t = setInterval(() => setPhase((p) => (p + 1) % 4), 1500)
-    return () => clearInterval(t)
-  }, [])
+  const [phase, vizRef] = useVizPhase(4, 1500)
 
   const agents = [
     { name: 'agent 1', state: phase >= 1 ? (phase >= 3 ? '✓ done' : 'working…') : 'queued' },
@@ -176,7 +170,7 @@ export function OrchestratorViz() {
   ]
 
   return (
-    <div className="gg-viz" aria-hidden="true">
+    <div className="gg-viz" aria-hidden="true" ref={vizRef}>
       <div className="alviz" style={{ flexDirection: 'column', gap: 12 }}>
         <motion.span
           className="node core"

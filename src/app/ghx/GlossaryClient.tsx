@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState, Fragment } from 'react'
-import { motion } from 'framer-motion'
+import { motion, MotionConfig } from 'framer-motion'
+import QuizMe from './QuizMe'
 import InlineDemo from './InlineDemos'
 
 // ────────────────────────────────────────────────────────────────────────
@@ -198,8 +199,24 @@ function useScrollSpy(ids: string[]) {
 
 // Counts unique term entries that have scrolled into view — feeds the
 // "n/47" chip in the jump bar and unlocks the finale at 100%.
+const SEEN_KEY = 'ghx-glossary-seen'
+
 function useSeenTerms(filterKey: string) {
   const [seen, setSeen] = useState<Set<string>>(() => new Set())
+  // hydrate from localStorage after mount (avoids SSR/client mismatch)
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(SEEN_KEY) ?? '[]') as string[]
+      if (stored.length) setSeen((prev) => new Set([...prev, ...stored]))
+    } catch {}
+  }, [])
+  useEffect(() => {
+    if (seen.size) {
+      try {
+        localStorage.setItem(SEEN_KEY, JSON.stringify([...seen]))
+      } catch {}
+    }
+  }, [seen])
   useEffect(() => {
     const els = Array.from(document.querySelectorAll<HTMLElement>('.gg-entry[id]'))
     const obs = new IntersectionObserver(
@@ -263,6 +280,7 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
   const fluent = seen.size >= total
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="ghx-glossary">
       <ReadingProgress />
 
@@ -473,5 +491,6 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
         </footer>
       </main>
     </div>
+    </MotionConfig>
   )
 }

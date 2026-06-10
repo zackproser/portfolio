@@ -776,3 +776,57 @@
   .gg-reading { grid-template-columns: 1fr; }
   .gg-reading img { max-height: 150px; }
 }
+
+/* ---------- quiz me ---------- */
+.qz-start {
+  margin-top: 22px; font-family: var(--font-mono); font-size: 12px;
+  letter-spacing: .08em; text-transform: uppercase; font-weight: 700;
+  color: #fff; background: var(--accent); border: 0; border-radius: 999px;
+  padding: 12px 24px; cursor: pointer; transition: transform .15s ease;
+}
+.qz-start:hover { transform: translateY(-1px); }
+.qz-card {
+  margin: 22px auto 0; max-width: 440px; text-align: center;
+  border: 1px solid var(--border-strong); border-radius: 12px;
+  background: var(--bg-secondary); padding: 20px 22px;
+}
+.qz-count {
+  margin: 0 0 8px; font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fg-subtle);
+}
+.qz-term {
+  margin: 0 0 10px; font-family: var(--font-serif); font-weight: 800;
+  font-size: 24px; letter-spacing: -.01em; color: var(--fg);
+}
+.qz-def { margin: 0; font-size: 14px; line-height: 1.6; color: var(--fg-muted); }
+.qz-def.hint { font-style: italic; }
+.qz-actions { display: flex; gap: 8px; justify-content: center; margin-top: 14px; }
+.qz-btn {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em;
+  color: var(--fg-muted); background: transparent;
+  border: 1px solid var(--border-strong); border-radius: 999px;
+  padding: 8px 16px; cursor: pointer; transition: all .15s ease;
+}
+.qz-btn.on { color: #fff; background: var(--accent); border-color: var(--accent); }
+.qz-btn:hover { border-color: var(--accent); }
+
+/* ---------- containment: nothing may blow out the content rail ---------- */
+.ghx-glossary { overflow-x: clip; }
+.gg-try-body { overflow-x: auto; }
+.gg-viz, .gg-try, .gg-term, .gg-reading, .gg-finale { max-width: 100%; }
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .gg-title em, .gg-try-head .dot, .gg-term-hint, .rm-step.stuck { animation: none !important; }
+  .gg-reading, .qz-start { transition: none; }
+}
+
+/* phones: jump bar wraps so search gets its own full row instead of
+   hiding at the end of a horizontal scroll */
+@media (max-width: 700px) {
+  .gg-jumpbar-inner { flex-wrap: wrap; row-gap: 6px; }
+  .gg-seen { margin-left: 0; order: 2; }
+  .gg-jumpbar-inner .gg-search { order: 3; flex: 1; min-width: 160px; }
+  .gg-jumpbar-inner .gg-search input { width: 100%; }
+  .gg-jumpbar-inner .gg-search input:focus { width: 100%; }
+}

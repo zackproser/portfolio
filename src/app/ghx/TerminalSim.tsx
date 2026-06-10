@@ -16,7 +16,7 @@ interface Line {
 
 const FILES = [
   'Contracts/',
-  'Q3-forecast.xlsx',
+  'price-file-aug.csv',
   'meeting-notes.md',
   'vendor-list.csv',
   'logo-draft.png',

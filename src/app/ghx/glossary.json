@@ -2,7 +2,7 @@
   "title": "The AI Glossary",
   "subtitle": "Every term you've heard in a meeting and were too polite to ask about — from zero to hero, in order.",
   "event": "GHX Collaboration Week · June 17, 2026 · Denver",
-  "updated": "2026-06-09",
+  "updated": "2026-06-10",
   "sections": [
     {
       "id": "level-0",
@@ -100,7 +100,7 @@
         },
         {
           "term": "Hallucination",
-          "definition": "When a model states something false with full confidence — citing a document it never read, inventing a number. Far rarer in current frontier models, and largely preventable: give the model the real source material and ask it to verify its work against something checkable.",
+          "definition": "When a model states something false with full confidence — citing a clause that isn't in the contract, inventing a number. Far rarer in current frontier models, and largely preventable: give the model the real source material and ask it to verify its work against something checkable.",
           "embed": "hallucination"
         },
         {
@@ -119,7 +119,7 @@
         },
         {
           "term": "Embedding",
-          "definition": "Text converted into a long list of numbers that captures its meaning, so a computer can measure that two sentences are about the same thing even when they share no words. This is how AI-powered search works.",
+          "definition": "Text converted into a long list of numbers that captures its meaning, so a computer can measure that two sentences are about the same thing even when they share no words. It's how you find every contract clause about returns even when nobody typed the word “returns.”",
           "demo": {
             "label": "See embeddings visualized",
             "href": "/demos/embeddings"
@@ -128,7 +128,7 @@
         },
         {
           "term": "RAG (retrieval-augmented generation)",
-          "definition": "A pattern: search your own documents first, hand the best matches to the model, then have it answer. It's how an AI answers accurately from material it was never trained on — your contracts, your policies, your product docs.",
+          "definition": "A pattern: search your own documents first, hand the best matches to the model, then have it answer. It's how an AI answers accurately from material it was never trained on — your supplier contracts, your GPO terms, your implementation docs.",
           "demo": {
             "label": "Watch RAG happen step by step",
             "href": "/demos/rag-visualized"
@@ -149,6 +149,11 @@
           "embed": "product-ladder"
         },
         {
+          "term": "Opus, Sonnet, and Haiku",
+          "definition": "Claude's model tiers. Opus is the deepest thinker — strongest on hard problems, slower and pricier. Sonnet is the workhorse balance most work runs on. Haiku is fast and cheap, for high-volume simple tasks. A sane default: start on the standard tier, reach for Opus when the problem deserves it.",
+          "hear": "“Sonnet couldn't crack it — kick it to Opus and check back after lunch.”"
+        },
+        {
           "term": "Prompt",
           "definition": "What you ask the model. The skill of prompting is mostly the skill of being clear: state the outcome you want and what “done” looks like, not the steps you'd personally take.",
           "embed": "prompt-upgrade"
@@ -160,7 +165,7 @@
         },
         {
           "term": "Vibe coding",
-          "definition": "Describing what you want in plain language and letting the AI write the code, judging results by whether the thing works rather than by reading every line. It's how non-engineers ship real software now — and it's what today is about."
+          "definition": "Describing what you want in plain language and letting the AI write the code, judging results by whether the thing works rather than by reading every line. It's how a non-engineer ships a working price-file checker before lunch — and it's what today is about."
         },
         {
           "term": "Session",
@@ -168,7 +173,7 @@
         },
         {
           "term": "CLAUDE.md",
-          "definition": "A plain-text file of standing instructions that Claude Code reads automatically at the start of every session in a project. It's where a team writes down “how we do things here” — and where your subject-matter experts' hard-won knowledge should go.",
+          "definition": "A plain-text file of standing instructions that Claude Code reads automatically at the start of every session in a project. It's where a team writes down “how we do things here” — and where the weird things only your subject-matter experts know about the claims pipeline should go.",
           "hear": "“Put it in the CLAUDE.md so it stops making that mistake.”"
         },
         {
@@ -179,6 +184,10 @@
           "term": "Context engineering",
           "definition": "Deciding what goes in front of the model: which files, which documents, which instructions, in what order. Most of the difference between “AI is magic” and “AI is useless” is context engineering.",
           "embed": "context-engineering"
+        },
+        {
+          "term": "Bedrock",
+          "definition": "An AWS service that runs Claude inside a company's own cloud — the same models, behind your security and compliance walls, with your data staying in your environment. It's how GHX engineering has been running Claude. When IT says “through Bedrock,” they mean Claude with enterprise plumbing."
         }
       ],
       "reading": {
@@ -195,6 +204,10 @@
       "intro": "A model alone can only talk. Everything in this section is about letting it act — safely, and your way.",
       "terms": [
         {
+          "term": "API (application programming interface)",
+          "definition": "How one piece of software asks another to do something — no screens, no clicking, just structured requests and answers. When someone “calls the Claude API,” their program is sending prompts and getting work back with no chat window involved. Every AI tool you'll see today is API calls under the hood."
+        },
+        {
           "term": "Tool",
           "definition": "A specific action the model is allowed to take: read a file, run a command, search the web, post a Slack message. Models act through tools, and you control which tools they get."
         },
@@ -205,7 +218,7 @@
         },
         {
           "term": "Skill",
-          "definition": "A reusable playbook, written in plain language, that teaches Claude to do a specific task your way — “how we write release notes,” “how we review a contract.” Written once, shared with everyone, improved over time. The five skills you're taking home today are exactly this.",
+          "definition": "A reusable playbook, written in plain language, that teaches Claude to do a specific task your way — “how we review a supplier contract,” “how we write release notes.” Written once, shared with everyone, improved over time. The five skills you're taking home today are exactly this.",
           "embed": "skill"
         },
         {
@@ -257,7 +270,7 @@
         },
         {
           "term": "Workflow",
-          "definition": "Your process, written down as steps an agent can run: inputs, steps, outputs, and what “done” means. The single best thing a non-engineer can do this month is write down one workflow they're sick of doing by hand."
+          "definition": "Your process, written down as steps an agent can run: inputs, steps, outputs, and what “done” means. The single best thing a non-engineer can do this month is write down one workflow they're sick of doing by hand — the price-file discrepancy you chase every Monday is a great first candidate."
         },
         {
           "term": "Loop",
