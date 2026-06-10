@@ -131,7 +131,7 @@
 
 /* ---------- jump bar ---------- */
 .gg-jumpbar {
-  position: sticky; top: 0; z-index: 30;
+  position: sticky; top: 64px; z-index: 30;
   background: color-mix(in oklab, var(--bg) 92%, transparent);
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
@@ -193,7 +193,7 @@
 }
 
 /* ---------- entries ---------- */
-.gg-entry { padding: 22px 0 20px; border-bottom: 1px solid var(--border); scroll-margin-top: 88px; }
+.gg-entry { padding: 22px 0 20px; border-bottom: 1px solid var(--border); scroll-margin-top: 120px; }
 .gg-entry:last-child { border-bottom: 0; }
 .gg-entry h3 {
   margin: 0; font-family: var(--font-serif); font-weight: 800;
