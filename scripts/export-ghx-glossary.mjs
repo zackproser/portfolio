@@ -12,6 +12,7 @@ import fs from 'fs'
 import path from 'path'
 import { execFileSync } from 'child_process'
 import { fileURLToPath } from 'url'
+import https from 'https'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const glossaryPath = path.join(__dirname, '../src/app/ghx/glossary.json')
@@ -35,6 +36,26 @@ function findChrome() {
     if (fs.existsSync(c)) return c
   }
   return 'chrome'
+}
+
+function fetchQRCode(url, outputPath) {
+  return new Promise((resolve, reject) => {
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`
+    https
+      .get(qrApiUrl, (res) => {
+        if (res.statusCode !== 200) {
+          reject(new Error(`QR API returned ${res.statusCode}`))
+          return
+        }
+        const chunks = []
+        res.on('data', (chunk) => chunks.push(chunk))
+        res.on('end', () => {
+          fs.writeFileSync(outputPath, Buffer.concat(chunks))
+          resolve()
+        })
+      })
+      .on('error', reject)
+  })
 }
 
 const CHROME = findChrome()
@@ -160,6 +181,10 @@ const html = `<!doctype html>
 
 const htmlPath = path.join(outDir, 'glossary-print.html')
 fs.writeFileSync(htmlPath, html)
+
+// Generate QR code image before creating PDF
+const qrPath = path.join(outDir, 'qr-glossary.png')
+await fetchQRCode(LIVE_URL, qrPath)
 
 execFileSync(CHROME, [
   '--headless',
