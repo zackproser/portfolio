@@ -66,7 +66,7 @@ export function ContextWindowViz() {
     <div className="gg-viz">
       <div className="cwviz">
         <div className="cwviz-window">
-          <span className="cwviz-label">context window \u00b7 the model sees only this</span>
+          <span className="cwviz-label">context window · the model sees only this</span>
           <AnimatePresence mode="popLayout">
             {items.map((it, i) => (
               <motion.span
@@ -104,7 +104,7 @@ export function ContextWindowViz() {
         </div>
       </div>
       <p className="viz-caption">
-        when it fills, the <strong>oldest falls out</strong> \u2014 \u201cit forgot\u201d usually means \u201cit scrolled off\u201d
+        when it fills, the <strong>oldest falls out</strong> — “it forgot” usually means “it scrolled off”
       </p>
     </div>
   )

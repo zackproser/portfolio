@@ -385,38 +385,66 @@
 .gg-term-hint code { font-family: var(--font-mono); font-weight: 700; color: #fff; }
 
 /* ---------- training vs inference ---------- */
-.tiviz-stage { display: flex; gap: 10px; justify-content: center; margin-bottom: 14px; }
+.tiviz-stage { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
 .tiviz-mode {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--fg-subtle); padding: 4px 10px;
+  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--fg-subtle); padding: 4px 11px;
   border: 1px solid var(--border); border-radius: 999px;
-  transition: all .3s ease;
+  transition: all .45s ease; text-align: center;
 }
 .tiviz-mode.on { color: #fff; border-color: var(--accent); background: var(--accent); }
-.tiviz-row { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
-.tiviz-side { display: flex; align-items: center; gap: 10px; min-width: 150px; justify-content: center; }
+
+/* fixed stage: nothing here ever changes size, so nothing can jitter */
+.tiviz-grid {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) 20px auto 20px minmax(110px, 1fr);
+  align-items: center; gap: 6px; min-height: 120px;
+}
+.tiviz-slot {
+  position: relative; height: 92px;
+  display: flex; align-items: center; justify-content: center;
+}
+.tiviz-slot > span:first-child { position: absolute; }
+.tiviz-slotlabel {
+  position: absolute !important; bottom: 0; left: 0; right: 0; text-align: center;
+  font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--fg-subtle);
+}
 .tiviz-doc {
   font-family: var(--font-mono); font-size: 11.5px; color: var(--fg);
   background: var(--bg-secondary); padding: 6px 10px; border-radius: 6px;
-  white-space: nowrap;
+  white-space: nowrap; top: 26px;
 }
 .tiviz-doc.you { background: var(--accent); color: #fff; }
-.tiviz-arrow { color: var(--accent); font-size: 16px; font-family: var(--font-mono); }
-.tiviz-net {
-  position: relative; display: grid; grid-template-columns: repeat(6, 14px);
-  gap: 7px; padding: 14px 14px 24px; border-radius: 10px;
-  border: 1px solid var(--border-strong); background: var(--bg-secondary);
+.tiviz-guess {
+  top: 8px; width: 100%; max-width: 190px; text-align: center;
+  font-family: var(--font-mono); font-size: 10.5px; line-height: 1.45; color: var(--fg);
 }
-.tiviz-net .n { width: 14px; height: 14px; border-radius: 999px; background: var(--accent); }
+.tiviz-guess em { display: block; margin-top: 4px; font-style: normal; font-size: 9.5px; }
+.tiviz-guess em.ok { color: var(--good); }
+.tiviz-guess em.no { color: var(--bad); }
+.tiviz-guess.answer { font-size: 11.5px; }
+.tiviz-arrow { color: var(--accent); font-size: 16px; font-family: var(--font-mono); text-align: center; }
+.tiviz-net {
+  position: relative; display: grid; grid-template-columns: repeat(6, 13px);
+  gap: 6px; padding: 13px 13px 24px; border-radius: 10px;
+  border: 1px solid var(--border-strong); background: var(--bg-secondary);
+  transition: border-color .45s ease;
+}
+.tiviz-net.frozen { border-color: var(--border); }
+.tiviz-net .n { width: 13px; height: 13px; border-radius: 999px; background: var(--accent); }
 .tiviz-net.frozen .n { background: var(--fg-subtle); }
 .tiviz-netlabel {
   position: absolute; bottom: 6px; left: 0; right: 0; text-align: center;
   font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .1em;
   text-transform: uppercase; color: var(--fg-muted);
 }
-.tiviz-out {
-  font-family: var(--font-mono); font-size: 11.5px; color: var(--fg-muted);
-  max-width: 170px; min-height: 2.6em;
+/* fixed caption height so the act swap can't push content below */
+.gg-viz .viz-caption { min-height: 2.6em; }
+@media (max-width: 560px) {
+  .tiviz-grid { grid-template-columns: 1fr; justify-items: center; row-gap: 2px; min-height: 0; }
+  .tiviz-grid .tiviz-arrow { transform: rotate(90deg); }
+  .tiviz-slot { height: 78px; width: 100%; }
 }
 
 /* ---------- repo history ---------- */

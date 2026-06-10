@@ -18,50 +18,55 @@ function usePhase(count: number, ms: number) {
 }
 
 // ---- Training vs inference -------------------------------------------------
+//
+// Two acts on a fixed stage (nothing reflows — every animated element is
+// absolutely positioned inside a fixed-size slot, transitions are
+// opacity/y crossfades only):
+//   Act 1 · training — documents flow in, the network guesses the next
+//   word, gets it wrong, adjusts, repeats.
+//   Act 2 · inference — the dials freeze and the same network answers you.
 
-const CORPUS = ['every book', 'all the code', 'the open web', 'papers', 'manuals', 'forums']
-const OUTPUT = ['Here', 'are', 'the', 'three', 'follow-ups', 'you', 'need…']
+const TI_DOCS = ['every book', 'all the code', 'the open web', 'science papers', 'manuals', 'a billion emails']
+const TI_GUESSES = [
+  { text: 'guess: “the cat sat on the … rug”', verdict: '✗ wrong — adjust the dials', ok: false },
+  { text: 'guess: “the cat sat on the … mat”', verdict: '✓ better — keep adjusting', ok: true },
+  { text: 'guess: next word, a trillion times', verdict: 'until it stops being wrong', ok: true },
+]
+const TI_ANSWER = ['Drafting your', 'follow-ups now —', 'three emails,', 'ready to review.']
 
 export function TrainingInferenceViz() {
-  // 0–5: training ticks · 6–13: inference (one output word per tick)
-  const phase = usePhase(14, 900)
-  const training = phase < 6
+  const tick = usePhase(11, 1250) // 0-5 training · 6-10 inference
+  const training = tick < 6
 
   return (
     <div className="gg-viz" aria-hidden="true">
       <div className="tiviz">
         <div className="tiviz-stage">
-          <span className={`tiviz-mode ${training ? 'on' : ''}`}>1 · training</span>
-          <span className={`tiviz-mode ${!training ? 'on' : ''}`}>2 · inference</span>
+          <span className={`tiviz-mode ${training ? 'on' : ''}`}>step 1 · training (months, long ago)</span>
+          <span className={`tiviz-mode ${!training ? 'on' : ''}`}>step 2 · inference (every time you press Enter)</span>
         </div>
-        <div className="tiviz-row">
-          <div className="tiviz-side">
-            <AnimatePresence mode="popLayout">
-              {training ? (
-                <motion.span
-                  key={`in-${phase}`}
-                  className="tiviz-doc"
-                  initial={{ opacity: 0, x: -24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 24 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  {CORPUS[phase % CORPUS.length]}
-                </motion.span>
-              ) : (
-                <motion.span
-                  key="prompt"
-                  className="tiviz-doc you"
-                  initial={{ opacity: 0, x: -24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  “draft my follow-ups”
-                </motion.span>
-              )}
+
+        <div className="tiviz-grid">
+          {/* input slot */}
+          <div className="tiviz-slot">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={training ? `doc-${tick}` : 'ask'}
+                className={`tiviz-doc ${training ? '' : 'you'}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.35 }}
+              >
+                {training ? TI_DOCS[tick % TI_DOCS.length] : '“draft my follow-ups”'}
+              </motion.span>
             </AnimatePresence>
-            <span className="tiviz-arrow">→</span>
+            <span className="tiviz-slotlabel">{training ? 'what it reads' : 'your ask'}</span>
           </div>
+
+          <span className="tiviz-arrow">→</span>
+
+          {/* network */}
           <div className={`tiviz-net ${training ? 'tuning' : 'frozen'}`}>
             {Array.from({ length: 18 }, (_, i) => (
               <motion.span
@@ -69,33 +74,60 @@ export function TrainingInferenceViz() {
                 className="n"
                 animate={
                   training
-                    ? { opacity: [0.35, 1, 0.35], scale: [1, 1.25, 1] }
-                    : { opacity: 0.9, scale: 1 }
+                    ? { opacity: [0.35, 1, 0.35], scale: [1, 1.2, 1] }
+                    : { opacity: 0.85, scale: 1 }
                 }
                 transition={
                   training
-                    ? { duration: 1.1, repeat: Infinity, delay: (i % 6) * 0.14 }
-                    : { duration: 0.3 }
+                    ? { duration: 1.15, repeat: Infinity, delay: (i % 6) * 0.15 }
+                    : { duration: 0.4 }
                 }
               />
             ))}
-            <span className="tiviz-netlabel">{training ? 'billions of dials adjusting' : 'dials frozen'}</span>
+            <span className="tiviz-netlabel">{training ? 'dials adjusting' : 'dials frozen'}</span>
           </div>
-          <div className="tiviz-side">
-            <span className="tiviz-arrow">→</span>
-            <span className="tiviz-out">
-              {training
-                ? 'predict · check · adjust · repeat'
-                : OUTPUT.slice(0, Math.max(1, phase - 5)).join(' ')}
-            </span>
+
+          <span className="tiviz-arrow">→</span>
+
+          {/* output slot */}
+          <div className="tiviz-slot">
+            <AnimatePresence mode="wait">
+              {training ? (
+                <motion.span
+                  key={`guess-${tick % TI_GUESSES.length}`}
+                  className="tiviz-guess"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.35 }}
+                >
+                  {TI_GUESSES[tick % TI_GUESSES.length].text}
+                  <em className={TI_GUESSES[tick % TI_GUESSES.length].ok ? 'ok' : 'no'}>
+                    {TI_GUESSES[tick % TI_GUESSES.length].verdict}
+                  </em>
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="answer"
+                  className="tiviz-guess answer"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.35 }}
+                >
+                  {TI_ANSWER.slice(0, Math.max(1, tick - 5)).join(' ')}
+                  <em className="ok">{tick >= 9 ? '✓ useful, instantly' : '…'}</em>
+                </motion.span>
+              )}
+            </AnimatePresence>
+            <span className="tiviz-slotlabel">{training ? 'practice guesses' : 'what you get'}</span>
           </div>
         </div>
       </div>
       <p className="viz-caption">
         {training ? (
-          <>it reads (most of) everything we&apos;ve written, <strong>in a loop</strong>, until its guesses stop being wrong</>
+          <>first it reads nearly everything we&apos;ve written, guessing the next word and <strong>adjusting until it stops being wrong</strong></>
         ) : (
-          <>then the same network just <strong>predicts</strong> — and the predictions happen to be insanely useful</>
+          <>then the dials freeze — and the same network <strong>predicts for you</strong>; the predictions happen to be insanely useful</>
         )}
       </p>
     </div>
