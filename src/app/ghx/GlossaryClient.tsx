@@ -461,6 +461,11 @@ export default function GlossaryClient({ glossary }: { glossary: Glossary }) {
                 </motion.span>
               ))}
             </div>
+            <QuizMe
+              terms={glossary.sections.flatMap((s) =>
+                s.terms.map((t) => ({ term: t.term, definition: t.definition })),
+              )}
+            />
             <p className="gg-finale-sub">
               Keep this page — it stays live after the workshop. Next time someone says a word
               that isn&apos;t on it, that&apos;s a question worth asking out loud.
