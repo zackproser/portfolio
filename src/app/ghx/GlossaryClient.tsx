@@ -155,7 +155,7 @@ function ReadingProgress() {
   useEffect(() => {
     const onScroll = () => {
       const h = document.documentElement
-      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100
+      const pct = (h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight)) * 100
       if (fillRef.current) fillRef.current.style.width = `${Math.max(0, Math.min(100, pct))}%`
     }
     onScroll()
