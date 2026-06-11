@@ -75,7 +75,7 @@ export async function POST(req: Request) {
     return new Response('Slow down a little — try again in a bit.', { status: 429 })
   }
 
-  const { messages } = await req.json()
+  const { messages, via } = await req.json()
   if (!Array.isArray(messages) || messages.length === 0 || messages.length > 40) {
     return new Response('Bad request', { status: 400 })
   }
@@ -103,12 +103,21 @@ export async function POST(req: Request) {
   })
   waitUntil(logWritePromise)
 
+  // Ensure the waitUntil promise resolves even if the stream is aborted before
+  // onFinish runs (common when users close tabs or navigate away). Timeout
+  // matches maxDuration to avoid hanging background work.
+  const timeoutHandle = setTimeout(() => {
+    console.log('[ghx-chat] log write timeout — stream likely aborted')
+    resolveLogWrite?.()
+  }, (maxDuration - 1) * 1000)
+
   const result = streamText({
     model: openai.chat('gpt-4o-mini'),
     system: buildSystemPrompt(),
     messages: messages.slice(-12),
     maxTokens: 450,
     onFinish: async ({ text }) => {
+      clearTimeout(timeoutHandle)
       console.log(`[ghx-chat] a: ${text.slice(0, 400)}`)
       // Durable Q&A log — the raw material for the post-event report.
       try {
@@ -116,6 +125,7 @@ export async function POST(req: Request) {
           data: {
             question: String(lastUser?.content ?? '').slice(0, 2000),
             answer: text.slice(0, 4000),
+            via: via ? String(via).slice(0, 100) : null,
           },
         })
       } catch (e) {

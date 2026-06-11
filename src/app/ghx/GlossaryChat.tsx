@@ -51,7 +51,7 @@ export default function GlossaryChat() {
   const [open, setOpen] = useState(false)
   const bodyRef = useRef<HTMLDivElement>(null)
 
-  const { messages, input, setInput, handleInputChange, handleSubmit, isLoading, append, error } =
+  const { messages, input, setInput, handleInputChange, isLoading, append, error } =
     useChat({ api: '/api/ghx-chat' })
 
   // search empty-state (or anything else) can open + seed the chat
@@ -60,7 +60,7 @@ export default function GlossaryChat() {
       const { q, via } = (e as CustomEvent<{ q: string; via: string }>).detail
       setOpen(true)
       track('ghx_chat_question', { q: q ? q.slice(0, 100) : '(opened)', via })
-      if (q) void append({ role: 'user', content: q })
+      if (q) void append({ role: 'user', content: q }, { body: { via } })
     }
     window.addEventListener('ghx-ask', onAsk)
     return () => window.removeEventListener('ghx-ask', onAsk)
@@ -72,7 +72,15 @@ export default function GlossaryChat() {
 
   const ask = (q: string) => {
     track('ghx_chat_question', { q: q.slice(0, 100), via: 'chip' })
-    void append({ role: 'user', content: q })
+    void append({ role: 'user', content: q }, { body: { via: 'chip' } })
+  }
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!input.trim() || isLoading) return
+    track('ghx_chat_question', { q: input.slice(0, 100), via: 'typed' })
+    void append({ role: 'user', content: input }, { body: { via: 'typed' } })
+    setInput('')
   }
 
   return (
@@ -134,10 +142,7 @@ export default function GlossaryChat() {
 
           <form
             className="gg-chat-input"
-            onSubmit={(e) => {
-              if (input.trim()) track('ghx_chat_question', { q: input.slice(0, 100), via: 'typed' })
-              handleSubmit(e)
-            }}
+            onSubmit={handleFormSubmit}
           >
             <input
               value={input}

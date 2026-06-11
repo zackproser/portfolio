@@ -55,9 +55,8 @@ export function ContextWindowViz() {
       }
       return next
     })
-    if (evictedText !== null) {
-      setEvicted(evictedText)
-    }
+    // Always update evicted state: set it when eviction occurs, clear it otherwise
+    setEvicted(evictedText)
   }
 
   useEffect(() => {
