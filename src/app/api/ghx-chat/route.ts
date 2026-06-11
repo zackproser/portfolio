@@ -1,6 +1,7 @@
 import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import glossary from '@/app/ghx/glossary.json'
+import prisma from '@/lib/prisma'
 
 // Ask-the-glossary chat for the GHX workshop page (/ghx).
 //
@@ -94,8 +95,20 @@ export async function POST(req: Request) {
     system: buildSystemPrompt(),
     messages: messages.slice(-12),
     maxTokens: 450,
-    onFinish: ({ text }) => {
+    onFinish: async ({ text }) => {
       console.log(`[ghx-chat] a: ${text.slice(0, 400)}`)
+      // Durable Q&A log — the raw material for the post-event report.
+      // Fire-and-forget: a DB hiccup must never break the chat.
+      try {
+        await prisma.ghxChatLog.create({
+          data: {
+            question: String(lastUser?.content ?? '').slice(0, 2000),
+            answer: text.slice(0, 4000),
+          },
+        })
+      } catch (e) {
+        console.error('[ghx-chat] log write failed', e)
+      }
     },
   })
 

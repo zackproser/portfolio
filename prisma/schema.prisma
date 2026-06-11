@@ -374,3 +374,13 @@ model newsletters {
   @@index([sent_at])
   @@index([status, scheduled_at])
 }
+
+model GhxChatLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  question  String
+  answer    String
+  via       String?
+
+  @@map("ghx_chat_logs")
+}
