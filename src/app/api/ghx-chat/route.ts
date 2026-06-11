@@ -2,6 +2,7 @@ import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import glossary from '@/app/ghx/glossary.json'
 import prisma from '@/lib/prisma'
+import { waitUntil } from '@vercel/functions'
 
 // Ask-the-glossary chat for the GHX workshop page (/ghx).
 //
@@ -81,7 +82,10 @@ export async function POST(req: Request) {
   // Validate message content size to prevent abuse via search-seeded queries
   const MAX_CONTENT_LENGTH = 2000
   for (const m of messages) {
-    if (typeof m.content === 'string' && m.content.length > MAX_CONTENT_LENGTH) {
+    const contentStr = typeof m.content === 'string'
+      ? m.content
+      : JSON.stringify(m.content)
+    if (contentStr.length > MAX_CONTENT_LENGTH) {
       return new Response('Message too long', { status: 400 })
     }
   }
@@ -89,6 +93,15 @@ export async function POST(req: Request) {
   const lastUser = [...messages].reverse().find((m) => m.role === 'user')
   // Signal capture: every question is a data point about where GHX is confused.
   console.log(`[ghx-chat] q: ${String(lastUser?.content ?? '').slice(0, 300)}`)
+
+  // Set up a deferred promise that will be resolved when the log write completes.
+  // waitUntil ensures the serverless function stays alive until this resolves,
+  // preventing the log write from being cut off mid-flight (resend-subscribe.ts:225-232).
+  let resolveLogWrite: (() => void) | undefined
+  const logWritePromise = new Promise<void>((resolve) => {
+    resolveLogWrite = resolve
+  })
+  waitUntil(logWritePromise)
 
   const result = streamText({
     model: openai.chat('gpt-4o-mini'),
@@ -98,7 +111,6 @@ export async function POST(req: Request) {
     onFinish: async ({ text }) => {
       console.log(`[ghx-chat] a: ${text.slice(0, 400)}`)
       // Durable Q&A log — the raw material for the post-event report.
-      // Fire-and-forget: a DB hiccup must never break the chat.
       try {
         await prisma.ghxChatLog.create({
           data: {
@@ -108,6 +120,9 @@ export async function POST(req: Request) {
         })
       } catch (e) {
         console.error('[ghx-chat] log write failed', e)
+      } finally {
+        // Signal that the log write attempt is complete (success or failure)
+        resolveLogWrite?.()
       }
     },
   })
