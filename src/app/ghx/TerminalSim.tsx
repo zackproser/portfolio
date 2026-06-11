@@ -87,7 +87,12 @@ export default function TerminalSim() {
     } else if (word === 'pwd') {
       push({ kind: 'out', text: '/Users/you/q3-review' })
     } else if (word === 'clear') {
+      timeouts.current.forEach(clearTimeout)
+      timeouts.current = []
       setLines([])
+      if (stage === 'running' || stage === 'done') {
+        setStage('claude')
+      }
     } else if (word === 'cd') {
       push({ kind: 'out', text: 'sure — though once you run claude, it does the navigating for you.' })
     } else if (word === 'help') {
