@@ -16,6 +16,7 @@ import '@/styles/contact.css';
 import '@/styles/partnerships.css';
 import '@/styles/claude-cowork.css';
 import '@/styles/granola-pillar.css';
+import '@/styles/ghx-glossary.css';
 import '@/styles/meeting-notes.css';
 import '@/styles/subscribe.css';
 import '@/styles/newsletter.css';
