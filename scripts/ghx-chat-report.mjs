@@ -1,6 +1,13 @@
 #!/usr/bin/env node
 // Dump the GHX glossary chat Q&A log — the raw material for the
 // post-event report. Usage: node scripts/ghx-chat-report.mjs [N]
+//
+// NOTE: local .env points at a DIFFERENT Neon endpoint than production
+// (ep-polished-dew vs ep-rough-voice). Real workshop traffic lands in
+// production. To read it:
+//   npx vercel env pull /tmp/prod-env --environment=production
+//   POSTGRES_URL="$(grep ^POSTGRES_URL= /tmp/prod-env | cut -d'"' -f2)" \
+//     node scripts/ghx-chat-report.mjs 100 && rm /tmp/prod-env
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
