@@ -10,14 +10,14 @@ const claudeSkills = 'https://zackproser.b-cdn.net/images/claude-skills.webp'
 
 export const speakingEngagements = [
   {
-    id: 'aie-sf-keep-shipping',
+    id: 'aie-london-keep-shipping',
     slug: 'keep-shipping-when-you-walk-away',
     type: 'public',
     title: 'How to Keep Shipping When You Walk Away from Your Desk',
-    event: 'AI Engineer',
+    event: 'AI Engineering London',
     date: 'June 11, 2026',
     isoDate: '2026-06-11',
-    location: 'San Francisco, CA',
+    location: 'London, UK',
     description: 'Human attention is the hard constraint, not the tooling. I walked through four layers that make sustainable agent-driven development work: signal agents that triage Slack and Linear on a loop so you never open them yourself, verification gates from lint and build through browser click-through and critic passes, a weekly self-improvement loop over JSONL session logs that surfaces inefficiencies and generates missing skills, and an Oura Ring connected via MCP so Claude can factor your sleep and recovery into planning.',
     image: 'https://img.youtube.com/vi/so9l_MwS2yg/maxresdefault.jpg',
     audience: 'AI engineers and developers',
