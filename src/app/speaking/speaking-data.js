@@ -21,7 +21,7 @@ export const speakingEngagements = [
     description: 'Human attention is the hard constraint, not the tooling. I walked through four layers that make sustainable agent-driven development work: signal agents that triage Slack and Linear on a loop so you never open them yourself, verification gates from lint and build through browser click-through and critic passes, a weekly self-improvement loop over JSONL session logs that surfaces inefficiencies and generates missing skills, and an Oura Ring connected via MCP so Claude can factor your sleep and recovery into planning.',
     image: 'https://img.youtube.com/vi/so9l_MwS2yg/maxresdefault.jpg',
     audience: 'AI engineers and developers',
-    topics: ['AI Coding Agents', 'Developer Wellness', 'Claude Code', 'Signal Management', 'Verification Gates', 'Voice-First Development'],
+    topics: ['AI Coding Agents', 'Developer Wellness', 'Claude Code', 'Signal Management', 'Verification Gates', 'Voice-First Development', 'AI Engineering London', 'Untethered Productivity'],
     videoUrl: 'https://www.youtube.com/embed/so9l_MwS2yg',
     links: [
       {
