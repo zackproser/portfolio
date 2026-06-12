@@ -1,0 +1,9 @@
+{
+  "author": "Zachary Proser",
+  "date": "2026-06-11",
+  "title": "How to Keep Shipping When You Walk Away from Your Desk",
+  "description": "My talk at the AI Engineer conference in San Francisco. The core problem: human attention is the hard constraint, not the tools. Four layers that make sustainable agent-driven development work — signal agents, verification gates, self-improving systems, and biometric feedback via Oura Ring MCP.",
+  "image": "https://img.youtube.com/vi/so9l_MwS2yg/maxresdefault.jpg",
+  "type": "video",
+  "tags": ["talk", "AI Engineering", "Claude Code", "Developer Wellness", "Productivity"]
+}

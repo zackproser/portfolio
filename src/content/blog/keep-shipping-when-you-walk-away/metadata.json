@@ -1,0 +1,27 @@
+{
+  "title": "How to Keep Shipping When You Walk Away from Your Desk — My Talk at AI Engineer SF",
+  "author": "Zachary Proser",
+  "date": "2026-06-11",
+  "description": "My talk at the AI Engineer conference in San Francisco. Human attention is the hard constraint. Four layers that make sustainable agent-driven development work: signal agents, verification gates, self-improving systems, and biometric feedback via Oura Ring MCP.",
+  "image": "https://img.youtube.com/vi/so9l_MwS2yg/maxresdefault.jpg",
+  "slug": "/blog/keep-shipping-when-you-walk-away",
+  "keywords": [
+    "AI Engineer",
+    "AI coding agents",
+    "developer wellness",
+    "Claude Code",
+    "signal management",
+    "verification gates",
+    "voice-first development",
+    "remote control agents",
+    "Oura Ring MCP",
+    "developer balance"
+  ],
+  "tags": [
+    "Speaking",
+    "AI Engineering",
+    "Claude Code",
+    "Developer Wellness",
+    "Productivity"
+  ]
+}
