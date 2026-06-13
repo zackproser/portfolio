@@ -166,6 +166,7 @@ export const speakingEngagements = [
     image: 'https://img.youtube.com/vi/kwIzRkzO_Z4/0.jpg',
     audience: 'Conference attendees',
     topics: ['DevSecOps', 'Security', 'AI Engineering'],
+    videoUrl: 'https://www.youtube.com/embed/kwIzRkzO_Z4',
     links: [
       {
         type: 'youtube',
