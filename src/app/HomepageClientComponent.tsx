@@ -293,7 +293,7 @@ function FeaturedSpeaking() {
     blurb:
       'Human attention is the hard constraint, not the tooling. Signal layers, verification gates, voice-first dispatch, and an Oura Ring integration that factors your sleep into planning.',
     tag: 'Talk · Recording',
-    image: 'https://img.youtube.com/vi/so9l_MwS2yg/maxresdefault.jpg',
+    image: 'https://zackproser.b-cdn.net/images/aie-london-zack-podium-solo.webp',
     videoId: 'so9l_MwS2yg',
   }
 
@@ -351,9 +351,9 @@ function FeaturedSpeaking() {
           On stage
         </div>
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
-          <h2 className="font-serif text-3xl md:text-4xl font-extrabold leading-[1.08] tracking-tight text-charcoal-50 dark:text-parchment-100 text-balance m-0 max-w-[22ch]">
-            Keynotes, workshops, and{' '}
-            <em className="italic text-burnt-400 dark:text-amber-400">live recordings</em>.
+          <h2 className="font-serif text-3xl md:text-4xl font-extrabold leading-[1.08] tracking-tight text-charcoal-50 dark:text-parchment-100 text-balance m-0 max-w-[28ch]">
+            Shipping production AI daily.{' '}
+            <em className="italic text-burnt-400 dark:text-amber-400">Teaching what works on stage.</em>
           </h2>
           <Link
             href="/speaking"
