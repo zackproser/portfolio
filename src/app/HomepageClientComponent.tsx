@@ -369,7 +369,7 @@ function FeaturedSpeaking() {
           </Link>
         </div>
 
-        {/* Hero card — Untethered Productivity with video thumbnail */}
+        {/* Hero card — Untethered Productivity with hero image */}
         <Link
           href={`/speaking/${hero.slug}`}
           className="group block rounded-md border border-parchment-300 dark:border-slate-700 bg-parchment-50 dark:bg-slate-800 no-underline hover:border-burnt-400 dark:hover:border-amber-400 transition-colors mb-6 overflow-hidden"
@@ -380,48 +380,49 @@ function FeaturedSpeaking() {
             })
           }
         >
-          <div className="grid md:grid-cols-[1.2fr_1fr]">
-            <div className="relative aspect-video md:aspect-auto overflow-hidden bg-parchment-200 dark:bg-slate-900">
-              <Image
-                src={hero.image}
-                alt={`${hero.title} — ${hero.event}`}
-                fill
-                sizes="(max-width: 768px) 100vw, 60vw"
-                className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
-              />
-              {/* Play button overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 rounded-full bg-burnt-400/90 dark:bg-amber-400/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                  <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className="p-6 md:p-8 flex flex-col justify-center gap-3">
-              <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
-                <span className="font-bold text-burnt-600 dark:text-amber-300">{hero.tag}</span>
-                <span className="text-parchment-400 dark:text-slate-600">|</span>
-                <span>{hero.event}</span>
-                <span className="text-parchment-400 dark:text-slate-600">|</span>
-                <span>{hero.date}</span>
-              </div>
-              <h3 className="font-serif text-2xl md:text-3xl font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 m-0 group-hover:text-burnt-400 dark:group-hover:text-amber-400 transition-colors">
-                {hero.title}
-              </h3>
-              <p className="font-serif text-base italic text-parchment-600 dark:text-slate-300 m-0">
-                {hero.subtitle}
-              </p>
-              <p className="m-0 text-[13px] leading-relaxed text-parchment-600 dark:text-slate-400">
-                {hero.blurb}
-              </p>
-              <span className="inline-flex items-center gap-1.5 mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-burnt-400 dark:text-amber-400">
-                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+          {/* Hero image — always visible, full-bleed */}
+          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-parchment-200 dark:bg-slate-900">
+            <Image
+              src={hero.image}
+              alt={`${hero.title} — ${hero.event}`}
+              fill
+              sizes="(max-width: 768px) 100vw, 1152px"
+              className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
+              priority
+            />
+            {/* Play button overlay */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-burnt-400/90 dark:bg-amber-400/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 md:w-9 md:h-9 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z" />
                 </svg>
-                Watch the talk
-              </span>
+              </div>
             </div>
+            {/* Event badge */}
+            <div className="absolute top-3 left-3 md:top-4 md:left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm text-white rounded px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider">
+              {hero.event} · {hero.date}
+            </div>
+          </div>
+          {/* Text below image */}
+          <div className="p-5 md:p-6 flex flex-col gap-2">
+            <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
+              <span className="font-bold text-burnt-600 dark:text-amber-300">{hero.tag}</span>
+            </div>
+            <h3 className="font-serif text-2xl md:text-3xl font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 m-0 group-hover:text-burnt-400 dark:group-hover:text-amber-400 transition-colors">
+              {hero.title}
+            </h3>
+            <p className="font-serif text-base italic text-parchment-600 dark:text-slate-300 m-0">
+              {hero.subtitle}
+            </p>
+            <p className="m-0 text-[13px] leading-relaxed text-parchment-600 dark:text-slate-400">
+              {hero.blurb}
+            </p>
+            <span className="inline-flex items-center gap-1.5 mt-1 font-mono text-[11px] uppercase tracking-[0.14em] text-burnt-400 dark:text-amber-400">
+              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              Watch the talk
+            </span>
           </div>
         </Link>
 
