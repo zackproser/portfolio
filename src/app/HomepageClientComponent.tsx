@@ -293,7 +293,7 @@ function FeaturedSpeaking() {
     blurb:
       'Human attention is the hard constraint, not the tooling. Signal layers, verification gates, voice-first dispatch, and an Oura Ring integration that factors your sleep into planning.',
     tag: 'Talk · Recording',
-    image: 'https://zackproser.b-cdn.net/images/aie-london-zack-podium-solo.webp',
+    image: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
     videoId: 'so9l_MwS2yg',
   }
 
