@@ -284,16 +284,30 @@ function FeaturedWorkshops() {
 // ----- Featured Speaking (talks, workshops, keynotes) -------------
 
 function FeaturedSpeaking() {
+  const hero = {
+    slug: 'untethered-productivity',
+    event: 'AI Engineering London',
+    date: 'June 2026',
+    title: 'Untethered Productivity',
+    subtitle: 'Staying Healthy, Creative, and Shipping in the AI Coding Era',
+    blurb:
+      'Human attention is the hard constraint, not the tooling. Signal layers, verification gates, voice-first dispatch, and an Oura Ring integration that factors your sleep into planning.',
+    tag: 'Talk · Recording',
+    image: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
+    videoId: 'so9l_MwS2yg',
+  }
+
   const talks = [
     {
-      slug: 'untethered-productivity',
-      event: 'AI Engineering London',
-      date: 'April 2026',
-      title: 'Untethered Productivity',
+      slug: 'workos-applied-ai-showcase',
+      event: 'WorkOS Applied AI Showcase',
+      date: 'May 2026',
+      title: 'Applied AI: Three Learnings',
       blurb:
-        'Staying healthy, creative, and shipping in the AI coding era. Interactive slide deck.',
-      tag: 'Talk · Slides',
-      image: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
+        'Interface beats stack, complete the loop, and the imagination gap — three lessons from shipping internal AI tooling.',
+      tag: 'Talk · Recording',
+      image: 'https://img.youtube.com/vi/V2PuEAeNXUU/maxresdefault.jpg',
+      hasVideo: true,
     },
     {
       slug: 'aie-london-skills-at-scale',
@@ -304,6 +318,7 @@ function FeaturedSpeaking() {
         'Leveraging Claude Code skills across workflows, agents, and teams. 80-minute workshop with Nick Nisi.',
       tag: 'Workshop · 80 min',
       image: 'https://zackproser.b-cdn.net/images/aie-london-workshop-nick-zack.webp',
+      hasVideo: true,
     },
     {
       slug: 'claude-cowork-workshop',
@@ -312,8 +327,9 @@ function FeaturedSpeaking() {
       title: 'Claude Cowork Workshop',
       blurb:
         'Hands-on hour with Lydia from Anthropic — Cowork enablement end-to-end, live demos to live workflow.',
-      tag: 'Workshop · Co-host',
+      tag: 'Workshop · Recording',
       image: 'https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp',
+      hasVideo: true,
     },
     {
       slug: 'devseccon-2025-keynote',
@@ -322,8 +338,9 @@ function FeaturedSpeaking() {
       title: 'DevSecCon Keynote',
       blurb:
         'Modern AI and security — keynote address to the security engineering community.',
-      tag: 'Keynote',
+      tag: 'Keynote · Recording',
       image: 'https://img.youtube.com/vi/kwIzRkzO_Z4/0.jpg',
+      hasVideo: true,
     },
   ]
 
@@ -331,12 +348,12 @@ function FeaturedSpeaking() {
     <section className="py-16">
       <div className="container mx-auto max-w-6xl px-4 md:px-6">
         <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
-          Recent talks
+          On stage
         </div>
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
-          <h2 className="font-serif text-3xl md:text-4xl font-extrabold leading-[1.08] tracking-tight text-charcoal-50 dark:text-parchment-100 text-balance m-0 max-w-[22ch]">
-            Keynotes, workshops, and{' '}
-            <em className="italic text-burnt-400 dark:text-amber-400">interactive slide decks</em>.
+          <h2 className="font-serif text-3xl md:text-4xl font-extrabold leading-[1.08] tracking-tight text-charcoal-50 dark:text-parchment-100 text-balance m-0 max-w-[28ch]">
+            Shipping production AI daily.{' '}
+            <em className="italic text-burnt-400 dark:text-amber-400">Teaching what works on stage.</em>
           </h2>
           <Link
             href="/speaking"
@@ -351,7 +368,66 @@ function FeaturedSpeaking() {
             All talks →
           </Link>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+
+        {/* Hero card — Untethered Productivity with hero image */}
+        <Link
+          href={`/speaking/${hero.slug}`}
+          className="group block rounded-md border border-parchment-300 dark:border-slate-700 bg-parchment-50 dark:bg-slate-800 no-underline hover:border-burnt-400 dark:hover:border-amber-400 transition-colors mb-6 overflow-hidden"
+          onClick={() =>
+            track('featured_speaking_click', {
+              location: 'homepage_speaking_section',
+              talk: hero.slug,
+            })
+          }
+        >
+          {/* Hero image — always visible, full-bleed */}
+          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-parchment-200 dark:bg-slate-900">
+            <Image
+              src={hero.image}
+              alt={`${hero.title} — ${hero.event}`}
+              fill
+              sizes="(max-width: 768px) 100vw, 1152px"
+              className="object-cover group-hover:scale-[1.02] transition-transform duration-500"
+              priority
+            />
+            {/* Play button overlay */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-burnt-400/90 dark:bg-amber-400/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <svg className="w-7 h-7 md:w-9 md:h-9 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            </div>
+            {/* Event badge */}
+            <div className="absolute top-3 left-3 md:top-4 md:left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm text-white rounded px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider">
+              {hero.event} · {hero.date}
+            </div>
+          </div>
+          {/* Text below image */}
+          <div className="p-5 md:p-6 flex flex-col gap-2">
+            <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
+              <span className="font-bold text-burnt-600 dark:text-amber-300">{hero.tag}</span>
+            </div>
+            <h3 className="font-serif text-2xl md:text-3xl font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 m-0 group-hover:text-burnt-400 dark:group-hover:text-amber-400 transition-colors">
+              {hero.title}
+            </h3>
+            <p className="font-serif text-base italic text-parchment-600 dark:text-slate-300 m-0">
+              {hero.subtitle}
+            </p>
+            <p className="m-0 text-[13px] leading-relaxed text-parchment-600 dark:text-slate-400">
+              {hero.blurb}
+            </p>
+            <span className="inline-flex items-center gap-1.5 mt-1 font-mono text-[11px] uppercase tracking-[0.14em] text-burnt-400 dark:text-amber-400">
+              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              Watch the talk
+            </span>
+          </div>
+        </Link>
+
+        {/* Supporting talks grid */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {talks.map((t) => (
             <Link
               key={t.slug}
@@ -372,6 +448,14 @@ function FeaturedSpeaking() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-cover"
                 />
+                {t.hasVideo && (
+                  <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/70 text-white rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider">
+                    <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                    Video
+                  </div>
+                )}
               </div>
               <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
                 <span className="font-bold text-burnt-600 dark:text-amber-300">{t.tag}</span>

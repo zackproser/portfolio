@@ -10,33 +10,6 @@ const claudeSkills = 'https://zackproser.b-cdn.net/images/claude-skills.webp'
 
 export const speakingEngagements = [
   {
-    id: 'aie-london-keep-shipping',
-    slug: 'keep-shipping-when-you-walk-away',
-    type: 'public',
-    title: 'How to Keep Shipping When You Walk Away from Your Desk',
-    event: 'AI Engineering London',
-    date: 'June 11, 2026',
-    isoDate: '2026-06-11',
-    location: 'London, UK',
-    description: 'Human attention is the hard constraint, not the tooling. I walked through four layers that make sustainable agent-driven development work: signal agents that triage Slack and Linear on a loop so you never open them yourself, verification gates from lint and build through browser click-through and critic passes, a weekly self-improvement loop over JSONL session logs that surfaces inefficiencies and generates missing skills, and an Oura Ring connected via MCP so Claude can factor your sleep and recovery into planning.',
-    image: 'https://img.youtube.com/vi/so9l_MwS2yg/maxresdefault.jpg',
-    audience: 'AI engineers and developers',
-    topics: ['AI Coding Agents', 'Developer Wellness', 'Claude Code', 'Signal Management', 'Verification Gates', 'Voice-First Development', 'AI Engineering London', 'Untethered Productivity'],
-    videoUrl: 'https://www.youtube.com/embed/so9l_MwS2yg',
-    links: [
-      {
-        type: 'youtube',
-        url: 'https://www.youtube.com/watch?v=so9l_MwS2yg',
-        label: 'Watch the talk'
-      },
-      {
-        type: 'blog',
-        url: '/blog/keep-shipping-when-you-walk-away',
-        label: 'Read the write-up'
-      }
-    ]
-  },
-  {
     id: 'workos-applied-ai-showcase',
     slug: 'workos-applied-ai-showcase',
     type: 'public',
@@ -118,7 +91,14 @@ export const speakingEngagements = [
     audience: 'AI engineers and developers',
     topics: ['AI Coding Agents', 'Developer Wellness', 'Claude Code', 'Productivity', 'Signal Management'],
     slidevUrl: 'https://zackproser.b-cdn.net/talks/untethered-productivity/index-v3.html',
-    links: []
+    videoUrl: 'https://www.youtube.com/embed/so9l_MwS2yg',
+    links: [
+      {
+        type: 'youtube',
+        url: 'https://www.youtube.com/watch?v=so9l_MwS2yg',
+        label: 'Watch the talk'
+      }
+    ]
   },
   {
     id: 'aie-london-scaling-devtools-podcast',
@@ -186,6 +166,7 @@ export const speakingEngagements = [
     image: 'https://img.youtube.com/vi/kwIzRkzO_Z4/0.jpg',
     audience: 'Conference attendees',
     topics: ['DevSecOps', 'Security', 'AI Engineering'],
+    videoUrl: 'https://www.youtube.com/embed/kwIzRkzO_Z4',
     links: [
       {
         type: 'youtube',
