@@ -7,6 +7,7 @@ import { EditorialCard } from '@/components/EditorialCard'
 import { SectionHead } from '@/components/SectionHead'
 import { EditorialNewsletter } from '@/components/EditorialNewsletter'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
+import { speakingEngagements } from './speaking/speaking-data'
 import type { Content } from '@/types/content'
 
 /* ------------------------------------------------------------------
@@ -179,7 +180,7 @@ function FeaturedWorkshops() {
             <h2 className="font-serif text-3xl md:text-4xl font-extrabold leading-[1.08] tracking-tight text-charcoal-50 dark:text-parchment-100 text-balance">
               Make Claude{' '}
               <em className="italic text-burnt-400 dark:text-amber-400">how your team works</em>
-              {' '}— not just a tool they have.
+              {' '}— by default.
             </h2>
             <p className="mt-5 text-[17px] leading-relaxed text-parchment-600 dark:text-slate-300 max-w-[52ch]">
               Three practitioners who ship with Claude daily at WorkOS come into your team — single team or
@@ -291,9 +292,9 @@ function FeaturedSpeaking() {
     title: 'Untethered Productivity',
     subtitle: 'Staying Healthy, Creative, and Shipping in the AI Coding Era',
     blurb:
-      'Human attention is the hard constraint, not the tooling. Signal layers, verification gates, voice-first dispatch, and an Oura Ring integration that factors your sleep into planning.',
+      'Human attention is the real bottleneck. Signal layers, verification gates, voice-first dispatch, and an Oura Ring integration that factors your sleep into the day’s plan.',
     tag: 'Talk · Recording',
-    image: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
+    image: 'https://img.youtube.com/vi/so9l_MwS2yg/maxresdefault.jpg',
     videoId: 'so9l_MwS2yg',
   }
 
@@ -315,7 +316,7 @@ function FeaturedSpeaking() {
       date: 'April 2026',
       title: 'Skills at Scale',
       blurb:
-        'Leveraging Claude Code skills across workflows, agents, and teams. 80-minute workshop with Nick Nisi.',
+        'Claude Code skills across workflows, agents, and teams — an 80-minute hands-on workshop with Nick Nisi.',
       tag: 'Workshop · 80 min',
       image: 'https://zackproser.b-cdn.net/images/aie-london-workshop-nick-zack.webp',
       hasVideo: true,
@@ -326,7 +327,7 @@ function FeaturedSpeaking() {
       date: 'February 2026',
       title: 'Claude Cowork Workshop',
       blurb:
-        'Hands-on hour with Lydia from Anthropic — Cowork enablement end-to-end, live demos to live workflow.',
+        'A hands-on hour with Lydia from Anthropic — Cowork enablement from first live demo to a working workflow.',
       tag: 'Workshop · Recording',
       image: 'https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp',
       hasVideo: true,
@@ -344,29 +345,151 @@ function FeaturedSpeaking() {
     },
   ]
 
+  // Proof metrics derived from the canonical speaking-data so the headline
+  // numbers stay in sync as new engagements are added.
+  const engagements = speakingEngagements as unknown as Array<{
+    title: string
+    event: string
+    description?: string
+    topics?: string[]
+    videoUrl?: string
+    links?: { type: string }[]
+  }>
+  const totalCount = engagements.length
+  const workshopCount = engagements.filter((e) =>
+    /workshop|training|hands-on/i.test(
+      `${e.title} ${e.event} ${e.description ?? ''} ${(e.topics ?? []).join(' ')}`,
+    ),
+  ).length
+  const venueCount = new Set(engagements.map((e) => e.event)).size
+  const recordingCount = engagements.filter(
+    (e) => Boolean(e.videoUrl) || (e.links ?? []).some((l) => l.type === 'youtube'),
+  ).length
+
+  const ledger = [
+    { num: String(totalCount), label: 'Talks, workshops & demos' },
+    { num: String(workshopCount), label: 'Hands-on workshops' },
+    { num: String(venueCount), label: 'Stages & conferences' },
+    { num: String(recordingCount), label: 'Recordings to watch' },
+  ]
+
+  type Venue = {
+    alt: string
+    role: string
+    slug: string
+    logo?: string
+    wordmark?: string
+    glyph?: boolean
+  }
+  const venuesSeen: Venue[] = [
+    { logo: '/images/logos/aiengineer.svg', alt: 'AI Engineer', role: 'Workshops · London + SF', slug: 'aie-london-skills-at-scale' },
+    { logo: '/images/logos/anthropic.svg', alt: 'Anthropic', role: 'Workshop · Claude Cowork', slug: 'claude-cowork-workshop', glyph: true },
+    { logo: '/images/logos/a16z.svg', alt: 'Andreessen Horowitz', role: 'Talk · ~125 in room', slug: 'a16z-pinecone-pulumi', glyph: true },
+    { logo: '/images/logos/workos.svg', alt: 'WorkOS', role: 'Showcase · Applied AI', slug: 'workos-applied-ai-showcase', glyph: true },
+    { wordmark: 'DevSecCon', alt: 'DevSecCon', role: 'Keynote · 2025', slug: 'devseccon-2025-keynote' },
+    { logo: '/images/logos/cohere.svg', alt: 'Cohere', role: 'Co-host · a16z meetup', slug: 'a16z-pinecone-pulumi' },
+  ]
+
   return (
     <section className="py-16">
       <div className="container mx-auto max-w-6xl px-4 md:px-6">
         <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
           On stage
         </div>
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
-          <h2 className="font-serif text-3xl md:text-4xl font-extrabold leading-[1.08] tracking-tight text-charcoal-50 dark:text-parchment-100 text-balance m-0 max-w-[28ch]">
-            Shipping production AI daily.{' '}
-            <em className="italic text-burnt-400 dark:text-amber-400">Teaching what works on stage.</em>
-          </h2>
-          <Link
-            href="/speaking"
-            className="font-mono text-[12px] uppercase tracking-[0.14em] text-burnt-400 dark:text-amber-400 no-underline hover:underline whitespace-nowrap"
-            onClick={() =>
-              track('featured_speaking_click', {
-                location: 'homepage_speaking_section',
-                action: 'all_talks',
-              })
-            }
-          >
-            All talks →
-          </Link>
+        <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-end mb-10">
+          <div>
+            <h2 className="font-serif text-3xl md:text-4xl font-extrabold leading-[1.08] tracking-tight text-charcoal-50 dark:text-parchment-100 text-balance m-0 max-w-[20ch]">
+              Shipping production AI daily.{' '}
+              <em className="italic text-burnt-400 dark:text-amber-400">Teaching what works on stage.</em>
+            </h2>
+            <p className="mt-4 text-[15px] md:text-base leading-relaxed text-parchment-600 dark:text-slate-300 max-w-[54ch]">
+              Keynotes, conference talks, hands-on workshops, and live demos — from a16z and
+              DevSecCon to AI Engineering London and WorkOS&nbsp;×&nbsp;Anthropic.
+            </p>
+            <Link
+              href="/speaking"
+              className="inline-block mt-5 font-mono text-[12px] uppercase tracking-[0.14em] text-burnt-400 dark:text-amber-400 no-underline hover:underline"
+              onClick={() =>
+                track('featured_speaking_click', {
+                  location: 'homepage_speaking_section',
+                  action: 'all_talks',
+                })
+              }
+            >
+              All talks →
+            </Link>
+          </div>
+
+          {/* Ledger — terminal-style proof card, mirrors the workshops calendar */}
+          <div className="rounded-md border border-parchment-300 dark:border-slate-700 bg-parchment-50 dark:bg-slate-800 shadow-md overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3 font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400 border-b border-parchment-300 dark:border-slate-700">
+              <span className="font-bold text-burnt-400 dark:text-amber-400">~/speaking — ledger</span>
+              <span>Since 2023</span>
+            </div>
+            <div className="grid grid-cols-2">
+              {ledger.map((s, i) => (
+                <div
+                  key={s.label}
+                  className={`px-5 py-4 border-parchment-300 dark:border-slate-700 ${
+                    i % 2 === 0 ? 'border-r' : ''
+                  } ${i < 2 ? 'border-b' : ''}`}
+                >
+                  <div className="font-serif text-3xl font-extrabold leading-none tracking-tight text-charcoal-50 dark:text-parchment-100">
+                    {s.num}
+                  </div>
+                  <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] leading-snug text-parchment-600 dark:text-slate-400">
+                    {s.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* As seen at — logo wall */}
+        <div className="mb-10">
+          <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
+            As seen at
+          </div>
+          <div className="editorial-grid-texture rounded-md border border-parchment-300 border-t-2 border-t-burnt-400/60 bg-parchment-50 px-6 py-9 dark:border-slate-700 dark:border-t-amber-400/50 dark:bg-slate-800/50 md:px-12 md:py-11">
+            <div className="grid grid-cols-2 items-start gap-x-6 gap-y-9 sm:grid-cols-3 lg:grid-cols-6">
+              {venuesSeen.map((v) => (
+                <Link
+                  key={v.alt}
+                  href={`/speaking/${v.slug}`}
+                  aria-label={`${v.alt} — ${v.role}`}
+                  className="group/venue flex flex-col items-center gap-3 no-underline transition-transform duration-300 hover:-translate-y-0.5"
+                  onClick={() =>
+                    track('featured_speaking_click', {
+                      location: 'homepage_speaking_section',
+                      action: 'venue',
+                      venue: v.alt,
+                    })
+                  }
+                >
+                  <span className="flex h-9 md:h-11 items-center justify-center">
+                    {v.logo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={v.logo}
+                        alt={v.alt}
+                        className={`w-auto object-contain opacity-70 brightness-0 transition-opacity duration-300 group-hover/venue:opacity-100 dark:invert ${
+                          v.glyph ? 'h-9 md:h-11' : 'h-6 md:h-7'
+                        }`}
+                      />
+                    ) : (
+                      <span className="font-sans text-2xl md:text-3xl font-extrabold tracking-tight text-black opacity-70 transition-opacity duration-300 group-hover/venue:opacity-100 dark:text-parchment-100">
+                        {v.wordmark}
+                      </span>
+                    )}
+                  </span>
+                  <span className="max-w-[18ch] text-center font-mono text-[10px] uppercase tracking-[0.12em] leading-snug text-parchment-600 dark:text-slate-400">
+                    {v.role}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Hero card — Untethered Productivity with hero image */}
@@ -398,10 +521,6 @@ function FeaturedSpeaking() {
                 </svg>
               </div>
             </div>
-            {/* Event badge */}
-            <div className="absolute top-3 left-3 md:top-4 md:left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm text-white rounded px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider">
-              {hero.event} · {hero.date}
-            </div>
           </div>
           {/* Text below image */}
           <div className="p-5 md:p-6 flex flex-col gap-2">
@@ -426,13 +545,13 @@ function FeaturedSpeaking() {
           </div>
         </Link>
 
-        {/* Supporting talks grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Supporting talks grid — editorial-card primitives for coherence */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
           {talks.map((t) => (
             <Link
               key={t.slug}
               href={`/speaking/${t.slug}`}
-              className="group rounded-md border border-parchment-300 dark:border-slate-700 bg-parchment-50 dark:bg-slate-800 p-5 flex flex-col gap-3 no-underline hover:border-burnt-400 dark:hover:border-amber-400 transition-colors"
+              className="editorial-card group block h-full no-underline"
               onClick={() =>
                 track('featured_speaking_click', {
                   location: 'homepage_speaking_section',
@@ -440,38 +559,75 @@ function FeaturedSpeaking() {
                 })
               }
             >
-              <div className="relative aspect-[16/10] rounded-sm overflow-hidden bg-parchment-200 dark:bg-slate-900">
-                <Image
-                  src={t.image}
-                  alt={`${t.title} — ${t.event}`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover"
-                />
-                {t.hasVideo && (
-                  <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/70 text-white rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider">
-                    <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                    Video
+              <div className="editorial-card-link">
+                <div className="editorial-card-media">
+                  <Image
+                    src={t.image}
+                    alt={`${t.title} — ${t.event}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    className="editorial-card-image object-cover"
+                  />
+                  <div className="editorial-card-rule" />
+                  {t.hasVideo && (
+                    <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/70 text-white rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider">
+                      <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                      Video
+                    </div>
+                  )}
+                </div>
+                <div className="editorial-card-body">
+                  <div className="editorial-card-date flex items-center justify-between">
+                    <span className="font-bold text-burnt-600 dark:text-amber-300">{t.tag}</span>
+                    <span>{t.date}</span>
                   </div>
-                )}
-              </div>
-              <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
-                <span className="font-bold text-burnt-600 dark:text-amber-300">{t.tag}</span>
-                <span>{t.date}</span>
-              </div>
-              <h3 className="font-serif text-lg font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 m-0 group-hover:text-burnt-400 dark:group-hover:text-amber-400 transition-colors">
-                {t.title}
-              </h3>
-              <p className="m-0 text-[13px] leading-relaxed text-parchment-600 dark:text-slate-300">
-                {t.blurb}
-              </p>
-              <div className="mt-auto pt-3 border-t border-parchment-300 dark:border-slate-700 font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500">
-                {t.event}
+                  <h3 className="editorial-card-title group-hover:text-burnt-400 dark:group-hover:text-amber-400 transition-colors">
+                    {t.title}
+                  </h3>
+                  <p className="editorial-card-desc">{t.blurb}</p>
+                  <div className="editorial-card-footer">
+                    <span className="editorial-card-index min-w-0 truncate pr-2">{t.event}</span>
+                    <span className="editorial-card-read shrink-0">Watch →</span>
+                  </div>
+                </div>
               </div>
             </Link>
           ))}
+        </div>
+
+        {/* Booking CTA */}
+        <div className="mt-12 pt-8 border-t border-parchment-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+          <p className="font-serif text-lg md:text-xl text-charcoal-50 dark:text-parchment-100 m-0 max-w-[42ch]">
+            Bring a keynote, workshop, or live demo to your event or team.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+            <Link
+              href="/speaking"
+              className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-md text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors"
+              onClick={() =>
+                track('featured_speaking_click', {
+                  location: 'homepage_speaking_section',
+                  action: 'watch_all',
+                })
+              }
+            >
+              Watch all talks →
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-md border border-parchment-400 dark:border-slate-600 text-charcoal-50 dark:text-parchment-100 hover:border-burnt-400 dark:hover:border-amber-400 hover:text-burnt-400 dark:hover:text-amber-400 transition-colors"
+              onClick={() =>
+                track('featured_speaking_click', {
+                  location: 'homepage_speaking_section',
+                  action: 'book',
+                })
+              }
+            >
+              Book me to speak →
+            </Link>
+          </div>
         </div>
       </div>
     </section>
