@@ -56,6 +56,19 @@
   background-size: 40px 40px, 40px 40px;
 }
 
+/* Faint engineering-paper texture for inset panels (logo wall, etc.) */
+.editorial-grid-texture {
+  background-image:
+    linear-gradient(rgba(139, 115, 85, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 115, 85, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px, 28px 28px;
+}
+.dark .editorial-grid-texture {
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+}
+
 /* ---------- Hero typography -------------------------------- */
 /* Sizing is intentionally compact: the newsletter capture is the dominant
  * CTA and must remain above the fold on standard 1080p viewports. */

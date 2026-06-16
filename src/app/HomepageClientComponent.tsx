@@ -180,7 +180,7 @@ function FeaturedWorkshops() {
             <h2 className="font-serif text-3xl md:text-4xl font-extrabold leading-[1.08] tracking-tight text-charcoal-50 dark:text-parchment-100 text-balance">
               Make Claude{' '}
               <em className="italic text-burnt-400 dark:text-amber-400">how your team works</em>
-              {' '}— not just a tool they have.
+              {' '}— by default.
             </h2>
             <p className="mt-5 text-[17px] leading-relaxed text-parchment-600 dark:text-slate-300 max-w-[52ch]">
               Three practitioners who ship with Claude daily at WorkOS come into your team — single team or
@@ -292,7 +292,7 @@ function FeaturedSpeaking() {
     title: 'Untethered Productivity',
     subtitle: 'Staying Healthy, Creative, and Shipping in the AI Coding Era',
     blurb:
-      'Human attention is the hard constraint, not the tooling. Signal layers, verification gates, voice-first dispatch, and an Oura Ring integration that factors your sleep into planning.',
+      'Human attention is the real bottleneck. Signal layers, verification gates, voice-first dispatch, and an Oura Ring integration that factors your sleep into the day’s plan.',
     tag: 'Talk · Recording',
     image: 'https://img.youtube.com/vi/so9l_MwS2yg/maxresdefault.jpg',
     videoId: 'so9l_MwS2yg',
@@ -316,7 +316,7 @@ function FeaturedSpeaking() {
       date: 'April 2026',
       title: 'Skills at Scale',
       blurb:
-        'Leveraging Claude Code skills across workflows, agents, and teams. 80-minute workshop with Nick Nisi.',
+        'Claude Code skills across workflows, agents, and teams — an 80-minute hands-on workshop with Nick Nisi.',
       tag: 'Workshop · 80 min',
       image: 'https://zackproser.b-cdn.net/images/aie-london-workshop-nick-zack.webp',
       hasVideo: true,
@@ -327,7 +327,7 @@ function FeaturedSpeaking() {
       date: 'February 2026',
       title: 'Claude Cowork Workshop',
       blurb:
-        'Hands-on hour with Lydia from Anthropic — Cowork enablement end-to-end, live demos to live workflow.',
+        'A hands-on hour with Lydia from Anthropic — Cowork enablement from first live demo to a working workflow.',
       tag: 'Workshop · Recording',
       image: 'https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp',
       hasVideo: true,
@@ -382,12 +382,12 @@ function FeaturedSpeaking() {
     glyph?: boolean
   }
   const venuesSeen: Venue[] = [
-    { logo: '/images/logos/aiengineer.svg', alt: 'AI Engineer', role: 'London + World’s Fair', slug: 'aie-london-skills-at-scale' },
-    { logo: '/images/logos/anthropic.svg', alt: 'Anthropic', role: 'Claude Cowork workshop', slug: 'claude-cowork-workshop', glyph: true },
-    { logo: '/images/logos/a16z.svg', alt: 'Andreessen Horowitz', role: 'Talk · ~125 in the room', slug: 'a16z-pinecone-pulumi', glyph: true },
-    { logo: '/images/logos/workos.svg', alt: 'WorkOS', role: 'Applied AI showcase', slug: 'workos-applied-ai-showcase', glyph: true },
-    { wordmark: 'DevSecCon', alt: 'DevSecCon', role: '2025 keynote', slug: 'devseccon-2025-keynote' },
-    { logo: '/images/logos/cohere.svg', alt: 'Cohere', role: 'Meetup co-host @ a16z', slug: 'a16z-pinecone-pulumi' },
+    { logo: '/images/logos/aiengineer.svg', alt: 'AI Engineer', role: 'Workshops · London + SF', slug: 'aie-london-skills-at-scale' },
+    { logo: '/images/logos/anthropic.svg', alt: 'Anthropic', role: 'Workshop · Claude Cowork', slug: 'claude-cowork-workshop', glyph: true },
+    { logo: '/images/logos/a16z.svg', alt: 'Andreessen Horowitz', role: 'Talk · ~125 in room', slug: 'a16z-pinecone-pulumi', glyph: true },
+    { logo: '/images/logos/workos.svg', alt: 'WorkOS', role: 'Showcase · Applied AI', slug: 'workos-applied-ai-showcase', glyph: true },
+    { wordmark: 'DevSecCon', alt: 'DevSecCon', role: 'Keynote · 2025', slug: 'devseccon-2025-keynote' },
+    { logo: '/images/logos/cohere.svg', alt: 'Cohere', role: 'Co-host · a16z meetup', slug: 'a16z-pinecone-pulumi' },
   ]
 
   return (
@@ -451,14 +451,14 @@ function FeaturedSpeaking() {
           <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
             As seen at
           </div>
-          <div className="rounded-md border border-parchment-300 dark:border-slate-700 bg-parchment-50 dark:bg-slate-800/50 px-6 py-9 md:px-12 md:py-11">
+          <div className="editorial-grid-texture rounded-md border border-parchment-300 border-t-2 border-t-burnt-400/60 bg-parchment-50 px-6 py-9 dark:border-slate-700 dark:border-t-amber-400/50 dark:bg-slate-800/50 md:px-12 md:py-11">
             <div className="grid grid-cols-2 items-start gap-x-6 gap-y-9 sm:grid-cols-3 lg:grid-cols-6">
               {venuesSeen.map((v) => (
                 <Link
                   key={v.alt}
                   href={`/speaking/${v.slug}`}
                   aria-label={`${v.alt} — ${v.role}`}
-                  className="group/venue flex flex-col items-center gap-3 no-underline"
+                  className="group/venue flex flex-col items-center gap-3 no-underline transition-transform duration-300 hover:-translate-y-0.5"
                   onClick={() =>
                     track('featured_speaking_click', {
                       location: 'homepage_speaking_section',
@@ -478,7 +478,7 @@ function FeaturedSpeaking() {
                         }`}
                       />
                     ) : (
-                      <span className="font-sans text-2xl md:text-3xl font-extrabold tracking-tight text-charcoal-50 opacity-70 transition-opacity duration-300 group-hover/venue:opacity-100 dark:text-parchment-100">
+                      <span className="font-sans text-2xl md:text-3xl font-extrabold tracking-tight text-black opacity-70 transition-opacity duration-300 group-hover/venue:opacity-100 dark:text-parchment-100">
                         {v.wordmark}
                       </span>
                     )}
