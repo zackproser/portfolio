@@ -362,18 +362,9 @@
   font-weight: 600;
 }
 
-/* Headline accents — strikethrough for retracted line, italic em
- * for the follow-up. */
+/* Headline accents — italic em for the follow-up. */
 .editorial-strike {
-  text-decoration: line-through;
-  text-decoration-color: #e67e22;
-  text-decoration-thickness: 3px;
-  color: #b8a88f;
   font-weight: 700;
-}
-.dark .editorial-strike {
-  text-decoration-color: #f39c12;
-  color: #94a3b8;
 }
 .editorial-h1-em {
   font-style: italic;
