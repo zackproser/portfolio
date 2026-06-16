@@ -373,15 +373,21 @@ function FeaturedSpeaking() {
     { num: String(recordingCount), label: 'Recordings to watch' },
   ]
 
-  const venuesSeen = [
-    { name: 'a16z', role: 'Talk · ~125 in the room', slug: 'a16z-pinecone-pulumi' },
-    { name: 'Anthropic', role: 'Claude Cowork workshop', slug: 'claude-cowork-workshop' },
-    { name: 'WorkOS', role: 'Applied AI showcase + trainings', slug: 'workos-applied-ai-showcase' },
-    { name: 'DevSecCon', role: '2025 keynote', slug: 'devseccon-2025-keynote' },
-    { name: 'AI Engineering London', role: 'Workshop + 3 talks', slug: 'aie-london-skills-at-scale' },
-    { name: 'AI Engineering World Fair', role: 'Workshop · 70+ engineers', slug: 'aie-world-fair-mastra' },
-    { name: 'Pinecone', role: 'AWS reference architecture', slug: 'a16z-pinecone-pulumi' },
-    { name: 'Cohere', role: 'Meetup co-host @ a16z', slug: 'a16z-pinecone-pulumi' },
+  type Venue = {
+    alt: string
+    role: string
+    slug: string
+    logo?: string
+    wordmark?: string
+    glyph?: boolean
+  }
+  const venuesSeen: Venue[] = [
+    { logo: '/images/logos/aiengineer.svg', alt: 'AI Engineer', role: 'London + World’s Fair', slug: 'aie-london-skills-at-scale' },
+    { logo: '/images/logos/anthropic.svg', alt: 'Anthropic', role: 'Claude Cowork workshop', slug: 'claude-cowork-workshop', glyph: true },
+    { logo: '/images/logos/a16z.svg', alt: 'Andreessen Horowitz', role: 'Talk · ~125 in the room', slug: 'a16z-pinecone-pulumi', glyph: true },
+    { logo: '/images/logos/workos.svg', alt: 'WorkOS', role: 'Applied AI showcase', slug: 'workos-applied-ai-showcase', glyph: true },
+    { wordmark: 'DevSecCon', alt: 'DevSecCon', role: '2025 keynote', slug: 'devseccon-2025-keynote' },
+    { logo: '/images/logos/cohere.svg', alt: 'Cohere', role: 'Meetup co-host @ a16z', slug: 'a16z-pinecone-pulumi' },
   ]
 
   return (
@@ -440,34 +446,44 @@ function FeaturedSpeaking() {
           </div>
         </div>
 
-        {/* As seen at — brand wall */}
+        {/* As seen at — logo wall */}
         <div className="mb-10">
           <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
             As seen at
           </div>
-          <div className="overflow-hidden rounded-md border border-parchment-300 dark:border-slate-700 bg-parchment-300 dark:bg-slate-700">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-px">
+          <div className="rounded-md border border-parchment-300 dark:border-slate-700 bg-parchment-50 dark:bg-slate-800/50 px-6 py-9 md:px-12 md:py-11">
+            <div className="grid grid-cols-2 items-start gap-x-6 gap-y-9 sm:grid-cols-3 lg:grid-cols-6">
               {venuesSeen.map((v) => (
                 <Link
-                  key={v.name}
+                  key={v.alt}
                   href={`/speaking/${v.slug}`}
-                  className="group/venue flex flex-col gap-1.5 bg-parchment-50 dark:bg-slate-800 px-5 py-6 no-underline transition-colors hover:bg-parchment-100 dark:hover:bg-slate-800/60"
+                  aria-label={`${v.alt} — ${v.role}`}
+                  className="group/venue flex flex-col items-center gap-3 no-underline"
                   onClick={() =>
                     track('featured_speaking_click', {
                       location: 'homepage_speaking_section',
                       action: 'venue',
-                      venue: v.name,
+                      venue: v.alt,
                     })
                   }
                 >
-                  <span
-                    className="block h-1 w-6 rounded-full bg-burnt-400/70 dark:bg-amber-400/70 transition-all duration-300 group-hover/venue:w-10"
-                    aria-hidden
-                  />
-                  <span className="font-serif text-xl md:text-2xl font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 transition-colors group-hover/venue:text-burnt-400 dark:group-hover/venue:text-amber-400">
-                    {v.name}
+                  <span className="flex h-9 md:h-11 items-center justify-center">
+                    {v.logo ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={v.logo}
+                        alt={v.alt}
+                        className={`w-auto object-contain opacity-70 brightness-0 transition-opacity duration-300 group-hover/venue:opacity-100 dark:invert ${
+                          v.glyph ? 'h-9 md:h-11' : 'h-6 md:h-7'
+                        }`}
+                      />
+                    ) : (
+                      <span className="font-sans text-2xl md:text-3xl font-extrabold tracking-tight text-charcoal-50 opacity-70 transition-opacity duration-300 group-hover/venue:opacity-100 dark:text-parchment-100">
+                        {v.wordmark}
+                      </span>
+                    )}
                   </span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.12em] leading-snug text-parchment-600 dark:text-slate-400">
+                  <span className="max-w-[18ch] text-center font-mono text-[10px] uppercase tracking-[0.12em] leading-snug text-parchment-600 dark:text-slate-400">
                     {v.role}
                   </span>
                 </Link>
