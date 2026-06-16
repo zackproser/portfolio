@@ -294,7 +294,7 @@ function FeaturedSpeaking() {
     blurb:
       'Human attention is the hard constraint, not the tooling. Signal layers, verification gates, voice-first dispatch, and an Oura Ring integration that factors your sleep into planning.',
     tag: 'Talk · Recording',
-    image: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
+    image: 'https://img.youtube.com/vi/so9l_MwS2yg/maxresdefault.jpg',
     videoId: 'so9l_MwS2yg',
   }
 
@@ -374,12 +374,14 @@ function FeaturedSpeaking() {
   ]
 
   const venuesSeen = [
-    'AI Engineering London',
-    'WorkOS × Anthropic',
-    'DevSecCon 2025',
-    'a16z',
-    'AI Engineering World Fair',
-    'Pinecone & Cohere',
+    { name: 'a16z', role: 'Talk · ~125 in the room', slug: 'a16z-pinecone-pulumi' },
+    { name: 'Anthropic', role: 'Claude Cowork workshop', slug: 'claude-cowork-workshop' },
+    { name: 'WorkOS', role: 'Applied AI showcase + trainings', slug: 'workos-applied-ai-showcase' },
+    { name: 'DevSecCon', role: '2025 keynote', slug: 'devseccon-2025-keynote' },
+    { name: 'AI Engineering London', role: 'Workshop + 3 talks', slug: 'aie-london-skills-at-scale' },
+    { name: 'AI Engineering World Fair', role: 'Workshop · 70+ engineers', slug: 'aie-world-fair-mastra' },
+    { name: 'Pinecone', role: 'AWS reference architecture', slug: 'a16z-pinecone-pulumi' },
+    { name: 'Cohere', role: 'Meetup co-host @ a16z', slug: 'a16z-pinecone-pulumi' },
   ]
 
   return (
@@ -438,6 +440,42 @@ function FeaturedSpeaking() {
           </div>
         </div>
 
+        {/* As seen at — brand wall */}
+        <div className="mb-10">
+          <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
+            As seen at
+          </div>
+          <div className="overflow-hidden rounded-md border border-parchment-300 dark:border-slate-700 bg-parchment-300 dark:bg-slate-700">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-px">
+              {venuesSeen.map((v) => (
+                <Link
+                  key={v.name}
+                  href={`/speaking/${v.slug}`}
+                  className="group/venue flex flex-col gap-1.5 bg-parchment-50 dark:bg-slate-800 px-5 py-6 no-underline transition-colors hover:bg-parchment-100 dark:hover:bg-slate-800/60"
+                  onClick={() =>
+                    track('featured_speaking_click', {
+                      location: 'homepage_speaking_section',
+                      action: 'venue',
+                      venue: v.name,
+                    })
+                  }
+                >
+                  <span
+                    className="block h-1 w-6 rounded-full bg-burnt-400/70 dark:bg-amber-400/70 transition-all duration-300 group-hover/venue:w-10"
+                    aria-hidden
+                  />
+                  <span className="font-serif text-xl md:text-2xl font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 transition-colors group-hover/venue:text-burnt-400 dark:group-hover/venue:text-amber-400">
+                    {v.name}
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.12em] leading-snug text-parchment-600 dark:text-slate-400">
+                    {v.role}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Hero card — Untethered Productivity with hero image */}
         <Link
           href={`/speaking/${hero.slug}`}
@@ -466,10 +504,6 @@ function FeaturedSpeaking() {
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </div>
-            </div>
-            {/* Event badge */}
-            <div className="absolute top-3 left-3 md:top-4 md:left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm text-white rounded px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider">
-              {hero.event} · {hero.date}
             </div>
           </div>
           {/* Text below image */}
@@ -547,25 +581,12 @@ function FeaturedSpeaking() {
           ))}
         </div>
 
-        {/* As seen at — venue wall + booking CTA */}
-        <div className="mt-12 pt-8 border-t border-parchment-300 dark:border-slate-700 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
-          <div>
-            <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
-              As seen at
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {venuesSeen.map((v) => (
-                <span
-                  key={v}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm border border-parchment-300 dark:border-slate-600 bg-parchment-50 dark:bg-slate-800/60 font-mono text-[11px] uppercase tracking-[0.1em] text-charcoal-50 dark:text-parchment-100"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-burnt-400 dark:bg-amber-400" aria-hidden />
-                  {v}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row lg:justify-end gap-3">
+        {/* Booking CTA */}
+        <div className="mt-12 pt-8 border-t border-parchment-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+          <p className="font-serif text-lg md:text-xl text-charcoal-50 dark:text-parchment-100 m-0 max-w-[42ch]">
+            Bring a keynote, workshop, or live demo to your event or team.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
             <Link
               href="/speaking"
               className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-md text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors"
