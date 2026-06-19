@@ -163,7 +163,7 @@ def evaluate(eval_set, k: int = 5):
         relevance_by_id = {doc_id: 1.0 for doc_id in relevant}
 
         recalls.append(recall_at_k(retrieved, relevant, k))
-        rr_scores.append(reciprocal_rank(retrieved, relevant))
+        rr_scores.append(reciprocal_rank(retrieved[:k], relevant))
         ndcgs.append(ndcg_at_k(retrieved, relevance_by_id, k))
 
     return {
