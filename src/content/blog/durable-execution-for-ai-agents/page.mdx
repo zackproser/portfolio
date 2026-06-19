@@ -1,0 +1,189 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import Link from 'next/link'
+import rawMetadata from './metadata.json'
+import ReadNextCard from '@/components/ReadNextCard'
+import { AffiliateLink } from '@/components/StickyAffiliateCTA'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = "durable-execution-for-ai-agents"
+
+<Image src="https://zackproser.b-cdn.net/images/durable-execution-for-ai-agents-hero.jpg" alt="Pixel art of an AI agent climbing a long staircase of glowing checkpoints, each completed step lit up behind it, a save-point flag planted on the last finished stair" width={1200} height={675} />
+
+# Durable Execution for AI Agents
+
+An agent runs for forty minutes. It scrapes nine sources, summarizes each one, ranks them, drafts an answer, and on the tenth tool call the process gets OOM-killed. The container restarts. The agent has no idea any of that happened. It starts over from the first scrape.
+
+You just paid for forty minutes of tokens and API calls to produce nothing, and you're about to pay for them again.
+
+That's the failure mode durable execution exists to kill. The idea is simple to state and annoying to build by hand: when an agent finishes a step, the result is saved somewhere durable, so a crash, a timeout, or a deploy can't erase work that already succeeded. The run resumes from the last good checkpoint instead of from zero.
+
+I've built enough long-running agent pipelines to believe this is the single most important reliability property you can add, and the one most people skip until it bites them. This post is the version of the explanation I wish I'd had: what checkpointing actually is, why a long tool call shouldn't lose completed work, and how step-level retries change the math on reliability.
+
+## The naive agent loop, and where it hurts
+
+Here's the shape almost every agent starts as. A loop that calls the model, runs whatever tool the model asked for, feeds the result back, and repeats until the model says it's done.
+
+```python
+def run_agent(task: str) -> str:
+    messages = [{"role": "user", "content": task}]
+
+    while True:
+        response = model.chat(messages, tools=TOOLS)
+
+        if response.stop_reason == "end_turn":
+            return response.text
+
+        for call in response.tool_calls:
+            result = run_tool(call.name, call.arguments)  # network, minutes
+            messages.append({"role": "tool", "content": result})
+```
+
+This works on your laptop. It works in the demo. It falls apart the moment a real job runs long enough to hit reality: a rate limit, a 502 from an upstream API, a pod eviction, a deploy that recycles the process, your own `kill -9` because you saw a bug.
+
+Every one of those events throws away `messages`, the entire accumulated state of the run. The five tool calls that already succeeded, the expensive crawl that took ninety seconds, the model output you already paid for: gone. The loop has no memory outside the process, so the process dying means the work dying with it.
+
+The naive fix is to wrap the loop in a `try/except` and retry the whole thing. That's worse than it sounds. Retrying the whole job re-runs the steps that already worked, which costs more money, and it re-runs steps that have side effects: a second email sent, a second row inserted, a second payment attempted. Whole-job retries turn one transient blip into a duplicate-side-effect bug.
+
+<Image src="https://zackproser.b-cdn.net/images/durable-execution-naive-vs-durable.jpg" alt="Pixel art split diagram: left side a naive agent loop where a crash wipes a stack of completed steps back to zero; right side a durable run where completed steps stay lit and only the failed step re-runs" width={1200} height={675} />
+
+## What checkpointing actually is
+
+Checkpointing means: after a unit of work completes, you persist its result and a marker that says "this unit is done" to storage that outlives the process. Next time the run starts, before executing a unit, you check whether its result is already recorded. If it is, you load the saved result and skip the work.
+
+That's the whole trick. A checkpoint is a durable record of `(step_id → result)`. The mechanism around it does two jobs:
+
+1. **On the way down.** Before running a step, look up its `step_id`. If there's a saved result, return it without re-executing.
+2. **On the way up.** After a step succeeds, write `(step_id → result)` durably before moving on.
+
+You can build a crude version of this yourself with a key-value store. Here's the same agent, made resumable by hand with nothing fancier than a dictionary backed by Redis or a database row:
+
+```python
+def durable_step(run_id: str, step_id: str, fn):
+    """Run fn() once per (run_id, step_id). Replay the saved result after that."""
+    key = f"{run_id}:{step_id}"
+
+    cached = store.get(key)
+    if cached is not None:
+        return json.loads(cached)        # replay — no re-execution
+
+    result = fn()                        # first time only
+    store.set(key, json.dumps(result))   # checkpoint before returning
+    return result
+
+
+def run_agent(run_id: str, task: str) -> str:
+    messages = durable_step(run_id, "init", lambda: [
+        {"role": "user", "content": task}
+    ])
+
+    step = 0
+    while True:
+        response = durable_step(
+            run_id, f"model-{step}",
+            lambda: model.chat(messages, tools=TOOLS),
+        )
+        if response["stop_reason"] == "end_turn":
+            return response["text"]
+
+        for i, call in enumerate(response["tool_calls"]):
+            result = durable_step(
+                run_id, f"tool-{step}-{i}",
+                lambda c=call: run_tool(c["name"], c["arguments"]),
+            )
+            messages.append({"role": "tool", "content": result})
+        step += 1
+```
+
+Run this, kill it halfway, run it again with the same `run_id`, and it fast-forwards through every completed step by replaying saved results, then picks up exactly where it died. The expensive crawl runs once. The model call that already returned doesn't get paid for twice.
+
+Two properties make this work, and they're the same two properties every real durable-execution engine enforces:
+
+- **Deterministic step IDs.** `model-0`, `tool-0-1`, `tool-0-2` have to come out the same on replay or you'll look up the wrong checkpoint. The ID is the identity of the work.
+- **Idempotent replay.** A step that's already recorded must not run its side effect again. The whole point is that the second pass through a completed step is a lookup, not an action.
+
+This hand-rolled version has real gaps. It doesn't handle a crash *between* `fn()` succeeding and `store.set()` landing, it has no retry logic, no timeouts, no concurrency control. That's exactly the list of things a durable execution engine exists to handle so you don't write it wrong at 2am.
+
+## Why a long tool call is the thing worth protecting
+
+Model calls are expensive, but tool calls are where the real money and the real latency live. A single tool call in an agent can be a web crawl across forty pages, a SQL query over a warehouse, a code-execution sandbox running a test suite, or an API call to a service that bills per request.
+
+Take web research as the canonical example. When an agent uses something like <AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> to crawl and extract a site into clean, LLM-ready markdown, that one tool call can take a minute or more and cost real credits, because it's fetching, rendering, and parsing dozens of pages. I leaned on exactly this pattern when I wrote about [building an AI agent that researches the web](/blog/build-ai-agent-web-research). The crawl is the slow, expensive heart of the run.
+
+Now imagine the agent does that crawl, succeeds, summarizes the result, and then dies on the *next* step. Without checkpointing, the restart re-crawls all forty pages. You pay the credits twice and wait the minute twice, to get a byte-for-byte identical result you already had.
+
+A completed tool call is a fact about the world your agent has already established. Re-establishing a fact you already know is pure waste: wasted money, wasted time, and a user watching a progress bar reset. Checkpointing treats that completed crawl as what it is: a saved result you replay for free, not a step you re-run.
+
+<Image src="https://zackproser.b-cdn.net/images/durable-execution-timeline.jpg" alt="Pixel art timeline diagram showing a long agent run with a crash at step 6, the durable version resuming from a checkpoint at step 5 while the naive version restarts at step 1, with a token-cost meter comparing the two" width={1200} height={675} />
+
+## Step-level retries change the reliability math
+
+Here's the part that turns durable execution from "nice for resumes" into "the difference between an agent that works and one that doesn't."
+
+Long agent runs are products of many steps, and the probability of the whole run succeeding is the product of each step's success probability. If a run has 20 steps and each step independently succeeds 98% of the time, the run succeeds `0.98^20`, which is about **67%**. One run in three fails. Not because the agent is wrong, but because twenty mostly-reliable steps strung together compound their small failure rates into a big one.
+
+Whole-job retry barely helps and costs a fortune: you re-run all 20 steps to get past the one that flaked, and you re-incur every side effect.
+
+Step-level retry changes the exponent. If each step gets retried on transient failure, say up to 3 attempts, a step that was 98% reliable per attempt becomes `1 - (0.02)^3`, which is **99.9992%** reliable. Run 20 of those in a row and the whole run succeeds about **99.98%** of the time. Same agent. Same steps. The only change is *where* the retry boundary sits.
+
+```python
+import time
+
+def durable_step(run_id, step_id, fn, max_attempts=3, base_delay=1.0):
+    key = f"{run_id}:{step_id}"
+    cached = store.get(key)
+    if cached is not None:
+        return json.loads(cached)
+
+    last_err = None
+    for attempt in range(max_attempts):
+        try:
+            result = fn()
+            store.set(key, json.dumps(result))   # checkpoint only on success
+            return result
+        except TransientError as e:               # rate limit, 5xx, timeout
+            last_err = e
+            time.sleep(base_delay * (2 ** attempt))  # exponential backoff
+        except PermanentError:                    # bad input, 4xx — don't retry
+            raise
+    raise last_err
+```
+
+Two things matter here, and they're the things people get wrong:
+
+- **Retry transient failures, fail fast on permanent ones.** A 429 or a 503 is worth retrying; a 400 from malformed arguments will fail identically every time, so retrying it just wastes attempts. Classify your errors.
+- **The checkpoint write happens only after success.** A retried step is still a single logical step. Its first successful attempt is the one that gets saved, and replay after that point never retries again.
+
+Retrying at the step boundary instead of the job boundary is the whole reliability win. You're isolating each failure to the smallest unit that can recover on its own, instead of letting one flaky step torpedo a run that was 95% done.
+
+<Image src="https://zackproser.b-cdn.net/images/durable-execution-reliability-curve.jpg" alt="Pixel art line chart comparing run success probability as step count grows: a steeply falling curve for no retries versus a near-flat high curve for step-level retries, plotted on a dark grid" width={1200} height={675} />
+
+## Where the architecture leads
+
+Once steps are durable and individually retryable, a few things fall out naturally that are worth designing for on purpose.
+
+**Steps become the unit of observability.** Because every step has an ID and a saved result, you get a free execution trace: which steps ran, what they returned, which ones retried, where the run currently sits. When an agent misbehaves at step 14, you can inspect the exact inputs and outputs of step 14 instead of re-reading a 40-minute log. This is the same reason I like keeping agent responsibilities separated rather than tangled into one process. I wrote about that [split-brain architecture for two agents on one phone](/blog/two-agents-one-phone), and durable steps give you the same legibility inside a single agent.
+
+**Side effects need idempotency keys.** Retries and replays mean a step can be attempted more than once even if it only "counts" once. Any step that talks to the outside world, whether sending mail, charging a card, or writing a row, should carry an idempotency key derived from its `step_id` so the downstream system dedupes a duplicate attempt. Durable execution gives you at-least-once execution; idempotency keys are how you get effectively-once results.
+
+**Determinism becomes a constraint you design around.** Replay only works if the non-step code between steps is deterministic. Reading `datetime.now()` or `random()` or an env var directly in your orchestration logic breaks replay, because the replayed run sees different values than the original. The fix is to push that nondeterminism *into* a step so its value gets captured and replayed like any other result. Real engines enforce this hard; even in a hand-rolled version it's the bug you'll hit first.
+
+You don't have to build all of this yourself, and you mostly shouldn't. Engines like Temporal, Restate, Inngest, and DBOS implement durable execution as a primitive, and framework-level workflow tools do it for agents specifically. The [Mastra workshop I ran at the AI Engineer World Fair](/blog/ai-pipelines-and-agents-mastra) was built around exactly this idea of composing an agent out of discrete, durable steps. The pattern is the valuable part. Whatever you adopt, you want the same three guarantees: results persist on success, replay skips completed work, and retries sit at the step boundary.
+
+## The mental model to keep
+
+Strip everything else away and durable execution is one rule: **a step that succeeded should never run twice, and a step that failed transiently should get another shot without dragging the rest of the run down with it.**
+
+Build for that and a forty-minute agent run stops being a fragile all-or-nothing gamble. A crash becomes a resume. A flaky upstream becomes a retry. A deploy mid-run becomes a non-event. The completed work stays completed, which is the entire point. Your agent's job is to make progress, and durable execution is what keeps the progress it already made from evaporating the next time something goes wrong.
+
+That's the difference between an agent that demos well and an agent you can leave running in production while you go to lunch.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/the-mechanic-pattern-hero.webp"
+  imageAlt="Pixel art of an AI agent being repaired by a smaller mechanic agent in a workshop"
+  eyebrow="Read this next"
+  title="My AI Agent Has a Mechanic Agent"
+  description="Durable execution keeps work from vanishing on a crash. The mechanic pattern is the other half: a second agent that watches the first one and repairs it when it gets stuck."
+  href="/blog/my-ai-agent-has-a-mechanic-agent"
+/>
