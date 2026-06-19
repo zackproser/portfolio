@@ -1,0 +1,210 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image src="https://zackproser.b-cdn.net/images/evaluating-rag-retrieval-quality-hero.jpg" alt="Pixel-art evaluation lab: a glowing vector database crystal emitting a column of ranked result cards, with a scale and ruler grading the top results" width={1200} height={675} />
+
+# Evaluating RAG Retrieval Quality: Recall@k, MRR, and nDCG
+
+When a RAG app gives a bad answer, the model gets blamed first. Most of the time the model is innocent. The retriever handed it the wrong chunks, and a model can only answer from what it's shown.
+
+So before you tune prompts or swap to a bigger model, measure the retrieval step on its own. It's the cheaper half to fix and the half that decides whether the rest of the pipeline has a chance. This is a practical guide to the three metrics worth tracking — recall@k, MRR, and nDCG — and a runnable eval rig to compute them on your own data.
+
+If you want the full build-a-pipeline walkthrough first, I wrote [a RAG tutorial with LangChain, OpenAI, and Pinecone](/blog/langchain-pinecone-chat-with-my-blog) that gets you to a working retriever. This post picks up where that leaves off: now that you have one, is it any good?
+
+## Evaluate retrieval as its own system
+
+A RAG pipeline has two stages that fail in different ways. Retrieval pulls candidate chunks from your index. Generation turns those chunks into an answer. If you only look at the final answer, you can't tell which stage broke — a wrong answer might mean the retriever missed the relevant chunk, or it might mean the model ignored a chunk that was sitting right there.
+
+Splitting the evaluation fixes that. Retrieval metrics ask one question: given a query, did the right chunks come back, and did they come back near the top? That question has clean, well-understood numbers attached to it, and you can compute them offline without calling an LLM at all. Fast, cheap, deterministic.
+
+<Image src="https://zackproser.b-cdn.net/images/evaluating-rag-retrieval-quality-pipeline.jpg" alt="Pixel-art flow diagram: a query set feeds a top-k retriever, which produces ranked result cards, scored against ground truth by three gauges labeled recall@k, MRR, and nDCG" width={1200} height={675} />
+
+The three metrics in this post measure different things about the same ranked list:
+
+- **Recall@k** — did the relevant chunk make it into the top *k* at all?
+- **MRR** — how high up did the *first* relevant chunk land?
+- **nDCG** — across the whole ranked list, how good is the ordering, allowing for graded relevance?
+
+You'll want all three, because each hides a failure the others reveal.
+
+## Step zero: build a labeled eval set
+
+You can't measure retrieval without ground truth. For each test query, you need to know which document(s) in your corpus *should* come back. There's no shortcut around this — a metric is only as honest as the labels behind it.
+
+You don't need thousands of examples to start. Fifty to a hundred carefully chosen queries will catch most regressions and give you a stable signal. Build the set three ways, in order of preference:
+
+1. **Real queries from logs.** If your app is live, your query logs are the best source. Sample real questions, then label which chunk answered each one.
+2. **Hand-written queries.** Walk your corpus and write the questions each section answers. Tedious, but you understand your data better afterward.
+3. **Synthetic queries from the corpus.** Ask an LLM to generate a question for each chunk, then keep the chunk as that question's ground-truth answer. Fast to bootstrap, but spot-check it — synthetic queries skew toward keyword overlap and will flatter a lexical retriever.
+
+The shape of the eval set is simple. Each row is a query plus the set of document IDs that count as relevant:
+
+```python
+# eval_set.py
+eval_set = [
+    {
+        "query": "How do I rotate API keys without downtime?",
+        "relevant_ids": {"doc_142"},
+    },
+    {
+        "query": "What regions support read replicas?",
+        # Multiple chunks can be correct
+        "relevant_ids": {"doc_88", "doc_91"},
+    },
+    # ... 50-100 rows
+]
+```
+
+A note on labeling: most of the time you'll use **binary** relevance — a chunk either answers the query or it doesn't. That's enough for recall@k and MRR. nDCG can use **graded** relevance (a 0–3 scale: irrelevant, related, useful, perfect), which is more work to label but tells you more. Start binary; add grades only if ordering quality becomes the thing you're optimizing.
+
+## Recall@k: did the right chunk make the cut?
+
+Recall@k is the first metric to look at because it measures the failure that nothing downstream can recover from. If the relevant chunk isn't in the top *k* you retrieve, the model never sees it, and no amount of prompt engineering brings it back.
+
+<Image src="https://zackproser.b-cdn.net/images/evaluating-rag-retrieval-quality-recall.jpg" alt="Pixel-art ranked list of ten result slots where slot 3 glows gold as the relevant document and a bracket marks the top five slots as within k=5" width={1024} height={768} />
+
+For a single query, recall@k is binary in the common case where each query has one relevant chunk: 1 if that chunk is in the top *k*, 0 if it isn't. When a query has several relevant chunks, recall@k is the fraction of them that landed in the top *k*. You average across all queries to get the system-level number.
+
+```python
+def recall_at_k(retrieved_ids: list[str], relevant_ids: set[str], k: int) -> float:
+    if not relevant_ids:
+        return 0.0
+    top_k = set(retrieved_ids[:k])
+    hits = len(top_k & relevant_ids)
+    return hits / len(relevant_ids)
+```
+
+The value of *k* is a product decision, not a statistical one. It's how many chunks you actually stuff into the model's context. If you feed the top 5 chunks to the model, measure recall@5 — measuring recall@20 tells you nothing useful because the model never sees chunks 6 through 20.
+
+Recall@k is the metric to maximize first. A retriever with recall@5 of 0.95 and mediocre ordering still beats a retriever with perfect ordering and recall@5 of 0.70 — the second one is silently dropping the answer for three out of ten queries before ranking even matters. Fix coverage, then fix order.
+
+## MRR: how high did the first hit land?
+
+Recall@k treats positions 1 and 5 the same — a hit anywhere in the window counts. But position matters. Models pay more attention to chunks near the top of their context, and if you ever trim to fewer chunks, the ones at the bottom go first. MRR (Mean Reciprocal Rank) captures how high the *first* relevant result appears.
+
+For a single query, the reciprocal rank is `1 / rank` of the first relevant chunk. First position scores 1.0, second scores 0.5, third 0.33, and so on. If no relevant chunk appears, the query scores 0. MRR is the mean of those reciprocal ranks across all queries.
+
+```python
+def reciprocal_rank(retrieved_ids: list[str], relevant_ids: set[str]) -> float:
+    for i, doc_id in enumerate(retrieved_ids, start=1):
+        if doc_id in relevant_ids:
+            return 1.0 / i
+    return 0.0
+
+def mrr(results: list[tuple[list[str], set[str]]]) -> float:
+    if not results:
+        return 0.0
+    return sum(reciprocal_rank(r, rel) for r, rel in results) / len(results)
+```
+
+MRR shines for question-answering RAG, where there's usually one best chunk and you want it at the top. The steep dropoff is the feature: moving the answer from rank 3 to rank 1 nearly doubles the score, which matches how much that move helps the model. The limitation is that MRR only looks at the first hit — if a query has three relevant chunks, MRR ignores where the other two landed. That's where nDCG comes in.
+
+## nDCG: when ranking and grades both matter
+
+nDCG (normalized Discounted Cumulative Gain) is the most complete of the three. It rewards putting relevant chunks high, accounts for *every* relevant chunk in the list rather than just the first, and handles graded relevance — the difference between a perfect chunk and a merely related one.
+
+<Image src="https://zackproser.b-cdn.net/images/evaluating-rag-retrieval-quality-ranking.jpg" alt="Pixel-art comparison of two ranked columns: the left has the gold relevant card at rank 1 for a big reward, the right has it buried at rank 8 for a tiny reward, with a logarithmic decay curve overlaid" width={1200} height={675} />
+
+It works in three moves. **DCG** sums the relevance of each result, discounted by a logarithm of its position so lower ranks contribute less. **IDCG** is the DCG of the ideal ordering — relevant chunks sorted perfectly by grade. **nDCG** is `DCG / IDCG`, which normalizes the score to a 0–1 range so you can compare across queries with different numbers of relevant chunks.
+
+```python
+import math
+
+def dcg(relevances: list[float]) -> float:
+    return sum(
+        rel / math.log2(i + 1)
+        for i, rel in enumerate(relevances, start=1)
+    )
+
+def ndcg_at_k(
+    retrieved_ids: list[str],
+    relevance_by_id: dict[str, float],
+    k: int,
+) -> float:
+    # Graded relevance of what we actually retrieved, in retrieved order
+    gains = [relevance_by_id.get(doc_id, 0.0) for doc_id in retrieved_ids[:k]]
+    actual = dcg(gains)
+
+    # Best possible ordering: highest grades first
+    ideal_gains = sorted(relevance_by_id.values(), reverse=True)[:k]
+    ideal = dcg(ideal_gains)
+
+    return actual / ideal if ideal > 0 else 0.0
+```
+
+The logarithmic discount is the part to internalize. The gap between rank 1 and rank 2 is large; the gap between rank 9 and rank 10 is small. That curve matches reality — readers and models care a lot about the top of the list and barely notice the tail.
+
+nDCG is the right primary metric when ordering quality matters and chunks aren't equally good — search-style or recommendation-style RAG where you surface several results and their order carries meaning. For a binary, single-answer QA system, MRR is simpler and tells you nearly the same thing. Pick the metric that matches your task instead of reporting all three out of habit.
+
+## Putting it together: a runnable eval rig
+
+Here's the whole thing wired up. It runs your retriever over the eval set once, then computes all three metrics from the same retrieved lists. Swap `your_retriever` for whatever you've built — a vector search, a hybrid lexical-plus-vector retriever, a reranked pipeline.
+
+```python
+# evaluate.py
+from statistics import mean
+from eval_set import eval_set
+
+def your_retriever(query: str, k: int = 10) -> list[str]:
+    """Return ranked document IDs for a query. Replace with your pipeline."""
+    raise NotImplementedError
+
+def evaluate(eval_set, k: int = 5):
+    recalls, rr_scores, ndcgs = [], [], []
+
+    for row in eval_set:
+        retrieved = your_retriever(row["query"], k=max(k, 10))
+        relevant = row["relevant_ids"]
+        # Binary relevance: every relevant chunk is grade 1.0
+        relevance_by_id = {doc_id: 1.0 for doc_id in relevant}
+
+        recalls.append(recall_at_k(retrieved, relevant, k))
+        rr_scores.append(reciprocal_rank(retrieved, relevant))
+        ndcgs.append(ndcg_at_k(retrieved, relevance_by_id, k))
+
+    return {
+        f"recall@{k}": round(mean(recalls), 3),
+        "mrr": round(mean(rr_scores), 3),
+        f"ndcg@{k}": round(mean(ndcgs), 3),
+    }
+
+if __name__ == "__main__":
+    print(evaluate(eval_set, k=5))
+```
+
+Run it and you get one line you can paste into a PR description or a dashboard:
+
+```text
+{'recall@5': 0.94, 'mrr': 0.81, 'ndcg@5': 0.86}
+```
+
+<Image src="https://zackproser.b-cdn.net/images/evaluating-rag-retrieval-quality-report.jpg" alt="Pixel-art evaluation dashboard panel showing a table of recall@5, MRR, and nDCG@10 scores and a bar chart comparing a baseline retriever against a reranked one" width={1200} height={675} />
+
+If you'd rather not hand-roll the math, `pytrec_eval` (Python bindings to the standard TREC evaluation tool) and `ranx` both implement these metrics and more, and they handle the edge cases for you. I keep my own copy for the eval set and reach for a library once the scoring is part of CI. Either way, the part that matters is the labeled data, not the code that scores it.
+
+## Reading the numbers and acting on them
+
+A score by itself is noise. The value comes from the comparison — same eval set, two configurations, see what moved. A few patterns I look for:
+
+**High recall, low MRR.** The right chunks are getting retrieved but ranked poorly. The retriever has the right candidates and the wrong order. Add a reranker — a cross-encoder over the top 20 candidates reorders them with far more signal than the first-stage vector similarity. This is usually the highest-impact fix.
+
+**Low recall across the board.** The relevant chunks aren't being retrieved at all, so ranking can't save you. Look upstream: chunk size, embedding model, or whether your queries and documents are even in the same vector space. Try hybrid retrieval — combining dense vectors with BM25 keyword matching catches exact-term queries that pure embeddings miss.
+
+**Recall good on some queries, terrible on others.** Average metrics hide this. Always log per-query scores and read the worst offenders by hand. The bottom ten queries usually share a cause — a document type that chunks badly, a question phrasing your embeddings don't handle, a section that never got indexed.
+
+**Everything looks great but the app still answers poorly.** Retrieval is fine; the problem is downstream in generation. Now you've earned the right to tune prompts and the model, because you've ruled out the retriever with numbers instead of guesses.
+
+Wire the eval rig into CI and run it on every change to chunking, embeddings, or retrieval logic. Retrieval quality regresses quietly — a chunk-size tweak that helps one query class can wreck another, and you won't feel it until users do. A number that runs on every PR turns "the answers feel worse lately" into "recall@5 dropped from 0.94 to 0.86 in this commit." That's the difference between debugging and guessing.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/rag-chatbot.webp"
+  imageAlt="Hero image for the RAG pipeline tutorial with LangChain, OpenAI, and Pinecone"
+  eyebrow="Read this next"
+  title="Build a RAG pipeline with LangChain, OpenAI and Pinecone"
+  description="The full walkthrough for the retriever these metrics evaluate — from embeddings to a working chat-with-my-blog pipeline."
+  href="/blog/langchain-pinecone-chat-with-my-blog"
+/>
