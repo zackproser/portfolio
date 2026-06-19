@@ -1,0 +1,8 @@
+{
+  "title": "Delete Code More Aggressively Than You Write It",
+  "author": "Zachary Proser",
+  "date": "2026-06-19",
+  "description": "Every line you keep is a line you have to read, test, and defend forever. The best engineers I know delete far more than they add — here's why subtraction beats addition.",
+  "image": "https://zackproser.b-cdn.net/images/delete-code-aggressively-hero.jpg",
+  "tags": ["Software Engineering", "Craft", "Simplicity", "Maintenance"]
+}

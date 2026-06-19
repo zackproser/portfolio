@@ -1,0 +1,47 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import Link from 'next/link'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# Delete Code More Aggressively Than You Write It
+
+<Image src="https://zackproser.b-cdn.net/images/delete-code-aggressively-hero.jpg" alt="Pixel art of an engineer at a terminal pressing delete, whole blocks of glowing code dissolving into sparks while a smaller, cleaner module remains lit" width={1200} height={675} />
+
+Adding code feels like progress. The diff is green, the line count goes up, the ticket closes. So we reward it — in standups, in performance reviews, in the dopamine hit of a passing build. We almost never reward the opposite move, which is usually the better one: taking code out.
+
+Flip the bias. Treat deletion as the default and addition as the thing you have to justify.
+
+## Every line you keep, you keep forever
+
+<Image src="https://zackproser.b-cdn.net/images/delete-code-aggressively-liability.jpg" alt="Pixel art of a balance scale: a tall precarious stack of glowing code outweighed by a single small clean block, with a grayed-out unused feature flag drifting in the background" width={1200} height={675} />
+
+A line of code is not an asset. It's a liability with a long tail. The moment you merge it, someone has to read it to understand the file. Someone has to keep its tests green. Someone has to reason about it during the next incident at 2am, and again during the refactor six months from now, and again when a CVE lands in one of its transitive dependencies.
+
+You wrote that line once. The team pays rent on it every day after.
+
+The cost isn't the keystrokes. It's the permanent surface area: the number of things that can break, the number of paths a new engineer has to trace before they trust the system. Less code means less to hold in your head, fewer places for a bug to hide, and a smaller blast radius when something goes wrong.
+
+## The feature nobody uses is worse than no feature
+
+Dead code is the quiet killer. The flag that's been `true` in prod for two years. The "configurable" option exactly one caller sets. The abstraction you built for a second use case that never arrived. None of it earns its keep, and all of it taxes everyone who reads around it.
+
+When you find code like that, the honest move is to rip it out, not wrap it in a comment that says `// keep around for later`. Git remembers. That's the whole point of version control: you can delete with confidence because nothing is ever truly gone. The branch is the safety net, not the dead block sitting in `main`.
+
+## Make subtraction a habit
+
+You don't need a deletion sprint. You need a reflex. When you touch a file, leave it smaller than you found it. Collapse the wrapper that wraps one thing. Inline the helper called in one place. Kill the config that has one value.
+
+This is the same instinct behind <Link href="/blog/the-interface-matters-most">why the interface matters most</Link> — the best systems hide complexity instead of exposing it, and the cleanest way to hide complexity is to not have it. It's also the bellows work I wrote about in <Link href="/blog/spark-bellows-quench">spark, bellows, and quench</Link>: knowing which flame to feed and which to smother. Most of the craft is the smothering.
+
+Write less. Delete more. Ship the smallest thing that's true.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/interface-matters-hero.webp"
+  imageAlt="A glowing portal doorway made of light and code — a person stepping through into a radiant digital world beyond"
+  title="The Interface Matters Most"
+  description="The simplest interface wins because it hides the most complexity. The same instinct that tells you to delete code tells you where to put the door."
+  href="/blog/the-interface-matters-most"
+/>
