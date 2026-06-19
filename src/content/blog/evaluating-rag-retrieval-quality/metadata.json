@@ -1,0 +1,8 @@
+{
+  "title": "Evaluating RAG Retrieval Quality: Recall@k, MRR, and nDCG",
+  "author": "Zachary Proser",
+  "date": "2026-06-19",
+  "description": "A practical guide to measuring the retrieval half of a RAG system — what recall@k, MRR, and nDCG each tell you, and a runnable harness to compute them on your own data.",
+  "image": "https://zackproser.b-cdn.net/images/evaluating-rag-retrieval-quality-hero.jpg",
+  "tags": ["rag", "ai", "vector-search", "embeddings", "evaluation", "retrieval"]
+}
