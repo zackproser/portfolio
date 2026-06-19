@@ -1,0 +1,103 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# Pin Your AI Model Versions in Production
+
+Pin the exact model version in production. Not `latest`, not `gpt-4o`, not `claude-3-5-sonnet` — the dated, immutable string that resolves to one specific set of weights and will never resolve to anything else.
+
+<Image src="https://zackproser.b-cdn.net/images/pin-your-ai-model-versions-hero.jpg" alt="Pixel art of a server rack with a model version tag locked on with a padlock while an unpinned 'latest' alias drifts away as a ghostly label" width={1200} height={675} />
+
+A floating alias is a dependency that upgrades itself in production with no deploy, no changelog you control, and no error when it changes. You ship `model: "latest"` once, it works, you move on. Months later the provider points that alias at a new snapshot. Your code is byte-for-byte identical. Your behavior is not. Nothing in your logs says anything happened, because from your application's perspective, nothing did.
+
+That's the trap: the worst failures aren't the ones that crash. They're the ones that keep returning HTTP 200 while quietly doing the wrong thing.
+
+## What an alias actually is
+
+An alias is a pointer. `gpt-4o` and `claude-3-5-sonnet-latest` and `gemini-1.5-pro` are not models — they're labels the provider can repoint whenever they ship an update. The pinned version (`gpt-4o-2024-08-06`, `claude-3-5-sonnet-20241022`, `gemini-1.5-pro-002`) is the thing the label currently points at.
+
+<Image src="https://zackproser.b-cdn.net/images/pin-your-ai-model-versions-alias-drift.jpg" alt="Pixel art flow diagram showing an app calling an alias labeled 'latest' that points to two different model snapshots over time, with a warning triangle over the alias" width={1200} height={675} />
+
+When you call the alias, you're outsourcing one of the most consequential dependencies in your stack to a release schedule you don't see and can't veto. You'd never run `npm install` on every request and ship whatever the registry happens to serve. Floating a model alias is exactly that, except the diff is in probabilities, not in a lockfile.
+
+## The silent breakage
+
+Here's a concrete one I've watched happen. You have an extraction service. It asks the model to pull structured data out of messy support tickets and return JSON. You've been strict about it:
+
+```python
+# extraction_service.py
+client.chat.completions.create(
+    model="gpt-4o",  # floating alias
+    response_format={"type": "json_object"},
+    messages=[
+        {"role": "system", "content": "Extract the customer's issue. "
+            "Return JSON: {\"category\": str, \"severity\": int, \"refund_requested\": bool}. "
+            "severity is 1-5. Output JSON only."},
+        {"role": "user", "content": ticket_text},
+    ],
+)
+```
+
+A downstream job reads `severity` and pages on-call when it's `>= 4`. This ran clean for months.
+
+Then the alias rolls to a newer snapshot. The new model is, by most benchmarks, better. It's also more verbose, and it starts wrapping numbers it considers ambiguous in strings — `"severity": "4"` instead of `"severity": 4`. Your JSON still parses. Your schema validation, if you're using `int(...)`-style coercion, might still pass. But this comparison does not do what you think:
+
+```python
+severity = parsed["severity"]   # now sometimes "4" (str), was always 4 (int)
+if severity >= 4:               # "4" >= 4 raises TypeError in Python 3
+    page_oncall(ticket)
+```
+
+If you caught and swallowed that `TypeError` anywhere upstream — and a lot of extraction pipelines do, to stay resilient to one bad ticket — the page never fires. Severity-5 tickets sail through. No exception bubbles up. No deploy went out. No model error was returned. The graph of "tickets escalated per day" just bends toward zero, and you find out when a customer escalates through a different channel.
+
+<Image src="https://zackproser.b-cdn.net/images/pin-your-ai-model-versions-silent-break.jpg" alt="Pixel art of a developer staring at a dashboard where a green metric line silently drops to red with no deploy marker on the timeline and an unchanged git history" width={1200} height={675} />
+
+The root cause isn't the type coercion bug. That bug was always latent. The model version is what loaded the gun. With a pinned version, that latent bug stays asleep until *you* choose to wake it by upgrading, in a deploy you can see, bisect, and roll back. With a floating alias, it goes off on the provider's schedule, in the middle of the night, attributed to nothing.
+
+This is the same failure mode I keep coming back to when I write about [shipping applied AI](/blog/workos-applied-ai-showcase): the model is the most powerful and least inspectable dependency you have, so the engineering discipline has to live around it.
+
+## The fix
+
+Pin the version. Treat a model upgrade like any other dependency bump — a deliberate change, gated by tests, that you can attribute and revert.
+
+```python
+# config.py — one place, version-controlled
+MODEL = "gpt-4o-2024-08-06"   # pinned snapshot, never an alias
+
+# extraction_service.py
+client.chat.completions.create(
+    model=MODEL,
+    response_format={"type": "json_object"},
+    messages=[...],
+)
+```
+
+Three rules make this hold up:
+
+1. **The version lives in config, not scattered across call sites.** One string to change, one place to review in a diff.
+2. **Upgrades go through an eval suite before they reach production.** A few dozen representative inputs with known-good outputs. When you bump the pin, you run the new version against them and compare. The string-vs-int regression above is caught by one assertion: `assert isinstance(parsed["severity"], int)`.
+3. **The bump is its own deploy.** Not bundled with a feature. When something shifts, your bisect points straight at the model change instead of a feature commit that touched nothing relevant.
+
+<Image src="https://zackproser.b-cdn.net/images/pin-your-ai-model-versions-upgrade-pipeline.jpg" alt="Pixel art diagram of a gated upgrade pipeline: pinned v1 into an eval suite, branching to pass which promotes pinned v2 to prod, or fail which loops back, on a schedule" width={1200} height={675} />
+
+You still get the new models. You get them on a Tuesday afternoon with the eval suite green, not at 3 a.m. by surprise. The provider's improvements become something you adopt on purpose.
+
+## The objection, and the answer
+
+The pushback is always "but then I'm stuck on an old model and I miss the improvements." You're not stuck — you're in control of *when*. Providers publish deprecation dates for pinned snapshots; put the retirement date in a calendar reminder and a comment next to the pin. Upgrading becomes a scheduled task with a known input (the new snapshot), a known test (your evals), and a known rollback (the previous pin). That's a normal engineering workflow. Silent drift is not.
+
+The cost of pinning is one config line and an eval run before each bump. The cost of floating is an unbounded set of incidents you can't predict, can't attribute, and can't reproduce after the alias has moved on. I'll take the config line.
+
+Pin the version. Gate the upgrade. Sleep through the provider's release night.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/interface-matters-hero.webp"
+  imageAlt="A glowing portal doorway made of light and code"
+  eyebrow="Read this next"
+  title="The Interface Matters Most"
+  description="The model and the stack don't matter if the door is wrong — why time-to-value is the moat for AI products."
+  href="/blog/the-interface-matters-most"
+/>
