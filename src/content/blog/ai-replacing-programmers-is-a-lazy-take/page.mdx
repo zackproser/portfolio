@@ -1,0 +1,104 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# "AI Will Replace All Programmers" Is a Lazy Take
+
+<Image src="https://zackproser.b-cdn.net/images/ai-replacing-programmers-hero.jpg" alt="Pixel art of a confident pundit on a glowing stage pointing at a tombstone that reads PROGRAMMERS, while behind him a crowd of engineers keep working at their terminals, unbothered" width={1200} height={675} />
+
+Every few months a guy with a podcast and a vibe announces that programmers are finished. The model did a LeetCode problem. The demo built a to-do app. Therefore: the profession is over, learn a trade, RIP.
+
+I've been writing software for twenty years. I use these tools every single day. I ship with coding agents constantly. And I'm telling you the take is lazy. The tools aren't weak. The take is lazy because it has never once described the actual job.
+
+It describes a fantasy of the job that only exists in the head of someone who has never done it.
+
+## The take only works if you think coding is typing
+
+Here's the load-bearing assumption underneath "AI will replace all programmers": that the job is producing code.
+
+It isn't. It never was.
+
+Writing the code was always the easy part. The easy part. The part you could already outsource, copy off Stack Overflow, or bang out at 2am on caffeine. If your mental model of software engineering is "person sits down, thinks of program, types program, program works," then yeah, a machine that types programs sounds like the apocalypse.
+
+But that's not what the day looks like. The day looks like:
+
+- Figuring out what the thing should even do, from a stakeholder who half-knows what they want and describes it wrong.
+- Discovering the requirement they didn't tell you because they didn't know it mattered.
+- Deciding what *not* to build so the system doesn't collapse under its own weight in eighteen months.
+- Holding the whole architecture in your head and knowing that this innocent little change over here detonates that thing way over there.
+- Arguing with another senior engineer about a tradeoff where both of you are right and someone has to own the call.
+- Reading the code, not writing it. You spend far more time reading than writing, and so does the agent's output.
+
+The typing was maybe 10% of it. So congratulations, you automated the 10% that was already the least valuable. That's real, and it's genuinely useful, and I love it. It is not the end of the profession. It's a faster keyboard.
+
+## What the demos never show you
+
+<Image src="https://zackproser.b-cdn.net/images/ai-replacing-programmers-demo-vs-prod.jpg" alt="Pixel art split panel: on the left a clean glowing greenfield to-do app demo, on the right a sprawling tangled legacy codebase with red error lines, alarms, and warning lights" width={1200} height={675} />
+
+Every "look, AI replaced the engineer" demo is a greenfield toy. A fresh repo. A clean prompt. A problem that has a known shape and a thousand examples in the training data.
+
+Now point that same agent at a real codebase. Twelve years old. Three frameworks deep, two of them deprecated. A database migration nobody understands and everybody is afraid of. Business logic encoded as a series of historical accidents and one Slack message from an engineer who left in 2021. Tests that pass for reasons unrelated to correctness.
+
+Watch what happens. The agent is *useful* there. I'm not pretending otherwise. But it doesn't replace the person. It needs the person harder than ever, because someone has to know which of its confident suggestions will quietly take down checkout on Black Friday.
+
+The hard part of software was never the blank page. It was the existing, load-bearing, money-printing mess that you cannot rewrite and cannot break. No demo shows you that, because that doesn't fit in a 90-second clip with a synthwave backing track.
+
+## Confidence is not correctness
+
+The thing these tools are best at is sounding sure of themselves.
+
+An agent will hand you a function that is wrong with total composure. It will invent an API that doesn't exist and explain its design rationale. It will fix the symptom you mentioned and introduce two you didn't. It does not know when it's out of its depth, because it doesn't have a concept of its depth.
+
+So who catches that? The engineer. The one whose job, supposedly, just got automated.
+
+The more code an agent generates, the more reviewing there is to do, and review is the senior-est skill there is. You cannot review code you don't understand. You cannot accept a suggestion you can't evaluate. The floor for "trusting the output" went *up*, not down. A field full of people who can read a diff and know in their gut that something's off. That's the thing the tools make more valuable, not less.
+
+This is the same move people make with AI writing, by the way. I wrote about it in [I Am the Spark, the Bellows, and the Quench](/blog/spark-bellows-quench): a machine can take the middle of the work, the rough draft, the scaffold, the typing. It cannot take the judgment at the ends. The same is true of code. Deciding what to build and standing behind what ships are still yours.
+
+## "Replace all programmers" gives the whole game away
+
+Read the take literally. *All* of them. Every programmer. Gone.
+
+That's not a prediction. That's a person telling on themselves. It means they think the field is one homogenous lump of people who all do the same swappable thing, type code, and the moment a machine can type code, the lump is obsolete.
+
+Anybody who's worked on a real team knows that's nonsense. The range between a junior who can close a ticket and a staff engineer who can see around corners is enormous, and it has almost nothing to do with typing speed. If the only thing separating you from your senior colleague was raw code output, they were never your senior colleague.
+
+What actually happens when a tool makes a task cheaper is that we do *more* of it, not less. This is the oldest pattern in the book. Spreadsheets didn't end accounting; there are vastly more people doing financial work now than before Excel. Compilers didn't end programming; they ended hand-writing assembly and unleashed orders of magnitude more software. Cheaper software means more software gets built, which means more of the hard human parts: the deciding, the integrating, the maintaining, the owning. Not fewer.
+
+## What's changing, and it isn't nothing
+
+<Image src="https://zackproser.b-cdn.net/images/ai-replacing-programmers-scale.jpg" alt="Pixel art of a single engineer at a control console directing a fleet of small glowing robot workers building structures in parallel, the human pointing and steering, the robots doing the hauling" width={1200} height={675} />
+
+I want to be honest, because "nothing is changing" is also a lazy take, and I'm not selling that.
+
+The job is changing, and fast. The gain is real. I can spin up parallel agents, hand off the grunt work, and operate at a scale that would've been absurd two years ago. The part of the job that's pure mechanical translation, turning clear intent into boilerplate, is evaporating. Good riddance.
+
+But that pushes the human up the stack, it doesn't push the human out. You spend less time typing and more time deciding, reviewing, integrating, and steering. The bottleneck moves from "how fast can I produce code" to "how clearly can I think and how well can I judge." I gave a whole talk about the flip side of this. The agents scale infinitely and [your nervous system doesn't](/blog/aie-london-untethered-productivity), and the real risk isn't replacement. It's drowning in your own throughput.
+
+If you've [shipped alongside these agents for a while](/blog/devin-has-come-a-long-way), you know the shape of it. They're fantastic interns with infinite stamina and zero accountability. You would not hand an intern the production database and walk away. You don't hand the agent that either. Someone owns the outcome. That someone is a programmer.
+
+## The take is lazy because thinking is harder than predicting doom
+
+<Image src="https://zackproser.b-cdn.net/images/ai-replacing-programmers-two-paths.jpg" alt="Pixel art of a fork in a glowing road: one path is a flat billboard reading IT'S OVER, the other is a winding uphill trail of small signposts asking what changes, what stays, who owns it" width={1200} height={675} />
+
+Here's what I actually believe.
+
+"AI will replace all programmers" is attractive precisely because it's lazy. It's a single sentence. It feels edgy and informed. It requires zero understanding of what engineers do, zero contact with a real codebase, and zero effort. You get to sound like you've glimpsed the future while doing none of the work of looking at the present.
+
+The harder, truer, less retweetable take is: the tools are extraordinary, the job is being reshaped around them, the boring parts are dying, the gain is enormous, and the human who can think clearly and own the outcome is worth *more* now, not less. That doesn't fit on a slide. It doesn't trigger anyone. It's just what's happening.
+
+So when someone tells you programmers are done, you don't have to argue the future with them. Just ask them what they think programmers actually do all day. The answer tells you everything. If it's "type code," they were never describing the job. They were describing the part a machine could already see, and mistaking the easy part for the whole.
+
+The typing was never the job. Don't let anyone who's never done the job tell you it was.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/spark-bellows-quench-hero.webp"
+  imageAlt="Pixel art triptych of a forge at night: a blacksmith striking sparks, a bellows feeding the fire, and a glowing blade plunged into a quenching trough"
+  eyebrow="Read this next"
+  title="I Am the Spark, the Bellows, and the Quench"
+  description="The same argument, aimed at writing instead of code: a machine can take the middle of the work, never the judgment at the ends."
+  href="/blog/spark-bellows-quench"
+/>
