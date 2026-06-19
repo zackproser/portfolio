@@ -82,6 +82,11 @@ def embed(texts):
     return np.array([d.embedding for d in resp.data])
 
 def semantic_chunks(sentences, percentile=90):
+    if len(sentences) == 0:
+        return []
+    if len(sentences) == 1:
+        return [sentences[0]]
+    
     vectors = embed(sentences)
     # Cosine distance between each sentence and the next.
     distances = []
@@ -94,7 +99,7 @@ def semantic_chunks(sentences, percentile=90):
     threshold = np.percentile(distances, percentile)
     chunks, current = [], [sentences[0]]
     for i, dist in enumerate(distances):
-        if dist > threshold:
+        if dist >= threshold:
             chunks.append(" ".join(current))
             current = [sentences[i + 1]]
         else:
