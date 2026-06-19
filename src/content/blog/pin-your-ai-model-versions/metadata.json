@@ -1,0 +1,8 @@
+{
+  "title": "Pin Your AI Model Versions in Production",
+  "author": "Zachary Proser",
+  "date": "2026-06-19",
+  "description": "Floating model aliases like \"latest\" change under you with no deploy, no error, and no warning. Pin the exact version, gate upgrades behind evals, and stop debugging incidents you didn't cause.",
+  "image": "https://zackproser.b-cdn.net/images/pin-your-ai-model-versions-hero.jpg",
+  "tags": ["AI Engineering", "LLM", "Production", "Developer Tools", "Reliability"]
+}
