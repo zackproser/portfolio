@@ -1,9 +1,15 @@
 {
-  "title": "WisprFlow vs Apple Dictation 2026: Which iPhone Voice Tool Wins?",
+  "title": "Why I Stopped Using Apple Dictation and Switched to WisprFlow",
   "author": "Zachary Proser",
-  "date": "2026-3-12",
-  "description": "Complete comparison of WisprFlow vs Apple Dictation for iPhone users. See which voice transcription tool offers better accuracy, features, and productivity.",
+  "date": "2026-05-20",
+  "description": "Apple Dictation is free and built-in. WisprFlow costs money. After six months, I deleted the Apple dictation shortcut from my menu bar. Here's why.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
-  "tags": ["wisprflow", "apple-dictation", "iphone", "voice-transcription", "comparison"],
+  "tags": [
+    "wisprflow",
+    "apple",
+    "voice",
+    "mac",
+    "productivity"
+  ],
   "hiddenFromIndex": true
 }
