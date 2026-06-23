@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { StaticImageData } from 'next/image'
 import { Content } from '@/types'
 import { getContentCheckoutUrl } from '@/lib/checkoutUtils'
+import { track } from '@vercel/analytics'
 
 interface PaywallProps {
   content: Content
@@ -32,6 +33,7 @@ export default function Paywall({
 
   const handlePurchase = async () => {
     setLoading(true)
+    track('paywall_cta_click', { slug: content.slug || '', price: String(price), variant: 'full' })
     const checkoutUrl = getContentCheckoutUrl(content);
 
     if (!checkoutUrl) {
@@ -82,7 +84,7 @@ export default function Paywall({
             disabled={loading}
             className="w-full sm:w-auto px-8 py-3 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
           >
-            {loading ? 'Processing...' : buttonText || content.commerce?.buttonText || `Purchase for $${(price / 100).toFixed(2)}`}
+            {loading ? 'Processing...' : buttonText || content.commerce?.buttonText || `Purchase for $${price}`}
           </Button>
         </div>
       </div>

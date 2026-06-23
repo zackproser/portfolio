@@ -23,10 +23,12 @@ export default function ConsultingCTA({
           <Link
             onClick={() => {
               // Capture google analytics event
-              gtag("event", "click_book_consult_inline_cta", {
-                event_category: "advertising",
-                event_label: "consulting_inline_cta",
-              })
+              if (typeof gtag === 'function') {
+                gtag("event", "click_book_consult_inline_cta", {
+                  event_category: "advertising",
+                  event_label: "consulting_inline_cta",
+                })
+              }
               track('consulting-cta', {
                 event_category: "advertising",
                 event_label: "consulting_inline_cta",

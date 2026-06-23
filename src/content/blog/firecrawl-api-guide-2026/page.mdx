@@ -10,6 +10,8 @@ hiddenFromIndex: true
 
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 
+export const campaign = "firecrawl-api-guide-2026"
+
 Firecrawl provides a clean API for scraping websites at scale, with particular strength in handling JavaScript-rendered pages and extracting structured data. The API design is straightforward: authenticate, call an endpoint, get back clean Markdown or structured JSON.
 
 Here is what you actually need to know to use it in production.
@@ -24,7 +26,7 @@ Authorization: Bearer fc-your-api-key-here
 
 The free tier gives you 500 credits. Each API call consumes credits based on the number of pages scraped and whether you use the async batch endpoint.
 
-<InlineAffiliateCTA product="firecrawl" />
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
 
 ## Core Endpoints
 
@@ -66,7 +68,7 @@ response = requests.post(
 articles = response.json()["data"]["entities"]
 ```
 
-<InlineAffiliateCTA product="firecrawl" />
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
 
 ## Rate Limits and Pricing
 
@@ -84,7 +86,7 @@ Firecrawl uses a headless browser stack under the hood. Pages that require JavaS
 
 For single-page applications that lazy-load content, you can increase the `waitFor` timeout in the request options.
 
-<InlineAffiliateCTA product="firecrawl" />
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
 
 ## Common Issues
 

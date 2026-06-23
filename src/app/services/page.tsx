@@ -71,8 +71,10 @@ export default function ServicesPage() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                Schedule a Strategy Call
+              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                <Link href="https://calendly.com/zackproser/60min">
+                  Schedule a Strategy Call
+                </Link>
               </Button>
             </div>
             <p className="text-xl text-white dark:text-zinc-300 max-w-2xl mx-auto mt-4">
@@ -541,8 +543,10 @@ export default function ServicesPage() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-              Schedule a Strategy Call
+            <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <Link href="https://calendly.com/zackproser/60min">
+                Schedule a Strategy Call
+              </Link>
             </Button>
           </div>
         </div>
