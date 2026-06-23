@@ -1,0 +1,109 @@
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'wisprflow-for-mobile-developers-2026'
+
+# WisprFlow for Mobile Developers: Voice-First Coding at 179 WPM
+
+Mobile development has a documentation problem. You're physically holding a device in one hand, running through a test scenario, you spot a rendering bug or a weird gesture conflict — and your options are: put the phone down, switch to your laptop, open a notes app, and try to reconstruct what you just saw from memory. Or you just try to remember it.
+
+Memory is lossy. You forget the exact conditions. You forget which device was running which OS version. The bug gets filed as "sometimes happens on some Android phones" instead of the precise repro case that actually makes it fixable.
+
+WisprFlow fixes this. Voice transcription at 179 words per minute means the note happens in the moment, hands-free, while you're still holding the device where the bug appeared.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Where Mobile Devs Lose the Most Documentation Time
+
+Mobile development has more context-switching pressure than almost any other engineering discipline. You're not sitting at one machine. You're moving between:
+
+- Physical test devices (5, 10, sometimes 20+ in a device lab)
+- Android Studio or Xcode on your Mac
+- Firebase Crashlytics or Sentry dashboards
+- TestFlight or Play Console distribution flows
+- Simulator/emulator configurations
+- Remote test sessions with actual users
+
+Every transition is an opportunity to lose context. And documentation — the thing that preserves context — is always the casualty when context switches are expensive.
+
+Here's where voice capture changes the calculus:
+
+### Device Testing on the Floor
+
+Walking a device lab or testing a retail kiosk implementation, you can't type. Your hands are on hardware. A voice note takes two seconds:
+
+> "Pixel 7a, Android 14, the swipe-to-dismiss gesture on the notification drawer fires the wrong handler when the app is in foreground. Only happens after backgrounding and resuming at least once. Doesn't repro on Pixel 6."
+
+That's a precise bug report, captured immediately, in a format that goes straight into your issue tracker when you're back at your desk.
+
+### API Integration Context
+
+Third-party API integrations generate the kind of knowledge that only exists in your head and vanishes when the sprint ends. The quirks, the undocumented behaviors, the edge cases you discovered the hard way.
+
+> "Firebase Remote Config doesn't respect the minimum fetch interval on first launch if the user installs and immediately opens offline. Workaround: force a local default config with sensible values and only merge remote on successful fetch."
+
+That's tribal knowledge. Voice capture turns it into documentation.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+### Cross-Platform Behavioral Differences
+
+iOS and Android handle the same UI patterns differently. Keyboard behavior, safe area insets, back navigation, notification permissions — the list of platform-specific behavior is long and constantly growing as both OS teams ship updates.
+
+Voice notes during cross-platform testing sessions are where this knowledge gets preserved:
+
+> "iOS 17.4 changed the scroll behavior when a keyboard is present. Our login form now pans the wrong direction on iPhone 15 Pro Max. Works fine on the 14 and earlier. Android is unaffected. Check keyboard avoiding view implementation — probably need platform-specific logic."
+
+### Performance Profiling Observations
+
+Profiling sessions are intense focus work. You're watching flame graphs, watching frame rates, correlating allocation spikes with user interactions. Taking detailed typed notes during this breaks the mental model you're building.
+
+Voice capture preserves observations without breaking focus:
+
+> "The image grid causes a 60ms GC pause every time a new row loads. The pause corresponds exactly to loading full-resolution thumbnails. Scaling down to 200px wide on load reduces this to under 5ms. Need to update the thumbnail loading policy across the whole app."
+
+## WisprFlow on Mac and iPhone: The Full Mobile Dev Stack
+
+Most mobile developers work primarily on a Mac. WisprFlow's Mac app integrates directly into that workflow — dictate into any text field across Xcode, Android Studio (via IntelliJ on Mac), Linear, Jira, Slack, or your notes app.
+
+The iPhone app extends this to your testing environments. When you're testing on device and your Mac is across the room, you can capture notes on your iPhone and pick them up in your Mac workflow instantly.
+
+This is the workflow pattern:
+1. Testing on device, catch a bug or behavioral note
+2. Open WisprFlow on iPhone, dictate the note while still holding the test device
+3. Note syncs and is available on Mac
+4. End of testing session, voice notes become the basis for your issue tickets
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## The Accuracy Gap Between Tools
+
+Mobile developers who've tried standard iOS dictation or Android voice typing know the accuracy ceiling. Technical terminology — class names, API methods, SDK-specific concepts — tends to produce garbage transcriptions.
+
+WisprFlow's accuracy on technical vocabulary is materially better. It handles:
+- Class names and method references
+- SDK and framework names (UIKit, SwiftUI, Jetpack Compose, Retrofit, OkHttp)
+- Version numbers and build identifiers
+- Technical acronyms (GC, CPU, RAM, ANR, OOM)
+- Developer jargon that general-purpose dictation mangles
+
+For mobile developers, this accuracy difference is what makes voice capture actually useful rather than just creating cleanup work.
+
+## From Voice Notes to Issue Tickets
+
+The workflow that makes this compound over time: voice notes don't stay voice notes. At the end of a testing session, WisprFlow has a transcript of everything you observed. That transcript maps cleanly to issue tickets.
+
+Each voice note becomes a bug report with:
+- Device model and OS version (because you said it)
+- Repro steps (because you narrated them)
+- Expected vs. actual behavior (because you described both)
+- Any context about when you first noticed it
+
+The gap between "I saw something weird" and "here's a well-described bug report with repro steps" collapses to near-zero.
+
+For mobile developers working in fast-moving codebases, that's the real value: better documentation with less overhead, so more time stays in actual development.
+
+<AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow free for 14 days</AffiliateLink> — the Mac and iPhone apps are included. Run it through a device testing session and see how much context you were previously leaving on the floor.
