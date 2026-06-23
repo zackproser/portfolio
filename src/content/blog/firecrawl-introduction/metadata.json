@@ -1,0 +1,9 @@
+{
+  "title": "Firecrawl AI: Turn Any Website into Clean Markdown or Structured Data",
+  "author": "Zachary Proser",
+  "date": "2026-04-22",
+  "description": "Firecrawl is a web scraping API that handles JavaScript rendering, rate limiting, and anti-bot evasion automatically. Here's how to use it.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "tags": ["firecrawl", "web-scraping", "ai", "api", "seo"],
+  "hiddenFromIndex": true
+}
