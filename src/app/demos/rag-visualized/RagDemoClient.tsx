@@ -5,21 +5,14 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ShieldCheck,
-  Workflow,
-  Gauge,
   NotebookPen,
   LayoutDashboard,
   LifeBuoy,
   ChevronDown,
-  Sparkles,
   AlertTriangle,
   Zap,
-  Play,
   MousePointerClick,
-  ArrowRight,
-  Database,
-  Brain,
-  FileSearch
+  Brain
 } from 'lucide-react'
 
 import { track } from '@vercel/analytics'
@@ -91,6 +84,26 @@ export default function RagDemoClient() {
 
   return (
     <div className="space-y-6">
+      {/* Promo ribbon — surfaces the premium tutorial from the first scroll. */}
+      <Link
+        href="/products/rag-pipeline-tutorial"
+        onClick={() => track('rag_demo_ribbon_click', { surface: 'top_ribbon' })}
+        className="group block rounded-md border border-burnt-400/70 dark:border-amber-400/60 bg-burnt-50/60 dark:bg-amber-400/[0.06] hover:bg-burnt-50 dark:hover:bg-amber-400/[0.1] transition-colors"
+      >
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 px-4 py-3">
+          <span className="inline-flex items-center gap-2 font-mono text-[10.5px] font-semibold tracking-[0.14em] uppercase text-burnt-500 dark:text-amber-300">
+            <span aria-hidden>✱</span>
+            Companion tutorial
+          </span>
+          <span className="text-sm text-zinc-700 dark:text-zinc-200 sm:flex-1">
+            This demo&rsquo;s pipeline ships in the <span className="font-semibold">$149 RAG tutorial</span> &mdash; notebook, Next.js app, hybrid retrieval, reranker, and an eval harness.
+          </span>
+          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-burnt-500 dark:text-amber-300 group-hover:underline whitespace-nowrap">
+            Get it &rarr;
+          </span>
+        </div>
+      </Link>
+
       {/* Hero Header */}
       <div className="text-center space-y-3 pt-4">
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
@@ -243,58 +256,82 @@ export default function RagDemoClient() {
         />
       </div>
 
-      <section className="relative overflow-hidden">
-        {/* Subtle background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-emerald-50/30 dark:from-blue-950/20 dark:via-transparent dark:to-emerald-950/10" />
-        
-        <div className="relative mx-auto max-w-4xl px-6 py-12 md:py-16">
-          <div className="space-y-8">
-            {/* Content */}
-            <div className="space-y-6 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700 backdrop-blur-sm dark:bg-blue-900/40 dark:text-blue-200">
-                Build production RAG
-              </div>
-              
-              <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl lg:text-5xl">
-                Build the Production Pipeline This Demo is Inspired By
-              </h2>
-              
-              <p className="text-base leading-relaxed text-zinc-600 dark:text-zinc-300 sm:text-lg max-w-2xl mx-auto">
-                Follow the exact system I refined while leading RAG architecture at Pinecone. The premium tutorial includes the notebook that preprocesses your data, the Next.js app that ships to Vercel, and direct email support when you hit edge cases.
-              </p>
+      {/* Editorial CTA card — same visual language as the homepage hero capture. */}
+      <section className="relative px-4 sm:px-6 py-12 md:py-16">
+        <div className="rag-cta-card relative mx-auto max-w-4xl rounded-[10px] border-[1.5px] border-burnt-400 dark:border-amber-400 bg-parchment-50 dark:bg-slate-800 p-6 sm:p-8 md:p-10">
+          {/* Eyebrow / mono label */}
+          <div className="flex items-center gap-3 font-mono text-[10.5px] font-semibold tracking-[0.14em] uppercase text-burnt-500 dark:text-amber-300">
+            <span className="h-px w-7 bg-burnt-400 dark:bg-amber-400" aria-hidden />
+            <span>§ Companion · Premium tutorial · $149</span>
+          </div>
 
-              {/* Feature Grid - More refined */}
-              <div className="grid gap-3 sm:grid-cols-3 text-zinc-600 dark:text-zinc-300 max-w-3xl mx-auto">
-                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-blue-50/50 dark:hover:bg-blue-950/20 text-center">
-                  <NotebookPen className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
-                  <span className="text-sm leading-relaxed">Step-by-step Jupyter notebook for chunking, embeddings, and Pinecone indexing.</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-blue-50/50 dark:hover:bg-blue-950/20 text-center">
-                  <LayoutDashboard className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
-                  <span className="text-sm leading-relaxed">Production-ready Next.js + Vercel AI SDK interface with streaming, citations, and guardrails.</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-blue-50/50 dark:hover:bg-blue-950/20 text-center">
-                  <LifeBuoy className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
-                  <span className="text-sm leading-relaxed">Direct email support from me while you adapt the pipeline to your stack.</span>
-                </div>
-              </div>
+          <h2 className="mt-4 font-serif text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 max-w-3xl">
+            Ship the pipeline behind this demo &mdash;{' '}
+            <em className="text-burnt-400 dark:text-amber-400 font-extrabold italic">with evals.</em>
+          </h2>
 
-              {/* CTA Buttons - More refined */}
-              <div className="flex flex-col sm:flex-row gap-3 pt-2 justify-center">
-                <Link
-                  href="/checkout?product=rag-pipeline-tutorial&type=blog"
-                  className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-lg text-white bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
-                >
-                  Get the $149 Tutorial →
-                </Link>
-                <Link
-                  href="/products/rag-pipeline-tutorial"
-                  className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-blue-300/60 bg-white/80 text-blue-700 backdrop-blur-sm hover:bg-blue-50/80 hover:border-blue-400 transition-all dark:border-blue-700/60 dark:bg-zinc-900/80 dark:text-blue-200 dark:hover:bg-zinc-800/80 dark:hover:border-blue-600"
-                >
-                  Preview the Curriculum
-                </Link>
+          <p className="mt-5 text-[15px] sm:text-base leading-relaxed text-parchment-600 dark:text-slate-300 max-w-[60ch]">
+            The same system I refined while leading the first production RAG reference architecture at Pinecone &mdash;
+            updated for 2026. Hybrid retrieval, a Cohere reranker, and an eval harness with faithfulness and recoverability scores
+            you can put in front of your team without flinching.
+          </p>
+
+          <div className="mt-7 grid gap-4 sm:grid-cols-2 max-w-3xl">
+            <div className="flex items-start gap-3 rounded-md border border-parchment-300/70 dark:border-slate-700 bg-white/40 dark:bg-slate-900/30 p-4">
+              <NotebookPen className="h-4 w-4 flex-shrink-0 text-burnt-400 dark:text-amber-300 mt-0.5" />
+              <div className="text-[13.5px] leading-relaxed text-parchment-600 dark:text-slate-300">
+                <b className="text-charcoal-50 dark:text-parchment-100 font-semibold">Notebook</b> &mdash; chunking, embeddings, indexing. Annotated, runnable, defensibly small.
               </div>
             </div>
+            <div className="flex items-start gap-3 rounded-md border border-parchment-300/70 dark:border-slate-700 bg-white/40 dark:bg-slate-900/30 p-4">
+              <LayoutDashboard className="h-4 w-4 flex-shrink-0 text-burnt-400 dark:text-amber-300 mt-0.5" />
+              <div className="text-[13.5px] leading-relaxed text-parchment-600 dark:text-slate-300">
+                <b className="text-charcoal-50 dark:text-parchment-100 font-semibold">Next.js app</b> &mdash; streaming, citations, hybrid retrieval, reranker, real failure paths.
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-md border border-parchment-300/70 dark:border-slate-700 bg-white/40 dark:bg-slate-900/30 p-4">
+              <ShieldCheck className="h-4 w-4 flex-shrink-0 text-burnt-400 dark:text-amber-300 mt-0.5" />
+              <div className="text-[13.5px] leading-relaxed text-parchment-600 dark:text-slate-300">
+                <b className="text-charcoal-50 dark:text-parchment-100 font-semibold">Eval harness</b> &mdash; Ragas + LLM-as-judge, wired into CI. Regressions fail loud.
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-md border border-parchment-300/70 dark:border-slate-700 bg-white/40 dark:bg-slate-900/30 p-4">
+              <LifeBuoy className="h-4 w-4 flex-shrink-0 text-burnt-400 dark:text-amber-300 mt-0.5" />
+              <div className="text-[13.5px] leading-relaxed text-parchment-600 dark:text-slate-300">
+                <b className="text-charcoal-50 dark:text-parchment-100 font-semibold">Direct email support</b> &mdash; ask me your questions while you adapt it to your stack.
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            <Link
+              href="/checkout?product=rag-pipeline-tutorial&type=blog"
+              onClick={() =>
+                track('rag_demo_cta_click', {
+                  surface: 'demo_footer',
+                  destination: 'checkout',
+                })
+              }
+              className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-md text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors"
+            >
+              Buy the tutorial &mdash; $149
+            </Link>
+            <Link
+              href="/products/rag-pipeline-tutorial"
+              onClick={() =>
+                track('rag_demo_cta_click', {
+                  surface: 'demo_footer',
+                  destination: 'product_page',
+                })
+              }
+              className="text-sm text-parchment-600 dark:text-slate-300 underline decoration-parchment-400 dark:decoration-slate-500 underline-offset-4 hover:decoration-burnt-400 dark:hover:decoration-amber-400 hover:text-burnt-400 dark:hover:text-amber-400 transition-colors"
+            >
+              Preview the curriculum &rarr;
+            </Link>
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-parchment-300/60 dark:border-slate-700 font-mono text-[10px] tracking-[0.1em] uppercase text-parchment-500 dark:text-slate-500">
+            Updated for 2026 · Notebook · Next.js · Hybrid retrieval · Reranker · Evals · Email support
           </div>
         </div>
       </section>
