@@ -1,0 +1,25 @@
+{
+  "title": "Why Firecrawl Is My Default for Applied AI at WorkOS",
+  "author": "Zachary Proser",
+  "date": "2026-06-05",
+  "description": "I ship AI features that have to read the web in production. After watching homegrown scraping stacks rot, Firecrawl became the tool I reach for first. Here's the honest reasoning, including where I don't use it.",
+  "image": "https://zackproser.b-cdn.net/images/fc-why-hero.webp",
+  "type": "blog",
+  "slug": "/blog/why-i-use-firecrawl-applied-ai",
+  "keywords": [
+    "why use firecrawl",
+    "firecrawl review",
+    "web scraping for applied ai",
+    "firecrawl production",
+    "scraping api for llm",
+    "firecrawl workos",
+    "llm ready markdown scraping",
+    "managed web scraping api"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}

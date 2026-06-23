@@ -72,6 +72,24 @@ const otherDemos: Content[] = [
     image: firecrawlKBDemoHero
   },
   {
+    slug: '/demos/firecrawl-site-crawler',
+    title: 'Crawl an Entire Site into LLM-Ready Data',
+    description: 'Watch Firecrawl map and crawl a whole website. Step through URL discovery, JS rendering, and markdown extraction with a live site-map tree and per-page inspector showing the real /map and /crawl API shapes.',
+    author: 'Zachary Proser',
+    date: '2026-06-05',
+    type: 'demo',
+    image: firecrawlDemoHero
+  },
+  {
+    slug: '/demos/firecrawl-change-tracker',
+    title: 'Monitor Any Website for Changes',
+    description: 'Track websites for changes automatically. Advance a monitoring timeline, watch change events fire, and inspect git-diff and JSON field diffs using Firecrawl’s real changeTracking response shape.',
+    author: 'Zachary Proser',
+    date: '2026-06-05',
+    type: 'demo',
+    image: firecrawlDemoHero
+  },
+  {
     slug: '/demos/rag-visualized',
     title: 'RAG Visualized Experience',
     description: 'Interactive RAG walkthrough that shows why retrieval reduces hallucinations, trims cost, and lets experienced engineers ship grounded copilots fast.',
