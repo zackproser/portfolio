@@ -1,0 +1,91 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src={rawMetadata.image} alt="Two columns of orange app-icon tiles — a small neat row on the left, a much larger scattered cluster on the right" width={1200} height={630} />
+<figcaption>Left: the survivors. Right: the careful tries. The ratio is approximately accurate.</figcaption>
+
+I evaluate AI tools as part of my actual job. I&apos;m the Applied AI lead at WorkOS, which means new tooling is a thing I owe my employer time on, and it is also a thing I do on weekends because I find it interesting. Two years of doing this has produced a long list of tools I gave a careful look and a much shorter list of tools I actually use.
+
+The bar for "actually use" is straightforward: I would notice if it disappeared tomorrow. I open it without thinking about it. The expense line is paid by me, personally, off my own card, not through an enterprise license I happen to inherit. That third criterion does a lot of work — it filters out the tools I have access to but never reach for, which turns out to be most of them.
+
+Below is the list, in the order I would miss them.
+
+---
+
+## Granola
+
+Every meeting I take, all day, every day. Work, consulting, friend catch-ups, family calls — local-audio capture means none of those contexts requires a bot in the room, so I can run the same tool across all of them without thinking about consent flows separately for each one.
+
+I have written the <Link href="/granola">long version of why at /granola</Link>, which covers the four meeting shapes I run it for, the prompt pack, the pricing breakdown, and the limits I keep. The short version: Granola removed the cognitive load of being responsible for the record of a meeting, which turns out to have been the part of meetings I was carrying the most anxiety about. It is the first AI tool whose absence would measurably raise my baseline. If you only adopt one tool from this list, this is the one — and I have an affiliate relationship with the product, so do that math too. The recommendation predates the relationship by a meaningful margin.
+
+---
+
+## WisprFlow
+
+System-level voice-to-text on macOS, with a global hotkey. I dictate at ~175 WPM. My typing speed is ~90 WPM on a good day. The compounding effect of doubling input speed across an entire workday — Slack, email, ticket updates, PR descriptions, comments, half my code — is hard to articulate without sounding like an ad, but it shows up in the actual artifact volume by week three.
+
+The thing nobody warned me about: it changed the *quality* of what I write, not just the volume. Spoken-first drafts are more direct than typed-first drafts. Whatever you imagine you sound like when you speak, you actually sound like that, and the page is more useful when it sounds like a person than when it sounds like someone&apos;s second pass at sounding correct. The full review is [here](/blog/wisprflow-review).
+
+---
+
+## Claude Code
+
+I do almost all my code through Claude Code now. The terminal-based interface is the part I expected to hate and turned out to prefer — the lack of an editor window kept me in the conversation rather than the syntax. Background agents are where the actual productivity multiplier lives. Fire and forget on a task, check progress from my phone, redirect via voice note if something needs adjusting. Sitting at the desk watching a single agent run is the wrong posture; setting up four agents and going for a walk is the right one.
+
+---
+
+## Claude (the model, in the web app)
+
+The non-Code surface. Long-form drafting, gnarly reading, sense-making across documents that would otherwise take me a quiet afternoon to absorb. I don&apos;t use it as a chatbot. I use it as a tool for tasks where I would otherwise have to read four hundred pages of documentation, and the time-vs-quality math is so far in its favor for that specific shape of task that I almost can&apos;t justify reading the documentation by hand anymore.
+
+---
+
+## ChatGPT (the model, in the web app)
+
+Less than Claude, but real. Mostly for image generation and for a couple of specific prompts I have built up over time that produce better results on GPT than on Claude. The two models are not interchangeable once you have used them long enough; the differences are real in places I would not have predicted from reading the announcements. I keep a paid plan for both and choose by feel.
+
+---
+
+## Sora
+
+A new addition. I am using it sparingly — short hero loops for blog posts, occasional explainers, the kind of motion that makes a piece feel less like a wall of text. The quality is high enough that I expect it to be more central within the year. Right now it sits in the "earned a slot, still experimental" category, which is the same category Claude Code was in a year ago.
+
+---
+
+## Cursor (used to be on the list)
+
+I used Cursor heavily for a year before Claude Code matured into something I could lean on. Claude Code did what Cursor did with less context-switching cost, so I dropped Cursor. If you love an IDE, Cursor is still genuinely solid — the team has shipped consistently and the inline experience is excellent. I just stopped opening it.
+
+---
+
+## The careful-try list
+
+The list of tools I gave a real shot and did not adopt is much longer than the list above. There is no shame in that list — most of them are decent products. They didn&apos;t survive contact with my actual workflow, and the failures cluster around a few specific shapes worth naming.
+
+Some tools required a workflow change I wasn&apos;t going to make. A tool that worked great if I switched my entire note system, or my entire calendar, or my entire Slack hygiene. The marginal value didn&apos;t justify the migration cost, because the cost is almost never a one-time charge — it is the ongoing cost of having two slightly different workflows in your head at the same time. I would rather keep my janky existing flow and add a tool that fits into it than refactor my workflow around someone else&apos;s opinion of how I should work.
+
+Some tools demoed well but produced output I couldn&apos;t trust. The demo was magic. The third real-world use case revealed that the magic was fragile in a way that mattered. I would catch myself double-checking the output, which meant I was doing the work twice — once with the tool, once to verify it. That category includes a lot of agents I tried in the last year. The trust threshold is high and recent products are still building toward it.
+
+Some tools cost more attention than they saved. Every notification, every "did you mean…", every onboarding flow that re-runs at the wrong moment. The hidden tax that ate the benefit. The category is overrepresented among the well-funded ones, which makes sense — funding pressures product teams to engagement-optimize, and engagement-optimization tends to add notifications.
+
+The last shape is the most interesting one. Some tools were trying to be the new home for my work — the new Notion, the new Slack, the new everything-app. I have a home for my work; it is the one I have built up over a decade. Any tool that demanded I move in instead of integrate was, for me, dead on arrival. I think this is the most under-appreciated failure mode for new AI-native productivity tools, because the founders building them are often new enough to professional work that they don&apos;t yet have a home to defend.
+
+---
+
+## What I&apos;m watching but haven&apos;t adopted
+
+A few things I&apos;m tracking actively without paying for yet. Code review agents are the biggest one — the category is real and improving fast, but I have not found one I trust against my actual codebases. The ones I have tested produce useful surface-level feedback and miss the kind of architectural questions a thoughtful human reviewer would raise. I expect this to flip within a year, and I am watching specifically for the product that doesn&apos;t over-comment.
+
+Voice-first coding interfaces beyond WisprFlow are the second. I have tried two; neither has supplanted my current setup. The bar is high because what I already have works, which is the place every new entrant has to climb out of. The third is the agent ecosystem around Claude Code itself — subagents, MCP, the orchestration patterns people are building on top. Some of the most interesting work in the next twelve months is going to happen there, and not all of it is going to be inside one product.
+
+---
+
+## Disclosure
+
+I have affiliate relationships with Granola and WisprFlow. Both are on the actually-use list, were on it before the affiliate relationships existed, and would stay on it if the relationships disappeared tomorrow. The relationships are what make the time to write at this length economic.
+
+Cursor, Claude Code, Claude, ChatGPT, Sora — no affiliate relationship. I pay for the ones that are paid. The recommendations are uncolored by anything but use.
