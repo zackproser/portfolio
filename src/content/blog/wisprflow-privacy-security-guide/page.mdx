@@ -1,0 +1,120 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'wisprflow-privacy-security-guide';
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow privacy and security" width={800} height={450} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+WisprFlow runs in the background. It listens to everything — your code reviews, your Slack messages, your takes during meetings. That raises a question worth taking seriously: what happens to all that audio?
+
+I asked the same question before I trusted it with my daily workflow. Here's what I found.
+
+## How WisprFlow Actually Works
+
+WisprFlow runs as a background service on your Mac. It continuously monitors your microphone input and processes speech locally using an on-device model before sending transcribed text to its servers for enhancement.
+
+The key architectural detail: audio never leaves your machine in raw form. The local model does the initial transcription. What gets sent upstream is already text.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## What Data WisprFlow Sends
+
+The data flow is straightforward:
+
+1. **Audio captured** — Your Mac's microphone feeds into WisprFlow's local processing
+2. **Local transcription** — An on-device model converts speech to text
+3. **Text sent for enhancement** — Transcribed text goes to WisprFlow's servers for punctuation, formatting, and context improvements
+4. **Enhanced text returned** — Processed text comes back to your device
+5. **Text used in-app** — You can send it to code editors, documents, or other apps
+
+The raw audio stays on your machine. Only transcribed and enhanced text leaves it.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## What WisprFlow Stores
+
+WisprFlow stores your transcription history in their cloud so you can access past dictations across devices. This is documented in their privacy policy.
+
+Your cloud history is:
+- Searchable by you
+- Accessible through your account credentials
+- Exportable on request
+- Deletable at any time
+
+The data isn't shared with third parties for advertising or training purposes. WisprFlow's business model is subscription-based, not data monetization.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Security Controls
+
+### Local Processing Priority
+
+The on-device transcription model is the first line of defense. Without it, WisprFlow would have to send raw audio to process speech, which would be a non-starter for security-conscious users.
+
+The model runs entirely in RAM. No audio is written to disk locally during processing.
+
+### Encryption in Transit
+
+All text sent between your device and WisprFlow's servers is encrypted over HTTPS. This is standard for modern SaaS products.
+
+### Access Controls
+
+You control what gets synced to the cloud. Individual recordings can be deleted from history. Your account can be deleted entirely, which removes your stored data from their servers.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## What I'd Want to See Improved
+
+Here's honest feedback: the privacy policy is written in standard legal boilerplate and doesn't give technical details about the actual data handling. I wish they published a technical security whitepaper the way some security-focused tools do.
+
+For enterprise users, SOC 2 certification would be meaningful. Right now, WisprFlow's security model requires trusting their documentation and architecture choices without third-party validation.
+
+For most individual users, the local processing model is sufficient. For enterprise deployments with strict compliance requirements, you'd want more third-party validation than what's currently available.
+
+## What You Can Do
+
+**Disable cloud sync entirely** — WisprFlow allows you to use the local-only mode. Your transcriptions stay on your device and nothing goes to the cloud. You lose cross-device access but gain complete control.
+
+**Review and delete history regularly** — The history panel shows your recent transcriptions. Periodically review what's there and delete anything sensitive.
+
+**Lock your Mac** — WisprFlow runs in the background, so when your Mac is unlocked and running, it's processing. Get in the habit of locking your screen when you step away.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Who Should Use WisprFlow Despite the Privacy Tradeoffs
+
+**Developers who code on their feet** — The productivity gain from voice coding is substantial if you're doing it for hours daily. The privacy tradeoff is worth it for the speed improvement.
+
+**Writers who need to capture ideas fast** — If you think faster than you type, WisprFlow lets you get ideas out at the speed of thought.
+
+**Anyone already using other cloud services** — Most of us are already sending substantial amounts of personal and professional data to cloud services. WisprFlow's local processing model is more privacy-preserving than most.
+
+## Who Should Be More Careful
+
+**People working with highly sensitive IP** — If you're developing novel algorithms, proprietary systems, or anything where the specific text of your work is the core IP, evaluate this carefully. The on-device model helps, but you're still sending transcriptions to external servers.
+
+**Enterprise users in regulated industries** — Healthcare, legal, and financial services have specific compliance requirements. Check with your security team before deploying any continuous recording software.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## The Real Question
+
+The real question is whether the productivity gains justify the privacy tradeoff for your use case. No tool that sends data to external servers is perfectly private.
+
+For me, they do. I write code at 179 words per minute with WisprFlow. I type at 62. The productivity difference is worth the architectural tradeoff.
+
+Your calculation may differ. The important thing is to make it deliberately, with full understanding of what you're trading.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+**Try WisprFlow** — <AffiliateLink product="wisprflow" campaign={campaign}>Start with the free trial and evaluate the privacy model yourself</AffiliateLink>
+
+---
+
+*The best privacy decision is an informed one. Test it yourself before trusting it with your sensitive work.*
