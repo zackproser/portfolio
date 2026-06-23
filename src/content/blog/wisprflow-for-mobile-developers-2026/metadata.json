@@ -1,0 +1,11 @@
+{
+  "title": "WisprFlow for Mobile Developers: Voice Coding and Documentation at 179 WPM",
+  "author": "Zachary Proser",
+  "date": "2026-04-25",
+  "description": "How mobile developers use WisprFlow to dictate Swift, Kotlin, and React Native code, document APIs, and write tickets faster than typing — hands-free on Mac and iPhone.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "imageAlt": "WisprFlow voice AI interface showing a mobile developer dictating Swift code on a Mac",
+  "tags": ["voice-ai", "mobile-development", "swift", "kotlin", "productivity"],
+  "hiddenFromIndex": true,
+  "product": "wisprflow"
+}
