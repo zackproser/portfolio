@@ -1,11 +1,19 @@
 "use client"
 
+import type { Metadata } from 'next'
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Plus, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { CategoryList } from "@/components/admin/category-list"
 import { AddCategoryForm } from "@/components/admin/add-category-form"
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 export default function CategoriesAdminPage() {
   const [isAddingCategory, setIsAddingCategory] = useState(false)
