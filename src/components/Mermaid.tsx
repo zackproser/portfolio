@@ -65,9 +65,21 @@ type MermaidModule = typeof import('mermaid')['default']
 let mermaidPromise: Promise<MermaidModule> | null = null
 function loadMermaid(): Promise<MermaidModule> {
   if (!mermaidPromise) {
-    mermaidPromise = import('mermaid').then((m) => m.default)
+    mermaidPromise = import('mermaid')
+      .then((m) => m.default)
+      .catch((err) => {
+        mermaidPromise = null
+        throw err
+      })
   }
   return mermaidPromise
+}
+
+let renderQueue = Promise.resolve()
+function queueRender<T>(fn: () => Promise<T>): Promise<T> {
+  const result = renderQueue.then(fn, fn)
+  renderQueue = result.then(() => {}, () => {})
+  return result
 }
 
 let counter = 0
@@ -89,27 +101,26 @@ export function Mermaid({ chart }: { chart: string }) {
     setSvg('')
     setError('')
     let cancelled = false
-    loadMermaid()
-      .then((mermaid) => {
-        mermaid.initialize({
-          startOnLoad: false,
-          securityLevel: 'strict',
-          theme: 'base',
-          themeVariables: resolvedTheme === 'dark' ? DARK_VARS : LIGHT_VARS,
-          fontFamily: 'inherit',
-        })
-        // Unique render id per theme so Mermaid never collides ids on re-render.
-        return mermaid.render(`${idRef.current}-${resolvedTheme ?? 'light'}`, source)
+    queueRender(async () => {
+      if (cancelled) return
+      const mermaid = await loadMermaid()
+      if (cancelled) return
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: 'strict',
+        theme: 'base',
+        themeVariables: resolvedTheme === 'dark' ? DARK_VARS : LIGHT_VARS,
+        fontFamily: 'inherit',
       })
-      .then((result) => {
-        if (!cancelled) {
-          setSvg(result.svg)
-          setError('')
-        }
-      })
-      .catch((e: unknown) => {
-        if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to render diagram')
-      })
+      // Unique render id per theme so Mermaid never collides ids on re-render.
+      const result = await mermaid.render(`${idRef.current}-${resolvedTheme ?? 'light'}`, source)
+      if (!cancelled) {
+        setSvg(result.svg)
+        setError('')
+      }
+    }).catch((e: unknown) => {
+      if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to render diagram')
+    })
     return () => {
       cancelled = true
     }
