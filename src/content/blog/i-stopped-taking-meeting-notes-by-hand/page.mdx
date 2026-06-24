@@ -1,0 +1,87 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import rawMetadata from './metadata.json'
+import ReadNextCard from '@/components/ReadNextCard'
+import { AffiliateLink } from '@/components/StickyAffiliateCTA'
+
+export const metadata = createMetadata(rawMetadata)
+export const campaign = "i-stopped-taking-meeting-notes-by-hand"
+
+# I Stopped Taking Meeting Notes by Hand
+
+For years I took meeting notes by hand, and I was bad at it. Not because my handwriting is bad — it is — but because the act of writing notes pulled me out of the meeting I was supposed to be in.
+
+<Image src="https://zackproser.b-cdn.net/images/granola-stopped-by-hand-hero.jpg" alt="Split scene: on the left a stressed person scribbling notes by hand during a call, on the right the same person relaxed and present while a laptop captures notes automatically" width={1200} height={675} />
+
+I'd be three sentences behind, transcribing what someone said thirty seconds ago while they moved on to the thing that actually mattered. By the time I looked up, I'd missed the decision. My notes were a record of the parts of the meeting I cared least about, written by someone who wasn't really listening.
+
+I stopped. I let <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> handle the capture, and I show up to meetings now with my hands empty and my attention on the person talking. This is what changed, and who I think it's actually for.
+
+## The problem was never the notes
+
+The problem was the tax. Taking notes by hand is a second job you do during your first job. You're a participant and a stenographer at the same time, and you're bad at both because you're splitting attention between them.
+
+<Image src="https://zackproser.b-cdn.net/images/granola-stopped-by-hand-messy-notes.jpg" alt="A messy open paper notebook full of half-finished handwritten meeting notes with crossed-out lines and arrows, next to a cold cup of coffee" width={1024} height={768} />
+
+Here's what my notes actually looked like: the first ten minutes captured in detail, the next forty in fragments, and the last five not at all because by then I'd given up and was just trying to keep up with the conversation. The most important part of most meetings is the end — the decisions, the owners, the next steps. That's exactly the part my hand-written notes were worst at.
+
+And I never reread them. I'd close the notebook, the tab, the Apple Note, and never open it again. The notes existed to make me feel like I was being responsible during the meeting. They almost never survived contact with the next day.
+
+So I was paying the full attention tax to produce an artifact I didn't use. That's a bad trade, and I made it in every meeting for years.
+
+## What changed when Granola took over
+
+Granola sits quietly on my Mac and listens to whatever meeting I'm in — Zoom, Meet, a phone call on speaker, an in-person conversation. There's no bot that joins the call, no awkward "this meeting is being recorded" announcement, no separate app I have to remember to launch and point at the room. It hears the audio my computer hears, and afterward it hands me a structured summary: the topics, the decisions, the action items, the things I said I'd do.
+
+<Image src="https://zackproser.b-cdn.net/images/granola-stopped-by-hand-flow.jpg" alt="A left-to-right flow diagram: live call audio feeds into Granola, which structures the notes with AI into a clean summary with action items" width={1200} height={675} />
+
+The mechanical change is obvious: I'm not writing anything. The real change is what that freed up.
+
+I'm present now. When someone is walking through a hard problem, I'm watching their face and following the logic instead of transcribing the first half of their sentence while they finish the second half. I ask better follow-up questions because I actually heard the thing they just said. The conversation got better because I stopped doing a worse job of two things and started doing one thing well.
+
+<Image src="https://zackproser.b-cdn.net/images/granola-stopped-by-hand-present.jpg" alt="A person fully engaged in a one-on-one video call, hands free, while a soft transcript ribbon is captured automatically along the bottom of the screen" width={1024} height={768} />
+
+The other change is trust. I used to half-listen because I didn't trust myself to remember, so I wrote everything down. Now I don't write anything down, because I trust the capture. That sounds small. It's the whole thing. The reason I couldn't be present before was that being present felt irresponsible — like I was letting the meeting slip away. Offloading the capture is what made presence feel safe.
+
+## The notes are actually useful now
+
+The summary I get afterward is better than anything I ever wrote by hand, for a boring reason: it captured the whole meeting, not just the parts I had spare attention for. The end of the meeting — the decisions and owners — is captured as well as the beginning.
+
+I edit them. Granola gives me a draft, and I spend a minute fixing the parts that matter and cutting the parts that don't. That minute of editing a complete draft beats forty minutes of writing an incomplete one, and the output is something I'll actually reference.
+
+<Image src="https://zackproser.b-cdn.net/images/granola-stopped-by-hand-searchable.jpg" alt="An organized digital library of structured meeting summary cards, each with a title, bullet points, and a highlighted action item, connected to a search bar at the top" width={1200} height={675} />
+
+The part I didn't see coming is the archive. Every meeting I've had is now a searchable record. When someone asks "what did we decide about X three weeks ago," I have an answer in ten seconds instead of a vague memory and a guilty shrug. My hand-written notes were write-only. These are something I read.
+
+This slots into the rest of how I work. I dictate most of my writing with <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> instead of typing — I wrote about [pushing that to 179 WPM](/blog/wisprflow-review) — and offloading meeting capture is the same move pointed at a different chore. Voice in, structured text out, my attention spent on the thinking instead of the transcribing. Both tools are in [my 2026 setup](/blog/2026-ai-engineer-setup) for the same reason: they delete a tax I was paying without noticing.
+
+## Who this is actually for
+
+I'm not going to tell you everyone needs this. Here's who I think genuinely benefits.
+
+**People who are in a lot of meetings they can't skip.** If your week is back-to-back calls, the attention tax compounds. Every meeting where you're half-transcribing is a meeting you got less out of than you should have. The more meetings you're in, the more this matters.
+
+**People who need to be present, not productive, in the room.** One-on-ones, customer calls, interviews, anything where the relationship or the listening is the point. If you're a manager and your direct report can see you typing instead of looking at them, you're sending a message you don't mean to send. Hands empty, eyes up, capture handled in the background.
+
+**People who actually need the record later.** If you make commitments in meetings and have to honor them, or you have to remember what was decided across dozens of conversations, the searchable archive earns its keep on its own. Decisions that used to evaporate now have a home you can find.
+
+**People who, like me, just have trouble doing two things at once.** I'm not built to listen deeply and transcribe accurately at the same time. Some people are. If you're not, stop forcing it. Offloading the part your brain is bad at is the most reliable productivity move I know.
+
+Who it's *not* for: if you have two meetings a week and you genuinely use the notes you take, you don't have a problem to solve. And if you're in conversations where automatic capture raises real privacy or consent questions, handle that first — tell people, get agreement, and don't capture what you shouldn't.
+
+## The honest version
+
+I didn't get more disciplined about notes. I gave up on a thing I was always going to be bad at, and handed it to something that's good at it. The win wasn't better notes. The win was getting my attention back during the one hour I was actually in the room with someone.
+
+I spent years treating note-taking as a discipline problem — if I just tried harder, focused more, used a better notebook, I'd finally be the person with great meeting notes. I was never going to be that person. The fix wasn't trying harder. It was removing the job.
+
+If you've been white-knuckling your way through meetings with a notebook and a guilty conscience, put the pen down. Be in the meeting. Let the capture happen somewhere else.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/ai-setup-2026.webp"
+  imageAlt="A closed MacBook Pro with an AirPods Pro case on top and an open hiking backpack beside it"
+  eyebrow="Read this next"
+  title="My 2026 AI Engineer Setup"
+  description="Granola replaced my meeting notes, WisprFlow runs everything I type, and Claude Code runs in the terminal. The full setup that got quieter while the output went up."
+  href="/blog/2026-ai-engineer-setup"
+/>
