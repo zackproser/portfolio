@@ -1,0 +1,231 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# Reviewing Vercel's eve agent framework by hiring my website three AI employees
+
+<Image src="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-hero.jpg" alt="Pixel art of three little robot agents running a tiny website storefront together — one writing a blog post, one watching an analytics dashboard, one scheduling social posts" width={1200} height={675} />
+
+I reviewed Vercel's eve agent framework the only way I trust: I gave it a real job with real money attached. Not a demo. I built my website a three-agent business team: a content bot, an ops bot, and a growth bot. I wired them up on eve, deployed them to Vercel, and let them talk to each other over Slack and eve channels.
+
+This is a hands-on review, so the friction is in here too. A silent webhook that never fired. Beta builds that broke the message contract mid tool-loop. A 401 from Vercel's own Deployment Protection bouncing the Slack webhook. Those war stories are the point. A launch post tells you what a framework does when everything works. A review tells you what it costs to get there.
+
+Here's the short version: eve gets the conventions, the human-in-the-loop primitives, and the cron scheduling right, and it's genuinely multi-agent once you understand its channels. The sharp edges are all in the beta version fragility and the Vercel Connect setup. Now the long version.
+
+## The cast: three agents, one website
+
+I didn't want one big do-everything agent. I wanted a small team with clear lanes, the same way I split [two agents across one phone](/blog/two-agents-one-phone) so each one owns its own concern. Three substrates of my business are worth compounding while I'm heads-down on client work, so each got an employee.
+
+**Blog bot (content).** This is the one writing this post. You hand it an idea in Slack and it produces a grounded, on-voice draft with images and a PR. It's the front of the funnel: the thing that makes the back catalog grow.
+
+**Website-manager bot (ops).** The unglamorous one that protects revenue. It reads Plausible analytics and Vercel deploy status. On a traffic surge it auto-checks that my affiliate and commission links still resolve, because a dead link during a spike is money on fire. It audits SEO and opens auto-repair PRs for meta tags, titles, and alt text, and it never merges them. It drafts Resend email campaigns, where the send is always human-approved. It triages stale GitHub PRs. It runs on crons: a daily digest, a surge scan, a weekly SEO pass, a weekly review. It's the [mechanic agent pattern](/blog/my-ai-agent-has-a-mechanic-agent) pointed at a website instead of another agent.
+
+**Social bot (growth).** It reads all my posts into a corpus and builds a voice profile, keeps a Typefully queue full of on-voice drafts, and runs a weekly optimization loop off Plausible to push more of whatever converts. Publishing is human-approved.
+
+<Image src="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-architecture.jpg" alt="Pixel art architecture diagram: three agent boxes (Blog bot, Website-manager bot, Social bot) connected to a central hub with two lanes — eveChannel for machine handoffs and Slack for human oversight — surrounded by Plausible, Resend, Typefully, GitHub, and Vercel" width={1200} height={675} />
+
+## Why money, not a demo
+
+I review tools against the work I need done. Three things are worth having compound on their own while I'm busy:
+
+- **High-ticket workshops.** The first one netted about $20k take-home, with more leads in the pipe. This is the big lever, and it's why I [put a rate card on my site](/blog/why-my-site-has-a-rate-card-now).
+- **Affiliate income.** Roughly $1k/month, passive, and growing.
+- **The back catalog.** My best ~25 posts are the fuel, the asset everything else burns.
+
+The goal was an engine that's autonomous but human-steered at the irreversible edges: safe to leave alone for one to two weeks and come back to better numbers. That framing is the whole test. A framework that can't safely run unattended for a week isn't running a business team, it's running a chatbot with extra steps.
+
+## eve in practice: convention over config
+
+The thing I liked immediately is how little ceremony eve asks for. The framework discovers your agent from conventions instead of a config file you have to keep in sync.
+
+An agent is a single `agent.ts` that's mostly `defineAgent`:
+
+```ts
+// agent.ts
+import { defineAgent } from 'eve'
+import { anthropic } from '@ai-sdk/anthropic'
+
+export default defineAgent({
+  name: 'website-manager',
+  model: anthropic('claude-sonnet-4-5'),
+  instructions: 'You run the ops for zackproser.com. Protect revenue, never merge.',
+})
+```
+
+Tools are `defineTool` plus a zod schema, dropped into `agent/tools/`, and the framework picks them up:
+
+```ts
+// agent/tools/check-affiliate-links.ts
+import { defineTool } from 'eve'
+import { z } from 'zod'
+
+export default defineTool({
+  description: 'Verify every affiliate/commission link still resolves (HTTP 200).',
+  inputSchema: z.object({
+    urls: z.array(z.string().url()),
+  }),
+  async execute({ urls }) {
+    const results = await Promise.all(
+      urls.map(async (url) => {
+        const res = await fetch(url, { method: 'HEAD', redirect: 'follow' })
+        return { url, ok: res.ok, status: res.status }
+      }),
+    )
+    return { broken: results.filter((r) => !r.ok), checked: results.length }
+  },
+})
+```
+
+Skills are `SKILL.md` folders. Channels live in `agent/channels`. Schedules are markdown files with cron frontmatter, which is a nice touch. A recurring job is a `.md` file, not a dashboard click:
+
+```md
+---
+cron: "0 13 * * *"
+---
+
+# Daily digest
+
+Pull yesterday's Plausible numbers and Vercel deploy status.
+Summarize traffic, top posts, and any failed deploys. Post to #engine.
+```
+
+Human-in-the-loop is built in. Any tool can declare `needsApproval`, and eve will pause and wait for a human before it runs:
+
+```ts
+export default defineTool({
+  description: 'Send a Resend email campaign to the newsletter list.',
+  needsApproval: true, // pauses for a human before sending
+  inputSchema: z.object({ campaignId: z.string(), subject: z.string() }),
+  async execute({ campaignId }) {
+    return sendResendCampaign(campaignId)
+  },
+})
+```
+
+The model comes through `@ai-sdk/anthropic`, so if you've used the [Vercel AI SDK](/blog/vercel-ai-sdk) at all, the surface is familiar. Deploy is one command to Vercel. Low boilerplate, real cron and HITL primitives. For the convention layer, eve nails it.
+
+## How the agents talk: channels
+
+This is the centerpiece, and it's where eve earns "multi-agent" instead of "three separate agents." There are three lanes, and each carries a different kind of traffic.
+
+<Image src="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-message-flow.jpg" alt="Pixel art message-flow diagram: a Slack event hits a Vercel Connect webhook trigger, routes to /eve/v1/slack into the Blog bot deployment, which POSTs over eveChannel to the Website-manager bot, which queues a Resend campaign — with a warning callout on the trigger-path gotcha" width={1200} height={675} />
+
+**Slack, via Vercel Connect — human oversight.** Connect gives you a managed Slack app per connector, with webhook "triggers" that forward verified Slack events to your deployment. This is how I `@`-mention an agent and how I see what the agents are doing to each other. It's the same instinct that made [Devin's Slack-native workflow](/blog/devin-has-come-a-long-way) feel usable: meet the agents where the humans already are.
+
+**eveChannel (HTTP) — machine handoffs.** This is the real backbone. One agent POSTs another agent's authenticated endpoint and the target dispatches the message into its own loop. That's it. That primitive is what turns three bots into a team:
+
+```ts
+import { eveChannel } from 'eve'
+
+// Blog bot, after a post is merged:
+await eveChannel.send({
+  to: 'website-manager',
+  type: 'post.published',
+  payload: { slug: 'reviewing-vercel-eve-agent-framework', tags: ['AI', 'Vercel'] },
+})
+```
+
+Blog bot publishes → website-manager queues a Resend campaign → social bot schedules the promo. Each handoff is one authenticated POST. No shared database, no queue to operate.
+
+**Plausible — shared signal.** The data layer everyone reads from. "What converts" flows from ops to social through Plausible, so the growth bot optimizes against the same numbers the ops bot is watching.
+
+The mental model that made it click: eveChannel for machine handoffs, Slack for human oversight, Plausible for shared signal. Three lanes, three audiences. Once I stopped trying to make one channel do all three jobs, the architecture got simple.
+
+## The honest friction
+
+Now the part that makes this a review.
+
+### The trigger-path gotcha (silent no-delivery)
+
+This one cost me the most time because nothing errored. Vercel Connect's triggers register a destination at Connect's default path, but eve serves Slack events at `/eve/v1/slack`. So Connect was happily forwarding verified Slack events to a path my deployment didn't listen on, and the events just vanished. No 404 in a place I was looking, no failed-delivery banner. Just silence.
+
+The fix is to detach the trigger and re-attach it with an explicit path:
+
+```bash
+vercel connect trigger detach <trigger-id>
+vercel connect trigger attach <connector-id> \
+  --trigger-path /eve/v1/slack
+```
+
+If your Slack events never arrive and nothing is throwing, check the trigger path first. Silent no-delivery is the worst failure mode there is, because every instinct tells you to debug your own code.
+
+### Beta dependency drift
+
+A fresh `npm install` floated CANARY `@ai-sdk` builds that broke the message contract. I got an AI type-validation error in the middle of a tool-loop, the kind of thing that looks like your agent logic is wrong when the dependency is the problem. At the same time a too-new `@vercel/connect` shipped a webhook verifier that rejected events with a 401.
+
+Two moving betas at once is a bad time. The fix is boring and correct: pin the versions that work and commit the lockfile.
+
+```json
+{
+  "dependencies": {
+    "@ai-sdk/anthropic": "1.2.7",
+    "@vercel/connect": "0.4.1",
+    "eve": "0.6.2"
+  }
+}
+```
+
+Pin the betas. Commit the lockfile. Treat a green local run as a snapshot you have to freeze, not a baseline you can trust to hold.
+
+### The rest of the gauntlet
+
+- **Vercel Deployment Protection** 401'd the Slack webhook. Protection is on by default and it doesn't care that the caller is Vercel Connect. You have to allow the webhook through.
+- **Hobby-plan crons are capped at daily.** My surge scan wanted to run more often than that; sub-daily schedules need Pro.
+- **Deploy to the right team scope.** Easy to fat-finger: the agent lands in your personal scope and the connector lives in the team, and nothing lines up.
+- **Multiple managed Slack apps with identical names and no visible App ID.** Connect spins up an app per connector, so after a few attempts I had a list of identically-named Slack apps and no obvious way to tell which one was live. Real disambiguation headache.
+
+The meta-lesson that cracked all of this: read the framework's own docs first, then diff a working instance against a broken one. Comparing a healthy connector to a broken one (same screen, two tabs, spot the difference) is what surfaced the trigger-path mismatch. When the failure is silent, a diff beats a debugger.
+
+## The grand plan: the revenue engine
+
+The agents aren't the point. The flywheel they turn is.
+
+<Image src="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-flywheel.jpg" alt="Pixel art revenue flywheel diagram: Content → Traffic → Audience → Conversions → Revenue and attribution, looping back to Content, with a glowing engine gear in the center" width={1200} height={675} />
+
+Content feeds traffic feeds audience feeds conversions feeds revenue, and attribution tells me where to spend effort next. Social bot drips and repurposes the best 25 posts from many angles. Ops bot keeps SEO and affiliate links healthy so the traffic converts. The newsletter captures the audience. Conversions split two ways: affiliate is passive, workshops are the big lever.
+
+The P0 is a workshop lead engine: capture, nurture, a hot-lead Slack alert, and then I close. The math is the reason. One $20k workshop is roughly 20 months of affiliate income. So the engine should bias hard toward filling the top of the workshop funnel, and the irreversible, high-value move (closing the deal) stays human.
+
+A weekly "Engine Review" digest is the steering wheel. The autonomy boundary is the same everywhere: agents act freely up to anything reversible; a human approves the irreversible and public (sending a campaign, merging a PR, publishing a post) and closes the deals.
+
+## The build method: agents building agents
+
+I built this multi-agent system using a multi-agent workflow, which felt right in a way I want to flag.
+
+<Image src="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-dual-build.jpg" alt="Pixel art of two AI coding agents pair-building at a shared workbench: one labeled Claude orchestrating and writing, one labeled Codex reviewing with a magnifying glass and flagging an abort-signal bug, with a shared task board syncing them" width={1200} height={675} />
+
+Claude orchestrated and wrote most of it. A second model, Codex, ran as an adversarial reviewer and a parallel builder. It built one of the bots outright and caught real bugs the primary missed. The one that sticks with me: an abort-signal that could orphan a publish, leaving a half-finished operation with no one cleaning up after it. A shared task tracker kept the two in sync so they weren't stepping on each other.
+
+The reviewer-and-builder split did for me what the [mechanic agent does for Hermes](/blog/my-ai-agent-has-a-mechanic-agent): a second perspective catches the class of bug the author is blind to, because the author is reasoning from the same wrong assumption that produced the bug. Dual-agent building isn't twice the speed. It's a different error profile, and that's worth more.
+
+## Verdict: who eve is for
+
+eve is for someone who wants real agents deployed on Vercel with low boilerplate and HITL that isn't bolted on after the fact. If you live in the Vercel and AI SDK world already, the conventions will feel like home and you'll have a deployed agent fast.
+
+What it nails:
+
+- **Conventions over config.** `defineAgent`, `defineTool` plus zod, `SKILL.md` folders, cron-as-markdown. Almost no scaffolding.
+- **Human-in-the-loop.** `needsApproval` is a first-class primitive, not a pattern you reinvent.
+- **Cron.** Scheduled work is a file in your repo.
+- **Vercel-native.** One command to deploy.
+- **Genuine multi-agent.** eveChannel is a small primitive that does a lot: authenticated agent-to-agent handoffs without a queue or a shared DB.
+
+The sharp edges to budget for:
+
+- **Beta version fragility.** Pin everything, commit the lockfile, and don't trust a fresh install to reproduce a working one.
+- **Vercel Connect setup.** The trigger-path mismatch, Deployment Protection, and duplicate Slack apps are each an afternoon if you don't know they're coming.
+- **Observability gaps.** Silent no-delivery is the recurring villain. Budget time for diffing working vs. broken, because the framework won't always tell you what failed.
+
+Would I run my business team on it? It's running now. I'll check the numbers in two weeks, which is the only review that ever mattered.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/two-agents-one-phone-hero.webp"
+  imageAlt="Pixel art of two AI agents controlled from one phone, split-brain architecture"
+  eyebrow="Read this next"
+  title="One Phone, Two Agents"
+  description="Why I keep my agents in separate lanes — the split-brain architecture and why separation of concerns matters for AI agents too."
+  href="/blog/two-agents-one-phone"
+/>
