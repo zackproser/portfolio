@@ -1,0 +1,253 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import Mermaid from '@/components/Mermaid'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# I Make Codex Review Every Diff Claude Writes
+
+<Image src="https://zackproser.b-cdn.net/images/codex-reviews-claudes-diffs-hero.jpg" alt="Pixel art of two robots at facing desks at night: an amber robot (Claude) slides a glowing diff across a divider to a cyan robot (Codex) holding a red pen, the cyan one circling a line the amber one missed" width={1200} height={675} />
+
+Claude Code writes the diff. Before that diff reaches me, a second model from a different lab reads it with one job: find what's wrong. Claude writes the code, Codex tries to break it, then I read the findings. I don't let the model that wrote the patch be the only thing that approves it.
+
+I run this on every substantial change. A one-line typo fix slides through. Anything that touches logic, auth, money, or a migration gets handed to a Codex reviewer with an adversarial brief before it lands in front of me. The reviewer reads the unified diff, the changed files (in full when they fit a size budget), and the task that produced them, then returns a structured verdict: block, comment, or approve, with line-anchored findings.
+
+I [already do this for my prose](/blog/how-my-blog-bot-reviews-its-own-writing). My blog bot sends every draft to two cold readers from different model families before I see it, and where they disagree is the spot worth looking at. This is the same idea pointed at code. Same rule: **the model that wrote the code is the worst possible judge of it.**
+
+## Why self-review is structurally weak
+
+Ask Claude to review the code Claude just wrote and you get a confident yes. Not because the model is dishonest, but because review and authorship share the same context. The reasoning that produced the bug is still in the window, still feels correct, and the "review" just re-runs it. You're asking the author to re-read their own sentence. They read what they meant, not what they typed.
+
+In practice, self-review misses three classes of bug I care about, and a cross-model reviewer kills all three.
+
+<Image src="https://zackproser.b-cdn.net/images/codex-reviews-claudes-diffs-blindspot.jpg" alt="Pixel art of a robot proofreading its own reflection in a mirror, both robot and reflection wearing a blindfold band over the same eye, neither able to see a glaring red bug icon on the page" width={1024} height={768} />
+
+**Shared blind spots.** A model has characteristic mistakes: the off-by-one it tends to make, the error case it tends to skip, the framework footgun it doesn't know about. When the same model reviews, it shares those exact blind spots. It can't see the bug for the same reason it wrote it.
+
+**Context contamination.** The reviewer that saw the drafting prompt inherits the author's assumptions. If the task said "this input is always validated upstream," the author trusts that and so does the same-model reviewer. A fresh reviewer that only sees the diff asks the obvious question: where's the validation?
+
+**Sycophancy toward its own output.** Models rate their own work higher. Give Claude its own patch and ask "any issues?" and the prior is approval. Give a different model the same patch cold, briefed to find problems, and the prior flips.
+
+Claude and Codex make different mistakes. That's the point. Where Codex and Claude agree, that's signal. Where they diverge, that's the line I read myself. I'm not trusting either model to be right. I'm using their disagreement as a flashlight.
+
+<Image src="https://zackproser.b-cdn.net/images/codex-reviews-claudes-diffs-two-families.jpg" alt="Pixel art of two robot heads from different AI labs side by side, an amber writer and a cyan reviewer with different circuitry, sharing one diff document; the amber one misses a red bug that the cyan one circles, showing two model families failing differently" width={1200} height={675} />
+
+## The hook flow
+
+The whole thing hangs off a Claude Code hook. When Claude finishes a turn that produced edits, a `Stop` hook fires, computes the diff against the branch point, and routes it.
+
+<Mermaid chart={`
+flowchart TD
+  A["Claude finishes edits"] --> B["Stop hook fires"]
+  B --> C["git diff: working tree vs base"]
+  C --> D{"substantial diff?"}
+  D -->|no| E["pass through"]
+  D -->|yes| F["codex exec: adversarial review"]
+  F --> G{"verdict"}
+  G -->|approve| H["surface to me, clean"]
+  G -->|comment| I["inline findings, I decide"]
+  G -->|block| J["halt: Claude must address"]
+`} />
+
+The gate in the middle keeps this usable. Small, cold diffs pass straight through on three cheap signals (lines changed, paths touched, a high-risk glob for auth, billing, migrations, and `infra/`). Hot paths always go to review. A README tweak doesn't wake Codex up. A change to the session-token check always does.
+
+Here's the hook, trimmed to the parts that matter:
+
+```bash
+#!/usr/bin/env bash
+# .claude/hooks/codex-review.sh — fires on Claude Code's Stop event.
+# Claude edits the working tree without committing, so diff the WORKING TREE
+# against the branch base, not HEAD. -N makes new untracked files visible.
+set -euo pipefail
+
+BASE_REF="${REVIEW_BASE:-origin/main}"
+BASE="$(git merge-base HEAD "$BASE_REF")"
+git ls-files --others --exclude-standard -z | xargs -0 -r git add -N -- 2>/dev/null || true
+
+DIFF="$(git diff "$BASE" --)"          # working tree vs branch base
+[ -z "$DIFF" ] && exit 0
+
+# --- the gate: only review substantial diffs ---
+changed_loc=$(git diff --numstat "$BASE" -- | awk '{a+=$1+$2} END{print a+0}')
+hot_paths=$(git diff --name-only "$BASE" -- \
+  | grep -cE '(auth|billing|payment|migrations?/|infra/|\.sql$)' || true)
+
+if [ "$changed_loc" -lt 25 ] && [ "$hot_paths" -eq 0 ]; then
+  exit 0   # trivial + cold: pass through, no review
+fi
+
+# --- give the reviewer the changed files in full, with size guards ---
+FILES_CONTEXT=""
+skipped_context=0
+while IFS= read -r -d '' file; do
+  [ -f "$file" ] || continue                                  # skip deletes
+  git diff --numstat "$BASE" -- "$file" \
+    | awk '$1=="-"||$2=="-"{exit 1}' || { skipped_context=1; continue; }   # binary
+  if [ "$(wc -l < "$file")" -gt 600 ]; then skipped_context=1; continue; fi  # too big
+  FILES_CONTEXT+=$'\n### '"$file"$'\n```\n'"$(cat "$file")"$'\n```\n'
+done < <(git diff --name-only -z "$BASE" --)
+
+# --- hand it to a different model, cold (60s ceiling so a Stop hook can't hang) ---
+PROMPT="$(cat .claude/prompts/adversarial-review.md)
+
+## Task that produced this diff
+$(cat .claude/last-task.txt 2>/dev/null || echo "(not recorded)")
+
+## Changed files (full)
+$FILES_CONTEXT
+
+## Unified diff
+\`\`\`diff
+$DIFF
+\`\`\`"
+
+RAW=$(printf '%s' "$PROMPT" | timeout 60s codex exec --json -) \
+  || { echo "codex review failed or timed out — blocking" >&2; exit 2; }
+
+# Codex streams JSON events; grab the final assistant message, which is itself
+# a JSON *string*, then parse that string into the review object.
+REVIEW=$(printf '%s' "$RAW" | jq -r 'select(.type=="message") | .content' | tail -n1)
+
+# fail closed: a malformed review is a block, never a free pass
+if ! printf '%s' "$REVIEW" | jq -e '.verdict and (.findings | type == "array")' >/dev/null 2>&1; then
+  echo "codex review returned no valid JSON — blocking" >&2
+  exit 2
+fi
+
+verdict=$(printf '%s' "$REVIEW" | jq -r '.verdict')   # approve | comment | block
+printf '%s' "$REVIEW" | jq -r '.findings[] | "\(.severity) \(.file):\(.line) \(.message)"'
+
+# if we couldn't show the reviewer everything, never let it auto-approve
+[ "$skipped_context" = "1" ] && [ "$verdict" = "approve" ] && verdict="comment"
+
+# block exits 2 → Claude Code's Stop hook treats it as a failure Claude must address
+[ "$verdict" = "block" ] && exit 2
+exit 0
+```
+
+Two choices matter more than the rest.
+
+The reviewer gets the diff, the changed files, and the task, and nothing else. No drafting transcript, no chain of thought, no "here's why I think this is right." A cold reader with an adversarial brief catches what a warm one waves through. The brief itself is blunt. The whole of `.claude/prompts/adversarial-review.md` is short enough to paste here, and it's the most reusable part of the setup:
+
+```markdown
+You are a hostile senior reviewer. Assume the author is wrong.
+Your job is to find the bug, the security hole, or the irreversible
+action in this diff — not to praise it.
+
+Rules:
+- Cite the exact file and line for every finding.
+- Every `block` must name a concrete failure mode: how it breaks,
+  who it hurts, when. "This could be cleaner" is a comment, not a block.
+- Score against this checklist, in order: correctness, security,
+  reversibility, tests, scope.
+- Return ONLY this JSON: { "verdict": "approve|comment|block",
+  "findings": [{ "severity", "file", "line", "message" }] }
+```
+
+(Codex CLI streams JSON events, so the hook pulls the final `message` payload off the stream with `jq`, then parses the review object out of it.)
+
+The reviewer returns **structured output**, not prose, against a fixed schema:
+
+```json
+{
+  "verdict": "block",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/app/api/route.ts",
+      "line": 42,
+      "message": "the auth check moved below the handler; the body runs before the user is verified."
+    }
+  ]
+}
+```
+
+Structure is what makes the hook automatable. `block` exits 2, which Claude Code surfaces as a failed Stop hook, which means Claude has to read the findings and respond instead of barreling on. The model can't talk its way past a schema.
+
+## The rubric the reviewer scores against
+
+The reviewer doesn't get to invent what "good" means in the moment. It scores the diff against the same fixed checklist every time, in priority order:
+
+- **Correctness.** Does the change do what the task asked, and does it break anything adjacent? Off-by-ones, inverted conditionals, dropped error cases.
+- **Security.** Unvalidated input, authz checks that moved or vanished, secrets in code, SQL built by string concatenation, a scope widened without reason.
+- **Reversibility.** Can this be rolled back? Destructive migrations, data deletes without a backup, schema changes that aren't backward-compatible. (This maps straight onto [the line I draw for what agents may do unattended](/blog/the-autonomy-boundary).)
+- **Tests.** Does new logic come with a test that would fail without the change? A diff that adds a branch and no test to cover it gets flagged.
+- **Scope.** Did the author change more than the task asked? Drive-by edits, unrelated refactors, formatting churn that buries the real change.
+
+Correctness and security block. Scope and style comment. The severity in each finding is what the hook's exit code keys off, so the rubric isn't decoration. It's wired to whether Claude gets to move on.
+
+## What it actually catches
+
+The pattern earns its keep on a specific shape of bug: the diff that does exactly what the task asked, passes every test the author wrote, and is still wrong. Self-review waves those through, because the author already believes the code is correct. A cold reviewer doesn't share the belief.
+
+<Image src="https://zackproser.b-cdn.net/images/codex-reviews-claudes-diffs-rubric.jpg" alt="Pixel art of a cyan reviewer robot holding a five-row checklist (correctness, security, reversibility, tests, scope) and stamping a red BLOCK onto a diff on the desk" width={1024} height={768} />
+
+The recurring categories, in roughly the order they show up:
+
+- **The missing edge.** The change handles the happy path and the obvious error, and silently skips the third case the task never mentioned. The author's tests cover the cases the author thought of, so they stay green. A reviewer reading the diff cold asks the question the author never had: what about the input that isn't either of those?
+- **The assumption that no longer holds.** A guard, a null check, or an auth step that some earlier code "always" did, that this diff quietly moved or removed. The author still pictures the old invariant. The cold reviewer only sees what the diff leaves in place.
+- **The irreversible step with no undo.** A migration that drops before it backfills, a delete with no soft-delete, a schema change that isn't backward compatible. Correct-looking, and a one-way door if it's wrong.
+- **The test that proves nothing.** New logic, a new branch, and a test that would still pass if you deleted the branch. The reviewer flags coverage that doesn't exercise the change.
+- **The quiet scope creep.** A drive-by refactor or a formatting sweep riding along in a diff that was supposed to do one thing, burying the line that matters.
+
+None of these need a smarter model to catch. They need a reader who doesn't already know what the code was supposed to do. That's the entire trick: the author reads the diff through the intent that produced it and sees the code it meant to write; the cold reviewer reads the lines that are actually on the page.
+
+Codex is not reliably smarter than Claude, in either direction. I use it because it comes in cold. A reviewer with no memory of what the code was *supposed* to do reads what the code does.
+
+## When they disagree
+
+The interesting cases aren't the clean blocks. They're the splits. Claude writes the code and is sure it's right; Codex flags something; I'm the tiebreaker.
+
+<Mermaid chart={`
+sequenceDiagram
+  participant Me
+  participant Claude
+  participant Codex
+  Claude->>Codex: diff + changed files + task (cold)
+  Codex-->>Me: block + line-anchored finding
+  Me->>Claude: is Codex right?
+  Claude-->>Me: defends the original code
+  Note over Me: I read the actual line
+  Me->>Claude: ruling, with the reason
+`} />
+
+I treat a disagreement as a prompt to go read the code myself, not as a vote to average. Sometimes Codex is wrong. It flags a "missing" null check on a value that's typed non-null three frames up, and I dismiss it. Sometimes it's right and Claude's defense is exactly the kind of confident-but-wrong reasoning that produced the bug. Either way, the disagreement bought me a thirty-second read of the one line that mattered instead of a full review of a diff I would have rubber-stamped. The reviewer's job isn't to be right. It's to point my attention at the line worth my judgment.
+
+## What it costs, and what it doesn't catch
+
+The tax is latency and false positives.
+
+It adds latency. A substantial diff waits ten to thirty seconds for the Codex pass before I see it. The gate is what makes that acceptable. Trivial changes skip it entirely, so the tax only lands on changes where I'd want a careful read anyway. I'll trade thirty seconds of a machine's time against an hour of mine debugging that bug in production every time.
+
+It produces false positives. Codex flags things that are fine, and a reviewer that cries wolf gets ignored, so I tuned the brief to demand a concrete failure mode for every `block`. A finding has to say *how* it breaks, not just that it smells off. "This could be cleaner" is a comment, never a block.
+
+And it does not check whether the change is the *right* change to make. The reviewer grades the diff in front of it: is this code correct, safe, reversible, tested, in scope? It has no opinion on whether I should have built this feature at all, or whether the architecture is sound. That judgment stays mine. The cross-model loop protects the code. It can't protect the decision.
+
+This is the boundary I use for every agent I run. The machine takes the middle of the work, the drafting and the review and the catch, and the ends stay with me. I [wrote about that division](/blog/build-agents-that-open-prs) as building agents that hand you a reviewable artifact instead of a chat reply. A diff that's already been attacked by a hostile reviewer from a different lab is a much better artifact than one fresh out of the model that wrote it.
+
+## Steal the setup
+
+If you want to run this, the parts that matter are short:
+
+- **Put the reviewer in a `Stop` hook.** It fires automatically when Claude finishes editing, so review isn't a thing you remember to do. It's a thing that happens.
+- **Gate on substance.** Score the diff on LOC, hot paths, and risk globs. Skip the trivial; always review auth, money, and migrations.
+- **Use a different lab's model.** Claude writes, a GPT-class model reviews. Shared blind spots are the problem. A second model family is the fix.
+- **Starve the reviewer of context.** Give it the diff, the files, the task. Not the drafting transcript. A cold read with an adversarial brief beats a warm one.
+- **Demand structured output and wire it to an exit code.** Verdict enum, line-anchored findings, severities. `block` fails the hook so Claude has to respond.
+- **Make `block` require a failure mode.** Every block names how it breaks. Everything softer is a comment. That's how you keep the reviewer worth listening to.
+- **Treat disagreement as a flashlight.** When the two models split, go read that line yourself. Don't average the verdicts.
+
+The bug this catches is the one that does what the task asked, passes its tests, and is still wrong. You don't need a smarter model to catch it. You need a second one with no loyalty to the patch.
+
+If you copy one thing, copy the brief and the failure-mode rule. I covered this pattern (cold reviewers, fixed rubrics, fail-closed gates) in the [Claude Code skills workshop](/blog/aie-london-skills-at-scale) Nick Nisi and I ran at AI Engineering London: constraints over instructions, evidence over guesses, measurement over vibes.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/blog-bot-self-review-hero.jpg"
+  imageAlt="Pixel art of a writer-robot holding up its own manuscript to two floating critic masks scanning it like a grading machine"
+  eyebrow="Read this next"
+  title="How My Blog Bot Reviews Its Own Writing Before I Read It"
+  description="The same cross-model idea pointed at prose: two cold readers from different labs score every draft before I see it, and the harsher read wins."
+  href="/blog/how-my-blog-bot-reviews-its-own-writing"
+/>

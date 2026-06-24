@@ -1,0 +1,15 @@
+{
+  "title": "I Make Codex Review Every Diff Claude Writes",
+  "author": "Zachary Proser",
+  "date": "2026-06-24",
+  "description": "Claude Code writes the diff. Before I see it, a Codex (GPT) reviewer reads the same diff with an adversarial brief and tries to break it. Cross-model review catches what self-review misses: the hook flow, the rubric, and the bugs it actually finds.",
+  "image": "https://zackproser.b-cdn.net/images/codex-reviews-claudes-diffs-hero.jpg",
+  "tags": [
+    "AI",
+    "Agents",
+    "Developer Tools",
+    "AI Engineering",
+    "Code Review",
+    "Claude Code"
+  ]
+}
