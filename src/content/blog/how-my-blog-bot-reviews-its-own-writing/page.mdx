@@ -1,0 +1,174 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# How My Blog Bot Reviews Its Own Writing Before I Read It
+
+<Image src="https://zackproser.b-cdn.net/images/blog-bot-self-review-hero.jpg" alt="Pixel art of a writer-robot at a desk at night holding up its own manuscript page to two stern floating critic masks, one indigo and one cyan, scanning the page like a grading machine" width={1200} height={675} />
+
+My blog bot grades its own homework. I don't let the model that wrote the draft be the only judge.
+
+Before a single draft reaches me in Slack, the bot runs a review loop on itself. It writes the draft, sends the MDX to two cold readers in separate calls, collects their scores against a fixed rubric, applies their fixes, and loops until both readers say ship. If it runs out of passes first, it has to come clean about what's still weak. By the time I open the thread, the post has already survived two skeptical reads I never had to do.
+
+I [wrote before](/blog/spark-bellows-quench) that my writing breaks into three parts: the spark (the idea, mine), the bellows (drafting and shaping, which a machine can do), and the quench (hitting publish, always mine). The review loop lives inside the bellows. It's the part where you read your own draft, wince, and fix the three things that are off before anyone else sees them. That used to be the slowest, most valuable thing I did by hand. The loop does a real version of it automatically.
+
+## How I keep self-review from being a rubber stamp
+
+The obvious objection writes itself. A model that drafts a post and then reviews the same post is agreeing with itself in a more expensive way. Ask the writer to also be the judge and you get a rubber stamp. I had the same worry, so the loop is built to break that agreement on purpose.
+
+Three things do the work.
+
+The reviewer is a **separate call with a separate job**. It doesn't see the drafting prompt or the reasoning that produced the post. It gets the finished MDX and one instruction: be a skeptical editor, score this, find what's wrong. A fresh context with an adversarial brief catches different mistakes than the model that spent its whole effort defending the draft into existence.
+
+The second reviewer is a **different model family**. One read comes from Claude. The other comes from a GPT-class model routed through a separate AI gateway. Two models from different labs tend to fail differently in practice, so where they agree is signal and where they diverge is the spot worth looking at. On a later pass of this post, Claude scored it a ship and the GPT reviewer still said revise. It wanted implementation detail Claude had waved through. The harsher read won, the detail went in, and the post got better for it. A single reviewer has blind spots that rhyme with the writer's. Two from different families cover more of them.
+
+The rubric is **fixed and external**. The reviewers don't get to decide what "good" means in the moment. They score the same five dimensions every time against the same bar, so a draft can't talk its way to a passing grade by being confident.
+
+<Image src="https://zackproser.b-cdn.net/images/blog-bot-self-review-two-readers.jpg" alt="Pixel art of two robot critics in different palettes, one indigo and one cyan-teal, each writing independent notes on its own clipboard about the same manuscript page, not looking at each other's work" width={1200} height={675} />
+
+## The rubric
+
+Each reviewer scores five dimensions from 1 to 5:
+
+- **Voice** — does it sound like me, or like a model? This is where the banned-phrase tells live: the contrastive "this isn't X, it's Y," the throat-clearing transitions, the buzzwords. Voice has the strictest bar of the five.
+- **Storytelling** — does it lead with the point and earn its structure, or warm up for three paragraphs and bury the thesis?
+- **Quality** — is the technical substance correct, specific, and deep enough to be worth a reader's time?
+- **Rules** — does it honor the authoring contract: real links that resolve, images that carry signal, the length budget, no fabricated experience?
+- **North stars** — the questions I judge everything by. Is it true? Useful? Beautiful? Does it help anyone? And does it point the reader somewhere real without forcing a sales pitch?
+
+Each reviewer returns the five scores, a prioritized list of concrete fixes, and a one-word verdict. The structured shape is what makes the loop automatable — the bot can read it and act on it without me in the chair:
+
+```json
+{
+  "overall": { "verdict": "revise", "score": 88 },
+  "dimensions": [
+    { "name": "voice", "score": 3, "assessment": "..." },
+    { "name": "storytelling", "score": 4, "assessment": "..." },
+    { "name": "quality", "score": 4, "assessment": "..." },
+    { "name": "rules", "score": 4, "assessment": "..." },
+    { "name": "northStars", "score": 4, "assessment": "..." }
+  ],
+  "topFixes": [
+    { "location": "...", "problem": "...", "fix": "...", "severity": "major" }
+  ]
+}
+```
+
+The `overall.score` is a 0–100 summary I use for the PR comment; the gate only trusts the five dimension scores and the verdict. The bot parses this into a schema and fails closed: missing dimensions, duplicate names, an unknown verdict, or a non-integer score all count as `revise`. A reviewer that returns garbage doesn't get a draft shipped on a technicality.
+
+<Image src="https://zackproser.b-cdn.net/images/blog-bot-self-review-rubric.jpg" alt="Pixel art of a floating rubric scorecard with five gauge rows for voice, storytelling, quality, rules, and north stars, the voice row requiring a perfect 5, and a stamp at the bottom flipping from red REVISE to green SHIP" width={1024} height={768} />
+
+The ship bar is deliberately mean: **every dimension at 4 or higher, and voice at a full 5, from both reviewers.** A post can be technically excellent and still fail the gate on a single em-dash-heavy paragraph that reads like a machine. That's the right tradeoff for me. I'd rather the bot over-polish the voice than ship something that makes a reader flinch at the prose.
+
+## The loop
+
+This is the actual sequence the bot runs against itself.
+
+<Image src="https://zackproser.b-cdn.net/images/blog-bot-self-review-sequence.jpg" alt="Pixel art sequence diagram: a quill (draft) passes a document to an indigo mask (Claude) and a cyan mask (GPT), each returns a numbered scorecard, a revise arrow loops back to the quill, and a final arrow reaches a forge anvil (ship) only when both masks glow green" width={1200} height={675} />
+
+Read it top to bottom as a timeline:
+
+```text
+Draft -> Claude:  score against rubric
+Draft -> GPT:     score against rubric          (independent, parallel)
+Claude --> Draft: 5 scores + fixes + verdict
+GPT --> Draft:    5 scores + fixes + verdict
+
+if both verdicts == ship  -> Ship  (open the PR)
+else:
+    apply fixes from BOTH reviewers in the sandbox
+    loop back to the top      (pass 2, then pass 3)
+
+after 3 passes -> ship if green, else open the PR
+                 with an honest editMap of what's still weak
+```
+
+The gate that decides ship-or-loop is one boolean, and it's strict. It validates the shape of the review first, so a malformed payload fails closed instead of slipping through:
+
+```js
+const DIMS = ['voice', 'storytelling', 'quality', 'rules', 'northStars']
+
+const passes = (r) => {
+  // fail closed: a review that isn't well-formed counts as "revise"
+  if (r?.overall?.verdict !== 'ship') return false
+  const names = r.dimensions?.map((d) => d.name) ?? []
+  const hasExactDims =
+    names.length === DIMS.length && DIMS.every((n) => names.includes(n))
+  if (!hasExactDims || new Set(names).size !== names.length) return false
+
+  return r.dimensions.every((d) => Number.isInteger(d.score) && d.score >= 4) &&
+    r.dimensions.find((d) => d.name === 'voice').score === 5
+}
+
+const ship = passes(claude) && passes(gpt)
+```
+
+Here "ship" means one specific thing: the bot opens a pull request against my portfolio repo and pings me in Slack. It never publishes. Merging the PR is the quench, and that stays a human keystroke.
+
+A few decisions in there matter more than the rest.
+
+**Both reviewers have to say ship.** One green light isn't enough. If Claude says ship and the GPT reviewer says revise, the draft revises. The harsher read wins, every time. That's the cheapest insurance against a reviewer having a generous day.
+
+**The fixes get applied, not acknowledged.** Between passes the bot edits the files in the sandbox: rewrites the weak paragraph, cuts the tell, deepens the thin section. It hands both critiques to the drafting step at once, dedupes overlapping notes, and fixes the harsher version where the two disagree. Then it re-runs the voice scanner (a list of banned-phrase regexes like `/\bisn'?t just\b/i` and `/\bdelve\b/i`, an em-dash density threshold, a few house-style checks, the same gate my CI runs) and confirms every internal link still resolves before scoring again. Any fix that would need a new personal anecdote or a number I can't back up gets written into the `editMap` for me instead of patched into the prose. A review that only nods at the feedback changes nothing; the next read has to score a different draft.
+
+**Pass one goes after structure, not commas.** Storytelling and depth problems are the expensive ones, and polishing voice on top of a broken structure is wasted motion. So the loop fixes the lowest-scoring dimension first and saves the line-level voice scrub for when the bones are right.
+
+**It stops.** Either both reviewers say ship, or it hits three passes. Diminishing returns set in fast, and a loop with no exit is how you burn an afternoon turning a 4 into a different 4. If it's still not green after three passes, it doesn't pretend. It opens the PR anyway with an `editMap` — the two-to-four weakest spots, each tagged factual, personal, structural, or voice — so I know exactly where to point my own read.
+
+## A real pass from this post
+
+Here's the part I like best: this post went through the loop, and the loop caught me.
+
+The first draft of the closing section had this line:
+
+> A bot that drafts is a toy. A bot that drafts, critiques itself honestly, and revises before it asks for your time is something you let near your byline.
+
+Both reviewers flagged it independently. The Claude reviewer called it "the contrastive X-then-Y antithesis the post itself bans, just split across two sentences — the most conspicuous AI tell in a piece about catching them." The GPT reviewer caught the same packaged cadence a few lines up and tagged the rubric for naming its fifth dimension "Craft" when the live schema calls it `northStars`. Voice came back a 3 from both. Verdict: revise.
+
+So the bot rewrote it:
+
+> A bot that only drafts isn't worth much. One that drafts, critiques itself honestly, and revises before it asks for your time earns a place near your byline.
+
+Then it renamed the rubric dimension to match the real schema, merged a couple of paired-fragment "flourish" sentences into plain ones, and cut an invented adoption percentage I couldn't back up. Voice came back a 5. That's the whole mechanism, and you're reading the output of it. I didn't have to find that toy-and-byline tell. I only had to agree with the cut.
+
+## Why a cold read beats a careful one
+
+Cold reads do the useful work here. The reviewers aren't smarter than the model that wrote the draft; they have no memory of what it was supposed to say.
+
+When I review my own draft, I read what I meant to write. I've been staring at it for an hour, and my eyes slide over the clunky transition because I know what it's trying to say. A reviewer with a fresh context and an adversarial brief has none of that sympathy. It sees the sentence that's on the page. Watching two readers from different labs independently circle the same paragraph, the way they did with that toy-and-byline line, is what made me stop trusting my own "that reads fine to me" instinct on a first draft.
+
+The loop also handles the thing I'm worst at: killing my darlings on schedule. A sentence I'm proud of that doesn't earn its place is the hardest thing to cut, because I wrote it. The reviewer doesn't care that I'm proud of it. It scores the draft, not my attachment to it. That detachment is the value, and it's the same reason a good editor is someone other than the writer.
+
+This is the lesson I keep relearning across all the AI tooling I build: the interface and the model get the attention, but [completing the loop is what makes a system compound](/blog/workos-applied-ai-showcase). The same instinct that put the bot [inside Slack instead of behind a login](/blog/the-interface-matters-most) is the one that makes it review itself before it interrupts me.
+
+## Steal the gate
+
+If you want to build the same thing, the parts that matter are short:
+
+- **Separate the reviewer from the writer.** A fresh call with no drafting context, briefed to find what's wrong.
+- **Use a second model family, and keep the disagreement.** Don't average the scores; let the harsher read win.
+- **Fix the rubric in advance.** Same dimensions, same bar, every time, so a confident draft can't redefine "good."
+- **Make reviewers return structured output and fail closed.** A malformed review is a `revise`, never a free pass.
+- **Apply the fixes, then re-score.** The next read has to grade a different draft, not the same one with notes attached.
+- **Cap the loop and be honest when it ends.** Three passes, then ship with an `editMap` of what's still weak.
+- **Start with the schema, not the prompt.** Exact dimension names, integer score bounds, one verdict enum, fail-closed parsing. The structure is what makes it automatable.
+
+None of it requires a clever model. It requires not letting the author be the only judge.
+
+## What it doesn't do
+
+The loop checks the prose. It does not check whether I lived the story. It can tell whether a first-person anecdote reads well, and it has no way to know whether it happened. So the spark rule sits outside it: the bot never invents my lived experience, and anything it had to guess at gets flagged for me in the PR no matter how high it scored. A reviewer that gives a fabricated anecdote a 5 for storytelling is doing its job and still handing me a problem. The cold read protects the prose, but it can't protect the truth. That part stays mine, which is where the [quench](/blog/spark-bellows-quench) belongs.
+
+By the time a draft reaches me, I'm usually fixing a few flagged weak spots instead of rebuilding the post. The draft is better because two independent readers already attacked it and the bot applied the fixes. I open Slack to the failing checks, the applied diff, and a short `editMap` of what's still soft. My job from there is small: read the spots it flagged, decide whether each anecdote is true, and either fix the few things left or hit publish. I'm not asking the bot whether the post is true. I'm asking it to hand me a draft that's already been punched in the mouth. The bellows did its job. The quench is still mine.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/spark-bellows-quench-hero.webp"
+  imageAlt="Pixel art triptych of a forge at night: a blacksmith striking sparks, a bellows feeding the fire, and a glowing blade plunged into a quenching trough"
+  eyebrow="Read this next"
+  title="I Am the Spark, the Bellows, and the Quench"
+  description="The craft framing behind the bot: a machine can take the middle of the work, but never the ends. Why 'is this AI?' is the wrong question."
+  href="/blog/spark-bellows-quench"
+/>
