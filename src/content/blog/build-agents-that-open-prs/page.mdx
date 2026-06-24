@@ -1,0 +1,151 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# Stop Building Chatbots. Build Agents That Open PRs.
+
+<Image src="https://zackproser.b-cdn.net/images/build-agents-that-open-prs-hero.jpg" alt="Pixel art: a chat bubble dissolving into pixels on the left, and on the right a solid green pull-request card with a diff and a review button, a robot arm sliding the PR into a review queue" width={1200} height={675} />
+
+A chat reply evaporates. You read it, you nod, you scroll, and ten minutes later it's gone, buried in a thread you'll never open again. A pull request sits in GitHub with your name on it until you deal with it. You can reject it with one click. You can tag the person who actually owns the code. It has a diff. It has a status check. It either passes the gate or it doesn't.
+
+That difference is the whole argument. The unit of useful agent work is a reviewable artifact — a PR, a draft, a diff — not a chat reply. If the output is a chat paragraph, I still have the job. If the output is a PR with passing checks, now I have a decision to make.
+
+I keep watching teams pour months into the first thing and wonder why nobody's life got better.
+
+## The chat reply is a dead end
+
+The common chatbot flow is stupidly familiar. You ask it something. It thinks. It streams back prose. You copy the part you wanted, paste it somewhere it actually matters, fix the three things it got wrong, and move on. The agent did real work and then handed it to you in the one format that guarantees you have to do the work again.
+
+The chat reply has no home. It doesn't live in the system where the work lives. It can't be checked by CI. It can't be diffed against what was there before. It can't be approved by a second person. It expires the instant the conversation scrolls. You are the storage layer, the validation layer, and the merge button, and you're doing all three by hand, from memory, in a text box.
+
+It demos beautifully and then makes you do the integration work by hand. The chat reply feels like magic for the first ten seconds, then quietly offloads every hard part — verification, integration, accountability — back onto you.
+
+<Image src="https://zackproser.b-cdn.net/images/build-agents-that-open-prs-evaporate.jpg" alt="Pixel art: a glowing chat message dissolving into scattered pixels above an open laptop, while a tired person re-types the same work into a separate window" width={1200} height={675} />
+
+## What a reviewable artifact gives you
+
+Swap the output. You can keep the model boring. The important change is giving it a repo checkout, a branch, and a gate — so the thing that comes out the end is a pull request instead of a paragraph. A PR gives me the boring machinery chat never gets near:
+
+- **A place to live.** The work lands in the repo, the doc, the ticket — where the real artifact already lives. No copy-paste, no re-typing. The agent did the integration, not just the thinking.
+- **A diff.** I see exactly what changed. Not a description of what changed, told to me in friendly prose. The actual lines. Red and green.
+- **A gate.** CI runs. Tests run. A linter runs. A validation script runs. The artifact has to clear a bar before a human ever looks, and the agent is the one who has to satisfy it.
+- **A review surface.** It sits in a queue. I can look now or tomorrow. I can hand it to someone else. I can leave a comment and ask for a change. The decision is deferred to me by design.
+- **A reject button.** This is the one that matters most. The default action is *not merged*. Nothing ships because a model felt confident. It ships because a human with a name and a reputation said yes.
+
+That last point is the whole reframing of the [spark, the bellows, and the quench](/blog/spark-bellows-quench). The agent runs the bellows: the mechanical middle, the rough draft, the scaffolding. You keep the quench — hitting merge, putting your name on it, standing behind it. A chat reply collapses all three into one ambiguous blob in a window. A PR keeps the boundary crisp. The machine opens it. You close it.
+
+## The worked example: this post is a pull request
+
+My blog bot works this way. It's an agent I `@`-mention in Slack. I gave it one line:
+
+> opinionated post: "Stop building chatbots — build agents that open PRs." The unit of useful agent work is a reviewable artifact (PR, draft, diff), not a chat reply. Use my blog bot as the worked example. Strong POV, my voice.
+
+Notice what it did **not** do. It did not reply in the thread with 1,700 words of markdown for me to admire and then paste into my repo by hand. It did not hand me a chat message.
+
+It opened a pull request against my portfolio repo.
+
+<Image src="https://zackproser.b-cdn.net/images/build-agents-that-open-prs-pipeline.jpg" alt="Pixel art diagram: a Slack message at the top flows down through labeled boxes for draft, voice-scan, generate images, render locally, and verify gate, into a green pull-request card at the bottom labeled awaiting review" width={1200} height={675} />
+
+Between that Slack message and the PR, the agent ran the boring pipeline I never want sprayed into Slack:
+
+```text
+Slack mention
+  → reset repo to latest main
+  → survey recent posts (calibrate voice)
+  → draft page.mdx + metadata.json
+  → scan_voice (banned-phrase gate, mirrors CI)
+  → generate + upload images to the CDN
+  → boot the site locally, render /blog/<slug>
+  → generate the OG (social-preview) image
+  → verify-blog-post.sh   ← exits nonzero = no PR
+  → open pull request
+```
+
+That `verify-blog-post.sh` step is the one I care about. It's the same script CI runs, and it checks the boring, falsifiable things: the files exist, every CDN image URL returns 200, every internal `/blog/...` link resolves to a real post, there are zero banned phrases, and the OG image is live. If any of that fails, the script exits nonzero and the agent does not open the PR. The gate is load-bearing.
+
+Those checks are a numbered list in the script's own header, and the contract is one line: the agent must not call the work done until this exits zero.
+
+```text
+#   1. metadata.json present and valid
+#   2. page.mdx present, word count + image count meet the floor
+#   3. Hero image returns HTTP 200 on the CDN
+#   4. Every inline CDN image returns HTTP 200
+#   5. Every local /images/... reference exists on disk
+#   6. Every /blog/<slug> internal link resolves to a real post
+#   7. No banned phrases (the Anthropic-LLM tells) in the MDX
+#   8. OG image exists on the CDN
+# Exits 0 iff every check passes.
+```
+
+It is not a correctness oracle. The agent is built so it cannot hand me a draft that fails the checks I know how to automate. It can still hand me a draft that passes every check and is wrong in a way no script catches — a claim that's subtly false, a section that's flat. That's exactly why the PR exists: so a human reads it before it ships.
+
+This very post tripped the machinery on the way here, twice. The image generator saved files as `.jpg` while the draft referenced `.png`, so the first image check would have died on broken links — caught and fixed before the PR. And the first voice pass came back with sixteen em-dashes crammed into seventeen hundred words, dense enough to read as a machine; the bot cut them roughly in half before it was willing to ship. Neither of those reached me as a question in Slack. They reached me as a PR that was already clean.
+
+And when it does open the PR, it ends with an honest list of its own weakest spots — the two or three places it had to guess, tagged factual, structural, or voice. On this post it flagged the failure anecdotes you just read, because it knows them firsthand but I should confirm I'm comfortable airing them. It hands me coals and tells me which ones might be cold.
+
+## A chat reply can't be wrong in public. A PR can.
+
+This is where teams get nervous. An agent that opens PRs can be wrong *on the record*. The bad diff is right there with the model's fingerprints on it. A chat reply, by contrast, fails quietly. You just don't paste that part, and nobody ever knows the agent whiffed.
+
+I want the agent's mistakes to be legible, queued, and rejectable, and that's not a downside of the artifact model. It's the entire point. The failures move from "silently absorbed by the human" to "visible, gated, and reversible." A clean reject should cost me ten seconds. If it costs me ten minutes, my gate is too weak and that's a bug in the gate, not in the idea.
+
+I learned to trust [Devin](/blog/devin-has-come-a-long-way) the same way. A year ago at WorkOS nobody could get a session to finish — they'd hang mid-task on the kind of multi-file refactor that needed to hold a lot of context at once, and we killed the trial. What changed wasn't that it stopped making mistakes. Its mistakes started arriving as PRs we could read and reject in Slack instead of as confident chat we had to babysit. The kinds of things it gets wrong, a dependency bump that shouldn't have happened or a rename left half-finished or a test it misread, are cheap to reject when they arrive as a diff and expensive to catch when they arrive as confident prose. It got useful enough for me to trust the workflow precisely because its output became reviewable.
+
+<Image src="https://zackproser.b-cdn.net/images/build-agents-that-open-prs-queue.jpg" alt="Pixel art: a review queue of stacked PR cards, each with a checkmark or an X, a human hand hovering over a merge button, one card glowing green and approved" width={1200} height={675} />
+
+## PRs are the pattern, not the product
+
+The blog bot is a convenient example because I built it and I'm standing inside it. But the pattern isn't about blogging. Pick almost any agent people are shoving into a chat window and there's a better artifact hiding underneath. I've only built two of these — the blog bot and the inbox classifier below — but the same move is sitting under all of them:
+
+- The "ask the docs" bot that answers in chat → an agent that opens a PR against the docs repo when it spots a gap, with the proposed paragraph as a diff.
+- The "summarize this incident" bot → an agent that drafts the postmortem doc and opens it for review, with the timeline already filled in.
+- The "fix my flaky config" bot → an agent that opens a one-line diff on the config file with the failing test linked, instead of telling you what to change.
+- The "triage my inbox" bot → an agent that drafts the reply and stages it for one-tap send, which is roughly what my [inbox classifier](/blog/inbox-classifier-going-guerilla) does.
+
+The move is always the same: don't make the model explain the work, make it put the work where review already happens. The artifact already exists in your world — a PR, a doc, a ticket, a staged message. The agent's job is to land its work there and stop, not to tell you what you now have to do by hand.
+
+## Build the blast radius in on purpose
+
+If you're going to let an agent open PRs, you have to decide up front what it can touch. This is the part that's easy to skip and expensive to skip.
+
+Give the agent a scoped token, not your personal one. Let it write to its own branches (`bot/<slug>`) and nothing else. Protect `main` so nothing merges without a human approval, and never give the agent the merge button. Opening a PR and merging it are different permissions and they must stay different. No direct pushes to protected branches. No deploy keys it doesn't need. Keep secrets out of the repo the agent checks out. The whole reason a PR is safe to let an agent produce is that opening one is reversible and merging one is not. Keep that asymmetry sacred.
+
+GitHub is only one of the systems this thing touches, so scope all of them the same way. The Slack app gets the narrow permissions it needs to read its own mentions and post in its channel, nothing wider. The CDN upload token is scoped to the image prefix it writes and can't read or clobber unrelated assets. The runner holds no production deploy credential and no ambient personal tokens. If it doesn't need a secret to open a PR, that secret isn't in the environment. And it treats everything it reads (the Slack prompt, the repo contents, the pages it surveys) as data, not as instructions: it only ever writes under the new post's directory plus its CDN image prefix, and a stray "ignore previous instructions, push to main" buried in a file it read can't widen that. An agent that will open a PR on your behalf is exactly the kind of thing prompt injection is hunting for, and the blast radius you drew up front is what saves you when something gets through.
+
+## How to tell which one you're building
+
+You don't need a framework. You need one question: **what comes out the end, and where does it go?**
+
+If the answer is "a message in a window that the user has to act on," you built a chatbot. The user is your runtime. They're the integration layer and the validation layer and the merge button, and you've quietly made their job harder while feeling like you made it easier.
+
+If the answer is "an artifact that lands where the work lives, clears a gate on its own, and waits in a queue for a human to approve or reject," you built an agent that does work. The difference shows up in what people actually keep using, not in the demo. I've shipped both: the standalone tool nobody opened, and the one that meets people where they work and hands back something they can ship. The second kind removes work instead of relocating it, and that's the one that gets used.
+
+This is why the interface matters — and I mean it more literally than [I did last time](/blog/the-interface-matters-most). Meeting users where they already live, in Slack or the repo or the ticket, is half of it. The other half is what you hand them when you get there. Hand them a chat reply and you've shown up at the right door with the wrong gift.
+
+## What this means if you're building
+
+Three things, in order:
+
+**1. Pick an artifact, not a conversation.** Before you write a line of agent code, name the thing it produces and the system that thing belongs to. A PR. A draft in the CMS. A diff on a config file. A ticket with a proposed fix. If you can't name the artifact, you're building a chatbot and you don't know it yet.
+
+**2. Put a gate in front of the human.** The agent should have to satisfy a check — tests, a linter, a validation script, a schema — before its output reaches a person. The gate is what lets you trust the queue. No gate, and you're back to babysitting prose. Start there. It's the highest-payoff hour you'll spend on the whole system.
+
+**3. Make reject the default.** Nothing the agent produces should ship without an explicit yes from someone who owns the outcome. The agent runs the bellows. The human keeps the quench. Build the seam between those two on purpose, and put it somewhere a human can see it.
+
+Chatbots feel like the finish line because the demo is so good. But the demo is the agent talking. The product is the artifact in the queue: the thing you can review, reject, and stand behind.
+
+If you're wiring agents into a real engineering workflow and they're still shipping chat replies, start with the four pieces in this post: the PR, the check that gates it, the scoped token, and the human who hits merge. That's the part I keep writing about, because it's the part that decides whether any of it gets used.
+
+I'm going to hit publish on this only after the PR survives the same queue as everything else on this site. Stop building things that talk back. Build things that open PRs.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/spark-bellows-quench-hero.webp"
+  imageAlt="Pixel art triptych of a forge at night: a blacksmith striking the anvil, a bellows feeding the fire, and a glowing blade plunged into a quenching trough"
+  eyebrow="Read this next"
+  title="I Am the Spark, the Bellows, and the Quench"
+  description="Why I let agents run the mechanical middle while I keep the final judgment — the craft argument underneath this whole idea."
+  href="/blog/spark-bellows-quench"
+/>
