@@ -110,6 +110,7 @@
     "js-tiktoken": "^1.0.10",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.395.0",
+    "mermaid": "^11.15.0",
     "micromatch": "^4.0.8",
     "next": "^15.4.8",
     "next-auth": "5.0.0-beta.30",
