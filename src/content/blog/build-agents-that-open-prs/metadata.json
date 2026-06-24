@@ -1,0 +1,8 @@
+{
+  "title": "Stop Building Chatbots. Build Agents That Open PRs.",
+  "author": "Zachary Proser",
+  "date": "2026-06-24",
+  "description": "The unit of useful agent work is a reviewable artifact — a PR, a draft, a diff — not a chat reply. A chat reply evaporates. A PR sits in a queue with your name on it until you decide. Here's why I build agents that hand me coals, using my own blog bot as the worked example.",
+  "image": "https://zackproser.b-cdn.net/images/build-agents-that-open-prs-hero.jpg",
+  "tags": ["AI", "Agents", "AI Engineering", "Applied AI", "Developer Tools"]
+}
