@@ -1,0 +1,11 @@
+{
+  "title": "I Added a stop-slop Scrub Pass to My Blog Pipeline",
+  "author": "Zachary Proser",
+  "date": "2026-06-24",
+  "description": "The open-source stop-slop list catalogs the phrases and structures that mark AI prose. I wired it into my blog pipeline as a final scrub pass that catches surface tells and forces a structural read. This post ran the scrub on itself.",
+  "image": "https://zackproser.b-cdn.net/images/stop-slop-scrub-pass-hero.jpg",
+  "slug": "stop-slop-scrub-pass",
+  "type": "blog",
+  "keywords": ["AI writing tells", "stop-slop", "de-slop", "AI slop", "writing pipeline", "voice"],
+  "tags": ["AI", "Writing", "Tools", "Craft"]
+}
