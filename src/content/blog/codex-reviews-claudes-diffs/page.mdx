@@ -10,7 +10,7 @@ export const metadata = createMetadata(rawMetadata)
 
 <Image src="https://zackproser.b-cdn.net/images/codex-reviews-claudes-diffs-hero.jpg" alt="Pixel art of two robots at facing desks at night: an amber robot (Claude) slides a glowing diff across a divider to a cyan robot (Codex) holding a red pen, the cyan one circling a line the amber one missed" width={1200} height={675} />
 
-Claude Code writes the diff. Before that diff reaches me, a second model from a different lab reads it with one job: find what's wrong. Claude writes the code, Codex tries to break it, then I read the findings. I don't let the model that wrote the patch be the only thing that approves it. The bug that made this permanent for me was a rate limiter that would have locked real users out forever, green tests and all, because one Redis key never got an expiry. More on that below.
+Claude Code writes the diff. Before that diff reaches me, a second model from a different lab reads it with one job: find what's wrong. Claude writes the code, Codex tries to break it, then I read the findings. I don't let the model that wrote the patch be the only thing that approves it.
 
 I run this on every substantial change. A one-line typo fix slides through. Anything that touches logic, auth, money, or a migration gets handed to a Codex reviewer with an adversarial brief before it lands in front of me. The reviewer reads the unified diff, the changed files (in full when they fit a size budget), and the task that produced them, then returns a structured verdict: block, comment, or approve, with line-anchored findings.
 
@@ -39,16 +39,16 @@ Claude and Codex make different mistakes. That's the point. Where Codex and Clau
 The whole thing hangs off a Claude Code hook. When Claude finishes a turn that produced edits, a `Stop` hook fires, computes the diff against the branch point, and routes it.
 
 <Mermaid chart={`
-flowchart LR
+flowchart TD
   A["Claude finishes edits"] --> B["Stop hook fires"]
   B --> C["git diff: working tree vs base"]
-  C --> D{"substantial?<br/>(LOC / paths / risk)"}
+  C --> D{"substantial diff?"}
   D -->|no| E["pass through"]
-  D -->|yes| F["codex exec --json<br/>(adversarial brief + diff)"]
+  D -->|yes| F["codex exec: adversarial review"]
   F --> G{"verdict"}
   G -->|approve| H["surface to me, clean"]
   G -->|comment| I["inline findings, I decide"]
-  G -->|block| J["findings + halt,<br/>Claude must address"]
+  G -->|block| J["halt: Claude must address"]
 `} />
 
 The gate in the middle keeps this usable. Small, cold diffs pass straight through on three cheap signals (lines changed, paths touched, a high-risk glob for auth, billing, migrations, and `infra/`). Hot paths always go to review. A README tweak doesn't wake Codex up. A change to the session-token check always does.
@@ -156,9 +156,9 @@ The reviewer returns **structured output**, not prose, against a fixed schema:
   "findings": [
     {
       "severity": "high",
-      "file": "src/app/api/limit/route.ts",
-      "line": 14,
-      "message": "redis.incr creates the key with no TTL; the counter never resets."
+      "file": "src/app/api/route.ts",
+      "line": 42,
+      "message": "the auth check moved below the handler; the body runs before the user is verified."
     }
   ]
 }
@@ -178,49 +178,21 @@ The reviewer doesn't get to invent what "good" means in the moment. It scores th
 
 Correctness and security block. Scope and style comment. The severity in each finding is what the hook's exit code keys off, so the rubric isn't decoration. It's wired to whether Claude gets to move on.
 
-## A real catch
+## What it actually catches
 
-The catch that made this permanent was a Redis TTL bug.
+The pattern earns its keep on a specific shape of bug: the diff that does exactly what the task asked, passes every test the author wrote, and is still wrong. Self-review waves those through, because the author already believes the code is correct. A cold reviewer doesn't share the belief.
 
-I had Claude add a per-user rate limit to an internal Next.js API route backed by Redis. Straightforward task, clean-looking diff, all the tests Claude wrote were green. Self-review would have approved it in a heartbeat. The code did exactly what the task described.
+<Image src="https://zackproser.b-cdn.net/images/codex-reviews-claudes-diffs-rubric.jpg" alt="Pixel art of a cyan reviewer robot holding a five-row checklist (correctness, security, reversibility, tests, scope) and stamping a red BLOCK onto a diff on the desk" width={1024} height={768} />
 
-The diff, roughly:
+The recurring categories, in roughly the order they show up:
 
-```typescript
-const key = `ratelimit:${userId}`
-const count = await redis.incr(key)
-if (count > LIMIT) {
-  return new Response('Too Many Requests', { status: 429 })
-}
-// ... handle request
-```
+- **The missing edge.** The change handles the happy path and the obvious error, and silently skips the third case the task never mentioned. The author's tests cover the cases the author thought of, so they stay green. A reviewer reading the diff cold asks the question the author never had: what about the input that isn't either of those?
+- **The assumption that no longer holds.** A guard, a null check, or an auth step that some earlier code "always" did, that this diff quietly moved or removed. The author still pictures the old invariant. The cold reviewer only sees what the diff leaves in place.
+- **The irreversible step with no undo.** A migration that drops before it backfills, a delete with no soft-delete, a schema change that isn't backward compatible. Correct-looking, and a one-way door if it's wrong.
+- **The test that proves nothing.** New logic, a new branch, and a test that would still pass if you deleted the branch. The reviewer flags coverage that doesn't exercise the change.
+- **The quiet scope creep.** A drive-by refactor or a formatting sweep riding along in a diff that was supposed to do one thing, burying the line that matters.
 
-Codex blocked it. One finding, severity high:
-
-> `route.ts:14` — `redis.incr` creates the key with no TTL. The first request of a window sets the counter and it never expires, so every user is permanently limited after `LIMIT` total requests, not per window. Set the expiry atomically on first increment.
-
-<Image src="https://zackproser.b-cdn.net/images/codex-reviews-claudes-diffs-ttl-catch.jpg" alt="Pixel art close-up of a counter ticking upward with no reset beside a Redis key icon and a clock crossed out in red meaning no TTL, while a cyan reviewer robot points a magnifying glass at the missing expiry and a locked-out user icon sits greyed in the corner" width={1024} height={768} />
-
-Claude wrote a counter that goes up and never resets. The tests passed because they hammered the endpoint `LIMIT + 1` times inside one window and asserted the 429. They never advanced the clock and never checked the key's TTL, so they never noticed the window doesn't roll over. The bug only shows up on request number `LIMIT + 1` from a real user the next day, when they're locked out of an endpoint they used once. That's the worst kind of bug: invisible in review, invisible in tests, lands in production, and surfaces as a confused user days later.
-
-The fix Codex pointed at: set the TTL inside the same Redis script as the increment, so a crash between the two calls can't leave a key that lives forever. A tiny [Lua script](https://redis.io/docs/latest/develop/programmability/eval-intro/) runs both as one atomic operation:
-
-```typescript
-// INCR, and on the first hit of the window, stamp the expiry — atomically.
-const TOUCH = `
-  local n = redis.call('INCR', KEYS[1])
-  if n == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]) end
-  return n`
-
-const count = Number(await redis.eval(TOUCH, 1, `ratelimit:${userId}`, WINDOW_SECONDS))
-if (count > LIMIT) {
-  return new Response('Too Many Requests', { status: 429 })
-}
-```
-
-A naive `incr` then `expire` in two calls is better than the original, but it still has a window: if the process dies between them, the key is permanent again. The Lua version closes that gap because Redis runs the script as one atomic operation. (Adapt the `eval` call to your Redis client; the signatures vary.)
-
-Why did the cross-model reviewer catch it when self-review wouldn't? The model that wrote the code "knew" it was implementing a fixed-window limiter. That intent sat in its context and colored how it read its own diff. It saw the window it meant to write, not the missing `expire` on the page. The Codex reviewer had no such story. It saw an `incr` with no TTL and asked the obvious question the author was too close to ask. Different model, no shared assumption, no sympathy for the intent. It read the lines that were there.
+None of these need a smarter model to catch. They need a reader who doesn't already know what the code was supposed to do. That's the entire trick: the author reads the diff through the intent that produced it and sees the code it meant to write; the cold reviewer reads the lines that are actually on the page.
 
 Codex is not reliably smarter than Claude, in either direction. I use it because it comes in cold. A reviewer with no memory of what the code was *supposed* to do reads what the code does.
 
@@ -234,11 +206,11 @@ sequenceDiagram
   participant Claude
   participant Codex
   Claude->>Codex: diff + changed files + task (cold)
-  Codex-->>Me: block: "INCR has no TTL"
+  Codex-->>Me: block + line-anchored finding
   Me->>Claude: is Codex right?
-  Claude-->>Me: defends: "the window expires"
+  Claude-->>Me: defends the original code
   Note over Me: I read the actual line
-  Me->>Claude: nothing sets EXPIRE — Codex is right
+  Me->>Claude: ruling, with the reason
 `} />
 
 I treat a disagreement as a prompt to go read the code myself, not as a vote to average. Sometimes Codex is wrong. It flags a "missing" null check on a value that's typed non-null three frames up, and I dismiss it. Sometimes it's right and Claude's defense is exactly the kind of confident-but-wrong reasoning that produced the bug. Either way, the disagreement bought me a thirty-second read of the one line that mattered instead of a full review of a diff I would have rubber-stamped. The reviewer's job isn't to be right. It's to point my attention at the line worth my judgment.
@@ -247,7 +219,7 @@ I treat a disagreement as a prompt to go read the code myself, not as a vote to 
 
 The tax is latency and false positives.
 
-It adds latency. A substantial diff waits ten to thirty seconds for the Codex pass before I see it. The gate is what makes that acceptable. Trivial changes skip it entirely, so the tax only lands on changes where I'd want a careful read anyway. I'll trade thirty seconds of a machine's time against an hour of mine debugging a TTL bug in production every time.
+It adds latency. A substantial diff waits ten to thirty seconds for the Codex pass before I see it. The gate is what makes that acceptable. Trivial changes skip it entirely, so the tax only lands on changes where I'd want a careful read anyway. I'll trade thirty seconds of a machine's time against an hour of mine debugging that bug in production every time.
 
 It produces false positives. Codex flags things that are fine, and a reviewer that cries wolf gets ignored, so I tuned the brief to demand a concrete failure mode for every `block`. A finding has to say *how* it breaks, not just that it smells off. "This could be cleaner" is a comment, never a block.
 
@@ -267,7 +239,7 @@ If you want to run this, the parts that matter are short:
 - **Make `block` require a failure mode.** Every block names how it breaks. Everything softer is a comment. That's how you keep the reviewer worth listening to.
 - **Treat disagreement as a flashlight.** When the two models split, go read that line yourself. Don't average the verdicts.
 
-The missing Redis TTL is exactly what this catches: one line, green tests, ugly production behavior. You don't need a smarter model to catch it. You need a second one with no loyalty to the patch.
+The bug this catches is the one that does what the task asked, passes its tests, and is still wrong. You don't need a smarter model to catch it. You need a second one with no loyalty to the patch.
 
 If you copy one thing, copy the brief and the failure-mode rule. I covered this pattern (cold reviewers, fixed rubrics, fail-closed gates) in the [Claude Code skills workshop](/blog/aie-london-skills-at-scale) Nick Nisi and I ran at AI Engineering London: constraints over instructions, evidence over guesses, measurement over vibes.
 
