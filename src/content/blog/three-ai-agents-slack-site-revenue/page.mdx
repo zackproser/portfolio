@@ -1,0 +1,189 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# I Gave Three AI Agents Access to My Slack, My Site, and My Revenue
+
+<Image src="https://zackproser.b-cdn.net/images/three-agents-hero.jpg" alt="Pixel art of three glowing robot avatars seated around a Slack channel at night, one wired to a website, one to a stack of blog posts, one to a coin chest, golden threads connecting all three" width={1200} height={675} />
+
+Three agents now run the boring parts of my online life. One owns my portfolio site. One drafts my blog. One handles social. They live in Slack, they take orders in plain English, and between them they can touch my published site and the affiliate links that make me money.
+
+This is the part that makes me wince. Here's what each one does, how they coordinate, and the three production bugs that cost me real days. A Slack gate that swallowed every event and never replied. A Vercel Connect channel binding that pointed at nothing. A set of environment variables that read back empty and lied to my face about it.
+
+If you're about to wire an agent into anything you care about, the failures are the useful part. I'll spend most of the post there.
+
+## The cast
+
+All three run on [eve](https://vercel.com/eve), Vercel's open-source agent framework. The model that sold me: an agent is a directory of files. You put instructions in markdown, tools in TypeScript, a `channels/slack.ts` to surface it in Slack, and `vercel deploy` ships it. eve compiles the directory into an app that runs on Vercel Functions, with durable workflows so a session can pause, survive a deploy, and resume where it stopped. I describe behavior in files instead of babysitting a queue.
+
+<Image src="https://zackproser.b-cdn.net/images/three-agents-cast.jpg" alt="Pixel art of three labeled robot characters in a row: Site Bot holding a wrench by a website panel, Blog Bot holding a quill by a stack of pages, Social Bot holding a megaphone, each on the dark slate portfolio palette" width={1200} height={675} />
+
+**Site Bot** owns the portfolio repo. It fixes layout regressions, bumps dependencies, patches the broken internal link I never get around to, and opens a PR. It never merges. I merge.
+
+**Blog Bot** drafts these posts. You hand it an idea in Slack, sometimes a full brief, sometimes a title and a shrug, and it surveys my recent posts to match voice, drafts the MDX, generates the pixel art, runs a validation gate, and opens a PR. Then I take over: I cut the fake confidence, fix what it guessed wrong, and merge only what earns it. I've written before about [the bot that ships my blog posts](/blog/how-my-ai-assistant-ships-blog-posts) and [why I'm comfortable letting a machine take the middle of the work](/blog/spark-bellows-quench). Blog Bot is the next turn of that crank, moved off my own infrastructure and onto eve.
+
+**Social Bot** turns a published post into the threads that announce it, and it's the one with its hands closest to revenue: it knows which posts carry affiliate links and writes the promo around them. Its only revenue-adjacent input is a read-only list of tracked URLs that already exist. It never sees the affiliate dashboard, the payout account, or any link-creation token, and it can't post without my say-so. That's the agent I watch most carefully.
+
+The split matters. Each agent has the smallest blast radius I could give it. Site Bot can't post to social. Social Bot can't touch the repo. Blog Bot can open a PR but can't merge it. The day one of them goes sideways, and one always does, I want the damage contained to one surface.
+
+Here's the blast radius, written down as a permission matrix before any of them got a token:
+
+| Capability | Site Bot | Blog Bot | Social Bot |
+| --- | :---: | :---: | :---: |
+| Push a branch to the portfolio repo | yes | yes | no |
+| Open a PR | yes | yes | no |
+| Merge a PR | no | no | no |
+| Post to social | no | no | yes (on approval) |
+| Create or edit an affiliate link | no | no | no |
+| Needs my approval to act | for merges | for merges | for every post |
+
+`main` is branch-protected, so a push is never a publish. Nothing else in that table is enforced by good intentions either: merges and posts are eve approval gates, and the affiliate links live somewhere none of the agents can reach.
+
+## How they coordinate over Slack
+
+There's no orchestrator. Slack is the bus. Each agent has its own eve deployment and its own Slack channel, every agent posts what it did back into the thread, and I'm the router sitting in the middle deciding what happens next. It looks like a team standup where I'm the only human. The agents that ship to GitHub keep me in the loop the same way [Devin does in our Slack at work](/blog/devin-has-come-a-long-way): the work lands as a PR, and a person reviews it.
+
+<Image src="https://zackproser.b-cdn.net/images/three-agents-flow.jpg" alt="Pixel art system diagram: a central Slack hub with three labeled lanes branching out to Site Bot, Blog Bot, and Social Bot, each lane showing an arrow to GitHub PRs or a published site, golden connecting lines on dark slate" width={1200} height={675} />
+
+A normal day looks like this. I drop an idea in the blog channel. Blog Bot opens a PR. I review and merge. The merge to `main` is the event the others wait on. Once the post is live, I tell Social Bot to announce it, and it pulls the live URL, writes the thread, and works in the affiliate link if the post has one. Site Bot stays quiet until something visibly breaks, then it's the one I lean on.
+
+```
+me        → #blog     "new post: field report on the agent trio"
+Blog Bot  → #blog     opened PR #1142 ✅ (validation green)
+me        → (merge)
+me        → #social   "announce the trio post"
+Social Bot→ #social   drafted launch thread + tracked link → ready
+```
+
+The whole thing is deliberately dumb. No agent decides on its own that it's time to publish or promote. The triggers are either a human message or a merge I made. eve makes this easy on purpose: any tool that needs confirmation can sit behind an approval gate, where the session parks until I say go. That's not a limitation I'm planning to remove. It's the seatbelt, and I bolted it on before I gave any of them keys.
+
+## Scar #1: the gate that 200'd everything and never replied
+
+This one cost me the most, because nothing looked wrong.
+
+I wanted a fail-closed access gate: only my user ID, only specific channels, everything else ignored. The default for anything wired into money should be *deny*. So the Slack channel verifies the request signature, checks the user and channel against an allowlist, and drops anything that doesn't match.
+
+Slack has a rule that shapes this whole bug: your endpoint has to return a `200` within three seconds or Slack assumes failure, retries, then disables the subscription. So you ack immediately and do the real work after, which eve handles by dispatching the turn into a durable workflow and returning right away. The trap: "ack and run the turn" and "deny and drop" both end in a bare `200` with no reply. When my gate rejected an event, it returned `200` exactly like a successful ack. Slack was happy. I was not.
+
+<Image src="https://zackproser.b-cdn.net/images/three-agents-gate.jpg" alt="Pixel art sequence diagram: a Slack message hitting a gate that returns a green 200 token, with one path leading to a working reply and a parallel path leading to silence, the silent path glowing red on dark slate" width={1200} height={675} />
+
+Here's the shape of it. The accepted path dispatched the turn and returned `200`. The denied path returned the same `200` and did nothing:
+
+```ts
+// simplified shape, not the full eve handler
+export async function handleSlackEvent(event: SlackEvent) {
+  // fail-closed: only me, only my channels
+  if (!isAllowed(event.user, event.channel)) {
+    return new Response('ok', { status: 200 }) // 👈 looks identical to a real ack
+  }
+
+  // eve hands the turn to a durable workflow before this ack returns
+  dispatchTurn(event)
+  return new Response('ok', { status: 200 })
+}
+```
+
+I'd mention the bot. Slack showed delivered. The logs showed `200`. And nothing came back. No error, no timeout, no rejected event. The single worst failure mode, because every signal I had was green. I burned the better part of a day auditing the wrong layer: re-checking the signing secret, re-issuing tokens, re-reading the events API docs, convinced the turn wasn't dispatching at all.
+
+The dispatch was firing fine. My allowlist was wrong. I was comparing a channel *name* (`#blog`) against the channel *ID* Slack actually sends (`C0xxxxxxx`), so the check failed for every message and the gate dropped all of them into a `200` that told Slack everything was perfect.
+
+The fix was two parts. First, make denial observable instead of silent:
+
+```ts
+if (!isAllowed(event.user, event.channel)) {
+  console.warn('slack.denied', {
+    user: event.user,
+    channel: event.channel,    // the log line that would have saved me a day
+    reason: 'not in allowlist',
+  })
+  return new Response('ok', { status: 200 })
+}
+```
+
+Second, separate the two `200`s in my own head. Fail closed, always, for anything near money. But never let a silent success and a silent denial share the same byte on the wire with no breadcrumb between them. They're the same response to Slack, so the difference has to live in your logs. This is the same discipline I leaned on building [a human-in-the-loop inbox classifier](/blog/inbound-classifier-trigger-dev): when the safe default is to do nothing, "nothing" has to be loud enough to debug.
+
+## Scar #2: the Vercel Connect channel binding that pointed at nothing
+
+With the gate fixed, messages flowed to Blog Bot. Site Bot and Social Bot stayed dark in the exact same way, and I almost re-litigated the entire gate bug before I noticed the real difference.
+
+The agents authenticate to Slack through Vercel Connect, which brokers the OAuth tokens so the agent code never holds a raw secret. Each `channels/slack.ts` points Connect at a named credential, and Slack delivers events to that deployment's `/eve/v1` route. I'd wired the first agent by hand, carefully. The other two I copied. And in the copy I left the credential name pointing at Blog Bot's binding:
+
+```ts
+// site-bot/agent/channels/slack.ts — copied, never re-pointed
+export default slackChannel({
+  credentials: connectSlackCredentials('slack/blog-bot'), // 👈 should be 'slack/site-bot'
+})
+```
+
+So events for Site Bot and Social Bot reached the right deployment, but the channel resolved Blog Bot's Connect credential. The Slack context never bound for that agent, eve had nothing valid to start a run against, and the request fell through to the same fail-closed `200`. Verified, accepted, dropped on the floor.
+
+<Image src="https://zackproser.b-cdn.net/images/three-agents-trigger.jpg" alt="Pixel art diagram of three Slack event arrows aimed at deployment endpoints: one arrow lands on the correct glowing door, two arrows land on a blank wall beside the right doors, dark slate palette with amber accents" width={1200} height={675} />
+
+Same symptom as Scar #1: a `200`, no reply, a different cause entirely. The gate taught me that a `200` proves nothing about whether the right code ran. This taught me the second half. A `200` doesn't even prove the request reached the right *agent*. I only caught it by opening Agent Runs in the Vercel dashboard. Blog Bot had a run for every mention. Site Bot had none. Social Bot had none. The Slack app logs still said `200` for all three.
+
+The fix was unglamorous. Each agent's Slack channel points at its own Connect credential and its own deployment, verified one at a time instead of trusted because they were copied from something that worked. I now treat "copied a working config" as a *higher* risk than writing it fresh. A copy inherits the parts you didn't understand the first time.
+
+## Scar #3: the env vars that read back empty
+
+The last one is the meanest, because it dressed up as a code bug for half a day.
+
+Channel-auth secrets live in project environment variables. I'd marked the sensitive ones — signing secrets, tokens, the keys that let Social Bot touch the things that make money — as sensitive, which on Vercel means write-only: you set the value once and the platform never shows it back to you. That part is fine. The trap is what the running function reads. A genuinely missing variable comes back as `undefined`. But this key *existed* for the deployment with a blank value, so it resolved to an empty string at runtime. And an empty string is falsy and stringy at the same time, so it slipped through the guards that only checked for existence.
+
+<Image src="https://zackproser.b-cdn.net/images/three-agents-env.jpg" alt="Pixel art of a robot reaching into a labeled vault of secret keys but pulling out a blank empty card, a red warning glow, dark slate background with amber vault accents" width={1200} height={675} />
+
+Here's the guard that let it through:
+
+```ts
+// verify against "" and every real Slack signature mismatches
+const signingSecret = process.env.SLACK_SIGNING_SECRET ?? ''
+const ok = verifySignature(req, signingSecret)   // signingSecret is "", ok is always false
+if (!ok) {
+  return new Response('ok', { status: 200 })      // reject... with a silent 200, per Scar #1
+}
+```
+
+So signature verification ran against an empty secret, every real Slack signature mismatched, and the gate rejected the request — which, thanks to Scar #1's fail-closed design, meant a silent `200`. Three bugs produced the same symptom. That's why it took too long to find.
+
+What faked me out: my health check logged whether each secret name was *set*, and it reported set. It was doing `name in process.env`, which is true even when the value is blank. The key existed. The value was empty. "Configured for the deployment" and "a non-empty string at runtime" are different facts, and I'd been checking the wrong one.
+
+The fix was to stop trusting existence and start asserting *shape* at boot:
+
+```ts
+function requireSecret(name: string): string {
+  const v = process.env[name]
+  if (!v || v.trim().length === 0) {
+    // fail loud, at startup, not silently at request time
+    throw new Error(`Missing or empty secret: ${name}`)
+  }
+  return v
+}
+
+const SIGNING_SECRET = requireSecret('SLACK_SIGNING_SECRET')
+```
+
+A missing or empty secret should take the deployment down on the first breath, not quietly poison signature checks an hour later. Empty is not a value. Treat it like the absence it is.
+
+## What I'd tell you before you wire one of these up
+
+The model rarely blocks me now. The failures weren't drafts or bad code. They were Slack acks, Connect bindings, and empty secrets — the plumbing, every time. Here's what I'd hand you before you give an agent the keys:
+
+- **A `200` is not proof of anything.** Not that the right code ran, not that the right agent received it, not that your secrets were readable. Slack's three-second ack rule pushes you to return success early, and that success will mask a dropped event, a misrouted channel, and an empty secret with the exact same green checkmark.
+- **Make the safe default loud.** Fail closed for anything near money. But a silent denial and a silent success are the same byte on the wire, so the difference has to live in your logs, or you'll spend a day debugging a system that's working as designed.
+- **Verify configuration per surface, not by copy.** The Connect binding and the env binding both bit me because I trusted that a copy of a working thing was a working thing. It inherited the parts I didn't understand.
+- **Keep the blast radius small and the human in the loop.** No agent of mine merges its own PR or posts on its own clock. eve's approval gates park the session until I confirm. When software has your Slack, your site, and your revenue, you want that human gate there on purpose.
+
+I'd do it again. I am doing it again, since you're reading the output. The agent drafting a decent blog post was never the impressive part. Getting the boring, paranoid plumbing right — the Slack gate, the Connect bindings, the secret checks — is what lets me sleep while three robots hold the keys.
+
+If you're wiring agents into anything that can publish or spend, [subscribe](/newsletter) and I'll send the next field report, with the config and failure modes I wish I'd had in front of me before I started.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/hermes-ships-blog-posts-hero.webp"
+  imageAlt="Pixel art of an AI assistant shipping a blog post through a pipeline from Discord to a published site"
+  eyebrow="Read this next"
+  title="How My AI Assistant Ships Blog Posts"
+  description="The predecessor to this trio: Hermes, the bespoke bot that wrote MDX, made images, and opened PRs from a chat message, before I moved the work onto eve."
+  href="/blog/how-my-ai-assistant-ships-blog-posts"
+/>

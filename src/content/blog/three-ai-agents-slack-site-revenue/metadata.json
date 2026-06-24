@@ -1,0 +1,8 @@
+{
+  "title": "I Gave Three AI Agents Access to My Slack, My Site, and My Revenue",
+  "author": "Zachary Proser",
+  "date": "2026-06-24",
+  "description": "A field report on the trio of agents running my portfolio, blog, and social — built on Vercel's eve framework, coordinated over Slack, and the three production bugs that ate days of my life.",
+  "image": "https://zackproser.b-cdn.net/images/three-agents-hero.jpg",
+  "tags": ["AI", "Agents", "Slack", "Vercel", "Automation", "Production"]
+}
