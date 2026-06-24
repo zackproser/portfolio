@@ -139,6 +139,8 @@ The trap on the other side is a reviewer so adversarial it drowns you in false p
 
 ## What it catches that self-review misses
 
+<Image src="https://zackproser.b-cdn.net/images/adversarial-code-review-hook-catches.jpg" alt="Pixel art of a robot inspector with a magnifying glass finding four bugs hiding in code: an orphaned async task, a swallowed error in a catch block, an unchecked array access, and an unclosed file handle" width={1200} height={675} />
+
 After running this for a while, the catches cluster. They're nearly all in the same neighborhood: the paths the author didn't consider load-bearing.
 
 - **Orphaned async work.** Aborts, timeouts, and early returns that unwind some state but not all of it — an `AbortSignal` listener that stops awaiting but never rolls back the row it already wrote.
