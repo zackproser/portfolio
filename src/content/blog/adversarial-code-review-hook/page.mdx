@@ -32,14 +32,14 @@ The hook sits between Claude finishing a change and that change reaching me. It'
 
 <Mermaid chart={`
 flowchart TD
-  A["Claude writes a diff"] --> B{"substantial?"}
-  B -->|"no (trivial)"| H["straight to my review"]
-  B -->|"yes"| C["hook sends diff + context to Codex"]
-  C --> D["Codex returns findings + severity"]
-  D --> E{"blocking findings?"}
-  E -->|"yes"| F["Claude addresses, re-runs review"]
+  A["Claude writes diff"] --> B{"substantial?"}
+  B -->|"no"| H["my review"]
+  B -->|"yes"| C["send to Codex"]
+  C --> D["findings + severity"]
+  D --> E{"blocking?"}
+  E -->|"yes"| F["Claude fixes"]
   F --> D
-  E -->|"no"| G["diff + review notes reach me"]
+  E -->|"no"| G["diff + notes to me"]
 `} />
 
 The revision loop is the point: a blocking finding goes back to Claude, Claude fixes it, and the diff runs the review again. By the time anything reaches me, it has already survived a reviewer that doesn't share the author's blind spots. What lands in front of me is the diff *plus* the review notes, so I'm reading a conversation between two models, not a raw dump from one.
@@ -136,69 +136,6 @@ Three things keep the reviewer hostile in the way you want:
 - **Name the failure classes.** Pointing the reviewer at error handling, async lifecycles, race conditions, and resource leaks aims its attention at the places bugs actually hide, instead of letting it drift to style nits it can comment on without thinking.
 
 The trap on the other side is a reviewer so adversarial it drowns you in false positives. The severity field is the release valve: only `blocking` bounces the diff back to the author automatically. Warnings and nits ride along as annotations I can ignore. Calibrating what counts as `blocking` is most of the tuning, and I'd rather it err toward flagging — a false positive costs me ten seconds, a false negative costs me the abort path.
-
-## A real catch
-
-Here's one the reviewer caught that the author had shipped clean. While I was [building the bots that run my site](/blog/reviewing-vercels-eve-agent-framework), Claude wrote a publish operation: do the work, and if the caller aborts partway through, stop. Reasonable. It read fine. I would have merged it.
-
-Codex flagged it. Reconstructed and stripped down, the diff looked like this — mark a record `pending`, upload, mark it `done`, with the upload honoring the abort signal:
-
-```ts
-async function publish(post, signal) {
-  await db.mark(post.id, 'pending')              // side effect #1
-  await cdn.upload(post.assets, { signal })      // rejects if aborted mid-flight
-  await db.mark(post.id, 'done')                 // side effect #2 — never reached on abort
-}
-```
-
-The reviewer's note named the exact stuck state:
-
-```text
-BLOCKING  src/publish.ts:2
-  Abort during cdn.upload() rejects after db.mark(id, 'pending').
-  The function exits without clearing or completing the record, which
-  stays in 'pending' forever. Fix: roll the record back on abort.
-```
-
-That's the bug. Abort lands while `cdn.upload` is in flight, the upload rejects, the promise rejects out of `publish`, and side effect #1 is left behind. The row says a publish is in progress that no longer is — neither done nor undone, sitting in the database forever. The fix adds a cleanup path so an aborted publish rolls the record back instead of abandoning it:
-
-```ts
-async function publish(post, signal) {
-  let pending = false
-  try {
-    signal.throwIfAborted()
-    await db.mark(post.id, 'pending')
-    pending = true
-    await cdn.upload(post.assets, { signal })
-    await db.mark(post.id, 'done')
-    pending = false
-  } catch (err) {
-    if (pending && signal.aborted) await db.mark(post.id, 'aborted')  // walk it back
-    throw err
-  }
-}
-```
-
-<Image src="https://zackproser.b-cdn.net/images/adversarial-code-review-hook-orphan.jpg" alt="Pixel art of a conveyor belt with a half-assembled package marked PUBLISH stopped mid-build, glowing parts spilled and abandoned with nothing cleaning them up, a reviewer robot shining a flashlight on the mess" width={1200} height={675} />
-
-<Mermaid chart={`
-sequenceDiagram
-  participant C as Claude (author)
-  participant R as Codex (reviewer)
-  participant Z as Me
-  C->>C: write publish op with abort handling
-  C->>C: self-check — looks correct
-  C->>R: hook sends the diff
-  R->>R: trace the abort path, not the happy path
-  R-->>C: BLOCKING — abort orphans a half-finished publish
-  C->>C: add cleanup on the abort path
-  C->>R: re-review
-  R-->>Z: clean — diff + notes
-`} />
-
-Look at where the two models spent their attention. The author traced the happy path, confirmed it did what it set out to do, and signed off. The reviewer ignored the happy path entirely and went straight for the abort branch — the case the author had treated as an afterthought, because to the author it *was* an afterthought. Claude traced the upload succeeding; Codex traced the abort landing after the first write. The bug lived exactly in the part of the code the author was least suspicious of, which is the part a self-review will always wave through.
-
-A few lines, once it was named. But it's the kind of bug that never throws in the test you wrote, because you wouldn't think to write a test for a failure mode you didn't know you had.
 
 ## What it catches that self-review misses
 
