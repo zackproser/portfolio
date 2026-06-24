@@ -1,29 +1,15 @@
 {
-  "title": "Granola vs Otter.ai: I Tested Both for Months",
+  "title": "Granola vs Otter: Which AI Meeting Assistant Actually Delivers",
   "author": "Zachary Proser",
-  "date": "2025-11-28",
-  "description": "I used Granola and Otter.ai side by side for months. One requires a bot, one doesn't. Here's which one I kept and why.",
-  "image": "https://zackproser.b-cdn.net/images/dev-voice.webp",
-  "slug": "/blog/granola-vs-otter",
-  "keywords": [
-    "Granola vs Otter",
-    "Granola vs Otter.ai",
-    "best AI meeting notes",
-    "Otter.ai alternatives",
-    "Granola comparison",
-    "meeting notes comparison",
-    "AI transcription no bot",
-    "meeting notes without bot",
-    "Granola or Otter",
-    "meeting transcription tools",
-    "private meeting notes"
-  ],
+  "date": "2026-5-2",
+  "description": "I tested both Granola and Otter in real client meetings. Here is what I found.",
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
   "tags": [
-    "Voice AI",
-    "Comparison",
-    "Granola",
-    "Otter.ai",
-    "Meeting Notes"
+    "granola",
+    "otter",
+    "ai",
+    "meeting-notes",
+    "productivity"
   ],
   "hiddenFromIndex": true
 }
