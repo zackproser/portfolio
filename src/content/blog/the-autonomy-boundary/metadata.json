@@ -1,0 +1,23 @@
+{
+  "title": "The Autonomy Boundary",
+  "author": "Zachary Proser",
+  "date": "2026-06-24",
+  "description": "My rule for AI agents: anything reversible runs unattended, anything irreversible or outbound stops for a human. Here is how I drew that one line across three bots and enforced it in code, not willpower.",
+  "image": "https://zackproser.b-cdn.net/images/the-autonomy-boundary-hero.jpg",
+  "slug": "the-autonomy-boundary",
+  "type": "blog",
+  "keywords": [
+    "AI agents",
+    "autonomy",
+    "human-in-the-loop",
+    "agent safety",
+    "automation",
+    "agentic workflows"
+  ],
+  "tags": [
+    "AI",
+    "Agents",
+    "Automation",
+    "Developer Tools"
+  ]
+}
