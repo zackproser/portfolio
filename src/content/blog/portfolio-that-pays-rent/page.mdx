@@ -1,0 +1,136 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import Mermaid from '@/components/Mermaid'
+import { AffiliateLink } from '@/components/StickyAffiliateCTA'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = "portfolio-that-pays-rent"
+
+# The Portfolio That Pays Rent
+
+<Image src="https://zackproser.b-cdn.net/images/portfolio-that-pays-rent-hero.jpg" alt="Pixel art storefront for a personal site: three robot employees at work and a human editor at the back stamping APPROVE beside a rent envelope" width={1200} height={675} />
+
+My personal site has a payroll. Three of the employees are bots and one is me.
+
+The content bot writes the posts. The ops bot watches the analytics, repairs broken links, and drafts the newsletter. The distribution bot stages the promo across socials. I sit at the back of the shop as editor-in-chief: I approve, I edit, I hit publish, and I do the handful of things none of them can do. The site is small enough to run on a coffee budget and real enough that it covers its own rent and then some.
+
+This is the business behind that. The org chart, what it earns, what it costs to the dollar where I can pin it, and the work I still do by hand. I [reviewed the framework underneath it](/blog/reviewing-vercels-eve-agent-framework) already — three eve agents in one Slack channel. This is the ledger.
+
+## The org chart
+
+A real company has a chart. So does this one. Three reports, one editor-in-chief, and a single rule about who is allowed to do what without asking me.
+
+<Mermaid chart={`
+flowchart TD
+  EIC["Editor-in-chief (me)"] --> CONTENT["Content bot — writing"]
+  EIC --> OPS["Ops bot — analytics, links, email"]
+  EIC --> DIST["Distribution bot — promo"]
+  CONTENT -->|"opens PR"| EIC
+  OPS -->|"repair PR / draft campaign"| EIC
+  DIST -->|"staged posts"| EIC
+  EIC -->|"approve / edit / publish"| LIVE["Live site"]
+`} />
+
+Read it top-down like any org chart, with one twist: every arrow back up to me is a gate. The content bot drafts a whole post and opens a pull request; it does not merge. The ops bot finds a dead affiliate link and opens a repair PR; it does not push to production. The distribution bot stages a week of promo; it does not post until I thumbs-up it. The bots own the work. I own the publish.
+
+That gate is the whole system. It's the [one rule I enforce across all three bots](/blog/the-autonomy-boundary): anything reversible runs unattended; anything that reaches another person or can't be undone stops for me. A draft on a branch costs nothing if it's wrong. A post on my domain under my byline does. So the reversible work runs whenever it's triggered, and the irreversible work waits at my desk.
+
+Here's each role, the way I'd write it on a job req.
+
+### Content bot — the writer
+
+Owns the blog. I drop an idea in Slack (a title, a paragraph, a link) and it drafts the MDX, generates the pixel-art images, runs its own review loop, and opens a PR. It [grades its own homework before I see it](/blog/how-my-blog-bot-reviews-its-own-writing): two cold readers from different model families score the draft against a rubric and force a revision loop until they both say ship. By the time a draft reaches me, it has already survived an editor that isn't me.
+
+What I get is coals, not gospel. The draft is most of the way there and honest about its own weak spots. I do the last stretch, the part that has to be mine.
+
+### Ops bot — the operator
+
+Owns everything that isn't writing or promotion. It holds the analytics keys and the email keys. It runs a weekly check that every affiliate and commission link still resolves, and when one 404s it opens a repair PR instead of paging me. It drafts the newsletter from the week's published posts and parks it for my approval. It watches deploy health. It files the small SEO fixes as PRs.
+
+This is the unglamorous half of a one-person media business, and it's the half I used to drop on the floor. A dead affiliate link is money leaking out of the site for however many weeks until I notice. The way it used to go: a vendor changes a campaign URL, the link starts 404ing, and I find out a month later in the analytics if I find out at all. Now I don't have to notice. The ops bot runs the weekly check and hands me a one-line repair PR with the broken URL and the fix, and I merge it from my phone.
+
+### Distribution bot — the megaphone
+
+Owns reach. When a post merges, it stages the promo — the threads, the short posts, the scheduling, then waits. I approve from my phone. It never speaks in my name until I've said go, because a bad post to a stranger under my handle is exactly the kind of outbound, irreversible action that stops at my gate.
+
+## What it costs
+
+Start with the bill, because that's the number I can pin down. Here's the monthly run-rate as honestly as I can split it.
+
+| Line item | Monthly | What it's for |
+| --- | --- | --- |
+| Vercel (Pro/team base + 3 eve agents) | ~$80 base + usage | Site hosting, plus the agents' Workflows / Sandboxes / Functions usage |
+| Anthropic Claude Max | $200 | My operator-loop drafting/review and daily driving |
+| Model API credits | ~$45 amortized | Deployed bot turns, second-reader calls, image generation |
+| Resend (Pro) | ~$20 | Transactional + newsletter sends |
+| Ahrefs (Lite) | $149 | SEO: keyword and backlink research |
+| Plausible (Business) | ~$19 | Privacy-friendly analytics the ops bot reads |
+| WisprFlow | ~$15 | Voice-to-text — how I brief the bots by talking |
+| **Total** | **~$530–600/mo** | Padded for variable Vercel + API usage |
+
+A few of those need a footnote, because the interesting cost is the one everyone's about to ask about: what do three trigger-driven AI agents add on top of a normal Vercel bill?
+
+The honest answer is *usage, not a flat seat*. eve's cost rides on the platform underneath it — each session and turn invokes agent routes and creates Workflow events, and tool calls that hit external APIs add Function duration on top. The Vercel side of that is Workflows, Functions, and Sandboxes; the model tokens are separate API spend on top. For three bots that wake on triggers — a post draft, a weekly link check, some staged promo — that lands in the tens of dollars a month for me, not the hundreds, on top of the ~$80 base. The number moves with how chatty your agents are. For scale, Vercel publishes [a far heavier agent of its own](https://vercel.com/blog/introducing-eve): it says its inbound Lead Agent costs about $5,000 a year to run and returns roughly 32 times that, maintained part-time by one engineer. That's a self-reported number from the company selling the framework, so take it as directional, not a promise. Mine are featherweight next to it either way.
+
+<Image src="https://zackproser.b-cdn.net/images/portfolio-that-pays-rent-ledger.jpg" alt="Pixel art of an open ledger book on a desk, two columns — a stack of coins labeled IN on the left, a row of small service-icon receipts labeled OUT on the right — with a calculator and a tiny robot accountant tallying the difference" width={1200} height={675} />
+
+The model spend is the part that changed shape this year. I pay $200/month for Claude Max, which covers my own drafting and review in the operator loop. The deployed bots' model turns run on metered API credits instead. I used to *also* pay $200/month for an OpenAI subscription so the second cold reader could be a different model family; I dropped that. Now I top up API credits — around $250 at a time — and let it ride for months, calling the other family only when the review loop needs a genuinely independent read. Two flat $200 subscriptions became one subscription plus metered credits, and the metered side is cheaper because the bots fire on triggers, not all day. Image generation rides on those same API credits, so there's no separate line for it.
+
+The one tool on that list I'd miss immediately, and it's for *me*, not the bots, is <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink>. The whole point of the setup is that I brief the bots from my phone while I'm walking the kids somewhere. Talking is faster than thumbing out a paragraph, so the idea that becomes a post usually starts as me dictating two sentences into Slack. The $15 is rounding error against how much more often I capture the idea instead of losing it.
+
+## What it earns
+
+Now the side I won't fabricate, because it's my actual money. I'll tell you the shape and let the exact dollars stay mine to confirm.
+
+The site earns along four lines, and they don't weigh the same:
+
+<Mermaid chart={`
+flowchart LR
+  SITE["The site"] --> AFF["Affiliate / commissions"]
+  SITE --> SPON["Sponsorships"]
+  SITE --> PROD["Courses & paid content"]
+  SITE --> LEADS["Inbound leads — consulting / speaking"]
+  AFF -->|"passive, recurring"| REV["Revenue"]
+  SPON -->|"lumpy, per-deal"| REV
+  PROD -->|"step function on launch"| REV
+  LEADS -->|"largest, indirect"| REV
+`} />
+
+- **Affiliate and commissions** are the passive base. Tools I use and would recommend anyway — the ops bot's job is to keep every one of those links alive so this line doesn't quietly leak.
+- **Sponsorships** are lumpy. A good month and a quiet month don't look alike.
+- **Courses and paid content** move in a step function: flat between launches, a spike around one.
+- **Inbound leads** are the line that dwarfs the rest and never shows up as "blog revenue." A post leads to a consulting conversation or a paid talk. That's the real business; the affiliate dimes are the part that literally covers the hosting bill.
+
+Here's the claim I'll stand behind without quoting a figure I haven't cleared: on a trailing average the affiliate-and-sponsorship base covers the ~$530–600/month run-rate with margin, and the leads line is the actual return. The site pays its own rent out of the passive lines, and the writing pays me when it turns into a consulting call or a paid talk. I'm leaving the exact dollars out on purpose; the useful part is the shape.
+
+## What I still do by hand
+
+The bots took the middle of the work. They did not take the ends, and I won't let them.
+
+I am the **spark**. Every post starts as something that won't leave me alone: a problem I hit, an opinion I can't shake, a thing I did myself. A bot can write *about* an idea; it can't *have* one I lived. When this post needed real numbers, the bot stopped and asked me, because inventing my rent would be the worst thing it could do. That boundary is the whole [spark / bellows / quench](/blog/spark-bellows-quench) split: the machine takes the bellows, the rough-draft-to-shaped-draft mechanical middle, never the ends.
+
+I am the **quench**. I hit publish. My byline, two decades of reputation, my name on the thing. The bot opens a PR and that is the end of its authority. I read every word, cut what's wrong, fix what's flat, and decide whether it ships. Most drafts need a few real edits. Some need a rewrite. A couple I kill outright, usually because the draft has all the right nouns and none of the thing I actually lived. That judgment is not delegable, and the org chart is built so it can't be — there's no path from a bot to the live site that doesn't pass through my desk.
+
+<Image src="https://zackproser.b-cdn.net/images/portfolio-that-pays-rent-editor.jpg" alt="Pixel art of a human editor at a desk with a red pen over a glowing draft, three finished pull-request cards stacked in an inbox tray beside them, a PUBLISH button under the human's hand and a dotted line keeping three small robots on the far side of the desk" width={1200} height={675} />
+
+And I do the things that *are* the relationship, not the content. The consulting calls. The talks. Replying to the reader who wrote something thoughtful. Deciding what the site is even *for* this quarter. The bots are a great staff. They are not the founder, and they're not the point. They free me to spend my attention on the parts only I can do, which is the entire reason to hire them.
+
+## Would I run a business on this?
+
+It's running right now. As I write this, the menagerie is chattering in Slack without me — a draft here, a link check there, a promo staged and waiting for a thumb. The bill is real and small. The revenue covers it and the leads exceed it. The work I care about is the work I kept.
+
+The AI mattered less than the reporting lines. I decided what each bot could touch, made publishing impossible without me, and let the boring work run on triggers. My site used to be another bill and another guilt pile. Now it has owners for the unglamorous work, a hard publish gate, and enough passive revenue to cover the stack. I'm the editor-in-chief who still signs the posts.
+
+If you want this kind of agent org chart for your own publishing or devrel machine, that's the [consulting work I do](/services): the org chart, the permissions map, the review gates, and the first agent workflow, drawn before the bots get wired into anything that can spend your name.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-hero.jpg"
+  imageAlt="Pixel art of three little robot agents running a tiny website storefront together"
+  eyebrow="Read this next"
+  title="Reviewing Vercel's eve agent framework by hiring my website three AI employees"
+  description="The framework underneath this business: how I built the three bots, why each is its own repo, and why Slack is the whole interface."
+  href="/blog/reviewing-vercels-eve-agent-framework"
+/>
