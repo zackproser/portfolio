@@ -1,0 +1,128 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# The Autonomy Boundary
+
+<Image src="https://zackproser.b-cdn.net/images/the-autonomy-boundary-hero.jpg" alt="Pixel art of a glowing boundary line splitting a control room in two: on the left, small robots working unattended in green light; on the right, a single human hand poised over a red lever guarding a door marked OUTBOUND" width={1200} height={675} />
+
+I run three bots that act without me in the loop. An inbox classifier that reads my email and writes replies. A blog assistant that drafts posts, makes images, and opens pull requests. Devin, shipping code from a Slack message. People keep asking whether agents can do the work. Mine already do. The question I actually had to answer is uglier: what am I willing to let one do while I'm asleep?
+
+I have a one-line answer, and I apply it the same way every time:
+
+**An agent can do anything reversible on its own. Anything irreversible or outbound stops for a human.**
+
+That's the whole rule. Reversible work runs unattended. The moment an action is hard to undo, or leaves my four walls and lands in front of another person, it parks at a gate and waits for me. I've drawn that line across all three bots and it has never once felt arbitrary. The line held for email, for writing, and for code. Here's where it cut.
+
+## Two questions, not a vibe
+
+Most people gate agents on a feeling. "This one seems risky, I'll watch it; this one seems fine, let it rip." That doesn't survive contact with a system that fires every five minutes whether you're paying attention or not. You need a test you can apply in one second, the same way, to an action you've never seen before.
+
+Mine is two questions, asked in order:
+
+<Image src="https://zackproser.b-cdn.net/images/the-autonomy-boundary-decision-tree.jpg" alt="Pixel art decision-tree diagram. Top node: 'agent wants to take an action'. First branch: 'Is it reversible?' — NO routes down to a red 'STOP, human gate'. YES flows to second branch: 'Is it outbound (leaves my walls / reaches another person)?' — YES routes to the same red 'STOP, human gate'; NO flows to a green 'RUN UNATTENDED' node. The red gate node has a small human figure beside it; the green node has small robots." width={1200} height={833} />
+
+1. **Is it reversible?** Can I cleanly undo it in under a minute, with no user-visible effect on anyone but me? A Gmail draft sitting in a thread is reversible; I delete it. A label on a message, reversible. A commit on a private branch is reversible enough; I delete the branch or close the PR before it merges. Money moving, a row deleted in prod with no backup, an email leaving my outbox: not reversible.
+
+2. **Is it outbound?** Does it cross my boundary and reach a person who isn't me? A draft is inbound. It sits in my house until I touch it. A *sent* email is outbound. A merged PR that deploys is outbound. A reply posted in someone else's Slack is outbound.
+
+If an action is reversible **and** stays inside my walls, the agent does it unattended. If it fails either test, it stops and waits for a human. Outbound matters as much as reversibility, because some outbound actions are technically reversible and still unacceptable. I can send a retraction after a bot emails a stranger something wrong under my name. The send is undoable in the mechanical sense. The *impression* is not. Anything that spends my reputation is irreversible no matter what the API says.
+
+Here's the same test as a table you can steal:
+
+| Action | Reversible? | Outbound? | Gate |
+| --- | --- | --- | --- |
+| Draft an email reply | yes | no | run unattended |
+| Send that email | **no** (reputationally) | **yes** | human |
+| Commit to a branch | yes | no | run unattended |
+| Merge / deploy the PR | **no** | **yes** | human |
+| Delete a prod row, no backup | **no** | no | human |
+
+Two columns decide it. One "no" on reversible, or one "yes" on outbound, sends the action to the human gate. Everything that's reversible *and* inbound runs on its own.
+
+That's the stance. Here's where it cut in practice.
+
+## Bot one: the inbox classifier
+
+The clearest place I drew the line is the [AI inbox classifier](/blog/inbound-classifier-trigger-dev) I built on Trigger.dev. A cron task reads anything I've labeled `needs-reply`, classifies it, and writes a reply in my voice. Forty-odd of these a week: sponsor pitches, recruiter outreach, expert-network calls.
+
+The action splits exactly where the boundary says it should. **Drafting is reversible and inbound.** The classifier writes the reply and drops it into the original Gmail thread as a draft. A wrong draft costs me nothing; I delete it before anyone sees it. So drafting runs unattended, every five minutes, forever, and I never think about it.
+
+**Sending is irreversible and outbound.** A wrong send goes to a stranger, under my name, and I can't take it back. So sending does not happen automatically because the system feels confident. It has to *earn* the autonomy, per category, on evidence.
+
+<Image src="https://zackproser.b-cdn.net/images/the-autonomy-boundary-graduation-ladder.jpg" alt="Pixel art of a ladder labeled 'graduation ladder': a category climbs rungs marked 'manual draft', then '10 verified drafts', then 'auto-send', while a hard floor at the bottom labeled 'never auto-send' holds back two greyed-out categories" width={1200} height={675} />
+
+The mechanism is a graduation ladder. A category runs in manual-draft mode until I've sent roughly ten of its drafts *verbatim*. Not "after a tweak." Verbatim. Only then does one env var opt that single category into auto-send. The first two that earned it were expert-network intros, where the response is always some flavor of "yes, $650/hour, send the booking link." Calibrated enough that I trust it.
+
+The safety architecture around that one capability is the proof this is a boundary and not a preference:
+
+- **Hard disqualifications.** Some categories can *never* auto-send, regardless of what the env var says: `expert-network-followup` (post-call payment forms and W-9 chasers, where the action is mine and there's no reply to draft) and `noise` (do-not-reply newsletters). Note that `expert-network-followup` is a different category from the `expert-network` *intros* I let graduate. The boundary is enforced in code, not config.
+- **A kill switch.** Setting `AUTO_SEND_CATEGORIES=` empty reverts everything to manual on the next tick. The outbound capability has an off switch I can hit in one edit.
+- **A belt-and-suspenders notification.** Every auto-send fires a real-time email to me. Even on a graduated category, I want to watch every outgoing the instant it leaves, so I can intervene if something looks off.
+
+The disqualification isn't a setting I can fat-finger away. It's a check that runs before the env var is ever consulted:
+
+```typescript
+// Categories that earned auto-send (the graduation ladder), from env.
+const AUTO_SEND_CATEGORIES = new Set(
+  (process.env.AUTO_SEND_CATEGORIES ?? "").split(",").map((s) => s.trim()).filter(Boolean),
+);
+
+// Never auto-send these, regardless of env.
+const AUTO_SEND_DISQUALIFIED = new Set(["expert-network-followup", "noise"]);
+
+const shouldAutoSend =
+  hasReply &&
+  AUTO_SEND_CATEGORIES.has(category) &&      // graduated?
+  !AUTO_SEND_DISQUALIFIED.has(category);     // and not hard-blocked?
+```
+
+A config typo can promote a category into `AUTO_SEND_CATEGORIES`. It cannot promote one past the hard-coded set. The irreversible action has two locks, and only one of them is a string I edit.
+
+There's a physical version of the boundary too, which I love. The Gmail OAuth grant is staged. The drafting phase only ever holds the `gmail.modify` scope. I didn't grant `gmail.send` until the day I promoted the first category. For a long stretch the system was *physically incapable* of sending. The irreversible action wasn't behind a flag; it was behind a permission I hadn't given yet. That's the boundary made of something harder than my own discipline.
+
+## Bot two: the blog assistant
+
+The second bot drafted this post. It writes in my voice, generates the pixel-art images, uploads them to the CDN, and opens a pull request against my portfolio; then I edit and decide whether it ships. A lot of motion, all of it unattended up to the PR. It maps onto the same line as the inbox bot, exactly.
+
+<Image src="https://zackproser.b-cdn.net/images/the-autonomy-boundary-pr-gate.jpg" alt="Pixel art of an open pull request glowing on a screen: a robot has stacked commits, images, and a diff on the left; on the right a human stands at a 'merge' button that the robot cannot reach, a dotted boundary line between them" width={1200} height={675} />
+
+Drafting, imaging, branching, opening the PR: all reversible, all inbound. For this post, it wrote the first draft of the MDX you're reading, generated four pixel-art images, uploaded them to my CDN, and opened a pull request against my portfolio. I supervised none of it, and then I edited it and decided whether it shipped. A bad draft on a branch costs nothing. I close the PR and the branch goes away, and no reader ever saw it. The CDN uploads sit at unlinked URLs nothing points to until the post goes live, and the repo is mine, so opening a PR pings me and no one else. Inbound, all of it.
+
+Merging is where it stops. **A merge is the publish.** It ships to my domain, under my byline, in front of my readers. Outbound, and in the way that matters, irreversible. The retraction never reaches everyone who saw the original. So the bot does not merge. It cannot merge. It opens a PR and that is the end of its authority. I wrote about this division of labor as the [spark, the bellows, and the quench](/blog/spark-bellows-quench): the machine can take the whole middle of the work, but the quench, hitting publish and putting my mark on it, is mine and only mine. The autonomy boundary is the engineering name for the line the craft already demands. The PR *is* the gate. It's about the most natural human checkpoint there is: a reversible artifact that sits there, fully formed, until a person with judgment says ship it.
+
+## Bot three: Devin
+
+The third is [Devin](/blog/devin-has-come-a-long-way), which my team at WorkOS now uses daily and which I've been running on my own repos. You drop a task in Slack and a PR comes back. Different vendor, different surface, identical boundary, because the boundary is about the *action*, not the agent.
+
+Devin provisions a VM, reads the repo, writes the code, runs the tests, opens the PR. Every one of those is reversible and stays inside the workspace. So I let it run from a one-line Slack message without watching. Where it stops is exactly where bot two stops: the merge. The PR is reviewable, follows the repo conventions, runs the linter. Then it waits. A human reviews and merges. The agent ships work; a person ships *to production*.
+
+Here's the useful part: **the line does not move when the vendor changes.** I didn't write a Devin policy and an inbox policy and a blog-bot policy. I wrote one rule about actions and the three bots sorted themselves. When I add a fourth agent next quarter, I won't reason about it from scratch. I'll ask the two questions and the gate places itself.
+
+## Where the stance gets argued
+
+The common objection is that this is too conservative, that gating every outbound action throttles the whole point of an agent. I think that's backwards, and here's the argument.
+
+The math is lopsided. The upside of an unattended outbound action is that you saved yourself ten seconds of clicking Send. The downside is a wrong email to a stranger under your name, a bad merge in production, a deleted row with no backup. You are risking the irreversible to save the trivial. No competent operator takes that trade, and dressing it up as "agentic" doesn't change the math.
+
+The reversible side is where the real power is, and the boundary is what *lets me turn it all the way up*. Because drafting can't hurt me, the classifier runs every five minutes with zero supervision. Because a branch is free, the blog bot drafts whole posts I never asked for and I lose nothing. Because a PR is reversible, Devin runs on a one-line prompt. I'm not throttling autonomy. I'm pointing all of it at the half of the work where mistakes are free, and reserving thirty seconds of my attention for the half where they aren't.
+
+There's a quieter benefit. Drawing the line in *code* (staged OAuth scopes, hard-coded disqualifications, a no-merge agent) means I'm not relying on my own judgment in the moment. The boundary holds when I'm asleep, distracted, or wrong. That's the only kind of boundary worth having. A rule you have to remember to enforce isn't a boundary. It's a hope.
+
+## The stance, in one line
+
+Let an agent do anything it can cleanly take back. Make it stop the instant an action would reach another person or can't be undone. Then enforce that split in the system, not in your willpower: staged permissions, hard disqualifications, a kill switch, a PR it can't merge.
+
+For a growing class of boring, well-scoped work, capability is no longer the bottleneck. The agents can do it. The only question left is which of their actions you're willing to make unrecoverable. For me, the honest answer is none of them. My inbox can fill with drafts, my repo can fill with branches, and Devin can burn a VM all night. None of them can spend my name without me. Everything irreversible waits at the gate. Everything else, go.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/inbound-classifier-hero.webp"
+  imageAlt="A pixel-art inbox classifier sorting emails into color-coded categories"
+  eyebrow="Read this next"
+  title="I Built an AI Email Inbox That Replies — With Safety Checks"
+  description="The full build of the inbox classifier: the graduation ladder, staged OAuth scopes, and the per-category gate that draws this exact line in production."
+  href="/blog/inbound-classifier-trigger-dev"
+/>
