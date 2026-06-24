@@ -25,9 +25,9 @@ A real company has a chart. So does this one. Three reports, one editor-in-chief
 
 <Mermaid chart={`
 flowchart TD
-  EIC["Editor-in-chief"] --> CONTENT["Content bot — writing"]
-  EIC --> OPS["Ops bot — analytics, links, email"]
-  EIC --> DIST["Distribution bot — promo"]
+  EIC["Me, editor in chief"] --> CONTENT["Content bot: writing"]
+  EIC --> OPS["Ops bot: analytics, links, email"]
+  EIC --> DIST["Distribution bot: promo"]
   CONTENT -->|"opens PR"| EIC
   OPS -->|"repair PR / draft campaign"| EIC
   DIST -->|"staged posts"| EIC
