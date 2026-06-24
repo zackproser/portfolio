@@ -64,7 +64,7 @@ The split in step 2 is the part people get wrong. A regex catches the spelunking
 
 ## What it caught on this post
 
-The first draft of the paragraph you started reading at the top went through the scanner and failed. Five hard hits, nine soft tells, em-dash density 8.4 per thousand words, flagged HIGH. I can't paste the raw output here, and that fact is the cleanest demonstration of the whole problem: the scanner runs over this file too, so printing its own findings verbatim would trip it again. The banned tokens are radioactive even as quotations.
+The first draft of the paragraph you started reading at the top went through the scanner and failed. Five hard hits, six soft tells, em-dash density 8.4 per thousand words, flagged HIGH. I can't paste the raw output here, and that fact is the cleanest demonstration of the whole problem: the scanner runs over this file too, so printing its own findings verbatim would trip it again. The banned tokens are radioactive even as quotations.
 
 So here is what it caught, named instead of reproduced. The spelunking verb, twice. The negate-then-assert contrast, once, in the opening line, where I had waved off an obvious word so a grander one could take the spotlight before I cut it. Two pieces of corporate filler I'd written out as specimens in the tells section, the one that means "use" and the one that means a long examination. The gate counted every one as use, not as a citation, because a regex can't see the quotation marks around a word.
 
