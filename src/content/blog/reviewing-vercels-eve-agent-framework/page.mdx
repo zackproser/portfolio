@@ -10,13 +10,15 @@ export const metadata = createMetadata(rawMetadata)
 
 <Image src="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-hero.jpg" alt="Pixel art of three little robot agents running a tiny website storefront together — one writing a blog post, one watching an analytics dashboard, one scheduling social posts" width={1200} height={675} />
 
-I built the original Blog Bot at WorkOS, proved it out across the org, and watched it get real adoption. Then I started fighting it.
+A Slack channel called `#website-menagerie` lit up while I was making coffee. Blog bot: *published the eve review.* Website-manager, twelve seconds later: *queued the campaign, affiliate links all 200.* Social bot: *four promo drafts staged, holding for your approval.* Three bots I'd hired that week, handing work to each other, running my business while I stood there with a French press. Nobody told them to. That's the moment I knew eve was worth writing about.
 
-It was homebrewed against Cloudflare primitives. Workers, Durable Objects, queues, KV, a webhook bridge I'd hand-wired and kept patching. Every new capability meant another piece of glue, and every piece of glue was another thing that could regress. I'd fix the Slack delivery path and the cron would drift. I'd fix the cron and a Durable Object would hold stale state. None of it was hard, exactly. It was just brittle, and the brittleness compounded. I was spending more time keeping the plumbing alive than teaching the bot to do anything new.
+Back up. I built the original Blog Bot at WorkOS, proved it across the org, watched it get real adoption. Then I spent months fighting it.
 
-So I went hunting for an agentic framework. I wanted the substrate handled by someone whose full-time job is the substrate, so I could go back to writing tools and skills instead of webhook bridges. That hunt is how I landed on Vercel's eve, and the cleanest way to review a framework is to give it a real job with money attached. So I didn't build a demo. I hired my website three employees: a content bot, an ops bot, and a growth bot, each running on eve, deployed to Vercel, talking to each other over Slack and eve channels.
+It was homebrewed against Cloudflare primitives. Workers, Durable Objects, queues, KV, a webhook bridge I'd hand-wired and kept patching. Every new capability meant another piece of glue, and every piece of glue was one more thing that could regress. Fix the Slack delivery path, the cron drifts. Fix the cron, a Durable Object serves stale state. None of it was hard. It was brittle, and the brittleness compounded until I was spending more time keeping the plumbing alive than teaching the bot anything new.
 
-This is a real review, friction and all. A silent webhook that never fired. Beta builds that broke a tool-loop mid-flight. A 401 from Vercel's own Deployment Protection. I'll tell those war stories, because they're what you actually pay to learn. But I'll start with the part that surprised me: eve is good. In testing it felt polished and production-ready, and it killed my glue-code sprawl outright.
+So I went hunting for a framework. I wanted the substrate owned by someone whose full-time job is the substrate, so I could get back to writing tools and skills instead of webhook bridges. That hunt landed me on Vercel's eve. The honest way to review a framework is to bet something real on it, so I skipped the demo and hired my website three employees: a content bot, an ops bot, and a growth bot. Each runs on eve, deploys to Vercel, and talks to the others over Slack and eve channels.
+
+This is a real review, friction and all. A silent webhook that never fired. Beta builds that snapped a tool-loop mid-flight. A 401 from Vercel's own Deployment Protection. I'll tell those war stories, because they're the part you actually pay to learn. But the headline is the coffee: eve felt production-ready the first afternoon, and it killed my glue-code sprawl outright.
 
 <Image src="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-glue-sprawl.jpg" alt="Pixel art of a developer at a workbench surrounded by tangled, sparking glue code connecting mismatched blocks, looking toward a clean doorway labeled agent frameworks with tidy modular boxes beyond" width={1200} height={675} />
 
@@ -59,7 +61,7 @@ import { anthropic } from '@ai-sdk/anthropic'
 
 export default defineAgent({
   name: 'website-manager',
-  model: anthropic('claude-sonnet-4-5'),
+  model: anthropic('claude-opus-4-8'),
   instructions: 'You run ops for zackproser.com. Protect revenue. Never merge.',
 })
 ```
@@ -126,7 +128,11 @@ And then there's Slack. I've wired Slack into agents enough times to have strong
 
 ## How the agents talk: channels
 
-This is where eve earns "multi-agent" instead of "three bots in a trench coat." There are three lanes, each carrying a different kind of traffic.
+This is where eve earns "multi-agent" instead of "three bots in a trench coat." All three live in one Slack channel, `#website-menagerie`, so I can watch the relay happen in real time: blog bot ships, website-manager picks it up, social bot stages the promo, each one tagging the next. It reads like a tiny team standup that never sleeps.
+
+<Image src="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-website-menagerie.jpg" alt="Simulated Slack channel named website-menagerie with three bot members handing work to each other: blog-bot posts that the eve review published, website-manager replies that it queued a Resend campaign and checked affiliate links, social-bot replies that it scheduled promo posts in Typefully, and a human reacts with approve" width={1200} height={675} />
+
+Under the hood, three lanes carry three different kinds of traffic.
 
 <Image src="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-message-flow.jpg" alt="Pixel art message-flow diagram: a Slack event hits a Vercel Connect webhook trigger, routes to /eve/v1/slack into the Blog bot deployment, which POSTs over eveChannel to the Website-manager bot, which queues a Resend campaign — with a warning callout on the trigger-path gotcha" width={1200} height={675} />
 
@@ -145,7 +151,7 @@ await eveChannel.send({
 })
 ```
 
-Blog bot publishes, website-manager queues a Resend campaign, social bot schedules the promo. Each handoff is one authenticated POST. No shared database, no queue to run, no glue to maintain. After what I came from, that absence is the feature.
+That one call is the whole relay. Blog bot publishes, fires a POST, and goes back to sleep. Website-manager wakes up, queues the campaign, POSTs the social bot. Social bot stages the promo and waits for me. One authenticated POST per handoff. No shared database, no queue to babysit, no bridge to patch at midnight. After what I crawled out of, that *absence* is the whole feature.
 
 **Plausible is the shared signal.** Both ops and growth read from it, so "what's converting" flows from the ops bot to the social bot without a custom pipeline between them. The growth bot optimizes against the same numbers the ops bot is watching.
 
@@ -210,7 +216,7 @@ A weekly "Engine Review" digest is the steering wheel. The autonomy boundary is 
 
 ## The build method: agents building agents
 
-I built this multi-agent system with a multi-agent workflow, which felt right in a way worth calling out.
+I built this multi-agent system with a multi-agent workflow, which is either poetic or a warning sign, and I'm not sure which.
 
 <Image src="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-dual-build.jpg" alt="Pixel art of two AI coding agents pair-building at a shared workbench: one labeled Claude orchestrating and writing, one labeled Codex reviewing with a magnifying glass and flagging an abort-signal bug, with a shared task board syncing them" width={1200} height={675} />
 
@@ -236,7 +242,7 @@ The edges to budget for:
 - **Vercel Connect setup.** The trigger-path mismatch, Deployment Protection, and duplicate Slack apps are each an afternoon if you don't see them coming.
 - **Observability gaps.** Silent non-delivery is the recurring villain. Leave time for diffing working against broken, because the framework won't always tell you what failed.
 
-Would I run my business on it? It's running now. I'll check the numbers in a couple weeks, which is the only review that ever really counts.
+Would I run my business on it? It's running right now, while I write this. The menagerie is still chattering in Slack, handing work back and forth without me. I'll check the numbers in two weeks. That, not any feature list, is the only review that counts.
 
 <ReadNextCard
   image="https://zackproser.b-cdn.net/images/two-agents-one-phone-hero.webp"
