@@ -36,9 +36,9 @@ const MODIFIED_AT = '2026-05-14'
 
 export const metadata: Metadata = {
   title:
-    'Granola review — the AI notetaker I actually use every meeting, 12 months in',
+    'Granola review — the AI notetaker I use every meeting, 12 months in',
   description:
-    'A long-form review of Granola from twelve months of daily use across exec syncs, customer calls, hiring screens, and external strategy. The four meeting shapes I run it for, the prompt pack I have refined, the comparison vs calendar bots and cloud recorders, the cost, and the limits I keep.',
+    'A long-form review of Granola after twelve months of daily use — the four meeting shapes I run it for, the prompt pack, the comparison, the cost, and the limits.',
   authors: [{ name: 'Zachary Proser', url: 'https://zackproser.com' }],
   keywords: [
     'Granola',
