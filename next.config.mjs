@@ -165,6 +165,49 @@ const nextConfig = {
         source: '/blog/rag-pipeline-tutorial-free',
         destination: '/blog/langchain-pinecone-chat-with-my-blog',
         permanent: true
+      },
+      // ── Reclaim broken backlinks (Ahrefs Site Explorer, 2026-06) ──
+      // 404'd URLs with live referring domains; redirected to live
+      // equivalents to recover inbound link equity. Append-only.
+      {
+        source: '/blog/app',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/blog/untitled',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/blog/blog',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/blog/applied-ai-engineer',
+        destination: '/applied-ai-engineer',
+        permanent: true
+      },
+      {
+        source: '/blog/speaking',
+        destination: '/speaking',
+        permanent: true
+      },
+      {
+        source: '/blog/blog/wisprflow-review',
+        destination: '/blog/wisprflow-review',
+        permanent: true
+      },
+      {
+        source: '/CanyonRunner/index.html',
+        destination: '/blog/canyonrunner-html5-game',
+        permanent: true
+      },
+      {
+        source: '/blog/article/I-Open-Sourced-My-Twitter-AI-Platform-Goodneighbor',
+        destination: '/blog',
+        permanent: true
       }
     ]
   },
