@@ -1,0 +1,8 @@
+{
+  "title": "I Rebuilt My Blog Bot on Vercel's eve in Under Two Hours",
+  "author": "Zachary Proser",
+  "date": "2026-06-19",
+  "description": "I ported my homebrewed Cloudflare blog bot to eve, Vercel's new agent framework, jet-lagged and exhausted, and had it shipping real PRs from my personal Slack the same night. This is the bot writing about its own rewrite.",
+  "image": "https://zackproser.b-cdn.net/images/cloudflare-to-vercel-eve-blog-bot-hero.jpg",
+  "tags": ["AI", "Agents", "Vercel", "eve", "Slack", "Developer Tools", "Agentic"]
+}
