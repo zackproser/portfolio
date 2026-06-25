@@ -38,7 +38,7 @@ Durability is what makes them useful. Each session runs on Vercel Workflow, so i
 
 The roster runs in two tiers. The first six are in production today. The last three are designed and partway built, coming online now. Each one owns its domain, and only its domain holds its tools, its connectors, and its secrets. Least privilege, the same as you'd scope a service.
 
-- **Margin** owns my calendar and wellbeing. It reads my Oura ring, protects rest and childcare time, and runs on tiered autonomy. It tells the rest of the fleet when I'm unavailable, whatever the calendar says.
+- **Margin** owns my calendar and wellbeing. It reads my Oura ring, protects rest and childcare time, and runs on tiered autonomy. Today it flags that in Slack; once the Chief of Staff is live, it becomes the signal the rest of the fleet schedules around, whatever the calendar says.
 - **Inbox** triages Gmail. It reads, classifies, and drafts.
 - **Resend** runs email marketing, with a hard outbound kill-switch so it physically cannot send a campaign without me.
 - **Blog** is the writer. It drafted this post.
@@ -72,7 +72,7 @@ graph TB
   end
   subgraph planned["Coming online"]
     docs["Docs: SOW, MSA, NDA"]
-    book["Bookkeeper: reconciliation"]
+    book["Bookkeeper: reconciliation (live), invoicing (coming)"]
   end
   cos --> inbox
   cos --> margin
@@ -92,6 +92,8 @@ The roster above is a snapshot. The trajectory is the interesting part, so this 
 
 ### Margin: the one that protects me from myself
 
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-margin.jpg" alt="Pixel art portrait of a guardian robot holding a glowing calendar shield with a heart-rate ring orbiting its head, placing a protected rest block onto a schedule" width={900} height={900} />
+
 Margin started as a calendar bot and became the most important one I own. Its job is guarding the two things I'm worst at protecting on my own: rest and time with my kid.
 
 Today Margin reads my Oura ring every morning and knows my readiness and sleep scores before I do. It already holds my childcare blocks as immovable. Where it's going is the part I care about most. I want to be able to message it "I feel like shit" from bed and have it act on that one sentence: pull my readiness data, find the meetings I can move, draft the reschedule notes, and propose a rearranged day with a real sleep block carved into it before I've finished my coffee. A bad night should reshape the day automatically, with me approving the changes rather than negotiating each one.
@@ -104,19 +106,27 @@ The scheduling itself gets sharper once Margin can see everything. I'm wiring it
 
 ### Inbox: triage that clears the queue
 
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-inbox.jpg" alt="Pixel art portrait of a robot mail clerk sorting incoming envelopes into labeled bins and pinning a short summary card to the most important one" width={900} height={900} />
+
 Inbox reads Gmail, classifies what comes in, and drafts replies today. The direction is less about reading more mail and more about closing loops. A lead email should land as a structured summary, a suggested reply, and a proposed next action, so the work of answering it is one approval instead of a context-switch into my inbox. The follow-up that I always mean to send three days later is the kind of thing Inbox should own and schedule, with the draft waiting for my thumb.
 
 ### Resend: marketing that can't fire by accident
 
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-resend.jpg" alt="Pixel art portrait of a robot marketer at a console holding email envelopes beside a large red physical kill-switch lever, hand hovering near it, waiting for a human go-ahead" width={900} height={900} />
+
 Resend runs email marketing, and its defining feature is the hard outbound kill-switch. Nothing leaves without my approval. As it matures, the value is in drafting whole sequences from a single brief and staging them, so a launch I describe in two sentences in Slack comes back as a full campaign for review. The kill-switch stays exactly as load-bearing as it is now, because a marketing bot that can send on its own is a way to email my entire list a mistake.
 
 ### Bookkeeper: invoicing and reconciliation from a Slack message
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-bookkeeper.jpg" alt="Pixel art portrait of a meticulous robot accountant matching incoming transactions against ledger line items and holding up an invoice card" width={900} height={900} />
 
 Bookkeeper already reads account activity through Plaid to reconcile the bank against the books. It reads transactions and does not move money. The invoicing is the part that's coming online.
 
 The capability I'm building toward is invoicing from Slack. After a call, I want to message "invoice Acme for the December workshop, net 30" and have Bookkeeper draft the invoice, show it to me for approval, send it, and then track it against incoming transactions until it's paid, nudging me when it goes late. The reconciliation it already does and the invoicing it's growing into are two halves of the same job: knowing what's owed, what's paid, and what's overdue, without me keeping any of it in my head. When the banking workflow moves onto Mercury, the same approval gates ride along.
 
 ### Docs: minting uniform business artifacts
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-document.jpg" alt="Pixel art portrait of a robot legal clerk holding a freshly minted sealed contract with a row of uniform template pages behind it" width={900} height={900} />
 
 Docs is the bot I'm most excited to finish. Running a consulting business means generating the same legal artifacts over and over: SOWs, MSAs, NDAs, order forms. Done by hand, each one is a chance to fat-finger a client name, a date, or a payment term.
 
@@ -144,6 +154,12 @@ sequenceDiagram
   Docs-->>Me: signed + filed, here's the link
 `} />
 
+### Blog: the writer that drafted this
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-blog.jpg" alt="Pixel art portrait of a friendly robot writer at a small desk typing a glowing article, a stack of finished pages beside it and a quill icon above" width={900} height={900} />
+
+Blog is the bot that wrote this post. I hand it a rough idea in Slack and it researches, drafts, generates the images and diagrams, runs its own voice and anti-slop passes, and opens a pull request against my portfolio repo for me to review. It owns the part of my content pipeline that used to stall: the blank page. Where it grows is into a tighter loop with Social, so a published piece becomes a staged thread without me copy-pasting between two tools. It writes; I edit and ship.
+
 ### Social and Portfolio: the steady hands
 
 Social stages posts to X and LinkedIn through Typefully, and Portfolio handles site ops, SEO, and analytics. Both run today and need the least from the vision. They're the proof that a bot doesn't have to be ambitious to be worth it. Some of the fleet exists to keep the lights on while the rest does the heavy lifting.
@@ -160,11 +176,17 @@ Chat-as-interface is what makes that work, and the parts that matter are boring.
 
 I gave a talk at AI Engineering London called [Untethered Productivity](/blog/aie-london-untethered-productivity) about exactly this. Agents scale infinitely, but your nervous system doesn't. The win is getting unhooked from the desk while the work keeps moving. I built the fleet after that talk because I was tired of holding ideas until I got back to a keyboard. The keyboard stopped being where the work happens.
 
-## How the bots talk to each other
+## How the bots talk to each other, with the Chief of Staff in front
 
-The Chief of Staff does not reimplement the specialists. The lazy version gives the orchestrator its own Gmail tools and its own calendar logic, and that produces one god-object bot that knows everything, holds every secret, and resists reasoning. So the Chief of Staff *calls* the specialists instead, using eve's remote-agents feature.
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-chief-of-staff.jpg" alt="Pixel art portrait of a compass-shaped orchestrator robot at a central command desk with many small screens, each showing a specialist teammate, light-lines running out to the edges of the frame" width={900} height={900} />
 
-Each specialist is declared as a remote agent that points at its own deployment's HTTP endpoint, a `POST` to `/eve/v1/session`. eve lowers that declaration into an ordinary tool with a `{ message, outputSchema }` shape. From the orchestrator model's point of view, delegating to Inbox or Margin looks identical to calling any other tool, or to spawning a subagent. It says "draft a reply to this lead" or "find a time that works for me and Nick," the specialist runs its own durable session against its own connectors, and it returns a structured result.
+The Chief of Staff is the single front door. In the finished system I talk to it and almost nothing else, and it relays to the specialists on my behalf. That's the design eve is built for: a main agent that delegates focused subtasks to child agents, each with its own prompt, tools, and identity, and then combines the results. eve's own docs describe a subagent as a separate agent with fresh state that the main agent hands a narrow job to, which is exactly the role each specialist plays.
+
+The Chief of Staff does not reimplement the specialists. The lazy version gives the orchestrator its own Gmail tools and its own calendar logic, and that produces one god-object bot that knows everything, holds every secret, and resists reasoning. So the Chief of Staff *calls* the specialists instead. It declares each one as a remote agent rather than copying its capabilities.
+
+Each specialist is declared as a remote agent that points at its own deployment's HTTP endpoint, a `POST` to `/eve/v1/session`, the same session API eve exposes for every agent. eve lowers that declaration into an ordinary tool with a `{ message, outputSchema }` shape. From the orchestrator model's point of view, delegating to Inbox or Margin looks identical to calling any other tool, or to spawning one of its own subagents. It says "draft a reply to this lead" or "find a time that works for me and Nick," the specialist runs its own durable session against its own connectors, and it returns a structured result.
+
+Day to day, I hold one conversation. I tell the Chief of Staff what I want in plain Slack, and it decides which specialists to wake, in what order, and how to thread their results into one answer. The fleet's complexity stays inside the orchestrator instead of landing on me.
 
 ```ts
 // chief-of-staff/agent/agents/margin.ts
