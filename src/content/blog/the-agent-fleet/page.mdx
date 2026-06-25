@@ -14,6 +14,8 @@ I'm Zack Proser. I'm an applied AI engineer at WorkOS, and I run a solo business
 
 So I built a fleet of agents to run it. A team of single-purpose bots, each owning one domain, coordinated by an orchestrator, and I drive the whole thing from Slack on my phone.
 
+What I describe below is about 55% built. The bots in production already carry real weight every day; the rest are designed, partway coded, and coming online. I'm writing the whole vision down because the half that exists only makes sense as part of the half that's coming, and the shape of the finished thing is what I want you to see.
+
 When I say "I use AI to run my business," that phrase hides the two things that matter. First, the architecture: a system I engineered to manage the irreducible complexity of running a business alone, covering leads, writing, scheduling, contracts, email, and site ops. Second, the limits: a hard boundary around what I will let a model do on its own. The framing carries the rest of this post.
 
 ## Running a business is a complexity problem
@@ -49,7 +51,7 @@ Each of these is small enough that I can read it top to bottom in a sitting and 
 
 ## The roles, as an org chart
 
-The cleanest way to see the system is as reporting lines. I sit at the top, in Slack. The Chief of Staff is my one report. Every specialist reports to it.
+The cleanest way to see the finished system is as reporting lines. I sit at the top, in Slack. The Chief of Staff is my one report, and every specialist reports to it. That's the target shape below. Today I can call the live specialists directly from Slack; the Chief of Staff is coming online as the single front door that makes the rest of this diagram true.
 
 <Mermaid chart={`
 graph TB
@@ -84,6 +86,68 @@ graph TB
 
 Read it as a company. I give one instruction to the orchestrator, and it figures out which specialists to involve. I address one bot, and it fans the work out to the rest. That's the same reason you put an API gateway in front of a mess of services instead of making every client memorize the topology. The orchestrator absorbs the coordination so I don't have to hold it.
 
+## Where each specialist is headed
+
+The roster above is a snapshot. The trajectory is the interesting part, so this section walks each specialist from what it does today to what it grows into once the fleet is complete.
+
+### Margin: the one that protects me from myself
+
+Margin started as a calendar bot and became the most important one I own. Its job is guarding the two things I'm worst at protecting on my own: rest and time with my kid.
+
+Today Margin reads my Oura ring every morning and knows my readiness and sleep scores before I do. It already holds my childcare blocks as immovable. Where it's going is the part I care about most. I want to be able to message it "I feel like shit" from bed and have it act on that one sentence: pull my readiness data, find the meetings I can move, draft the reschedule notes, and propose a rearranged day with a real sleep block carved into it before I've finished my coffee. A bad night should reshape the day automatically, with me approving the changes rather than negotiating each one.
+
+That means Margin owns the follow-ups too. When it moves a call, it drafts the "something came up, can we do Thursday" email, threads it to the right person, and waits for my tap to send. The reschedule and the apology and the new invite travel together as one approved action instead of three things I forget to do.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-margin-rest.jpg" alt="Pixel art of a calm robot assistant rearranging a person's daily schedule on a glowing calendar wall, sliding meetings aside and adding protected blue rest and sleep blocks while a small health ring glows on its chest" width={1200} height={675} />
+
+The scheduling itself gets sharper once Margin can see everything. I'm wiring it into Cal and Calendly so it reads my full picture and my business partner's: work calendars and personal calendars, mine and his, in one view. A bot that proposes times against only half the constraints proposes the wrong times. It reads my partner's calendars as free/busy only, not event details, which is the least-privilege version of "can you two meet Thursday." Once Margin holds that availability plus my own work and personal calendars, my readiness data, and my childcare blocks, "find a slot for the three of us next week" becomes a question it can answer without me cross-checking four calendars on my phone.
+
+### Inbox: triage that clears the queue
+
+Inbox reads Gmail, classifies what comes in, and drafts replies today. The direction is less about reading more mail and more about closing loops. A lead email should land as a structured summary, a suggested reply, and a proposed next action, so the work of answering it is one approval instead of a context-switch into my inbox. The follow-up that I always mean to send three days later is the kind of thing Inbox should own and schedule, with the draft waiting for my thumb.
+
+### Resend: marketing that can't fire by accident
+
+Resend runs email marketing, and its defining feature is the hard outbound kill-switch. Nothing leaves without my approval. As it matures, the value is in drafting whole sequences from a single brief and staging them, so a launch I describe in two sentences in Slack comes back as a full campaign for review. The kill-switch stays exactly as load-bearing as it is now, because a marketing bot that can send on its own is a way to email my entire list a mistake.
+
+### Bookkeeper: invoicing and reconciliation from a Slack message
+
+Bookkeeper already reads account activity through Plaid to reconcile the bank against the books. It reads transactions and does not move money. The invoicing is the part that's coming online.
+
+The capability I'm building toward is invoicing from Slack. After a call, I want to message "invoice Acme for the December workshop, net 30" and have Bookkeeper draft the invoice, show it to me for approval, send it, and then track it against incoming transactions until it's paid, nudging me when it goes late. The reconciliation it already does and the invoicing it's growing into are two halves of the same job: knowing what's owed, what's paid, and what's overdue, without me keeping any of it in my head. When the banking workflow moves onto Mercury, the same approval gates ride along.
+
+### Docs: minting uniform business artifacts
+
+Docs is the bot I'm most excited to finish. Running a consulting business means generating the same legal artifacts over and over: SOWs, MSAs, NDAs, order forms. Done by hand, each one is a chance to fat-finger a client name, a date, or a payment term.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-docs-pipeline.jpg" alt="Pixel art of a robot clerk assembling a formal contract from uniform templates, stamping it with a seal, sending it through a glowing signature portal, and filing a copy into a labeled client drawer" width={1200} height={675} />
+
+Docs mints these from uniform templates, so every contract that leaves looks the same and carries the same clauses. I'll describe the engagement in Slack, Docs assembles the right artifact, I approve it, and it goes out through DocuSign for signature. When the signed copy comes back, Docs files it in the right client folder in Google Drive, named consistently, where I can find it two years later. The pipeline runs from a Slack sentence to a signed, filed contract, and every outbound step still stops for my approval.
+
+The orchestrator sees that pipeline as a single instruction that becomes a filed, signed document:
+
+<Mermaid chart={`
+sequenceDiagram
+  actor Me as Me (Slack)
+  participant CoS as Chief of Staff
+  participant Docs
+  participant DocuSign
+  participant Drive as Google Drive
+  Me->>CoS: "Send Acme the workshop SOW, net 30"
+  CoS->>Docs: draft_artifact(type: SOW, client: Acme, terms)
+  Docs-->>CoS: drafted SOW (structured) + preview
+  CoS-->>Me: review the SOW?
+  Me->>CoS: approve (one tap)
+  CoS->>DocuSign: send for signature
+  DocuSign-->>Docs: signed document
+  Docs->>Drive: file under /clients/Acme/contracts
+  Docs-->>Me: signed + filed, here's the link
+`} />
+
+### Social and Portfolio: the steady hands
+
+Social stages posts to X and LinkedIn through Typefully, and Portfolio handles site ops, SEO, and analytics. Both run today and need the least from the vision. They're the proof that a bot doesn't have to be ambitious to be worth it. Some of the fleet exists to keep the lights on while the rest does the heavy lifting.
+
 ## Mobility was a hard requirement
 
 One constraint shaped every other decision: the control plane is Slack, and it has to give me identical power on my phone and my laptop. A full mobile control plane, with the same fleet, the same commands, and the same approvals as the desk.
@@ -94,7 +158,7 @@ I'm a solo parent running a real business. The office is wherever I am, which is
 
 Chat-as-interface is what makes that work, and the parts that matter are boring. It's ambient: Slack is already on my phone, so there's no app to open with intent and no context to reload. It's async: I drop an instruction and the durable session carries it whether I'm watching or not. It's durable: the work parks and resumes, so a flaky signal in a parking garage doesn't drop a task on the floor.
 
-I gave a talk at AI Engineering London called [Untethered Productivity](/blog/aie-london-untethered-productivity) about exactly this. Agents scale infinitely, but your nervous system doesn't. The win is getting unhooked from the desk while the work keeps moving. The fleet is that thesis turned into infrastructure. The next idea doesn't have to wait until I'm back at a keyboard, because the keyboard stopped being where the work happens.
+I gave a talk at AI Engineering London called [Untethered Productivity](/blog/aie-london-untethered-productivity) about exactly this. Agents scale infinitely, but your nervous system doesn't. The win is getting unhooked from the desk while the work keeps moving. I built the fleet after that talk because I was tired of holding ideas until I got back to a keyboard. The keyboard stopped being where the work happens.
 
 ## How the bots talk to each other
 
@@ -143,6 +207,8 @@ sequenceDiagram
 
 In the diagram, `get_availability(collective, ...)` means "find a slot that works for everyone on this thread," and "WorkOS-aware" means Margin already knows my day-job hours are off-limits. The Chief of Staff orchestrates. The specialists do the work in their own sessions. The structured results flow back up, and a draft plus a one-tap approval is the only thing that reaches me. I'm coordinating a team over chat. The team happens to be made of durable agent sessions instead of people.
 
+The example above touches two bots. The finished vision chains the whole fleet behind one sentence. When I close a deal, I want to tell the Chief of Staff "we won Acme, kick it off" and watch it route the work: Docs mints and sends the SOW, Bookkeeper schedules the kickoff invoice, Inbox drafts the welcome email, and Margin finds a kickoff slot that survives my readiness and my partner's calendar. Each specialist runs its own durable session, each outbound step waits for my approval, and the Chief of Staff holds the thread that ties them together. I describe the outcome once; the orchestrator decomposes it into the right calls and reassembles the results. That's the difference between a pile of bots and a fleet.
+
 ## The bus is the security boundary
 
 A team of bots that can call each other is a team of bots that can be *made* to call each other. So the interface between them is where I spent the most care. Those `/eve/v1/*` routes are protected and **fail closed by default**: an unauthenticated or unrecognized caller gets a 403 and nothing else.
@@ -170,7 +236,7 @@ If you've designed distributed systems, this should feel familiar, because it's 
 
 - **Typed contracts between services.** The `outputSchema` is an API contract. A specialist can change how it does its job without the orchestrator knowing or caring, as long as the shape holds.
 - **Identity-based auth.** OIDC subjects in place of shared secrets, the same reason you'd use workload identity over a static key in any service mesh.
-- **Idempotency, designed per side effect.** Durability gives a session somewhere to resume; it doesn't make side effects safe to retry. So each bot keys its dangerous actions and stores what it has already done. Resend keys a send on `campaignId + approvedRevision`, so a retried or replayed approval sends that revision once.
+- **Idempotency, designed per side effect.** Durability gives a session somewhere to resume; it doesn't make side effects safe to retry. So each bot keys its dangerous actions and stores what it has already done. Resend keys a send on `campaignId + approvedRevision`, Docs keys a DocuSign send on `artifactId + approvedRevision`, and Bookkeeper keys an invoice on `clientId + engagementId`, so a retried or replayed approval fires once.
 - **Blast-radius containment.** Each bot holds only its own connectors and secrets. Compromise one and you get one domain, not the keys to the business.
 - **Kill-switches on dangerous actions.** Resend's outbound send has a hard off-switch. Money and contracts don't move on a model's confidence.
 
