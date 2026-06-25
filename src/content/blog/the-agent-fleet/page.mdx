@@ -1,0 +1,200 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import Mermaid from '@/components/Mermaid'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# The Agent Fleet That Runs My Business
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-hero.jpg" alt="Pixel art of a solo founder holding a glowing phone in the center, surrounded by a ring of specialized robot workers (calendar, inbox, writer, megaphone, website, documents, ledger) all connected through a compass-shaped orchestrator at the hub" width={1200} height={675} />
+
+I'm Zack Proser. I'm an applied AI engineer at WorkOS, and I run a solo business on the side: AI-transformation consulting, paid workshops and trainings, teaching, and the content you're reading now. The job is helping teams actually ship AI instead of demoing it once and moving on. That business has the workload of a small company and the headcount of one tired parent.
+
+So I built a fleet of agents to run it. Not a chatbot. A team of single-purpose bots, each owning one domain, coordinated by an orchestrator, and I drive the whole thing from Slack on my phone.
+
+I want to be precise about what this is, because "I use AI to do my tasks" misses both the architecture and the limits. I engineered a system, and what it manages is the irreducible complexity of running a business alone: leads, writing, scheduling, contracts, email, site ops, and a hard boundary around what I will not let a model do. Start with the framing, because it's the point.
+
+## Running a business is a complexity problem
+
+Programming has always mostly been complexity management. Code is just where the work shows up. A good program is one where you can hold a piece in your head without the rest of it leaking in. Decomposition, clean interfaces, separation of concerns, least privilege, failing closed: those aren't style preferences. They're the moves you make so a system stays legible as it grows.
+
+A solo business has the same shape. The calendar fights the childcare schedule. The leads pile up in an inbox while the newsletter goes stale. The contracts need drafting, the books need reconciling, the posts need writing and then promoting, and the site needs to not quietly break. None of those are hard alone. Together, held in one head, they're the thing that drowns people who try to do all of it themselves.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-decomposition.jpg" alt="Pixel art contrasting one overloaded tangled monolith robot trying to do every job at once against a tidy row of small single-purpose robots, each in its own walled cubicle with one tool" width={1200} height={675} />
+
+I didn't reach for an agent because it's 2026 and that's what you do. I reached for the same discipline I'd apply to any overgrown system: stop holding it in one place. Cut it into modules. Give each module one job, its own tools, and a boundary it can't reach past. Put a clean interface between them. Then orchestrate.
+
+The bots are the modules. The message bus between them is the interface. The Chief of Staff is the orchestrator. The discipline that makes good software is the discipline that makes a good agent team. I pointed it at my own operation instead of a codebase.
+
+## What the fleet is
+
+Every bot is its own application built on [Vercel's eve](/blog/reviewing-vercels-eve-agent-framework), a filesystem-first TypeScript agent framework. One bot, one repo, one responsibility, one deployment. They don't share a codebase or a secret store. Each runs Claude Opus 4.8 through the Vercel AI Gateway, and each reaches me over Slack through Vercel Connect.
+
+Durability is what makes them useful. Each session runs on Vercel Workflow, so it survives a restart, a redeploy, or a cold start, and it can pause mid-task to wait for me to approve something, then pick up exactly where it left off when I tap the button. These are durable sessions, not a chat window that forgets itself the moment you close the tab. I can kick off a job from the school parking lot, lose signal, and find it finished (or politely parked at a gate) when I look again. The first time it earned its keep, it was almost boring: a lead came in while I was in the pickup line, I asked the fleet to read the thread and find a slot, and a draft reply with two proposed times was waiting for my thumb before the cars moved. No laptop, no context-switch, no "I'll get to it tonight" that turns into next week.
+
+Here's the roster. The first six run in production today. The last three are designed and partway built, coming online now. Each one owns its domain, and only its domain holds its tools, its connectors, and its secrets. Least privilege, the same as you'd scope a service.
+
+- **Margin** owns my calendar and wellbeing. It reads my Oura ring, protects rest and childcare time, and runs on tiered autonomy. It's the one that tells the rest of the fleet when I'm not really available, no matter what the calendar says.
+- **Inbox** triages Gmail. It reads, classifies, and drafts.
+- **Resend** runs email marketing, with a hard outbound kill-switch so it physically cannot send a campaign without me.
+- **Blog** is the writer. It drafted this post.
+- **Social** handles X and LinkedIn, staged through Typefully.
+- **Portfolio** owns site ops: SEO, analytics, the unglamorous maintenance that keeps the site from rotting.
+
+And the ones coming online: **Chief of Staff**, the orchestrator that ties the fleet together; **Docs**, which drafts SOWs, MSAs, and NDAs; and **Bookkeeper**, which reconciles the bank against the books, reading account activity through Plaid today (it reads transactions, it does not move money), with the banking workflow likely moving onto Mercury.
+
+Each of these is small enough that I can read it top to bottom in a sitting and know everything it can do, because everything it can do lives in one directory. That legibility is the point. A bot I can't fully reason about is a bot I can't safely leave running.
+
+## The roles, as an org chart
+
+The cleanest way to see the system is as reporting lines. I sit at the top, in Slack. The Chief of Staff is my one report. Every specialist reports to it.
+
+<Mermaid chart={`
+graph TB
+  subgraph me["Me — in Slack, anywhere"]
+    p["phone"]
+    l["laptop"]
+  end
+  cos["Chief of Staff (orchestrator, coming online)"]
+  p --> cos
+  l --> cos
+  subgraph live["Specialists running in production"]
+    inbox["Inbox: Gmail triage"]
+    margin["Margin: calendar, Oura, rest"]
+    resend["Resend: email marketing"]
+    blog["Blog: articles"]
+    social["Social: X + LinkedIn"]
+    portfolio["Portfolio: site ops, SEO"]
+  end
+  subgraph planned["Coming online"]
+    docs["Docs: SOW, MSA, NDA"]
+    book["Bookkeeper: reconciliation"]
+  end
+  cos --> inbox
+  cos --> margin
+  cos --> resend
+  cos --> blog
+  cos --> social
+  cos --> portfolio
+  cos --> docs
+  cos --> book
+`} />
+
+Read it as a company. I give one instruction to the orchestrator, and it figures out which specialists to involve. I don't address a pile of bots. I address one, and it fans the work out. That's the same reason you put an API gateway in front of a mess of services instead of making every client memorize the topology. The orchestrator absorbs the coordination so I don't have to hold it.
+
+## Mobility was a hard requirement, not a bonus
+
+Here's the constraint that shaped every other decision: the control plane is Slack, and it has to give me identical power on my phone and my laptop. Not a degraded mobile view. The same fleet, the same commands, the same approvals.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-mobility.jpg" alt="Pixel art of a parent standing in a school pickup line holding a phone showing a chat interface, with glowing threads reaching out to a fleet of small robot workers doing tasks in the background" width={1200} height={675} />
+
+I'm a solo parent running a real business. The office is wherever I am, which is frequently a pickup line, a kitchen, or the ten minutes before a kid needs something. If the system only worked at my desk, it would only work when I'm least likely to be at it. So full capability from my phone wasn't a feature I'd get to later. It was the requirement I designed backward from.
+
+Chat-as-interface is what makes that real, and the parts that matter are boring. It's ambient: Slack is already on my phone, so there's no app to open with intent, no context to reload. It's async: I drop an instruction and the durable session carries it whether I'm watching or not. And it's durable: the work parks and resumes, so a flaky signal in a parking garage doesn't drop a task on the floor.
+
+I gave a talk at AI Engineering London called [Untethered Productivity](/blog/aie-london-untethered-productivity) about exactly this. Agents scale infinitely, but your nervous system doesn't. The win is getting unhooked from the desk while the work keeps moving. The fleet is that thesis turned into infrastructure. The next idea doesn't have to wait until I'm back at a keyboard, because the keyboard stopped being where the work happens.
+
+## How the bots talk to each other
+
+The Chief of Staff does not reimplement the specialists. The lazy version gives the orchestrator its own Gmail tools and its own calendar logic. That's how you get one god-object bot that knows everything, holds every secret, and can't be reasoned about. Instead the Chief of Staff *calls* the specialists, using eve's remote-agents feature.
+
+Each specialist is declared as a remote agent that points at its own deployment's HTTP endpoint, a `POST` to `/eve/v1/session`. eve lowers that declaration into an ordinary tool with a `{ message, outputSchema }` shape. So from the orchestrator model's point of view, delegating to Inbox or Margin looks identical to calling any other tool, or to spawning a subagent. It says "draft a reply to this lead" or "find a time that works for me and Nick," the specialist runs its own durable session against its own connectors, and it returns a structured result.
+
+```ts
+// chief-of-staff/agent/agents/margin.ts
+import { defineRemoteAgent } from 'eve'
+import { z } from 'zod'
+
+// Margin is a different Vercel deployment. The Chief of Staff
+// doesn't know how Margin reads my calendar or my Oura ring.
+// It only knows the contract.
+export default defineRemoteAgent({
+  url: 'https://margin.example.vercel.app/eve/v1/session',
+  description: 'Find availability that respects rest and childcare.',
+  outputSchema: z.object({
+    slots: z.array(z.object({ start: z.string(), end: z.string() })),
+    blockedReason: z.string().optional(), // e.g. "low Oura readiness"
+  }),
+})
+```
+
+The orchestrator's model now has a `margin` tool. It passes a message, it gets back typed slots. It never learns how Margin talks to Google Calendar or what an Oura readiness score is, the same way one service doesn't reach into another's database. The contract is the whole relationship.
+
+Here's a real request crossing the fleet: get a new lead onto the roster and find a time, from my phone.
+
+<Mermaid chart={`
+sequenceDiagram
+  actor Me as Me (Slack, on my phone)
+  participant CoS as Chief of Staff
+  participant Inbox
+  participant Margin
+  Note over CoS,Margin: calls are eve "remote agents" over /eve/v1/session, authed by Vercel OIDC (no shared secrets)
+  Me->>CoS: "Get the new lead on the roster + find a time with Nick"
+  CoS->>Inbox: summarize(thread) - remote-agent tool call
+  Inbox-->>CoS: lead context (structured)
+  CoS->>Margin: get_availability(collective, WorkOS-aware)
+  Margin-->>CoS: candidate slots (rest + childcare respected)
+  CoS-->>Me: draft reply + proposed slots
+  Me->>CoS: approve (one tap)
+  Note over Me,CoS: every outbound action is human-in-the-loop
+`} />
+
+In the diagram, `get_availability(collective, ...)` just means "find a slot that works for everyone on this thread," and "WorkOS-aware" means Margin already knows my day-job hours are off-limits. The Chief of Staff orchestrates. The specialists do the work in their own sessions. The structured results flow back up, and the only thing that reaches me is a draft and a one-tap approval. I'm coordinating a team over chat. The team happens to be made of durable agent sessions instead of people.
+
+## The bus is the security boundary
+
+A team of bots that can call each other is a team of bots that can be *made* to call each other. So the interface between them is where I spent the most care. Those `/eve/v1/*` routes are protected and **fail closed by default**. An unauthenticated or unrecognized caller gets nothing.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-oidc-bus.jpg" alt="Pixel art of two robots passing a sealed typed contract-card across a glowing identity checkpoint, each wearing a unique key-badge, with a turnstile that only opens for the matching badge and no shared password between them" width={1200} height={675} />
+
+Inter-bot calls authenticate with **Vercel OIDC**. Vercel mints a per-deployment identity token, so each bot proves who it is with a short-lived, environment-pinned identity rather than a secret it carries around. In eve, the auth wrapper on those routes trusts same-project OIDC subjects by default. To let the Chief of Staff, which lives in a *different* Vercel project, call a specialist, the specialist explicitly allow-lists the orchestrator's project identity by its `vercelSubject`. No shared secrets. No API keys passed hand to hand. No long-lived token sitting in an env var waiting to leak. It's project-scoped, environment-pinned identity, and the specialist decides who it answers to.
+
+```ts
+// margin/agent/auth.ts — Margin decides who it answers to.
+import { allowProjects } from 'eve'
+
+// Same-project calls are trusted by default. To let the Chief of Staff
+// (a different Vercel project) in, Margin allow-lists its OIDC subject.
+// Anything not on the list hits the default: fail closed, 403.
+export default allowProjects({
+  'chief-of-staff': {
+    // illustrative shape; use the exact subject Vercel issues for the deployment
+    vercelSubject: 'owner:zack:project:chief-of-staff:environment:production',
+  },
+})
+```
+
+If you've designed distributed systems, this should feel familiar, because it's the same playbook:
+
+- **Typed contracts between services.** The `outputSchema` is an API contract. A specialist can change how it does its job without the orchestrator knowing or caring, as long as the shape holds.
+- **Identity-based auth.** OIDC subjects instead of shared secrets, the same reason you'd use workload identity over a static key in any service mesh.
+- **Idempotency, designed per side effect.** Durability gives a session somewhere to resume; it doesn't make side effects safe to retry on its own. So each bot keys its dangerous actions and stores what it has already done. Resend keys a send on `campaignId + approvedRevision`, so a retried or replayed approval sends that revision exactly once, not three times.
+- **Blast-radius containment.** Each bot holds only its own connectors and secrets. Compromise one and you get one domain, not the keys to the business.
+- **Kill-switches on dangerous actions.** Resend's outbound send has a hard off-switch. Money and contracts don't move on a model's confidence.
+
+The most important rule sits on top of all of it: anything outbound is human-in-the-loop. Sending an email, moving money, signing a contract: none of it happens automatically. eve parks the session and renders the action as a one-tap approval button in Slack. I draw [that exact line across every bot I run](/blog/the-autonomy-boundary): anything reversible runs unattended, anything that reaches another person or can't be undone stops for me. The bus makes the fleet powerful. The approval gates make it safe to leave running.
+
+## This is complexity management with new nouns
+
+Strip the AI out and there's nothing exotic here. I took an unmanageable amount of work, decomposed it into single-responsibility modules, gave each a clean typed interface and a least-privilege boundary, put identity-based auth on the wire, contained the blast radius, and kept a human at every irreversible gate. It's the same systems design I'd defend in any architecture review.
+
+What changed is the unit of decomposition. The module used to be a service; now it's an agent. The thing I'm encapsulating used to be code; now it's *judgment*. Margin's judgment about when I'm too depleted to take a meeting, Inbox's judgment about which lead is real. But the discipline that keeps it legible is the old discipline. Good agent teams aren't built by people who discovered AI. They're built by people who already knew how to tame a system and pointed that skill at a new kind of module.
+
+The useful part is the system underneath: decomposition, typed contracts, narrow permissions, durable execution, and a human at every gate where the work can hurt someone. I run that system from my phone, in a pickup line, with the same authority I'd have at my desk. That's the whole thing.
+
+## If you want this for your team
+
+This is the work I do: AI-transformation consulting, workshops and trainings for teams that want to ship AI instead of demoing it, and helping people design their own agent fleets. In a workshop you leave with a workflow map, an autonomy-boundary table, and a spec for the first specialist or two, with the approval gates drawn before anything gets wired into a system that can spend your name or your money.
+
+If that's what you need, [reach out](https://zackproser.com/services). I'll help you build the version of this that fits your business.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-hero.jpg"
+  imageAlt="Pixel art of three little robot agents running a tiny website storefront together"
+  eyebrow="Read this next"
+  title="Reviewing Vercel's eve agent framework by hiring my website three AI employees"
+  description="The framework underneath the fleet: how I build each bot, why one bot per repo, and why wiring Slack through Vercel Connect is what makes the whole thing run from my phone."
+  href="/blog/reviewing-vercels-eve-agent-framework"
+/>
