@@ -1,0 +1,8 @@
+{
+  "title": "The Agent Fleet That Runs My Business",
+  "author": "Zachary Proser",
+  "date": "2026-06-25",
+  "description": "How I run a solo AI consulting business with a Slack-controlled fleet of single-purpose agents: durable workflows, typed contracts between bots, OIDC boundaries, and a human approval gate on everything that can spend my name or my money.",
+  "image": "https://zackproser.b-cdn.net/images/the-agent-fleet-hero.jpg",
+  "tags": ["AI", "Agents", "Multi-agent", "Automation", "Slack", "Applied AI", "Business"]
+}
