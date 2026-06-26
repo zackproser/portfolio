@@ -10,13 +10,11 @@ export const metadata = createMetadata(rawMetadata)
 
 <Image src="https://zackproser.b-cdn.net/images/stop-slop-scrub-pass-hero.jpg" alt="Pixel art of a printing press at night, a sheet of text fed through a glowing scrubbing roller that strips amber slop droplets off the page, clean type emerging on the far side, teal and orange on deep blue" width={1200} height={675} />
 
-The first draft of this post failed my voice gate: five hard hits, six soft tells, and a HIGH long-dash warning. That is why there is an anti-slop pass at the end of my writing pipeline. The same smell shows up everywhere a model drafts text you sign: blog posts, generated changelogs, PR descriptions, the marketing emails people ask a model to write. You can spot the machine inside a paragraph. It warms up by setting a scene in some fast-paced modern era, reaches for the verb that means "look into" but reads like an adventure, then runs the negate-then-assert move, waving off an obvious word so a fancier one can take its place. By then the reader has bailed, because no person sat down and chose those words.
+If you draft anything with a model in the loop, the output carries tells. The same warm-up opener, the same overused verbs, the same little contrast that argues with a point nobody made. Readers learn to smell it, and they bail.
 
-The fix is a single pipeline step. Add it at the end.
+The fix is one step you add at the end of your pipeline: an anti-slop pass. After the draft is written and correct, you read it against a list of known AI tells and rewrite every hit. That's the whole trick, and it's the cheapest quality win I've added to my writing pipeline.
 
-The tells recur with enough consistency for a list to help. [stop-slop](https://github.com/hardikpandya/stop-slop) is an open-source catalog of the phrases and structures that mark AI-generated prose: throat-clearing openers, negate-then-assert contrasts, padded rhythm, dead adverbs. I write a blog with a bot in the loop, so I wired that list into my pipeline as its own pass. It runs after the draft has substance and voice, with one job: catch the phrases that make a reader close the tab.
-
-I used the pipeline described here to draft this post and run the pass on it. Here is the pass I use, including the hits it found in this file.
+The list I use is [stop-slop](https://github.com/hardikpandya/stop-slop), an open-source catalog of the phrases and structures that mark AI-generated prose. I wired it into my blog pipeline as its own pass. This post is the test case: the same pipeline drafted it, then ran the pass on it. The first run failed, which I'll show you. Here's how to build the step.
 
 ## Step 0: know the tells, and why they read as fake
 
@@ -40,18 +38,13 @@ I use this order, with position as the rule that matters:
 
 <Mermaid chart={`
 flowchart LR
-  A["spark (yours)"] --> B["draft (model)"]
-  B --> C["structure"]
-  C --> D["facts"]
-  D --> E["voice polish"]
-  E --> F["anti-slop pass"]
-  F --> G["scan_voice gate"]
+  A["draft + edit"] --> F["anti-slop pass"]
+  F --> G["scan gate"]
   G -->|hits| F
-  G -->|clean| H["open PR"]
-  F -.->|re-read| F
+  G -->|clean| H["ship"]
 `} />
 
-Place anti-slop one step from the end, after the other draft work. If you strip tells during drafting, you spend attention fighting the list and the prose gets stiff in a new way. The draft comes first. I structure it, check facts, and put it into voice. Then the pass loads the list and reads the whole piece against it. The diagram's loop stays inside the pass: I re-read after each fix, and I route scanner hits back into the pass until clean. The substance sits in place before this step touches the prose.
+Anti-slop runs after the draft is written, structured, fact-checked, and in voice, not during any of that. If you strip tells while you draft, you fight the list instead of making the argument, and the prose comes out stiff in a new way. So the substance goes in first. Then the pass reads the whole piece against the list, and the gate bounces it back until it's clean.
 
 ## Step 2: pull the tells list live, pin a copy for CI
 
