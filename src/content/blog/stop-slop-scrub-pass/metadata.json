@@ -1,11 +1,11 @@
 {
-  "title": "I Added a stop-slop Scrub Pass to My Blog Pipeline",
+  "title": "How to Wire an Anti-Slop Pass Into Your Blogging or Artifact Pipeline",
   "author": "Zachary Proser",
   "date": "2026-06-24",
-  "description": "The open-source stop-slop list catalogs the phrases and structures that mark AI prose. I wired it into my blog pipeline as a final scrub pass that catches surface tells and forces a structural read. This post ran the scrub on itself.",
+  "description": "If you generate anything with a model in the loop, you need a step that reads the finished draft against a list of AI tells and rewrites every hit. Here's how I wired one into my pipeline, where it sits, and the catch nobody mentions.",
   "image": "https://zackproser.b-cdn.net/images/stop-slop-scrub-pass-hero.jpg",
   "slug": "stop-slop-scrub-pass",
   "type": "blog",
-  "keywords": ["AI writing tells", "stop-slop", "de-slop", "AI slop", "writing pipeline", "voice"],
+  "keywords": ["AI writing tells", "stop-slop", "de-slop", "anti-slop pass", "AI slop", "writing pipeline", "artifact pipeline", "voice"],
   "tags": ["AI", "Writing", "Tools", "Craft"]
 }

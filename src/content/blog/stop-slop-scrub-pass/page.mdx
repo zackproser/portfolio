@@ -1,54 +1,89 @@
 import { createMetadata } from '@/utils/createMetadata'
 import Image from 'next/image'
+import { Mermaid } from '@/components/Mermaid'
 import ReadNextCard from '@/components/ReadNextCard'
 import rawMetadata from './metadata.json'
 
 export const metadata = createMetadata(rawMetadata)
 
-# I Added a stop-slop Scrub Pass to My Blog Pipeline
+# How to Wire an Anti-Slop Pass Into Your Blogging or Artifact Pipeline
 
 <Image src="https://zackproser.b-cdn.net/images/stop-slop-scrub-pass-hero.jpg" alt="Pixel art of a printing press at night, a sheet of text fed through a glowing scrubbing roller that strips amber slop droplets off the page, clean type emerging on the far side, teal and orange on deep blue" width={1200} height={675} />
 
-You can spot the machine before you finish the first paragraph. The post opens by setting a scene in some fast-paced modern era. A sentence later it reaches for that one verb every chatbot loves, the one that means "look into" but sounds like spelunking. By the third paragraph it has run the negate-then-assert move: it waves off an obvious word so a grander word can arrive wearing a cape. It knocks down a claim nobody made so the real point sounds like a discovery. By then you have stopped reading, because no person sat down and chose those words.
+The first draft of this post failed my voice gate: five hard hits, six soft tells, and a HIGH long-dash warning. That is why there is an anti-slop pass at the end of my writing pipeline. The same smell shows up everywhere a model drafts text you sign: blog posts, generated changelogs, PR descriptions, the marketing emails people ask a model to write. You can spot the machine inside a paragraph. It warms up by setting a scene in some fast-paced modern era, reaches for the verb that means "look into" but reads like an adventure, then runs the negate-then-assert move, waving off an obvious word so a fancier one can take its place. By then the reader has bailed, because no person sat down and chose those words.
 
-The tells are consistent enough that someone made a list. [stop-slop](https://github.com/hardikpandya/stop-slop) is an open-source catalog of the phrases and structures that mark AI-generated prose: the throat-clearing openers, the negate-then-assert contrasts, the lists of three padded for rhythm, the dead adverbs. I write a blog with a bot in the loop. So I wired that list into my pipeline as its own pass, run after the draft is otherwise done, with one job: catch the phrases that make me close the tab.
+The fix is a single pipeline step. Add it at the end.
 
-This post is the test case. The same pipeline it describes drafted it, then ran the scrub on itself. I'll show you exactly what it caught, including a sentence in this very draft that tripped the gate.
+The tells recur with enough consistency for a list to help. [stop-slop](https://github.com/hardikpandya/stop-slop) is an open-source catalog of the phrases and structures that mark AI-generated prose: throat-clearing openers, negate-then-assert contrasts, padded rhythm, dead adverbs. I write a blog with a bot in the loop, so I wired that list into my pipeline as its own pass. It runs after the draft has substance and voice, with one job: catch the phrases that make a reader close the tab.
 
-## The tells, and why they read as fake
+I used the pipeline described here to draft this post and run the pass on it. Here is the pass I use, including the hits it found in this file.
 
-These phrases are easy to spot because they do work the writer should have done. They announce.
+## Step 0: know the tells, and why they read as fake
 
-Start with the throat-clearing opener. The draft warms up with a phrase that promises a hard truth, or one that frames the next sentence as a surprising discovery. Every one is a runway. The writer is clearing their throat instead of leading with the point. A person who knows what they think says the thing. The model predicts the safest next sentence, and the safest next sentence is a warm-up.
+You can't strip a tell until you can name it. These phrases stand out because they announce the move instead of making it.
 
-The negate-then-assert contrast is the loudest one, and it's the [Anthropic-model tell](/blog/spark-bellows-quench) I watch for hardest. It says "not speed, but trust," knocking down a position nobody held so the real claim lands like insight. The sentence feels sharp until you ask who ever argued that speed was the whole story. State the claim and the negation falls away with nothing lost.
+Start with the throat-clearing opener. The draft warms up with a phrase that promises a hard truth, or one that frames the next sentence as a surprise discovery. Each one gives the reader runway. The writer clears their throat in place of leading with the point. A person who knows what they think says the thing. The model predicts the safest next sentence, and the safest next sentence is a warm-up.
 
-Then the small stuff that piles up. Adverbs that intensify nothing, the words you reach for to insist you mean it. Business verbs standing in for plain ones, the corporate way to say "use" or "explain" or "handle." Lists of three assembled for rhythm. Em-dashes scattered everywhere, because the model loves a parenthetical aside. One em dash won't ruin a post. A dozen in a thousand words make the draft look machine-set.
+The negate-then-assert contrast is the loudest one, and it's the [Claude-family tell](/blog/spark-bellows-quench) I catch most often in my own drafts. It brushes aside a placeholder claim about speed, then promotes trust as the wiser frame, knocking down a position no reader needed knocked down. The sentence feels sharp until you ask who argued that speed was the whole story. State the claim and the negation falls away with nothing lost.
+
+Then come the small tells that pile up: adverbs that intensify nothing, business verbs standing in for plain ones, lists padded for rhythm, long dashes scattered through parenthetical asides. One long dash won't ruin a post. A dozen in a thousand words make the draft look machine-set.
 
 <Image src="https://zackproser.b-cdn.net/images/stop-slop-scrub-pass-tells.jpg" alt="Pixel art grid of labeled specimen jars on a dark shelf, each holding a glowing amber phrase-blob: a throat-clearing opener, a negate-then-assert contrast, a list of three, a cluster of em-dashes, like a museum of writing tells" width={1200} height={675} />
 
-The pattern under all of them is the same: the model avoids committing. It won't name the actor, so a decision "emerges" instead of someone deciding it. It won't pick one example over three. Slop is riskless prose. No actor, no specific example, no claim sharp enough to be wrong.
+The common failure under all of them is refusing to choose. The model hides the actor, gives three safe examples, and rounds off the claim. My edit is the opposite: name who did the thing, pick the one example, and write the claim a reader could object to.
 
-## Where the scrub sits in the pipeline
+## Step 1: put the pass at the end, not in the loop
 
-I draft with a bot. I [dictate the spark into it at speed](/blog/wisprflow-review), it shapes a rough draft, and the draft goes through a fixed sequence: structure, a factual check, a voice-polish pass, a cross-link pass, an image pass, then this scrub. I run it late for a reason.
+The pass works on any artifact a model helped produce. The last non-blog place I ran it was a generated changelog. The model wrote that a release "improved reliability across workflows," which is true of nothing. The pass forced the edit: "fixed the retry loop that dropped queued webhooks after a 429." Same artifact, now with a fact in it. Put the pass anywhere model output becomes text under your name.
 
-<Image src="https://zackproser.b-cdn.net/images/stop-slop-scrub-pass-pipeline.jpg" alt="Pixel art horizontal pipeline diagram on dark slate: labeled stages draft, voice-polish, de-slop scrub highlighted in amber, scan_voice gate, CI verify, then a PR card, arrows flowing left to right with a small internal re-read loop on the scrub stage" width={1200} height={675} />
+I use this order, with position as the rule that matters:
 
-The order is the point. The scrub runs after the draft already reads well, never during drafting. Strip tells as you write and you spend your attention fighting the list instead of making the argument, and the prose comes out stilted in a new way. So the draft gets written first, structured, made correct. Only then does the scrub load the list and read the whole thing against it. The one loop in the diagram is internal to the scrub: a re-read after each fix, not a trip back to drafting.
+<Mermaid chart={`
+flowchart LR
+  A["spark (yours)"] --> B["draft (model)"]
+  B --> C["structure"]
+  C --> D["facts"]
+  D --> E["voice polish"]
+  E --> F["anti-slop pass"]
+  F --> G["scan_voice gate"]
+  G -->|hits| F
+  G -->|clean| H["open PR"]
+  F -.->|re-read| F
+`} />
 
-It pulls the list live from `hardikpandya/stop-slop` at run time rather than from memory, because the list changes. New tells get added as models pick up new habits, and a copy I memorized six months ago would miss whatever the current models overuse this week. Two policies keep that from getting flaky: the local scrub reads the latest list as advisory input during the final local pass, and CI enforces a pinned copy. If upstream adds a bad rule, it can nag me locally, but it can't block a publish until I update the pin.
+Place anti-slop one step from the end, after the other draft work. If you strip tells during drafting, you spend attention fighting the list and the prose gets stiff in a new way. The draft comes first. I structure it, check facts, and put it into voice. Then the pass loads the list and reads the whole piece against it. The diagram's loop stays inside the pass: I re-read after each fix, and I route scanner hits back into the pass until clean. The substance sits in place before this step touches the prose.
 
-## What the pass does
+## Step 2: pull the tells list live, pin a copy for CI
 
-The naive version is find-and-replace. Spot a banned word, delete it, move on. That deletes the evidence without fixing the sentence.
+Don't hardcode the list from memory. It changes. Maintainers add tells as models pick up new habits, and a copy I memorized six months ago would miss whatever the current models overuse this week.
 
-A tell is rarely one word. It's a sentence built around a move. A line like "let me be clear: the implications here are significant" has three problems at once: the throat-clearing opener, the vague declarative, and no actual implication ever named. Delete the opener and you're left with "the implications here are significant," which is still slop. The fix is to throw out the sentence and write the specific implication. Removing a tell usually means rewriting the clause, sometimes the paragraph.
+Two policies keep the gate steady. My local pass reads the latest stop-slop list as advisory input during the final local run, so it warns me about fresh tells. CI enforces a pinned copy I vendor into the repo and update on purpose:
 
-So the pass works like this. Read the whole draft against the loaded list. Mark every hit, phrase tells and structural tells both. For each one, don't delete the flagged token. Rewrite the sentence so it states the thing plainly, names the actor, picks the one example. Then re-read, because fixing one sentence often exposes the weak one next to it that was hiding behind it.
+```bash
+# local: read upstream live (freshness)
+curl -fsSL https://raw.githubusercontent.com/hardikpandya/stop-slop/main/references/phrases.md
+
+# CI: enforce a vendored copy pinned to a commit (stability)
+STOP_SLOP_SHA=2f1c9ab0c4e1d7a9b3f08e51d2c6a47b9e0f1a3c   # replace with the real commit; bump in its own PR
+mkdir -p tools/voice/vendor
+curl -fsSL "https://raw.githubusercontent.com/hardikpandya/stop-slop/${STOP_SLOP_SHA}/references/phrases.md" \
+  -o tools/voice/vendor/phrases.md   # committed; CI reads this, not upstream
+```
+
+If upstream adds a bad rule, I see the local warning, but CI keeps reading the vendored file and won't block a publish until I update the pin. Live where you want freshness, pinned where you need a stable gate.
+
+## Step 3: rewrite the sentence, never the token
+
+The naive pass uses find-and-replace. It spots a banned word, deletes it, and moves on. That removes evidence while leaving the broken sentence intact.
+
+A tell often covers more than one word. The sentence carries the move. Take a line that opens with a clarity announcement and ends by saying the implications are significant. It has two problems: the throat-clearing opener and a claim that never names the implication. Cut the opener and the empty claim still stands. The repair is to name the actual implication, which means rewriting the clause, sometimes the paragraph.
+
+<Image src="https://zackproser.b-cdn.net/images/stop-slop-scrub-pass-rewrite.jpg" alt="Pixel art workbench: a sentence laid out as movable type, one glowing amber slop word lifted out with tweezers while the whole strip is re-set from scratch in a composing stick beside it, clean teal type emerging" width={1200} height={675} />
+
+The pass works in this order. I read the full draft against the loaded list. I mark phrase tells and structural tells. For each one, I rewrite the sentence so it states the thing in plain language, names the actor, and picks one example. Then I re-read, because one fix can expose the weak sentence next to it.
 
 ```text
-de-slop pass
+anti-slop pass
   1. fetch the live stop-slop list (phrases + structures)
   2. read the full draft, mark every hit
        - phrase tells:  throat-clearing, jargon, dead adverbs   (regex-catchable)
@@ -56,43 +91,88 @@ de-slop pass
                           false agency, passive voice, list-of-three  (human/judge)
   3. for each hit: rewrite the clause to state the thing plainly
        (don't just delete the token; the sentence is the unit)
-  4. run scan_voice (mirrors the CI banned-phrase gate)
+  4. run the scanner (mirrors the CI banned-phrase gate)
   5. repeat until the scanner is clean AND the human read is clean
 ```
 
-The split in step 2 is the part people get wrong. A regex catches the spelunking verb on sight. A regex cannot catch a paragraph built around a negate-then-assert when the words themselves are clean, so the structural tells need a judgment pass, model or human. Step 4 is a hard gate, not the finish line. `scan_voice` is a regex scanner over the whole MDX file: it lowercases everything, matches the banned-phrase list, and exits non-zero on any hard hit. It reads the prose, the JSX props, the image alt text, and the code fences alike, with no idea which is which. Em-dash density above eight per thousand words flags HIGH, which is advisory and warns rather than failing the build. It mirrors the CI gate exactly, and the script that opens my pull requests refuses to call GitHub while it's failing. But the regex is narrow by design; it catches the worst phrase offenders and nothing structural. The judgment read catches the rest.
+The split in step 2 trips people up. A regex catches the look-into verb on sight, and a couple of structural shapes are cheap enough to match. The subtler structure, a paragraph that dodges the actor while keeping every word clean, needs judgment from a model or a human. I also separate writer from editor. The model that drafted the piece is the worst judge of its own tells. I hand the draft to a different model family for the rewrite, so the writer and editor bring different habits.
+
+## Step 4: make the scanner a gate, not the finish line
+
+Step 4 in that list is a hard gate. My scanner reads the prose, the JSX props, the image alt text, and the code fences alike, with no idea which is which. It lowercases the file, matches the banned-phrase list plus two cheap structural heuristics, and exits non-zero on any hard hit. Long-dash density above 8 per 1,000 words flags HIGH, which warns without failing the build. Scanning everything, including alt text and code, creates false positives in examples like this post, and I take that over a parser that lets dirty alt text ship because it decided a prop didn't count.
+
+It mirrors my CI gate, and the script that opens my pull requests exits before it calls GitHub if the scanner fails, so I can't publish a dirty draft from muscle memory. `scan:voice` is a thin wrapper that maps each stop-slop phrase to a local rule ID, so it can print `phrase.jargon.look-into` instead of re-emitting the banned token. Wire it in `package.json` and run the same check in CI on every push:
+
+```json
+"scripts": {
+  "scan:voice": "tsx tools/voice/scan-voice.ts"
+}
+```
+
+```yaml
+- name: scan voice
+  run: pnpm scan:voice src/content/blog/**/*.mdx
+```
+
+The scanner sets the floor, the judgment read sets the ceiling. The regex catches the worst phrase offenders and runs two cheap structural heuristics I trust in CI: a negate-then-assert shape and a bare list of three. Everything subtler, a paragraph that dodges the actor while keeping every word clean, still needs the human or cross-model read that happens outside the scanner. Wire both: an automated gate so a tell can't slip through by accident, and a structural read so clean-worded slop still gets caught.
 
 ## What it caught on this post
 
-The first draft of the paragraph you started reading at the top went through the scanner and failed. Five hard hits, six soft tells, em-dash density 8.4 per thousand words, flagged HIGH. I can't paste the raw output here, and that fact is the cleanest demonstration of the whole problem: the scanner runs over this file too, so printing its own findings verbatim would trip it again. The banned tokens are radioactive even as quotations.
+Those eleven hits I opened with came from the draft of the paragraph you read at the top. I can't paste the raw output here, and that fact demonstrates the problem: the scanner reads this file too, so verbatim output would trip it again. The banned tokens stay radioactive even inside quotations.
 
-So here is what it caught, named instead of reproduced. The spelunking verb, twice. The negate-then-assert contrast, once, in the opening line, where I had waved off an obvious word so a grander one could take the spotlight before I cut it. Two pieces of corporate filler I'd written out as specimens in the tells section, the one that means "use" and the one that means a long examination. The gate counted every one as use, not as a citation, because a regex can't see the quotation marks around a word.
+Here is that first run, redacted to rule IDs and line numbers (against the pre-edit source) so the post doesn't fail itself by quoting its own findings:
 
-That constraint forced the real edit. I couldn't fix any of them by deleting the flagged token, because the token was the example I needed. I had to rewrite each sentence to point at the tell without saying it: describe the verb, show the contrast's shape with placeholder words, name the jargon by what it replaces. The flagged token is never the unit of work. The sentence is. Eleven hits and a high em-dash count on the first pass of this post; zero on the pass that let it open its PR.
+```text
+$ pnpm scan:voice src/content/blog/stop-slop-scrub-pass/page.mdx
+HARD  phrase.jargon.look-into        line 13   [token redacted]
+HARD  phrase.jargon.look-into        line 95   [token redacted]
+HARD  structure.negate-then-assert   line 13
+HARD  phrase.corporate.use           line 29   [token redacted]
+HARD  phrase.corporate.examine       line 29   [token redacted]
+SOFT  phrase.adverb.intensifier      line 25   [token redacted]
+SOFT  phrase.adverb.intensifier      line 33   [token redacted]
+SOFT  phrase.filler.when-it-comes-to line 37   [token redacted]
+SOFT  phrase.filler.the-reality-is   line 33   [token redacted]
+SOFT  structure.list-of-three        line 29
+SOFT  punctuation.em-dash-density    8.4 / 1k words   HIGH
+exit 1
+```
 
-## The honest catch: a scrubbed draft isn't a good one
+These were the findings, named rather than reproduced. The verb that means look into appeared twice. A negate-then-assert contrast appeared once, in the opening line, where I had brushed aside an obvious word so a grander one could take the spotlight before I cut it. Two corporate filler specimens appeared in the tells section, one meaning "use" and one meaning a long examination. The gate flagged each one as a real hit, because a regex can't tell a quoted example from the live word.
+
+That constraint forced the real edit. Deleting tokens could not fix those sentences, because the token was the example I needed. I rewrote each sentence to point at the tell without saying it: describe the verb, show the contrast's shape with placeholder words, name the jargon by what it replaces. The flagged token is never the unit of work; the sentence is. The first pass of this post had eleven hits and a HIGH long-dash count. The pass that opened its PR returned zero.
+
+## A clean scan can still hide an empty draft
 
 <Image src="https://zackproser.b-cdn.net/images/stop-slop-scrub-pass-hollow.jpg" alt="Pixel art cutaway of a gleaming polished metal panel that is hollow inside, a small inspector with a flashlight peering into the empty cavity behind the shiny veneer" width={1200} height={675} />
 
-The scrub can lie to you. Strip every tell from a hollow draft and you get hollow prose with no tells. It reads clean and says nothing. A draft can pass every regex and still say "this workflow changes how teams think about content," which is grammatical, on-brand, and empty. The scrub pulls the surface markers of machine writing without adding any of the substance that makes writing worth reading: the specific number, the production bug, the opinion someone would argue with. Those come from [the spark](/blog/spark-bellows-quench), the lived experience and the point of view I have to supply. No pass generates them.
+Don't let a green scanner flatter you, because the pass can lie. Strip each tell from a hollow draft and you get hollow prose with no tells. It reads clean and says nothing. A draft can pass each regex and still say "this workflow changes how teams think about content," which is grammatical, on-brand, and empty. The pass pulls the surface markers of machine writing without adding the substance that makes writing worth reading: the specific number, the production bug, the opinion someone would argue with. Those come from [the spark](/blog/spark-bellows-quench), the lived experience and the point of view you have to supply. No pass generates them.
 
-So the scrub earns its place only because of where it sits. It runs after the draft is already true and useful and structured, after the substance is in. Its job stays narrow: keep the surface from betraying the substance, keep a reader from flinching and bailing on a post that was worth their time. Run it on a hollow draft and all you've done is hide the hollowness, which is worse, because now it's harder to catch.
+The pass earns its place because of where it sits. It runs after the draft has truth, utility, structure, and substance. Its job stays narrow: keep the surface from betraying the substance, keep a reader from flinching and bailing on something that was worth their time. Run it on a hollow draft and you hide the hollowness, which makes the problem harder to catch.
 
-That's the line. The list defends the prose. It doesn't write it.
+The list defends prose you already made worth reading; it won't make the draft worth reading for you.
 
-## Run it on yourself
+## Wire it into your own pipeline
 
-If you write with a model in the loop, add the pass wherever your drafts leave the model. Don't trust the draft's surface. Pull a current tells list, stop-slop is a good one and it's free, and make a deliberate pass whose only job is to read the finished draft against it and rewrite every hit into plain, committed prose. Run it last, after the thinking is done. Treat any automated scanner as the floor and the structural read as the ceiling.
+If you write or generate text with a model in the loop, add the pass wherever your drafts leave the model. It's the same step whether the artifact is a blog post, a generated changelog, a PR description, or a release note. The recipe, condensed:
 
-The order I run, copy it if it helps: draft, structure, facts, voice, stop-slop scrub, scanner, PR. The scrub is one step from the end and never the first. It's the same division of labor I care about everywhere in this pipeline, the reason I obsess over [the interface around the model](/blog/the-interface-matters-most) and not only the model call: the machine takes the mechanical middle of the work and never the ends. A de-slop pass is the cleanest example of the middle I have. It's list-driven, automatable, and incapable of giving a post a reason to exist.
+1. Pull a current tells list. [stop-slop](https://github.com/hardikpandya/stop-slop) is a good one and it's free. Read it live; pin a copy for CI.
+2. Run the pass last, after structure, facts, and voice are done. Keep it out of drafting.
+3. Rewrite the sentence around each hit rather than delete the token.
+4. Hand the rewrite to a different model than the one that drafted, so the editor isn't the writer.
+5. Gate on an automated scanner, then do the structural read the scanner can't.
 
-This post ran the scrub. The final run returned zero hits. If you read this far without smelling the machine, the pass did its job.
+I haven't published my exact scanner, but the contract is the whole point: files in, rule IDs and line numbers out, non-zero exit on any hard hit. Build that interface around whatever phrase list you trust and the rest is wiring.
+
+Treat any automated scanner as the floor and the structural read as the ceiling. The same division of labor holds here that I care about across this pipeline, the reason I obsess over [the interface around the model](/blog/the-interface-matters-most) as much as the model call itself: I let the machine run the repeatable check, and I keep the first idea and the final judgment. An anti-slop pass is the cleanest example of that division I have. It can follow a list and run in automation, and it can't hand a post a reason to exist.
+
+This post ran the pass. The first run returned eleven hits and a HIGH long-dash count; the final run returned zero. I want the PR button disabled until the page no longer smells like a model.
 
 <ReadNextCard
   image="https://zackproser.b-cdn.net/images/spark-bellows-quench-hero.webp"
   imageAlt="Pixel art triptych of a forge at night: a blacksmith striking sparks, a bellows feeding the fire, and a glowing blade quenched in steam"
   eyebrow="Read this next"
   title="I Am the Spark, the Bellows, and the Quench"
-  description="The de-slop pass is the bellows. The full division of labor between me and the machine, and why it can take the middle of the work but never the ends."
+  description="The anti-slop pass is the bellows. The full division of labor between me and the machine, and why it can take the middle of the work but never the ends."
   href="/blog/spark-bellows-quench"
 />
