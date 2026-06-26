@@ -14,7 +14,7 @@ If you draft anything with a model in the loop, the output carries tells. The sa
 
 The fix is one step you add at the end of your pipeline: an anti-slop pass. After the draft is written and correct, you read it against a list of known AI tells and rewrite every hit. That's the whole trick, and it's the cheapest quality win I've added to my writing pipeline.
 
-The list I use is [stop-slop](https://github.com/hardikpandya/stop-slop), an open-source catalog of the phrases and structures that mark AI-generated prose. I wired it into my blog pipeline as its own pass. This post is the test case: the same pipeline drafted it, then ran the pass on it. The first run failed, which I'll show you. Here's how to build the step.
+The list I use is [stop-slop](https://github.com/hardikpandya/stop-slop), an open-source catalog of the phrases and structures that mark AI-generated prose. I wired it into [Blog Bot, the Slack agent that drafts my posts](/blog/workos-applied-ai-showcase), as its own pass. This post is the test case: the same pipeline drafted it, then ran the pass on it. The first run failed, which I'll show you. Here's how to build the step.
 
 ## Step 0: know the tells, and why they read as fake
 
@@ -22,7 +22,7 @@ You can't strip a tell until you can name it. These phrases stand out because th
 
 Start with the throat-clearing opener. The draft warms up with a phrase that promises a hard truth, or one that frames the next sentence as a surprise discovery. Each one gives the reader runway. The writer clears their throat in place of leading with the point. A person who knows what they think says the thing. The model predicts the safest next sentence, and the safest next sentence is a warm-up.
 
-The negate-then-assert contrast is the loudest one, and it's the [Claude-family tell](/blog/spark-bellows-quench) I catch most often in my own drafts. It brushes aside a placeholder claim about speed, then promotes trust as the wiser frame, knocking down a position no reader needed knocked down. The sentence feels sharp until you ask who argued that speed was the whole story. State the claim and the negation falls away with nothing lost.
+The negate-then-assert contrast is the loudest one, and the tell I catch most often in my own drafts. It brushes aside a placeholder claim about speed, then promotes trust as the wiser frame, knocking down a position no reader needed knocked down. The sentence feels sharp until you ask who argued that speed was the whole story. State the claim and the negation falls away with nothing lost.
 
 Then come the small tells that pile up: adverbs that intensify nothing, business verbs standing in for plain ones, lists padded for rhythm, long dashes scattered through parenthetical asides. One long dash won't ruin a post. A dozen in a thousand words make the draft look machine-set.
 
@@ -94,7 +94,7 @@ The split in step 2 trips people up. A regex catches the look-into verb on sight
 
 Step 4 in that list is a hard gate. My scanner reads the prose, the JSX props, the image alt text, and the code fences alike, with no idea which is which. It lowercases the file, matches the banned-phrase list plus two cheap structural heuristics, and exits non-zero on any hard hit. Long-dash density above 8 per 1,000 words flags HIGH, which warns without failing the build. Scanning everything, including alt text and code, creates false positives in examples like this post, and I take that over a parser that lets dirty alt text ship because it decided a prop didn't count.
 
-It mirrors my CI gate, and the script that opens my pull requests exits before it calls GitHub if the scanner fails, so I can't publish a dirty draft from muscle memory. `scan:voice` is a thin wrapper that maps each stop-slop phrase to a local rule ID, so it can print `phrase.jargon.look-into` instead of re-emitting the banned token. Wire it in `package.json` and run the same check in CI on every push:
+It mirrors my CI gate, and the script that opens my pull requests exits before it calls GitHub if the scanner fails, so I can't publish a dirty draft from muscle memory. Making the gate a plain shell command is the trick that lets a bot run it at all: the same way [my publishing pipeline encodes the voice rules as a contract every agent reads](/blog/how-my-ai-assistant-ships-blog-posts), a quality bar an agent can run is one that exists as a command, not a vibe. `scan:voice` is a thin wrapper that maps each stop-slop phrase to a local rule ID, so it can print `phrase.jargon.look-into` instead of re-emitting the banned token. Wire it in `package.json` and run the same check in CI on every push:
 
 ```json
 "scripts": {
@@ -159,13 +159,13 @@ I haven't published my exact scanner, but the contract is the whole point: files
 
 Treat any automated scanner as the floor and the structural read as the ceiling. The same division of labor holds here that I care about across this pipeline, the reason I obsess over [the interface around the model](/blog/the-interface-matters-most) as much as the model call itself: I let the machine run the repeatable check, and I keep the first idea and the final judgment. An anti-slop pass is the cleanest example of that division I have. It can follow a list and run in automation, and it can't hand a post a reason to exist.
 
-This post ran the pass. The first run returned eleven hits and a HIGH long-dash count; the final run returned zero. I want the PR button disabled until the page no longer smells like a model.
+This post ran the pass. The first run returned eleven hits and a HIGH long-dash count; the final run returned zero. I want the PR button disabled until the page no longer smells like a model. That is what [completing the loop](/blog/workos-applied-ai-showcase) looks like up close: the agent does the typing, the gate refuses the bad drafts, and I keep the judgment.
 
 <ReadNextCard
-  image="https://zackproser.b-cdn.net/images/spark-bellows-quench-hero.webp"
-  imageAlt="Pixel art triptych of a forge at night: a blacksmith striking sparks, a bellows feeding the fire, and a glowing blade quenched in steam"
+  image="https://zackproser.b-cdn.net/images/hermes-ships-blog-posts-hero.webp"
+  imageAlt="Pixel art of an AI assistant shipping blog posts: a phone in the foreground driving a pipeline of MDX files, hero images, and merged pull requests"
   eyebrow="Read this next"
-  title="I Am the Spark, the Bellows, and the Quench"
-  description="The anti-slop pass is the bellows. The full division of labor between me and the machine, and why it can take the middle of the work but never the ends."
-  href="/blog/spark-bellows-quench"
+  title="How My AI Assistant Ships Blog Posts"
+  description="The pipeline this pass plugs into: MDX, images, CDN, and merged PRs, plus the voice contract and shell-command quality gates that make a bot safe to drive end to end."
+  href="/blog/how-my-ai-assistant-ships-blog-posts"
 />
