@@ -2,9 +2,12 @@ import { createMetadata } from '@/utils/createMetadata'
 import Image from 'next/image'
 import ReadNextCard from '@/components/ReadNextCard'
 import Mermaid from '@/components/Mermaid'
+import { AffiliateLink } from '@/components/StickyAffiliateCTA'
 import rawMetadata from './metadata.json'
 
 export const metadata = createMetadata(rawMetadata)
+export const campaign = "the-agent-fleet"
+
 
 # The Agent Fleet That Runs My Business
 
@@ -85,9 +88,25 @@ flowchart TB
 
 The Claude tag is the only thing I touch in that picture, and it touches everything else. The connect-to-every-surface capability is what ties the whole fleet back to the mechanic pattern: one agent, with enough reach and enough context, can maintain all the others.
 
+### It builds the bots, too
+
+The Claude tag can stand up a *new* bot from a Slack message, and that's the capability I lean on most. I describe the job and the prompt, and it scaffolds the agent, wires its tools, and runs the first task right there in the thread.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-claude-tag-adds-bot.jpg" alt="Pixel art of a simulated Slack thread on a phone: a founder asks to add a new bot with a short prompt, the Claude bot replies that it scaffolded the bot and is running the first task with a ticking checklist, a newly spawned little robot appears to the side, and a glowing Approve button sits at the bottom" width={1200} height={900} />
+
+It posts the result, I read it, and I approve it from the same thread. On my phone I'm usually not typing any of this. I dictate it with <AffiliateLink product="wisprflow" campaign={campaign}>Wispr Flow</AffiliateLink>, so the whole loop is me talking, the fleet working, and a button to tap. Saying "add a bot that watches for failed Stripe charges and pings me" is faster than writing it, and the speed is the point when the office is a pickup line.
+
+The shape under that is encapsulation, the same idea that runs through the whole system. The Claude tag treats each agent almost like a tool it can call: a clean, named thing with a defined job. Each agent, in turn, holds its own tools inside its own boundary. Margin owns calendar tools; Inbox owns mail tools; neither reaches into the other.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-encapsulation.jpg" alt="Pixel art nesting diagram: a large outer panel labeled as the orchestrating Claude layer holds a row of tool-buttons that are actually agents (each with a small robot face); one agent box is opened to reveal its own smaller set of tool icons inside — calendar, envelope, wrench — concentric clean boundaries like Russian dolls of scope" width={1200} height={675} />
+
+That layering is what keeps the system legible. The Claude tag reasons about a handful of agents instead of a hundred loose tools, and each agent reasons about its own small toolbox instead of the whole business. Clean boundaries, scoped roles, one job per box. When I notice a bug in one bot, or it's missing a capability I want, I don't carry that to a desk — I tell Claude to fix or add it, and the change stays inside that one box.
+
+For me this is the difference between a system I can run and one I can't. I'm AuDHD, and the failure mode the old way always hit was the 9pm tax: remember, hours later when I'm fried, to sit down at a laptop and do the manual follow-ups by hand. Encapsulating each job into a bot means I don't have to remember or re-derive any of it. I kick off the same workflow again with a sentence, and if a bot needs to grow, I say so and the Claude tag grows it. The remembering, the wiring, and the 9pm laptop session are the parts I handed off.
+
 ### Where this is headed
 
-The direction is two front doors, not one. I can talk to the **Claude tag** directly, or I can talk to my **Chief of Staff** agent. Either one becomes the thing I address, and it directs and uses the other subagents to get the work done. One conversation, the whole team executing behind it. The Claude tag leans toward the meta work — fixing and improving the bots, reaching new surfaces, the cross-cutting tasks that don't belong to any one specialist. The Chief of Staff leans toward running the established plays across the fleet. Both collapse the team down to a single thread I can hold from a parking lot.
+The direction is two front doors, not one. I talk to the **Claude tag** when the work is meta (fixing and improving the bots, reaching a new surface) and to the **Chief of Staff** when I want the established plays run across the fleet. Either one directs the subagents behind it, so the team collapses down to a single thread I can hold from a parking lot.
 
 ## Giving the fleet its own identity and inbox
 
@@ -102,42 +121,18 @@ So I gave the fleet an identity of its own. I upgraded to a Slack Teams plan so 
 The cleanest way to see the system is as reporting lines. I sit at the top, in Slack. I have two ways in: the Claude tag and the Chief of Staff. The Chief of Staff is the front door to the specialists; the Claude tag is the layer above that can reach the specialists *and* their code. Every specialist owns its domain and nothing else.
 
 <Mermaid chart={`
-graph TB
-  subgraph me["Me — in Slack, anywhere"]
-    p["phone"]
-    l["laptop"]
-  end
-  ct["@Claude tag (meta-agent: reaches every surface, maintains the bots)"]
-  cos["Chief of Staff (orchestrator)"]
-  p --> ct
-  p --> cos
-  l --> ct
-  l --> cos
-  ct -. "improves + opens PRs against" .-> cos
-  subgraph specialists["Specialists"]
-    inbox["Inbox: Gmail triage"]
-    margin["Margin: calendar, Oura, time"]
-    resend["Resend: email marketing"]
-    blog["Blog: articles"]
-    image["Image: pixel art"]
-    social["Social: X + LinkedIn"]
-    portfolio["Portfolio: site ops, SEO"]
-    docs["Docs: SOW, MSA, NDA"]
-    book["Bookkeeping: reconciliation + invoicing"]
-  end
-  cos --> inbox
-  cos --> margin
-  cos --> resend
-  cos --> blog
-  cos --> image
-  cos --> social
-  cos --> portfolio
-  cos --> docs
-  cos --> book
-  ct -. "can reach + repair any specialist" .-> specialists
+flowchart TB
+  me["Me — Slack, phone or laptop"]
+  ct["@Claude tag<br/>meta-agent"]
+  cos["Chief of Staff<br/>orchestrator"]
+  me --> ct
+  me --> cos
+  ct -. "maintains + opens PRs" .-> cos
+  cos --> specialists["The specialists<br/>(Inbox · Margin · Resend · Blog · Image ·<br/>Social · Portfolio · Docs · Bookkeeping)"]
+  ct -. "can repair any of them" .-> specialists
 `} />
 
-Read it as a company. I give one instruction to the orchestrator, and it figures out which specialists to involve. I address one bot, and it fans the work out to the rest. That's the same reason you put an API gateway in front of a mess of services instead of making every client memorize the topology. The orchestrator absorbs the coordination so I don't have to hold it. And the dotted lines from the Claude tag are the meta-agent: it doesn't just call the specialists, it can open a PR against any of them when one needs fixing.
+Read it as a company. The Chief of Staff absorbs the coordination so I don't have to hold it, the same reason you put an API gateway in front of a mess of services instead of making every client memorize the topology. The dotted lines from the Claude tag are the meta-agent: it doesn't just call the specialists, it can open a PR against any of them when one needs fixing.
 
 ## Where each specialist is headed
 
@@ -149,13 +144,13 @@ The roster above is a snapshot. The trajectory is the interesting part, so this 
 
 Margin started as a calendar bot and became the most important one I own. It owns my time. Everything else in the fleet that needs a slot — a kickoff, a sales call, a follow-up — coordinates *to* Margin, because Margin is the one agent that holds the whole picture of where my hours go and what they're worth. Its job is guarding the two things I'm worst at protecting on my own: rest and time with my kid.
 
-Margin reads my Oura ring every morning and knows my readiness and sleep scores before I do. It holds my childcare blocks as immovable. When Inbox flags a real lead, Margin is the agent that hands them a calendar link, so I'm not the bottleneck on getting a conversation booked. When a client needs to reschedule, Margin finds the new slot and builds a buffer around it so I'm not sprinting between calls. It owns time and calendar for the whole operation.
+Margin reads my Oura ring every morning and knows my readiness and sleep scores before I do. It holds my childcare blocks as immovable. It also has my Cal.com account, which is the part that quietly removes the most friction. When Inbox flags a real lead, Margin hands them a Cal.com link that shows my actual availability. Cal.com tracks both my personal and my work calendar, so the only slots it ever offers are ones that are genuinely open. The lead picks a time that works for them and it books itself, no back-and-forth, no me playing scheduler. When a client needs to reschedule, Margin finds the new slot and builds a buffer around it so I'm not sprinting between calls. It owns time and calendar for the whole operation.
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-margin-nap.jpg" alt="Pixel art of a tired founder lying down to nap while a calm guardian robot drops a glowing blue Busy block onto a wall calendar, carving out a protected rest window and sliding meetings aside, a small readiness ring glowing on its chest" width={1200} height={675} />
 
 The example I care about most is the smallest one. If I text Margin "I feel like shit and I need a break," it acts on that one sentence. It checks whether the day can afford it, and if it can, it drops a Busy block on my work calendar and gives me a real 2–4 hour nap window — long enough to recover, not a token fifteen minutes. If the schedule genuinely can't spare it, it tells me that instead of pretending. A bad night, or a bad afternoon, should be able to reshape the day, and Margin is the agent that has the authority to do it because everything else routes through it.
 
-When it moves a call, Margin owns the follow-up too. It drafts the "something came up, can we do Thursday" email, threads it to the right person, and waits for my tap to send. The reschedule and the apology and the new invite travel together as one approved action instead of three things I forget to do. I'm wiring it into Cal and Calendly so it reads my full picture and my business partner Nick's: work calendars and personal calendars, mine and his, in one view, his as free/busy only. Once Margin holds that availability plus my readiness and my childcare blocks, "find a slot for the three of us next week" becomes a question it answers without me cross-checking four calendars on my phone.
+When it moves a call, Margin owns the follow-up too. It drafts the "something came up, can we do Thursday" email, threads it to the right person, and waits for my tap to send. The reschedule and the apology and the new invite travel together as one approved action instead of three things I forget to do. I'm extending it to my business partner Nick's calendars too, his as free/busy only. Once Margin holds his availability plus my own readiness and childcare blocks, "find a slot for the three of us next week" becomes a question it answers without me cross-checking four calendars on my phone.
 
 ### Inbox: triage that clears the queue
 
