@@ -21,6 +21,20 @@ Since I first wrote this post, one piece changed the shape of the whole thing. I
 
 When I say "I use AI to run my business," that phrase hides the two things that matter. First, the architecture: a system I engineered to manage the irreducible complexity of running a business alone, covering leads, writing, scheduling, contracts, email, and site ops. Second, the limits: a hard boundary around what I will let a model do on its own. The framing carries the rest of this post.
 
+## Why I built this
+
+I have two kids and a full-attention policy when I'm with them. No phone, no laptop. They wouldn't accept it if I tried, and I don't want to try. That time is not negotiable, which means every hour of business has to come from somewhere else, and there aren't many of those hours.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-full-presence.jpg" alt="Pixel art split scene: on one side a parent fully present on the floor playing with two small kids while a phone and laptop sit dark and face-down on a far shelf; on the other side a tidy fleet of small robot workers quietly handling mail, calendar, and drafts on their own" width={1200} height={675} />
+
+So the fleet isn't about doing more things. It's about offloading the tedium to reliable automation so I can spend my actual attention on the signal: undistracted, fully present family time, real business growth, and content that reads the same as if I'd written every word and set every image myself. The bots carry the parts that don't need me; I keep the parts that do.
+
+There's a number behind that I can point at. Last year I built a running IMAP mirror that sucks down my Gmail, hundreds of thousands of messages across fifteen years, into a database I can query. When I ran the numbers, I found I'd left about **$30,000** on the table in a single stretch: consulting and advisory call requests I never answered, each of which would have paid well, lost not because I said no but because I didn't have the time to say yes.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-missed-income.jpg" alt="Pixel art of a robot querying a giant fifteen-year email archive feeding into a small database, with a glowing report popping out highlighting unanswered consulting requests and a $30K tally of missed income" width={1200} height={675} />
+
+That was the impetus. The bottleneck wasn't my willingness or my skill; it was my attention, and attention doesn't scale. So I did the thing I'm actually good at: I automated it. An [email inbox that drafts replies](/blog/inbound-classifier-trigger-dev) means a real lead gets a same-day answer whether or not I'm at a keyboard, and the requests that used to rot in a queue now turn into booked calls. The same instinct that lets me [ship a week of writing inside the scraps of time around two toddlers with zero screen time](/blog/nine-posts-in-48-hours) is the one that built this fleet: hand the tedium to something reliable, and protect the hours that matter for the work and the people only I can do.
+
 ## Running a business is a complexity problem
 
 Programming has always mostly been complexity management. Code is where the work shows up. A good program is one where you can hold a piece in your head without the rest of it leaking in. Decomposition, clean interfaces, separation of concerns, least privilege, failing closed: those are the moves you make so a system stays legible as it grows.
