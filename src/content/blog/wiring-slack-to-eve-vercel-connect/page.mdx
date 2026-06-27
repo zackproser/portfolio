@@ -1,0 +1,221 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# Wiring Slack to an eve agent with Vercel Connect
+
+Connecting Slack to an eve agent is two flags on one command, and the one everyone forgets is `--trigger-path /eve/v1/slack`. Get it right and a Slack `@`-mention lands in your agent. Get it wrong and Slack sends events into the void, your bot stays silent, and nothing in the logs tells you why, because the request never reaches your function.
+
+I run [Blog Bot](/blog/the-interface-matters-most) on [eve](https://vercel.com/eve), Vercel's agent framework. The agent does the interesting work, but the part that took me the longest to get right was the dumbest part: getting Slack's events to reach the route the agent serves. Mine was still pointed at `/api/slack` from an earlier experiment, so every mention died before my function ran. This is the reference I wish I'd had: the webhook path, the two-command connector dance, the one detail that isn't in the obvious place, and how to tell a working connector from a broken one in under a minute.
+
+<Image src="https://zackproser.b-cdn.net/images/wiring-slack-to-eve-vercel-connect-hero.jpg" alt="Pixel art of a Slack channel on the left connected by a glowing amber wire through a labeled Vercel Connect junction box to a deployed agent on the right" width={1200} height={675} />
+
+## The request path: three hops
+
+Before any commands, hold the path in your head. A message in Slack does not reach your code directly. It goes to Slack's servers, Slack forwards the event to [Vercel Connect](https://vercel.com/docs/connect), and Connect delivers it to one specific route on your deployment. The agent serves that route, runs a turn, and replies back in the thread.
+
+<Image src="https://zackproser.b-cdn.net/images/wiring-slack-to-eve-vercel-connect-hops.jpg" alt="Pixel art of a single Slack message envelope traveling along a glowing track through three stations: a chat app, a central routing hub, and a server rack with an agent" width={1200} height={675} />
+
+<Mermaid chart={`
+sequenceDiagram
+  participant U as User in Slack
+  participant S as Slack API
+  participant C as Vercel Connect
+  participant E as "eve route /eve/v1/slack"
+  U->>S: "@Bot do the thing"
+  S->>C: event delivery
+  C->>E: POST to registered trigger path
+  E->>E: run agent turn
+  E-->>U: reply in thread
+`} />
+
+Two facts fall out of that diagram and explain almost every problem you'll hit:
+
+1. **Slack never talks to your local machine.** It posts to Connect, which posts to a *deployed* URL. You cannot test the inbound Slack path against plain `localhost`; Connect delivers to a Vercel deployment, not your dev server. Everything else in eve runs locally in the dev TUI; the Slack surface only runs against a preview or production deployment.
+2. **There is exactly one route that matters: `/eve/v1/slack`.** Connect has to point its event trigger at that path. If it's pointing anywhere else, or nowhere, the message dies in transit and your code never executes.
+
+## The channel is one file
+
+On the agent side, the Slack surface is a single file: `channels/slack.ts`. eve registers channels by filename, so a file named `slack.ts` becomes the `slack` channel and is served at `/eve/v1/slack`. There's no webhook handler to write, no signing-secret verification to implement, no event-subscription JSON to maintain.
+
+```typescript
+// channels/slack.ts
+import { defineChannel } from 'eve/channels'
+import { connectSlackCredentials } from 'eve/connect'
+
+export default defineChannel({
+  type: 'slack',
+  // Read the connector UID from the env Connect populated.
+  // The "slack/my-agent" fallback is only a default for when the var is unset.
+  credentials: connectSlackCredentials(process.env.SLACK_CONNECTOR ?? 'slack/my-agent'),
+})
+```
+
+`connectSlackCredentials` reads the connector UID out of `SLACK_CONNECTOR` and lets Connect manage the Slack install: the OAuth credentials, the bot token, and inbound event verification all live in the platform, not in your code. There is no bot token in a `.env` file to leak. That's the appeal, and also why, when it breaks, the failure is invisible from inside your app. The verification and routing happen *before* your handler runs.
+
+One production note on that fallback: `?? 'slack/my-agent'` is convenient for a template, but in production I'd rather fail to boot than silently bind to the wrong connector. Drop the fallback and let a missing `SLACK_CONNECTOR` throw.
+
+So the agent half is trivial. The half that bites you is the connector. (Once the wire is solid, the agent itself can do real work in Slack: I wrote about [how far that's come](/blog/devin-has-come-a-long-way) separately.)
+
+## The two-command connector dance
+
+A Slack connector in Connect is set up with two commands, and the order matters. The first creates the connector and the Slack app behind it. The second attaches that connector to your linked project *and* tells Connect where to deliver events:
+
+```bash
+# 1. Create the Slack connector. Note the printed UID, e.g. slack/blog-bot.
+vercel connect create slack --name blog-bot --triggers
+
+# 2. Attach it to the linked project AND point its event
+#    trigger at the route the agent serves.
+vercel connect attach slack/blog-bot --triggers --trigger-path /eve/v1/slack
+```
+
+Then put the UID that `create` printed into the same Vercel environment you're testing, so the channel file can find it. Set it on Preview if you're testing a preview URL, Production if you're testing prod:
+
+```bash
+# SLACK_CONNECTOR = the UID from step 1, e.g. slack/blog-bot
+vercel env add SLACK_CONNECTOR production
+vercel env pull
+```
+
+Setting the env var doesn't touch an already-built deployment, so redeploy the environment you set it on. Then invite the bot to a channel and `@`-mention it.
+
+### The part that isn't obvious
+
+Here's the detail that cost me an afternoon: **`--triggers` and `--trigger-path` are two different things, and you need both on the `attach` step.**
+
+- `--triggers` turns *on* event delivery for the connector. Without it, Connect treats the connector as outbound-only. Your agent can call Slack, but Slack can't call your agent. Mentions go nowhere.
+- `--trigger-path` says *where* to deliver those events. eve serves the Slack channel at `/eve/v1/slack`, so the trigger path has to be exactly that. The default isn't `/eve/v1/slack`, so if you omit the flag, Connect can deliver to a route your agent doesn't serve, and the event is dropped.
+
+The trap is that each flag fails silently and in the same way: the bot doesn't respond, and there's no error in your deployment logs, because a misrouted or disabled trigger means the request never reaches your function. There's nothing to log because nothing ran.
+
+If you use the [eve Slack template's](https://github.com/vercel-labs/eve-slack-agent-template) Deploy button instead of the CLI, this same configuration is encoded in the deploy URL as a connector spec: `triggers: true` and `triggerPath: "/eve/v1/slack"`. The button is pre-filling those two fields for you.
+
+<Image src="https://zackproser.b-cdn.net/images/wiring-slack-to-eve-vercel-connect-flags.jpg" alt="Pixel art diagram contrasting two control panels: one labeled triggers as an on/off power switch, one labeled trigger-path as a routing dial pointing at slash eve slash v1 slash slack" width={1200} height={675} />
+
+## What `attach` sets up
+
+`attach --triggers --trigger-path` creates one delivery route inside Connect, and it helps to see it because that's the machinery you can't see from your code. When Slack sends an event for this connector, Connect verifies it, looks up the trigger path you registered, and POSTs the event to that path on the deployment for the project and environment the connector is attached to.
+
+<Mermaid chart={`
+flowchart LR
+  A["vercel connect attach"] -->|"--triggers"| B["enable event delivery"]
+  A -->|"--trigger-path"| C["register route /eve/v1/slack"]
+  B --> D["Connect delivery route"]
+  C --> D
+  D -->|"POST"| E["deployment /eve/v1/slack"]
+  E --> F["eve slack channel runs turn"]
+`} />
+
+The non-obvious edge is the one on the left: both flags feed the same delivery route, and if either is missing the route is incomplete. `--triggers` with no `--trigger-path` enables delivery to a default that your agent doesn't serve. `--trigger-path` with no `--triggers` registers a path that delivery is turned off for. You need both arrows pointing into that box.
+
+## Diffing a working connector against a broken one
+
+When the bot goes quiet, don't read your application logs first. There's nothing there. Read the connector. `vercel connect ls` shows your connectors and their trigger config; compare a working one to a broken one and the difference is almost always in one of these fields.
+
+<Image src="https://zackproser.b-cdn.net/images/wiring-slack-to-eve-vercel-connect-diff.jpg" alt="Pixel art diptych of two identical connectors: the left glows green and its cable connects to a server with a checkmark, the right glows red and its cable hits a dead-end port marked with an X" width={1200} height={675} />
+
+| What to check | Working | Broken |
+| --- | --- | --- |
+| Triggers enabled | `triggers: true` | `triggers: false` (or unset) |
+| Trigger path | `/eve/v1/slack` | empty, or a stale `/api/slack` |
+| Attached to project | the deployed project | unattached, or a different project |
+| `SLACK_CONNECTOR` env | matches the connector UID | unset, falling back to `slack/my-agent` in the template |
+| Bot in channel | invited | not invited yet |
+
+That stale-path case is the one I hit. The connector was attached and `triggers: true`, but the trigger path still pointed at `/api/slack`. Slack accepted the install, Vercel deployed clean, and every `@`-mention vanished before it reached the function boundary. Slack showed nothing, the runtime logs showed nothing, and `connect ls` showed the stale path:
+
+```text
+$ vercel connect ls
+UID               TRIGGERS   TRIGGER PATH    ATTACHED TO
+slack/blog-bot    true       /api/slack      blog-bot (production)   ← the bug
+```
+
+(Column layout is illustrative and varies by CLI version; the field to read is the trigger path.) Reattaching with the right path fixed it:
+
+```bash
+vercel connect attach slack/blog-bot --triggers --trigger-path /eve/v1/slack
+```
+
+The other one that gets me is the **fallback UID**. If `SLACK_CONNECTOR` isn't set, the channel file falls back to `slack/my-agent`, which may not be the connector you attached. The deploy succeeds, the agent boots, and it quietly listens on the wrong connector.
+
+Here's the broken path. Note where it stops:
+
+<Mermaid chart={`
+sequenceDiagram
+  participant S as Slack API
+  participant C as Vercel Connect
+  participant E as deployment
+  S->>C: event delivery
+  Note over C: triggers off OR wrong path
+  C--xE: never forwarded
+  Note over E: handler never runs, logs stay empty
+`} />
+
+That dropped arrow is the whole bug class. The request dies at Connect, so your function never executes, so there's nothing to log. Once you internalize that the silence *is* the symptom, you stop grepping logs and go straight to `vercel connect ls`.
+
+A two-minute triage that resolves most cases:
+
+1. `vercel connect ls`: confirm `triggers: true` and trigger path `/eve/v1/slack` on the right connector.
+2. Confirm the connector is attached to the project you deployed.
+3. Check `SLACK_CONNECTOR` is set to that connector's UID, not relying on the fallback.
+4. Confirm the latest deployment for the attached environment succeeded. If no healthy deployment serves `/eve/v1/slack`, Connect has nowhere useful to deliver.
+5. Confirm the bot is invited to the channel you're testing in.
+
+If all five are green and it still doesn't answer, *then* open the deployment logs. Now you'd expect to see the inbound POST, and its absence tells you the problem is still upstream in Connect.
+
+## The local-dev gotcha
+
+One more thing that trips people up because it contradicts the usual dev loop: you can't `@`-mention the bot from your laptop. Slack forwards events to Connect, which delivers to your deployed project, not to a local tunnel. The inbound Slack path is only testable against a preview or production deployment.
+
+What you *can* do locally is run the full agent in the dev TUI and exercise its instructions, tools, and skills directly. Everything works locally except the Slack surface. The pattern I lean on: add a trivial branch in the channel definition that short-circuits before the model and replies directly, deploy it, and use it to prove the connector path works before you touch agent behavior. Drop it into the same `channels/slack.ts` from earlier:
+
+```typescript
+export default defineChannel({
+  type: 'slack',
+  credentials: connectSlackCredentials(process.env.SLACK_CONNECTOR!),
+  onMessage: async ({ text, reply }) => {
+    // Deterministic probe: proves Slack -> Connect -> /eve/v1/slack works,
+    // with no model in the path.
+    if (text.trim() === 'ping') return reply('pong')
+    // ...otherwise hand off to the agent
+  },
+})
+```
+
+If `ping` comes back `pong` from a deployed bot, the wire is good and any remaining silence is the agent, not the connector.
+
+<Mermaid chart={`
+flowchart TD
+  A["new agent build"] --> B{"testing what?"}
+  B -->|"agent logic, tools, skills"| C["local dev TUI"]
+  B -->|"inbound Slack events"| D["preview / prod deploy"]
+  D --> E["@-mention the bot in a channel"]
+`} />
+
+Test delivery with a deterministic reply before you debug the agent. If you debug them together you won't know whether a silent bot is a broken connector or a broken prompt, and those have completely different fixes.
+
+## The reference, condensed
+
+If you remember nothing else:
+
+- The channel is one file, `channels/slack.ts`, served at `/eve/v1/slack`. eve registers it by filename.
+- Two commands wire the connector: `connect create slack --name <n> --triggers`, then `connect attach slack/<n> --triggers --trigger-path /eve/v1/slack`.
+- `--triggers` turns delivery on; `--trigger-path` says where. You need both, and the path must be exactly `/eve/v1/slack`.
+- Set `SLACK_CONNECTOR` to the printed UID so you're not silently riding the fallback. Redeploy after you set it.
+- A quiet bot is usually a dropped event at Connect, not a bug in your code. Read `vercel connect ls` before you read your logs.
+- You can't test the inbound Slack path locally, only against a deployment.
+
+Wiring this from scratch? Start from the [eve Slack template](https://github.com/vercel-labs/eve-slack-agent-template), deploy once, and save the `connect ls` output as a known-good baseline before you change anything in the agent. I lost the afternoon because I debugged the agent while Connect was still sending Slack events to `/api/slack`. Now I check the trigger path before I touch the agent.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/interface-matters-hero.webp"
+  imageAlt="A glowing portal doorway made of light and code"
+  eyebrow="Read this next"
+  title="The Interface Matters Most"
+  description="This post is the wiring. That one is why I put the agent in Slack in the first place."
+  href="/blog/the-interface-matters-most"
+/>

@@ -1,0 +1,8 @@
+{
+  "title": "Wiring Slack to an eve Agent with Vercel Connect",
+  "author": "Zachary Proser",
+  "date": "2026-06-24",
+  "description": "A technical reference for connecting Slack to an eve agent: the /eve/v1/slack webhook path, the connect create/attach --trigger-path dance, and how to diff a working connector against a broken one.",
+  "image": "https://zackproser.b-cdn.net/images/wiring-slack-to-eve-vercel-connect-hero.jpg",
+  "tags": ["AI", "Agents", "Slack", "Vercel", "eve", "Developer Tools", "Webhooks"]
+}
