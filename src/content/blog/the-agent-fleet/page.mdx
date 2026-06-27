@@ -24,9 +24,11 @@ Programming has always mostly been complexity management. Code is where the work
 
 A solo business has the same shape. The calendar fights the childcare schedule. The leads pile up in an inbox while the newsletter goes stale. The contracts need drafting, the books need reconciling, the posts need writing and then promoting, and the site needs to not quietly break. None of those are hard alone. Together, held in one head, they drown the person who tries to do all of it.
 
-<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-decomposition.jpg" alt="Pixel art contrasting one overloaded tangled monolith robot trying to do every job at once against a tidy row of small single-purpose robots, each in its own walled cubicle with one tool" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-juggling-domains.jpg" alt="Pixel art of one overloaded founder at the center juggling every job of a small business at once: a calendar, an overflowing inbox, a contract scroll, a ledger book, a megaphone, and a cracked website window orbiting them, tangled with messy connecting strings" width={1200} height={675} />
 
 I didn't reach for an agent because it's 2026 and that's what you do. I reached for the discipline I'd apply to any overgrown system: stop holding it in one place. Cut it into modules. Give each module one job, its own tools, and a boundary it can't reach past. Put a clean interface between them, then orchestrate the work through one place.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-decomposition.jpg" alt="Pixel art contrasting one overloaded tangled monolith robot trying to do every job at once against a tidy row of small single-purpose robots, each in its own walled cubicle with one tool" width={1200} height={675} />
 
 The bots are the modules. The message bus between them is the interface. The Chief of Staff is the orchestrator. The Claude tag is the layer above all of it. The discipline that makes good software makes a good agent team. I pointed it at my own operation instead of a codebase.
 
@@ -34,7 +36,13 @@ The bots are the modules. The message bus between them is the interface. The Chi
 
 Every bot is its own application built on [Vercel's eve](/blog/reviewing-vercels-eve-agent-framework), a filesystem-first TypeScript agent framework. One bot, one repo, one responsibility, one deployment. They share no codebase and no secret store. Each runs Claude Opus 4.8 through the Vercel AI Gateway, and each reaches me over Slack through Vercel Connect.
 
+Filesystem-first is the part that earns its keep. A bot is a directory: an `agent` file, a `tools` folder, a `skills` folder, a prompt, and its own scoped secrets. eve reads that layout and wires up the plumbing — the session API, the Slack transport, the durable execution, the auth on the routes — so I'm not hand-rolling the glue code between Slack and a model and a queue every single time I want a new bot. I describe the bot's job and its tools in files; the framework handles the wiring I'd otherwise reinvent on every project.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-eve-filesystem.jpg" alt="Pixel art of a tidy file explorer showing one bot's directory tree — an agent file, a tools folder, a skills folder, a prompt, and a small locked secrets file — with glowing pre-assembled pipes beside it, suggesting the framework already wired the plumbing, and a small robot resting on top of the folder" width={1200} height={675} />
+
 Durability is what makes them useful. Each session runs on Vercel Workflow, so it survives a restart, a redeploy, or a cold start, and it can pause mid-task to wait for me to approve something, then pick up where it left off when I tap the button. The session outlives the chat window that started it. I can kick off a job from the school parking lot, lose signal, and find it finished or politely parked at a gate when I look again. The first time it earned its keep, the moment was almost boring. A lead came in while I was in the pickup line. I asked the fleet to read the thread and find a slot, and a draft reply with two proposed times was waiting for my thumb before the cars moved. I never opened a laptop, and the task never turned into one of those "I'll get to it tonight" jobs that slides into next week.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-slack-interface.jpg" alt="Pixel art of a phone held in one hand showing a Slack-style chat interface as the single control plane: a channel list, a thread where a small robot bot has posted a task with a checklist, and a glowing Approve button at the bottom of the thread" width={1200} height={675} />
 
 The roster owns my whole operation, one domain per bot, and only that bot's domain holds its tools, its connectors, and its secrets. Least privilege, the same as you'd scope a service.
 
@@ -48,6 +56,8 @@ The roster owns my whole operation, one domain per bot, and only that bot's doma
 - **Bookkeeping** keeps the books: it reconciles the bank against the ledger and is growing into invoicing.
 - **Docs** drafts the recurring legal artifacts: SOWs, MSAs, NDAs.
 - **Chief of Staff** is the orchestrator that ties the specialists together.
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-roster-grid.jpg" alt="Pixel art roster grid of small labeled robot workers, each in its own tile with a single icon for its job — calendar, mail, megaphone, writer, painter, social, website-wrench, accountant, contract — with a compass-shaped orchestrator robot at the center-bottom, conveying one bot, one job" width={1200} height={675} />
 
 Above all of them sits the **Claude tag**, the meta-agent that can reach into any of these bots and improve them. Each specialist is small enough that I can read it top to bottom in a sitting and know everything it can do, because everything it can do lives in one directory. A bot I can't fully reason about is a bot I can't safely leave running, and keeping each one that small is what lets me trust it.
 
