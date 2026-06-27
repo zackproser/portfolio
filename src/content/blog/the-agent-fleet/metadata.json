@@ -1,8 +1,8 @@
 {
-  "title": "The Agent Fleet That Runs My Business",
+  "title": "The Agent Fleet That Runs My Business: a Claude Tag Over an eve Crew",
   "author": "Zachary Proser",
   "date": "2026-06-27",
-  "description": "How I run a solo AI consulting business from Slack: a fleet of single-purpose agents with the Claude tag as the meta-agent above them — reaching every surface, opening PRs, and maintaining the other bots — all behind a human approval gate.",
+  "description": "How I run a solo AI consulting business from Slack: a fleet of single-purpose Vercel eve agents with the Claude tag as the meta-agent above them — reaching every surface, opening PRs, and maintaining the other bots — all behind a human approval gate.",
   "image": "https://zackproser.b-cdn.net/images/the-agent-fleet-hero-v2.jpg",
   "tags": ["AI", "Agents", "Multi-agent", "Automation", "Slack", "Applied AI", "Business"]
 }
