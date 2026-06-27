@@ -1,5 +1,6 @@
 import { createMetadata } from '@/utils/createMetadata'
 import Image from 'next/image'
+import YoutubeEmbed from '@/components/YoutubeEmbed'
 import ReadNextCard from '@/components/ReadNextCard'
 import rawMetadata from './metadata.json'
 
@@ -9,21 +10,25 @@ export const metadata = createMetadata(rawMetadata)
 
 <Image src="https://zackproser.b-cdn.net/images/attention-is-the-bottleneck-hero.jpg" alt="Pixel art of a single human figure at a control desk in a dark room, a narrow beam of light from their eyes the only bright thing; around them a wall of dim screens shows dozens of small robots working unattended, each one waiting at a glowing gate for the beam to land on it" width={1200} height={675} />
 
-I run a handful of bots that do real work without me watching. An inbox classifier that drafts replies to forty-odd emails a week. A blog assistant that writes posts, makes the images, and opens pull requests. Devin, shipping code from a one-line Slack message. People keep asking the 2023 question: *can the agents actually do the work?* Mine already do enough of it that the question stopped being the interesting one.
+I run a handful of bots that do real work without me watching. An inbox classifier drafts replies to forty-odd emails a week. A blog assistant writes posts, makes the images, and opens pull requests. Devin ships code from a one-line Slack message. People keep asking the 2023 question: *can the agents do the work?* Mine do enough of it that the question lost its pull.
 
-The useful question now is simpler. I can spin up another agent this afternoon. I cannot spin up another me. Agent capacity is cheap and getting cheaper every quarter. My attention is fixed at one human, and it does not scale with the number of bots I point at a problem. The scarce resource in my whole setup is the number of times per day I can look at something and decide. Compute, context windows, and this month's model quality all matter less than the review slot they end up costing me.
+The useful question now is simpler. I can spin up another agent this afternoon. I cannot spin up another me. Agent capacity is cheap and gets cheaper each quarter. My attention stays fixed at one human, and it does not scale with the number of bots I point at a problem. The scarce resource in my whole setup is the number of times per day I can look at something and decide. Compute and context windows matter. Model quality matters too. The review slot they cost me matters more.
 
-I thought I was building agents. I'm building an attention budget — a system whose entire job is to spend my looking on the few things that need a human and to keep everything else away from me. This is the written version of the argument I made at [my AI Engineering talk](/blog/workos-applied-ai-showcase): the loop isn't done when the agent produces output. It's done when it produces output *and* costs me the right amount of attention to ship it.
+I gave a talk on this at AI Engineering London called [Untethered Productivity](/blog/aie-london-untethered-productivity). The one-line version on stage: the agents scale, you don't. This post is the argument behind that line. If you want the stage version, here's the recording:
+
+<YoutubeEmbed urls="https://www.youtube.com/watch?v=so9l_MwS2yg" title="Untethered Productivity — my AI Engineering London talk" />
+
+I stopped thinking of myself as someone who builds agents. I build an attention budget: a system whose job is to spend my looking on the few things that need a human and to keep the rest away from me. The loop ends when the agent produces output and costs me the right amount of attention to ship it.
 
 ## The cheap thing and the scarce thing
 
-Watch the two curves move in opposite directions.
+The two curves go in opposite directions.
 
 <Image src="https://zackproser.b-cdn.net/images/attention-is-the-bottleneck-curves.jpg" alt="Pixel art of two line graphs side by side: on the left a line marked with tiny robot icons plunges steeply downward toward the floor; on the right a single flat horizontal line with one small human figure standing on it, unchanged" width={1200} height={675} />
 
-The cost of an agent doing a unit of work is collapsing. A year ago at WorkOS we couldn't get a Devin session to finish a real multi-file refactor and we killed the trial; now [Devin ships PRs my team merges daily](/blog/devin-has-come-a-long-way). Tokens are cheaper. Context is longer. I can run three agents in parallel for the price of a coffee, and the per-task cost keeps falling. If the work an agent does is the constraint, the constraint is lifting on its own and I don't have to do anything.
+Providers keep driving down the cost of an agent doing a unit of work. A year ago at WorkOS we couldn't get a Devin session to finish a real multi-file refactor and we killed the trial; now [Devin ships PRs my team merges each day](/blog/devin-has-come-a-long-way). Tokens are cheaper. Context is longer. I can run several agents in parallel without thinking much about the marginal compute bill, and that trend only moves one way. Agent work used to be the constraint. That constraint keeps lifting without my help.
 
-The cost of me reviewing that work is flat, and if anything it's creeping up, because the diffs are bigger. It takes me about the same thirty seconds to do a first pass on a small PR in 2026 that it took in 2024. I have the same number of hours, the same one stream of attention, the same single point of judgment. Ten agents producing output don't give me ten brains to check it. They give me ten things in a queue and one me.
+The cost of me reviewing a single artifact is roughly flat. It takes me about the same thirty seconds to do a first pass on a small PR in 2026 that it took in 2024. What changes is volume: more agents, bigger diffs, more things in the queue, and still the same hours, the same one stream of attention, the same single point of judgment. Ten agents producing output give me ten things to look at and one me.
 
 <Mermaid chart={`
 flowchart LR
@@ -34,11 +39,11 @@ flowchart LR
   E -->|"not the agents"| F["my attention"]
 `} />
 
-When one input to a system is dropping toward free and the other is fixed, the fixed one is what breaks first. Every design decision I make is a decision about that fixed input. Not "how do I make the agent better," but "how do I spend the least attention to get a result I'll stand behind." Capability stopped being the bottleneck a while ago. I kept optimizing it out of habit.
+A system with one input dropping toward free and one input fixed will strain at the fixed input first. Each design decision I make becomes a decision about that fixed input. I ask how to spend the least attention to get a result I'll stand behind. Capability stopped being the bottleneck a while ago. I kept optimizing it out of habit.
 
 ## Attention enters the loop in three places
 
-If attention is the budget, the first thing to do is find every place it gets spent. In my agents, I budget for three, and they are not equal.
+If attention is the budget, I need to find each place I spend it. In my agents, I budget for three buckets with different price tags.
 
 <Mermaid chart={`
 flowchart TD
@@ -53,31 +58,31 @@ flowchart TD
   G -.->|"costs the most attention"| H
 `} />
 
-**The spark** is me pointing the agent at a problem: the Slack message, the prompt, the idea. Cheap but not free, and it's the one place attention *should* be spent, because it's the part only I can do.
+**The spark** is me pointing the agent at a problem: the Slack message, the prompt, the idea. It costs a little, and it's the right place to spend attention, because it's the part only I can do.
 
-**The gate** is the automatic decision about whether an action even needs me. This is where the budget leaks. If every action an agent takes routes to a human, you've built an expensive way to do the work yourself.
+**The gate** is the automatic decision about whether an action needs me. The budget leaks at the gate. If each action an agent takes routes to a human, you've built an expensive way to do the work yourself.
 
-**The quench** is the actual review: me looking at a finished artifact and deciding whether it ships. This is the most expensive attention in the system, and the goal of everything upstream is to make sure only the things that genuinely deserve it ever arrive here.
+**The quench** (I borrow the blacksmithing word: spark the work, let it run hot, quench it into something final) is the review: me looking at a finished artifact and deciding whether it ships. This is the most expensive attention in the system, and everything upstream exists to make sure only the things that need it arrive here.
 
-Attention-budget design is moving work *out* of the third bucket. Every action you can honestly push into "runs unattended" is attention you get back. Every action that has to reach you is attention you spend whether you have it or not. The agents are cheap. The looking is what you're rationing.
+Attention-budget design moves work out of the third bucket. Each action you can push into "runs unattended" with confidence is attention you get back. Each action that has to reach you is attention you spend on a crowded day. The agents are cheap. The looking is what you're rationing.
 
-## The gate is an attention decision, not a safety decision
+## The gate is where the budget gets set
 
-I have one rule that decides what reaches me, and I wrote a whole post on it: [the autonomy boundary](/blog/the-autonomy-boundary). An agent can do anything reversible on its own; anything irreversible or outbound stops for a human. I framed that as a safety rule. It is also, exactly, an attention-budget rule, and that's the framing I want here.
+I have one rule that decides what reaches me, and I wrote a whole post on it: [the autonomy boundary](/blog/the-autonomy-boundary). An agent can do anything reversible on its own; anything irreversible or outbound stops for a human. I framed that as a safety rule. I use the same rule as an attention-budget rule here.
 
-Think about what the boundary does to my day. The inbox classifier drafts replies every five minutes, forever, and I never think about it, because a draft sitting in a Gmail thread is reversible and inbound — it costs me zero attention until I choose to spend some. The blog bot drafts entire posts I never asked for and opens PRs, and a bad one costs me one click to close plus whatever compute it burned. This very post tripped its own gate on the way to me — the image checker caught a draft that referenced a `.png` the generator had saved as `.jpg`, and the voice scan flagged a paragraph crammed with too many em-dashes. Both got fixed before the PR existed, so neither reached me as a question. That's exactly the class of mistake I don't want to find during review: boring, binary, and beneath a human's attention. A broken draft on a branch is the cheapest kind of failure there is. Devin burns a VM all night writing code. None of that touches my budget. It all lands as reversible artifacts that wait.
+The boundary shapes my day. The inbox classifier drafts replies every five minutes on a schedule, and I don't think about it, because a draft sitting in a Gmail thread is reversible and inbound. It costs me zero attention until I choose to spend some. The blog bot drafts unsolicited posts and opens PRs, and a bad one costs me one click to close plus whatever compute it burned. This post tripped its own gate on the way to me: the image checker caught a draft that referenced a `.png` the generator had saved as `.jpg`, and the voice scan flagged a paragraph crammed with too many em-dashes. The bot fixed both before the PR existed, so neither reached me as a question. I don't want to find that class of mistake during review. Those errors are boring, binary, and beneath a human's attention. A broken draft on a branch is the cheapest kind of failure there is. Devin burns a VM all night writing code. None of that touches my budget. It all lands as reversible artifacts that wait.
 
 <Image src="https://zackproser.b-cdn.net/images/attention-is-the-bottleneck-gate.jpg" alt="Pixel art split scene: on the left, a green channel where dozens of small robots stream through freely, labeled 'reversible + inbound: zero attention'; on the right, a single narrow red gate where one robot waits and a human eye-beam lands on it, labeled 'outbound or irreversible: spends the budget'" width={1200} height={675} />
 
-Then a small set of actions hit the gate and stop: a *sent* email under my name, a *merged* PR that publishes to my domain, anything that spends my reputation or can't be cleanly undone. Those get my attention, on purpose, because that's the half of the work where a mistake is expensive. The boundary isn't throttling my agents. It's pointing all of their autonomy at the work where errors are free, and reserving my thirty seconds for the work where they aren't. Reversibility is the simple version of the test; in practice I also stop anything with a big blast radius even when it's technically undoable, because restoring a wiped table or unwinding a money move costs me far more attention than the action saved.
+Then a small set of actions hit the gate and stop: a *sent* email under my name, a *merged* PR that publishes to my domain, anything that spends my reputation or can't be undone without mess. Those get my attention, on purpose, because that's the half of the work where a mistake is expensive. The boundary points autonomy at cheap-error work and reserves my thirty seconds for reputation-risk work. Reversibility is the simple version of the test. In practice I also stop anything with a big blast radius even when it's undoable on paper, because restoring a wiped table or unwinding a money move costs me far more attention than the action saved.
 
-The reason this is an attention argument and not just a safety one: the math is lopsided in attention terms too. Auto-approving an outbound action saves me ten seconds of clicking. The downside is reading a retraction email and rebuilding trust with a stranger, which costs me hours and a chunk of reputation. You don't spend a fixed, scarce resource to save a trivial amount of a cheap one. Gate on reversibility and your attention flows to exactly the actions that have earned it.
+The attention math has the same lopsided shape as the safety math. Auto-approving an outbound action saves me ten seconds of clicking. The downside is reading a retraction email and rebuilding trust with a stranger, which costs me hours and a chunk of reputation. You don't spend a fixed, scarce resource to save a trivial amount of a cheap one. Gate on reversibility and your attention flows to the actions that have earned it.
 
 ## Make the artifact cost less to review
 
-Moving work out of the review bucket is half the job. The other half is making the stuff that *does* reach you cheap to look at. This is why [I build agents that open PRs instead of agents that chat](/blog/build-agents-that-open-prs). A chat reply makes me the storage layer, the validation layer, and the merge button all at once — I have to read it, judge it, and re-type it somewhere it matters. That's three attention costs stacked into one ambiguous blob. A pull request collapses them into one: a diff I can scan, a gate that already ran, and a reject button that's the default.
+Moving work out of the review bucket is half the job. The other half is making the stuff that *does* reach you cheap to look at. [I build agents that open PRs instead of agents that chat](/blog/build-agents-that-open-prs) for that reason. A chat reply makes me the storage layer, the validation layer, and the merge button at the same time. I have to read it, judge it, and move it somewhere it matters. That's three attention costs stacked into one ambiguous blob. A pull request gives me a diff I can scan, with a gate that already ran and a reject button as the default.
 
-The gate in front of the artifact is doing attention work before I ever look. My blog bot runs `verify-blog-post.sh` before it's allowed to open a PR. The script checks the boring, falsifiable things: files present, every image URL returns 200, every internal link resolves, zero banned phrases, the OG image is live. None of that is judgment. All of it is attention I'd otherwise spend by hand, automated away, so that when a PR does reach me the only thing left to spend attention on is the thing a script can't check: is it true, is it good, do I stand behind it.
+The gate in front of the artifact does attention work before I look. My blog bot runs `verify-blog-post.sh` before it's allowed to open a PR. The script checks the boring, falsifiable things: files present, every image URL returns 200, every internal link resolves, zero banned phrases, the OG image is live. A script can check all of that. Without the script, I would spend that attention by hand. The script handles it, so a PR that reaches me leaves attention for the thing a script can't check: is it true, is it good, do I stand behind it.
 
 ```text
 # verify-blog-post.sh — exits 0 iff every check passes
@@ -90,7 +95,7 @@ The gate in front of the artifact is doing attention work before I ever look. My
 7. OG image exists on the CDN
 ```
 
-That's a summary of the checks, not the literal script. If any line fails, the real script exits nonzero and the bot is not allowed to open the PR. Nonzero means the draft never reaches me at all — it loops back and fixes itself. That exit code is the cheapest attention in the system: a number that decides whether I spend any.
+That's a summary of the checks. The real script has more detail. If any line fails, the real script exits nonzero and the bot cannot open the PR. Nonzero means the draft stays out of my queue. It loops back and fixes itself. That exit code is the cheapest attention in the system: a number that decides whether I spend any.
 
 <Mermaid chart={`
 flowchart LR
@@ -100,41 +105,41 @@ flowchart LR
   D --> E["I spend attention only on judgment: true? good? mine?"]
 `} />
 
-Every check I can write is a check I don't run with my eyes. The agent has to clear a falsifiable bar on its own before it gets to spend any of my budget. If I have to run the checks by hand in a chat window, the agent didn't save me time. It moved the chore.
+Each check I can write is a check I don't run with my eyes. The agent has to clear a falsifiable bar on its own before it gets to spend any of my budget. If I have to run the checks by hand in a chat window, the agent didn't save me time. It moved the chore.
 
 ## The console is one channel, on purpose
 
-If my attention is the scarce resource, the interface to it has to be one place, not five. So I run everything from Slack. I don't check a dashboard for the inbox bot, a different tab for the blog bot, and a third surface for Devin. I `@`-mention them in a channel and they report back in the same channel, the way [my whole agent cluster collaborates over Slack](/blog/reviewing-vercels-eve-agent-framework). The approvals come to my phone.
+If my attention is the scarce resource, the interface to it has to be one place. I run everything from Slack. I use one Slack channel for the inbox bot, the blog bot, and Devin. I `@`-mention them in a channel and they report back in the same channel, the way [my whole agent cluster collaborates over Slack](/blog/reviewing-vercels-eve-agent-framework). The approvals come to my phone.
 
-Context-switching is an attention tax, and a tax you pay per surface. Five dashboards is five places to remember to look, five mental models to reload, five ways for something to wait three days because I forgot the tab existed. One channel is one queue. The agents come to where I already am instead of making me go find them, which means the cost of staying on top of all of them is roughly the cost of reading Slack, which I'm doing anyway.
+Context-switching is an attention tax, and you pay it per surface. Five dashboards means five places to remember to look, five mental models to reload, and five ways for something to wait three days because I forgot the tab existed. One channel is one queue. The agents come to where I already am instead of making me go find them, which means staying on top of all of them costs about the same as reading Slack.
 
 <Image src="https://zackproser.b-cdn.net/images/attention-is-the-bottleneck-console.jpg" alt="Pixel art of a single phone screen showing a Slack channel called 'agents'; several small robot avatars have posted updates and pull-request cards, and a human thumb hovers over one approve button, while the other messages sit quietly in the thread" width={1200} height={675} />
 
-There's a discipline in it too. Because everything lands in one place, I can see when I'm being asked to look at too much, and that's a signal to fix a gate, not to grind through the queue. If a category of action keeps landing in front of me and I keep approving it verbatim, that's the system telling me it's earned a graduation to unattended. The queue's length is a readout of how well my attention budget is tuned.
+Because everything lands in one place, I can see when I'm being asked to look at too much, and I use that signal to fix a gate before I grind through the queue. If a category of action keeps landing in front of me and I keep approving it verbatim, I treat that pattern as proof that I can graduate it to unattended. The queue's length shows whether my attention budget is tuned. That readout is the same thing I demoed on stage at AIE London: the inbox triage where 16 incoming Slack messages collapse to 2 tickets and one dedup. The length of what's left *is* the metric.
 
 ## The failure mode is spending attention on reversible work
 
-The most common way I see people burn their budget is babysitting work that was never going to hurt them. They watch the agent draft. They read every token as it streams. They approve things that they could trivially undo. They've taken the cheap, reversible half of the work — the half the whole point was to hand off — and spent their scarcest resource supervising it anyway.
+The most common way I see people burn their budget is babysitting work that poses no risk. They watch the agent draft. They read the token stream. They approve things they could undo with one click. They've taken the cheap, reversible half of the work, the half the whole point was to hand off, and spent their scarcest resource supervising it.
 
-The second failure mode is the interrupt. An agent that pings you the moment it has a question turns your one stream of attention into a thing that gets shredded all day. The fix isn't a better notification. It's the gate: decide *in advance and in code* what's allowed to interrupt you, make everything else wait in the queue, and check the queue on your schedule instead of its. An interrupt you didn't authorize is the agent spending your budget without asking.
+The second failure mode is the interrupt. An agent that pings you the moment it has a question turns your one stream of attention into a thing that gets shredded all day. Use the gate: decide *in advance and in code* what you allow to interrupt you, make the rest wait in the queue, and check the queue on your schedule instead of its. An interrupt you didn't authorize is the agent spending your budget without asking.
 
-Both failures come from the same mistake — treating attention like it's free because the agents made everything else cheap. It's the opposite. The cheaper the agents get, the more they'll produce, and the more there is to potentially look at. Abundance on the cheap input makes the scarce input scarcer. If you don't design for that, more capable agents just mean a longer queue and a more frazzled you.
+Both failures come from the same mistake: treating attention like it's free because the agents made everything else cheap. Cheap agents produce more output, and more output may need review. Abundance on the cheap input makes the scarce input scarcer. If you don't design for that, more capable agents mean a longer queue and a more frazzled you. That's the burnout path I warned about at AIE London: stack more loops, run at 120% all day, and the agents that were supposed to give you margin take it instead.
 
 ## The one question I actually ask
 
-I no longer ask whether an agent can do a task. For the mechanical research, drafting, refactoring, and glue work I hand them, the answer is usually yes, or close enough that waiting a quarter changes it. The question I ask of every new agent, every new action, every new surface is this: **what will this cost my attention, and is that the cheapest place to spend it?**
+I no longer ask whether an agent can do a task. For the mechanical research, drafting, refactoring, and glue work I hand them, the answer is yes most of the time, or close enough that waiting a quarter changes it. The question I ask of each new agent, each new action, and each new surface is this: **what will this cost my attention, and is that the cheapest place to spend it?**
 
-If the answer is "it'll run unattended and only reach me when something's irreversible," I build it. If the answer is "it'll ping me constantly and I'll approve things I could've undone with a click," I've designed it wrong, and no amount of model improvement fixes that, because the bottleneck was never the model. It was me.
+If the answer is "it'll run unattended and only reach me when something's irreversible," I build it. If the answer is "it'll ping me all day and I'll approve things I could've undone with a click," I've designed it wrong, and no amount of model improvement fixes that, because the bottleneck was me all along.
 
-If you're wiring one of these up, start by sorting every action an agent can take into three buckets: runs unattended, waits in a queue, never allowed. Do that before you write another prompt. Then go audit the last ten times an agent asked for your attention. If you approved the same reversible thing ten times, that wasn't diligence. That was a missing gate.
+If you're wiring one of these up, start by sorting every action an agent can take into three buckets: **runs unattended**, **waits in a queue**, **never allowed**. Do that before you write another prompt. Then go audit the last ten times an agent asked for your attention. If you approved the same reversible thing ten times, you found a missing gate.
 
-So I design around the one part of the system that won't get cheaper. The agents will keep dropping in price without your help. Your attention won't. Spend it like it's the only thing you can't buy more of, because in this whole setup, it is. That's the argument I made out loud at [the AI Engineering showcase](/blog/workos-applied-ai-showcase); this is the version you can re-read.
+I design around the one part of the system that won't get cheaper. The agents will keep dropping in price without your help. Your attention won't. Spend it like it's the only thing you can't buy more of, because in this whole setup, it is.
 
 <ReadNextCard
-  image="https://zackproser.b-cdn.net/images/the-autonomy-boundary-hero.jpg"
-  imageAlt="Pixel art of a glowing boundary line splitting a control room in two: robots working unattended on one side, a human hand on a red lever guarding the outbound door on the other"
+  image="https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp"
+  imageAlt="Pixel art of a developer on a mountain trail with a phone, three agents working in parallel back at the desk while attention stays the limiting resource"
   eyebrow="Read this next"
-  title="The Autonomy Boundary"
-  description="The one rule that decides what reaches me: reversible runs unattended, irreversible or outbound stops for a human — enforced in code, not willpower."
-  href="/blog/the-autonomy-boundary"
+  title="Untethered Productivity — my AI Engineering London talk"
+  description="The talk this post is built on: the agents scale, you don't, so the win is designing your workflow around the one resource that won't get cheaper."
+  href="/blog/aie-london-untethered-productivity"
 />
