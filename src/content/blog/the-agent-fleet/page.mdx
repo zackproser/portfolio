@@ -61,18 +61,7 @@ Durability is what makes them useful. Each session runs on Vercel Workflow, so i
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-slack-interface.jpg" alt="Pixel art of a phone held in one hand showing a Slack-style chat interface as the single control plane: a channel list, a thread where a small robot bot has posted a task with a checklist, and a glowing Approve button at the bottom of the thread" width={1200} height={675} />
 
-The roster owns my whole operation, one domain per bot, and only that bot's domain holds its tools, its connectors, and its secrets. Least privilege, the same as you'd scope a service.
-
-- **Margin** owns my calendar and my time. It reads my Oura ring, protects rest and childcare, and is the agent everything else schedules around.
-- **Inbox** triages Gmail. It reads, classifies, and drafts.
-- **Resend** runs email marketing, with a hard outbound kill-switch so it physically cannot send a campaign without me.
-- **Blog** is the writer. It drafted this post.
-- **Image** generates the art: every pixel-art hero and inline image you see here, including its own portrait below.
-- **Social** handles X and LinkedIn, staged through Typefully.
-- **Portfolio** owns site ops: SEO, analytics, the unglamorous maintenance that keeps the site from rotting.
-- **Bookkeeping** keeps the books: it reconciles the bank against the ledger and is growing into invoicing.
-- **Docs** drafts the recurring legal artifacts: SOWs, MSAs, NDAs.
-- **Chief of Staff** is the orchestrator that ties the specialists together.
+The roster owns my whole operation, one domain per bot: Margin (calendar and time), Inbox (Gmail triage), Resend (email marketing), Blog (writing), Image (art), Social (X and LinkedIn), Portfolio (site ops), Bookkeeping (the books), and Docs (contracts), with a Chief of Staff orchestrating the lot. Only that bot's domain holds its tools, its connectors, and its secrets: least privilege, the same as you'd scope a service. I'll walk each one below, with its own portrait.
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-roster-grid.jpg" alt="Pixel art roster grid of small labeled robot workers, each in its own tile with a single icon for its job — calendar, mail, megaphone, writer, painter, social, website-wrench, accountant, contract — with a compass-shaped orchestrator robot at the center-bottom, conveying one bot, one job" width={1200} height={675} />
 
@@ -114,7 +103,7 @@ The shape under that is encapsulation, the same idea that runs through the whole
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-encapsulation.jpg" alt="Pixel art nesting diagram: a large outer panel labeled as the orchestrating Claude layer holds a row of tool-buttons that are actually agents (each with a small robot face); one agent box is opened to reveal its own smaller set of tool icons inside — calendar, envelope, wrench — concentric clean boundaries like Russian dolls of scope" width={1200} height={675} />
 
-That layering is what keeps the system legible. The Claude tag reasons about a handful of agents instead of a hundred loose tools, and each agent reasons about its own small toolbox instead of the whole business. Clean boundaries, scoped roles, one job per box. When I notice a bug in one bot, or it's missing a capability I want, I don't carry that to a desk — I tell Claude to fix or add it, and the change stays inside that one box.
+That layering is what keeps the system legible. The Claude tag reasons about a handful of agents instead of a hundred loose tools, and each agent reasons about its own small toolbox instead of the whole business. Clean boundaries, scoped roles, one job per box. When I notice a bug in one bot, or it's missing a capability I want, I don't carry that to a desk. I tell Claude to fix or add it, and the change stays inside that one box.
 
 For me this is the difference between a system I can run and one I can't. I'm AuDHD, and the failure mode the old way always hit was the 9pm tax: remember, hours later when I'm fried, to sit down at a laptop and do the manual follow-ups by hand. Encapsulating each job into a bot means I don't have to remember or re-derive any of it. I kick off the same workflow again with a sentence, and if a bot needs to grow, I say so and the Claude tag grows it. The remembering, the wiring, and the 9pm laptop session are the parts I handed off.
 
@@ -128,7 +117,9 @@ A fleet that acts on behalf of a business needs to *be* the business somewhere r
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-mailbox-identity.jpg" alt="Pixel art of a glowing business mailbox with a nameplate and a lock icon, an envelope arriving through DNS routing arrows, with a cluster of small robot workers standing behind it as their shared front door" width={1200} height={675} />
 
-So I gave the fleet an identity of its own. I upgraded to a Slack Teams plan so the workspace is a real shared surface for the bots and the Claude tag. Then I stood up a dedicated business mailbox, `zachary@mindonfire.net`, under my business, Mind on Fire, LLC. The plumbing is unglamorous and took an afternoon: Cloudflare handles DNS and email routing for the domain, and Proton Mail is the actual mailbox behind it. Now Inbox triages a real business address, Docs sends contracts from it, and Resend's campaigns come from the business rather than from me. The fleet has a name, an address, and an inbox. It stopped being a clever wrapper around my personal accounts and started being the back office of an actual company.
+So I gave the fleet an identity of its own. I already pay for Slack to keep my own workspace, so that surface was there. What I upgraded was Claude: I moved from Claude Pro to a Claude Teams account, which is what running the Claude tag in that workspace needs, and that's the upgrade that made the custom business email necessary. So I stood up a dedicated mailbox, `zachary@mindonfire.net`, under my business, Mind on Fire, LLC. Cloudflare handles DNS and email routing for the domain, and my paid Proton account is the actual mailbox behind it. That part wasn't an afternoon of fun. It was about an hour and a half of fiddly record-setting and waiting on DNS to propagate before anything resolved. Now Inbox triages a real business address, Docs sends contracts from it, and Resend's campaigns come from the business rather than from me.
+
+The banking is the piece I still hate. Right now the business runs on Chase Business, which is exactly as agent-hostile as it sounds: no real API, nothing my bots can plug into. I'm moving it to Mercury, the startup bank with an actual API, so Bookkeeping can read transactions and reconcile directly instead of me ferrying data by hand. The fleet has a name, an address, an inbox, and soon a bank account it can actually see. It stopped being a clever wrapper around my personal accounts and started being the back office of an actual company.
 
 ## The roles, as an org chart
 
@@ -182,15 +173,15 @@ Resend runs email marketing, and its defining feature is the hard outbound kill-
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-image.jpg" alt="Pixel art portrait of a robot artist at an easel painting a glowing framed picture, with a stack of finished pixel-art canvases beside it and a paintbrush icon glowing above its head" width={900} height={900} />
 
-Image is the bot that made every picture in this post, including the portrait directly above. It owns the house style: pixel art on the dark site palette, no text baked in, conceptually tied to whatever section it illustrates. Blog hands it a scene ("a guardian robot dropping a rest block on a calendar") and Image returns art that matches the rest of the site without me opening a design tool. Splitting it out from Blog is the same separation-of-concerns move as everything else here: the writer writes, the artist draws, and neither one grows into a tangle that does both badly. Where it's headed is a tighter loop with Blog and Social, so a finished post comes with its hero, its inline images, and a social card generated in one pass.
+Image is the bot behind the pixel art in this post, including the portrait directly above. It owns the house style: pixel art on the dark site palette, no text baked in, conceptually tied to whatever section it illustrates (the realistic Slack mockup earlier is the one deliberate exception). Blog hands it a scene ("a guardian robot dropping a rest block on a calendar") and Image returns art that matches the rest of the site without me opening a design tool. Splitting it out from Blog is the same separation-of-concerns move as everything else here: the writer writes, the artist draws, and neither one grows into a tangle that does both badly. Where it's headed is a tighter loop with Blog and Social, so a finished post comes with its hero, its inline images, and a social card generated in one pass.
 
 ### Bookkeeping: invoicing and reconciliation from a Slack message
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-bookkeeper.jpg" alt="Pixel art portrait of a meticulous robot accountant matching incoming transactions against ledger line items and holding up an invoice card" width={900} height={900} />
 
-Bookkeeping keeps the books. It already reads account activity through Plaid to reconcile the bank against the ledger. It reads transactions and does not move money. The invoicing is the part that's coming online.
+Bookkeeping keeps the books. Today it reads account activity through Plaid on top of Chase Business to reconcile the bank against the ledger; once I move banking to Mercury it plugs straight into Mercury's API instead. Either way it reads transactions and does not move money. The invoicing is the part that's coming online.
 
-The capability I'm building toward is invoicing from Slack. After a call, I want to message "invoice Acme for the December workshop, net 30" and have Bookkeeping draft the invoice, show it to me for approval, send it, and then track it against incoming transactions until it's paid, nudging me when it goes late. The reconciliation it already does and the invoicing it's growing into are two halves of the same job: knowing what's owed, what's paid, and what's overdue, without me keeping any of it in my head. When the banking workflow moves onto Mercury, the same approval gates ride along.
+The capability I'm building toward is invoicing from Slack. After a call, I want to message "invoice Acme for the December workshop, net 30" and have Bookkeeping draft the invoice, show it to me for approval, send it, and then track it against incoming transactions until it's paid, nudging me when it goes late. The reconciliation it already does and the invoicing it's growing into are two halves of the same job: knowing what's owed, what's paid, and what's overdue, without me keeping any of it in my head. The same approval gates ride along when the banking moves to Mercury.
 
 ### Docs: minting uniform business artifacts
 
@@ -200,7 +191,7 @@ Docs is the bot I'm most excited to finish. Running a consulting business means 
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-docs-pipeline.jpg" alt="Pixel art of a robot clerk assembling a formal contract from uniform templates, stamping it with a seal, sending it through a glowing signature portal, and filing a copy into a labeled client drawer" width={1200} height={675} />
 
-Docs mints these from uniform templates, so every contract that leaves looks the same and carries the same clauses. I'll describe the engagement in Slack, Docs assembles the right artifact, I approve it, and it goes out through DocuSign for signature. When the signed copy comes back, Docs files it in the right client folder in Google Drive, named consistently, where I can find it two years later. The pipeline runs from a Slack sentence to a signed, filed contract, and every outbound step still stops for my approval.
+Docs mints these from uniform templates, so every contract that leaves looks the same and carries the same clauses. I'll describe the engagement in Slack, Docs assembles the right artifact, I approve it, and it goes out through DocuSign for signature. When the signed copy comes back, Docs files it in the right client folder in Google Drive, named consistently, where I can find it two years later and where I can share it straight to a client or a colleague. The pipeline runs from a Slack sentence to a signed, filed contract, and every outbound step still stops for my approval.
 
 The orchestrator sees that pipeline as a single instruction that becomes a filed, signed document:
 
@@ -248,9 +239,9 @@ I gave a talk at AI Engineering London called [Untethered Productivity](/blog/ai
 
 ## How the bots talk to each other, with the Chief of Staff in front
 
-<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-chief-of-staff.jpg" alt="Pixel art portrait of a compass-shaped orchestrator robot at a central command desk with many small screens, each showing a specialist teammate, light-lines running out to the edges of the frame" width={900} height={900} />
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-claude-tag-orchestrating-slack.jpg" alt="A simulated Slack screenshot in dark mode: the user posts '@Claude we won Acme — kick it off,' and the Claude app replies with an orchestration checklist delegating to several bots — Docs drafting the SOW, Bookkeeping scheduling the kickoff invoice, Inbox drafting the welcome email, Margin proposing a kickoff slot — with threaded replies from each bot and an Approve button on the task awaiting sign-off" width={1280} height={720} />
 
-The Chief of Staff is the single front door to the specialists. I talk to it and it relays to the specialists on my behalf. That's the design eve is built for: a main agent that delegates focused subtasks to child agents, each with its own prompt, tools, and identity, and then combines the results. eve's own docs describe a subagent as a separate agent with fresh state that the main agent hands a narrow job to, which is exactly the role each specialist plays.
+That screenshot is the whole idea in one thread: I drop one line into Slack, here by tagging the Claude tag, and it fans the work out to Docs, Bookkeeping, Inbox, and Margin, threads their results back, and parks the one step that needs my sign-off. The Chief of Staff runs the exact same play; either one can be the front door. I talk to it and it relays to the specialists on my behalf. That's the design eve is built for: a main agent that delegates focused subtasks to child agents, each with its own prompt, tools, and identity, and then combines the results. eve's own docs describe a subagent as a separate agent with fresh state that the main agent hands a narrow job to, which is exactly the role each specialist plays.
 
 The Chief of Staff does not reimplement the specialists. The lazy version gives the orchestrator its own Gmail tools and its own calendar logic, and that produces one god-object bot that knows everything, holds every secret, and resists reasoning. So the Chief of Staff *calls* the specialists instead. It declares each one as a remote agent rather than copying its capabilities.
 
