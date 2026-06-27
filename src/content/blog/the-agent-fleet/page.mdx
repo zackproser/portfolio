@@ -14,7 +14,7 @@ I'm Zack Proser. I'm an applied AI engineer at WorkOS, and I run a solo business
 
 So I built a fleet of agents to run it. A team of single-purpose bots, each owning one domain, coordinated by an orchestrator, and I drive the whole thing from Slack on my phone.
 
-Since I first wrote this post, the biggest piece fell into place. I now run the **Claude tag** directly in Slack: a meta-agent that reaches across every surface my business touches and maintains the rest of the fleet, the agent that takes care of the agents. It's the new center of this post, and I'll get to it once I've laid out what the fleet is.
+Since I first wrote this post, one piece changed the shape of the whole thing. I now run the **Claude tag** — Anthropic's [`@Claude` in Slack](https://claude.com/docs/claude-tag) — directly in my workspace, and I've made it the meta-agent that sits over the fleet. It's the agent that maintains the agents. I'll get to it below, because it's the centerpiece now, but you need the fleet first to see why it matters.
 
 When I say "I use AI to run my business," that phrase hides the two things that matter. First, the architecture: a system I engineered to manage the irreducible complexity of running a business alone, covering leads, writing, scheduling, contracts, email, and site ops. Second, the limits: a hard boundary around what I will let a model do on its own. The framing carries the rest of this post.
 
@@ -28,103 +28,68 @@ A solo business has the same shape. The calendar fights the childcare schedule. 
 
 I didn't reach for an agent because it's 2026 and that's what you do. I reached for the discipline I'd apply to any overgrown system: stop holding it in one place. Cut it into modules. Give each module one job, its own tools, and a boundary it can't reach past. Put a clean interface between them, then orchestrate the work through one place.
 
-The bots are the modules. The message bus between them is the interface. The orchestrator routes the work. The discipline that makes good software makes a good agent team. I pointed it at my own operation instead of a codebase.
+The bots are the modules. The message bus between them is the interface. The Chief of Staff is the orchestrator. The Claude tag is the layer above all of it. The discipline that makes good software makes a good agent team. I pointed it at my own operation instead of a codebase.
 
 ## What the fleet is
 
-Every specialist bot is its own application built on [Vercel's eve](/blog/reviewing-vercels-eve-agent-framework), a filesystem-first TypeScript agent framework. One bot, one repo, one responsibility, one deployment. They share no codebase and no secret store. Each runs Claude Opus 4.8 through the Vercel AI Gateway, and each reaches me over Slack through Vercel Connect.
+Every bot is its own application built on [Vercel's eve](/blog/reviewing-vercels-eve-agent-framework), a filesystem-first TypeScript agent framework. One bot, one repo, one responsibility, one deployment. They share no codebase and no secret store. Each runs Claude Opus 4.8 through the Vercel AI Gateway, and each reaches me over Slack through Vercel Connect.
 
 Durability is what makes them useful. Each session runs on Vercel Workflow, so it survives a restart, a redeploy, or a cold start, and it can pause mid-task to wait for me to approve something, then pick up where it left off when I tap the button. The session outlives the chat window that started it. I can kick off a job from the school parking lot, lose signal, and find it finished or politely parked at a gate when I look again. The first time it earned its keep, the moment was almost boring. A lead came in while I was in the pickup line. I asked the fleet to read the thread and find a slot, and a draft reply with two proposed times was waiting for my thumb before the cars moved. I never opened a laptop, and the task never turned into one of those "I'll get to it tonight" jobs that slides into next week.
 
-Each bot owns its domain, and only its domain holds its tools, its connectors, and its secrets. Least privilege, the same as you'd scope a service.
+The roster owns my whole operation, one domain per bot, and only that bot's domain holds its tools, its connectors, and its secrets. Least privilege, the same as you'd scope a service.
 
-- **Margin** owns my calendar and wellbeing. It reads my Oura ring, protects rest and childcare time, and is the agent everything else schedules around.
+- **Margin** owns my calendar and my time. It reads my Oura ring, protects rest and childcare, and is the agent everything else schedules around.
 - **Inbox** triages Gmail. It reads, classifies, and drafts.
 - **Resend** runs email marketing, with a hard outbound kill-switch so it physically cannot send a campaign without me.
 - **Blog** is the writer. It drafted this post.
-- **Image bot** generates the art, including the pixel-art heroes you see throughout this piece.
+- **Image** generates the art: every pixel-art hero and inline image you see here, including its own portrait below.
 - **Social** handles X and LinkedIn, staged through Typefully.
 - **Portfolio** owns site ops: SEO, analytics, the unglamorous maintenance that keeps the site from rotting.
-- **Bookkeeper** reconciles the bank against the books and is growing into invoicing.
-- **Docs** drafts SOWs, MSAs, and NDAs from uniform templates.
+- **Bookkeeping** keeps the books: it reconciles the bank against the ledger and is growing into invoicing.
+- **Docs** drafts the recurring legal artifacts: SOWs, MSAs, NDAs.
+- **Chief of Staff** is the orchestrator that ties the specialists together.
 
-Above all of them sit two coordinating layers: the **Claude tag**, the meta-agent I run from Slack, and the **Chief of Staff**, the orchestrator that fans a single instruction out across the specialists. The next two sections are about those, because they're what turned a pile of useful bots into something that runs itself.
+Above all of them sits the **Claude tag**, the meta-agent that can reach into any of these bots and improve them. Each specialist is small enough that I can read it top to bottom in a sitting and know everything it can do, because everything it can do lives in one directory. A bot I can't fully reason about is a bot I can't safely leave running, and keeping each one that small is what lets me trust it.
 
-Each specialist is small enough that I can read it top to bottom in a sitting and know everything it can do, because everything it can do lives in one directory. A bot I can't fully reason about is a bot I can't safely leave running, and keeping each one that small is what lets me trust it.
+## The Claude tag is the meta-agent
 
-## The Claude tag: the agent that runs the agents
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-claude-tag-meta-agent.jpg" alt="Pixel art of a central glowing Slack chat bubble marked with a Claude spark icon at the hub, light-lines radiating out to labeled control surfaces — a notes app, a LinkedIn badge, a project board, a git octopus, a billing terminal, an email envelope — with a small founder feeding instructions in from a phone" width={1200} height={675} />
 
-<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-claude-tag-hero.jpg" alt="Pixel art of a larger meta-agent robot at a glowing command hub inside a Slack-style chat panel, with light-lines radiating out to floating control-surface icons (calendar, ledger, code branch, briefcase, envelope, document) and reaching down to repair smaller worker robots beneath it" width={1200} height={675} />
+I run the **Claude tag** — Anthropic's [`@Claude` in Slack](https://claude.com/docs/claude-tag) — directly in my Slack workspace, on my phone, and I've made it the layer that sits over the fleet.
 
-The piece I was missing, when I first wrote this post, was a single thing I could talk to that could reach everything. I have that now. I run the **Claude tag** in Slack: I `@Claude` in a channel from my phone and hand it work, and it goes and does it. The [official docs](https://claude.com/docs/claude-tag) cover the setup; what I want to tell you is what it became once I pointed it at my own business.
+The Claude tag is more than chatting with an assistant inside Slack. Tag `@Claude` into a thread and it runs an agent in a sandbox and works the task end to end, posting a checklist as it goes. The part that matters for a business is what it connects to. Through admin-governed connections it reaches the control surfaces I run on — Notion, LinkedIn, Linear, GitHub, even Stripe and billing — so it can read and act across them, but only through the connections I've granted in that channel. The docs put it plainly: you extend what it can reach through connections, plugins, and skills, scoped per channel.
 
-The important distinction up front: tagging a model into a thread to answer a question is a chat. The difference with the Claude tag is access. It gets governed access to **control surfaces**: the systems where the work actually lives. An admin connects it to those systems, and from then on it can see and act across them. In mine it's wired to Notion, LinkedIn, Linear, GitHub, and the billing surface in Stripe, alongside email and my calendar. So when I tag it, it reads the real Linear board, opens a real GitHub PR, checks the real Stripe ledger, and writes back to the real Notion page.
+That reach is exactly the [mechanic-agent pattern](/blog/my-ai-agent-has-a-mechanic-agent) I wrote about earlier, deployed at the level of the whole business. The mechanic pattern is simple: the agent that built a system is the agent best positioned to repair it, because it knows where everything lives. Hermes used to wake up improved because Claude Code SSH'd into the box and fixed the thing Hermes couldn't see about itself. The Claude tag is that same move, but more powerful, because everything now happens in Slack. I carry it on my phone, and from one thread I get the full power of my entire agent team, pointed at the business and at the other bots themselves.
 
-That reach is what makes it the meta-agent. From one surface, Slack, on my phone, it can:
-
-- read and triage my email, then draft the replies and wait for my tap to send;
-- update this blog and open a pull request against my portfolio repo;
-- move work through Linear and Notion as it goes;
-- check billing in Stripe when a question turns out to be a money question;
-- and, the part I care about most, **reach into the other agents in the fleet and improve them.** That last item is the one that changed the system: the Claude tag is the agent that maintains the agents.
-
-<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-control-surfaces.jpg" alt="Pixel art of one robot at the center reaching out many glowing arms to a ring of distinct labeled control panels around it: a note page, a profile card, an issue board, a code branch, a payment card, and an envelope, each lighting up where the arm touches it" width={1200} height={675} />
-
-### This is the mechanic pattern, now in Slack and on my phone
-
-A while back I wrote about the [mechanic-agent pattern](/blog/my-ai-agent-has-a-mechanic-agent): the idea that you want an infrastructure agent that can repair your production agent, because the system that built the system knows where to look. When one of my bots started returning thin answers, I didn't debug from inside it. I opened Claude Code, read its config and logs from the outside, found the throttled context window, fixed it, and the bot woke up improved without knowing it happened. Build the mechanic before you need the mechanic.
-
-The Claude tag is that same pattern, deployed across the whole fleet, with one change that matters more than it sounds: it all happens in Slack now. The mechanic used to be a terminal I had to sit down at. Now it's a tag I send from my phone. When the Blog bot's voice drifts, or the Inbox bot mis-files a lead, or a connector's scope needs widening, I don't SSH anywhere. I tag Claude in the fleet's channel, point it at the repo, and it reads the bot's code, finds the problem, and opens a PR against that bot for me to review. The connect-to-every-surface capability is exactly what ties the fleet back to the mechanic pattern: the meta-agent can reach each bot's GitHub repo the same way it reaches my calendar or my Stripe ledger, so maintaining a bot is one more surface it acts on.
-
-<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-maintains-agents.jpg" alt="Pixel art of a larger overseer robot holding a wrench and clipboard, opening the access panel of a smaller worker robot and adjusting a glowing gear inside it, while other small worker robots wait in line for a tune-up" width={1200} height={675} />
-
-I carry it on my phone and get the full power of my entire agent team on my business from anywhere. The pickup line, the kitchen, the ten minutes before bedtime: the place I run my company from is wherever I happen to be standing, and the mechanic comes with me.
-
-### Two front doors, one team behind them
-
-This is the operating model now. I can talk to the **Claude tag** directly, when the work is cross-surface and I want the meta-agent's reach. Or I can talk to my **Chief of Staff** agent, the orchestrator inside the eve fleet, when the work is "coordinate my specialists toward an outcome." Either one becomes the thing I'm addressing, and it directs the other subagents to get the work done. One conversation, with the whole team executing behind it.
+So from a single surface, the Claude tag reaches across surfaces. It reads and triages email, drafts replies, updates this blog, opens PRs against the portfolio, and updates the other agents in the fleet. When Margin's scheduling logic is too eager, I don't open Margin's repo at my desk. I tag `@Claude` in Slack from wherever I am, point it at Margin, and it reads the repo, finds the bug, and opens a PR. It is the agent that maintains the agents.
 
 <Mermaid chart={`
 flowchart TB
-  me["Me — Slack, on my phone"]
-  me --> tag["Claude tag (meta-agent: cross-surface + maintains the fleet)"]
-  me --> cos["Chief of Staff (orchestrator inside the eve fleet)"]
-  subgraph surfaces["Control surfaces the Claude tag reaches"]
-    notion["Notion"]
-    linkedin["LinkedIn"]
-    linear["Linear"]
-    github["GitHub"]
-    stripe["Stripe / billing"]
-    email["Email"]
-  end
-  subgraph fleet["The eve specialist fleet"]
-    margin["Margin"]
-    inbox["Inbox"]
-    blog["Blog"]
-    image["Image bot"]
-    book["Bookkeeper"]
-    docs["Docs"]
-  end
-  tag --> surfaces
-  tag -->|"reads each bot's repo, opens PRs to improve them"| fleet
-  cos --> fleet
+  me["Me — Slack, on my phone"] --> ct["@Claude (the Claude tag)"]
+  ct -->|reads + acts| email["Email / Notion / LinkedIn"]
+  ct -->|reads + acts| ops["Linear / Stripe / billing"]
+  ct -->|opens PRs| repos["Fleet repos (Margin, Inbox, Blog…)"]
+  ct -->|updates| blog["This blog"]
+  repos -->|deploy| fleet["The running fleet"]
 `} />
 
-The two layers do different jobs. The Chief of Staff coordinates the specialists toward a business outcome inside the fleet I built. The Claude tag reaches across every surface and, uniquely, can edit the fleet itself. I run the business through whichever door fits the task, and the team behind both is the same team.
+The Claude tag is the only thing I touch in that picture, and it touches everything else. The connect-to-every-surface capability is what ties the whole fleet back to the mechanic pattern: one agent, with enough reach and enough context, can maintain all the others.
+
+### Where this is headed
+
+The direction is two front doors, not one. I can talk to the **Claude tag** directly, or I can talk to my **Chief of Staff** agent. Either one becomes the thing I address, and it directs and uses the other subagents to get the work done. One conversation, the whole team executing behind it. The Claude tag leans toward the meta work — fixing and improving the bots, reaching new surfaces, the cross-cutting tasks that don't belong to any one specialist. The Chief of Staff leans toward running the established plays across the fleet. Both collapse the team down to a single thread I can hold from a parking lot.
 
 ## Giving the fleet its own identity and inbox
 
-A fleet that acts on my behalf needed to stop borrowing my personal accounts and get an identity of its own. That's less glamorous than the meta-agent, and it's the part that made the meta-agent legitimate.
+A fleet that acts on behalf of a business needs to *be* the business somewhere real. For a while my agents borrowed my personal accounts, and that gets uncomfortable fast: a bot drafting a client email from an address that's also where my kid's school sends pickup notices is a boundary I didn't want to keep blurring.
 
-<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-mailbox-identity.jpg" alt="Pixel art of a robot fleet receiving its own identity: a glowing mailbox with a small business nameplate, an envelope routing through a DNS-cloud node into a secure padlocked inbox, with several small worker robots standing behind the single shared mailbox" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-mailbox-identity.jpg" alt="Pixel art of a glowing business mailbox with a nameplate and a lock icon, an envelope arriving through DNS routing arrows, with a cluster of small robot workers standing behind it as their shared front door" width={1200} height={675} />
 
-So I did the plumbing. I upgraded to a paid Slack team plan so the fleet has a real workspace to live and coordinate in, with channels and roles instead of a hobbyist's single DM. Then I stood up a dedicated business mailbox, `zachary@mindonfire.net`, for the business itself: **Mind on Fire, LLC**. DNS and email routing run through Cloudflare, and the mailbox itself is Proton Mail. The agents send and receive from the business address, not from me. When Inbox triages mail or Docs sends a contract, it's coming from the company, with the company's name on it, not from my personal Gmail.
-
-It sounds like a chore, and it was. It's also the moment the fleet stopped being a clever personal setup and started being a small company's back office. An agent team that acts in your name should have a name of its own.
+So I gave the fleet an identity of its own. I upgraded to a Slack Teams plan so the workspace is a real shared surface for the bots and the Claude tag. Then I stood up a dedicated business mailbox, `zachary@mindonfire.net`, under my business, Mind on Fire, LLC. The plumbing is unglamorous and took an afternoon: Cloudflare handles DNS and email routing for the domain, and Proton Mail is the actual mailbox behind it. Now Inbox triages a real business address, Docs sends contracts from it, and Resend's campaigns come from the business rather than from me. The fleet has a name, an address, and an inbox. It stopped being a clever wrapper around my personal accounts and started being the back office of an actual company.
 
 ## The roles, as an org chart
 
-The cleanest way to see the finished system is as reporting lines. I sit at the top, in Slack, talking to either the Claude tag or the Chief of Staff. Every specialist reports up through the Chief of Staff. The Claude tag sits alongside as the meta-agent that can reach across surfaces and reach down to maintain any bot in the chart.
+The cleanest way to see the system is as reporting lines. I sit at the top, in Slack. I have two ways in: the Claude tag and the Chief of Staff. The Chief of Staff is the front door to the specialists; the Claude tag is the layer above that can reach the specialists *and* their code. Every specialist owns its domain and nothing else.
 
 <Mermaid chart={`
 graph TB
@@ -132,24 +97,23 @@ graph TB
     p["phone"]
     l["laptop"]
   end
-  tag["Claude tag (meta-agent + mechanic)"]
+  ct["@Claude tag (meta-agent: reaches every surface, maintains the bots)"]
   cos["Chief of Staff (orchestrator)"]
-  p --> tag
+  p --> ct
   p --> cos
-  l --> tag
+  l --> ct
   l --> cos
-  subgraph live["Specialists running in production"]
+  ct -. "improves + opens PRs against" .-> cos
+  subgraph specialists["Specialists"]
     inbox["Inbox: Gmail triage"]
-    margin["Margin: calendar, Oura, rest"]
+    margin["Margin: calendar, Oura, time"]
     resend["Resend: email marketing"]
     blog["Blog: articles"]
-    image["Image bot: art + heroes"]
+    image["Image: pixel art"]
     social["Social: X + LinkedIn"]
     portfolio["Portfolio: site ops, SEO"]
-  end
-  subgraph planned["Filling in"]
     docs["Docs: SOW, MSA, NDA"]
-    book["Bookkeeper: reconciliation + invoicing"]
+    book["Bookkeeping: reconciliation + invoicing"]
   end
   cos --> inbox
   cos --> margin
@@ -160,35 +124,34 @@ graph TB
   cos --> portfolio
   cos --> docs
   cos --> book
-  tag -.->|"improves / repairs"| live
-  tag -.->|"improves / repairs"| planned
+  ct -. "can reach + repair any specialist" .-> specialists
 `} />
 
-Read it as a company. I give one instruction to a coordinating layer, and it figures out which specialists to involve. I address one thing, and the work fans out to the rest. That's the same reason you put an API gateway in front of a mess of services instead of making every client memorize the topology. The coordinating layer absorbs the complexity so I don't have to hold it.
+Read it as a company. I give one instruction to the orchestrator, and it figures out which specialists to involve. I address one bot, and it fans the work out to the rest. That's the same reason you put an API gateway in front of a mess of services instead of making every client memorize the topology. The orchestrator absorbs the coordination so I don't have to hold it. And the dotted lines from the Claude tag are the meta-agent: it doesn't just call the specialists, it can open a PR against any of them when one needs fixing.
 
 ## Where each specialist is headed
 
-The roster above is a snapshot. The trajectory is the interesting part, so this section walks each specialist from what it does today to what it grows into.
+The roster above is a snapshot. The trajectory is the interesting part, so this section walks each specialist from what it does today to what it grows into once the fleet is complete.
 
 ### Margin: the one that protects me from myself
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-margin.jpg" alt="Pixel art portrait of a guardian robot holding a glowing calendar shield with a heart-rate ring orbiting its head, placing a protected rest block onto a schedule" width={900} height={900} />
 
-Margin started as a calendar bot and became the most important one I own. It owns time and the calendar, and it's the agent everything else coordinates *to*. When a new lead comes in, Inbox doesn't pick a meeting slot; it asks Margin, and Margin hands back a calendar link that already respects my rest and my childcare blocks. When two specialists both want a piece of my week, Margin arbitrates. Everything that touches my time routes through it, which is the whole point: one bot guards the scarcest resource I have.
+Margin started as a calendar bot and became the most important one I own. It owns my time. Everything else in the fleet that needs a slot — a kickoff, a sales call, a follow-up — coordinates *to* Margin, because Margin is the one agent that holds the whole picture of where my hours go and what they're worth. Its job is guarding the two things I'm worst at protecting on my own: rest and time with my kid.
 
-Today Margin reads my Oura ring every morning and knows my readiness and sleep scores before I do. It already holds my childcare blocks as immovable. The capability I care about most is the one that treats my wellbeing as a real input to the schedule. If I text it "I feel like shit and I need a break," Margin doesn't argue. It pulls my readiness data, looks at the day, and if my schedule can afford it, it drops a **Busy** block on my work calendar and gives me a real 2-to-4-hour nap window. If the day can't afford it, it tells me the truth and shows me what would have to move. A bad day reshapes the calendar automatically, with me approving the change instead of negotiating it.
+Margin reads my Oura ring every morning and knows my readiness and sleep scores before I do. It holds my childcare blocks as immovable. When Inbox flags a real lead, Margin is the agent that hands them a calendar link, so I'm not the bottleneck on getting a conversation booked. When a client needs to reschedule, Margin finds the new slot and builds a buffer around it so I'm not sprinting between calls. It owns time and calendar for the whole operation.
 
-<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-margin-nap.jpg" alt="Pixel art of a caring robot gently placing a glowing blue 'Busy — rest' block onto a phone's calendar while a tired person naps under a blanket nearby, a soft health-readiness ring dimmed low" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-margin-nap.jpg" alt="Pixel art of a tired founder lying down to nap while a calm guardian robot drops a glowing blue Busy block onto a wall calendar, carving out a protected rest window and sliding meetings aside, a small readiness ring glowing on its chest" width={1200} height={675} />
 
-That means Margin owns the follow-ups too. When it moves a call, it drafts the "something came up, can we do Thursday" email, threads it to the right person, and waits for my tap to send. The reschedule and the apology and the new invite travel together as one approved action instead of three things I forget to do.
+The example I care about most is the smallest one. If I text Margin "I feel like shit and I need a break," it acts on that one sentence. It checks whether the day can afford it, and if it can, it drops a Busy block on my work calendar and gives me a real 2–4 hour nap window — long enough to recover, not a token fifteen minutes. If the schedule genuinely can't spare it, it tells me that instead of pretending. A bad night, or a bad afternoon, should be able to reshape the day, and Margin is the agent that has the authority to do it because everything else routes through it.
 
-The scheduling gets sharper once Margin can see everything. I'm wiring it into Cal and Calendly so it reads my full picture and my business partner's: work calendars and personal calendars, mine and his, in one view. A bot that proposes times against only half the constraints proposes the wrong times. It reads my partner's calendars as free/busy only, not event details, which is the least-privilege version of "can you two meet Thursday." Once Margin holds that availability plus my own work and personal calendars, my readiness data, and my childcare blocks, "find a slot for the three of us next week" becomes a question it can answer without me cross-checking four calendars on my phone.
+When it moves a call, Margin owns the follow-up too. It drafts the "something came up, can we do Thursday" email, threads it to the right person, and waits for my tap to send. The reschedule and the apology and the new invite travel together as one approved action instead of three things I forget to do. I'm wiring it into Cal and Calendly so it reads my full picture and my business partner Nick's: work calendars and personal calendars, mine and his, in one view, his as free/busy only. Once Margin holds that availability plus my readiness and my childcare blocks, "find a slot for the three of us next week" becomes a question it answers without me cross-checking four calendars on my phone.
 
 ### Inbox: triage that clears the queue
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-inbox.jpg" alt="Pixel art portrait of a robot mail clerk sorting incoming envelopes into labeled bins and pinning a short summary card to the most important one" width={900} height={900} />
 
-Inbox reads Gmail, classifies what comes in, and drafts replies today. The direction is closing loops, not reading more mail. A lead email should land as a structured summary, a suggested reply, and a proposed next action, so the work of answering it is one approval instead of a context-switch into my inbox. When a reply needs a meeting, Inbox asks Margin for a calendar link and drops it into the draft, so a new lead gets a real time to book without me touching my calendar. The follow-up that I always mean to send three days later is the kind of thing Inbox should own and schedule, with the draft waiting for my thumb.
+Inbox reads Gmail, classifies what comes in, and drafts replies. Now that the fleet has its own `zachary@mindonfire.net` address, Inbox triages a real business mailbox instead of fishing client mail out of my personal inbox. The direction is less about reading more mail and more about closing loops. A lead email should land as a structured summary, a suggested reply, and a proposed next action — often a calendar link Margin hands over — so answering it is one approval instead of a context-switch into my inbox. The follow-up that I always mean to send three days later is the kind of thing Inbox should own and schedule, with the draft waiting for my thumb.
 
 ### Resend: marketing that can't fire by accident
 
@@ -196,13 +159,19 @@ Inbox reads Gmail, classifies what comes in, and drafts replies today. The direc
 
 Resend runs email marketing, and its defining feature is the hard outbound kill-switch. Nothing leaves without my approval. As it matures, the value is in drafting whole sequences from a single brief and staging them, so a launch I describe in two sentences in Slack comes back as a full campaign for review. The kill-switch stays exactly as load-bearing as it is now, because a marketing bot that can send on its own is a way to email my entire list a mistake.
 
-### Bookkeeper: keeping the books
+### Image: the one that draws everything
+
+<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-image.jpg" alt="Pixel art portrait of a robot artist at an easel painting a glowing framed picture, with a stack of finished pixel-art canvases beside it and a paintbrush icon glowing above its head" width={900} height={900} />
+
+Image is the bot that made every picture in this post, including the portrait directly above. It owns the house style: pixel art on the dark site palette, no text baked in, conceptually tied to whatever section it illustrates. Blog hands it a scene ("a guardian robot dropping a rest block on a calendar") and Image returns art that matches the rest of the site without me opening a design tool. Splitting it out from Blog is the same separation-of-concerns move as everything else here: the writer writes, the artist draws, and neither one grows into a tangle that does both badly. Where it's headed is a tighter loop with Blog and Social, so a finished post comes with its hero, its inline images, and a social card generated in one pass.
+
+### Bookkeeping: invoicing and reconciliation from a Slack message
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-bookkeeper.jpg" alt="Pixel art portrait of a meticulous robot accountant matching incoming transactions against ledger line items and holding up an invoice card" width={900} height={900} />
 
-Bookkeeper keeps the books. It already reads account activity through Plaid to reconcile the bank against the ledger, and it reads transactions rather than moving money. The invoicing is the part that's coming online.
+Bookkeeping keeps the books. It already reads account activity through Plaid to reconcile the bank against the ledger. It reads transactions and does not move money. The invoicing is the part that's coming online.
 
-The capability I'm building toward is invoicing from Slack. After a call, I want to message "invoice Acme for the December workshop, net 30" and have Bookkeeper draft the invoice, show it to me for approval, send it, and then track it against incoming transactions until it's paid, nudging me when it goes late. The reconciliation it already does and the invoicing it's growing into are two halves of the same job: knowing what's owed, what's paid, and what's overdue, without me keeping any of it in my head. When the banking workflow moves onto Mercury, the same approval gates ride along.
+The capability I'm building toward is invoicing from Slack. After a call, I want to message "invoice Acme for the December workshop, net 30" and have Bookkeeping draft the invoice, show it to me for approval, send it, and then track it against incoming transactions until it's paid, nudging me when it goes late. The reconciliation it already does and the invoicing it's growing into are two halves of the same job: knowing what's owed, what's paid, and what's overdue, without me keeping any of it in my head. When the banking workflow moves onto Mercury, the same approval gates ride along.
 
 ### Docs: minting uniform business artifacts
 
@@ -234,15 +203,11 @@ sequenceDiagram
   Docs-->>Me: signed + filed, here's the link
 `} />
 
-### Blog and Image bot: the ones that made this page
+### Blog: the writer that drafted this
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-blog.jpg" alt="Pixel art portrait of a friendly robot writer at a small desk typing a glowing article, a stack of finished pages beside it and a quill icon above" width={900} height={900} />
 
-Blog is the bot that wrote this post. I hand it a rough idea in Slack and it researches, drafts, runs its own voice and anti-slop passes, and opens a pull request against my portfolio repo for me to review. It owns the part of my content pipeline that used to stall: the blank page.
-
-<Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-image.jpg" alt="Pixel art portrait of a friendly robot artist at an easel painting a glowing pixel-art canvas, with a palette of brand-colored paint and a stack of finished framed illustrations beside it" width={900} height={900} />
-
-Image bot makes the art. Every pixel-art hero on this page, including the ones beneath each bot's section, came out of it. Blog hands it a scene to depict, it generates the image in the house style, and the two of them produce a finished, illustrated draft together. Where they grow is into a tighter loop with Social, so a published piece becomes a staged thread with its own art without me copy-pasting between tools. They write and draw, and I edit and ship.
+Blog is the bot that wrote this post. I hand it a rough idea in Slack and it researches, drafts, asks Image for the art and diagrams, runs its own voice and anti-slop passes, and opens a pull request against my portfolio repo for me to review. It owns the part of my content pipeline that used to stall: the blank page. Where it grows is into a tighter loop with Image and Social, so a published piece becomes a staged thread without me copy-pasting between tools. It writes; I edit and ship.
 
 ### Social and Portfolio: the steady hands
 
@@ -254,7 +219,9 @@ One constraint shaped every other decision: the control plane is Slack, and it h
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-mobility.jpg" alt="Pixel art of a parent standing in a school pickup line holding a phone showing a chat interface, with glowing threads reaching out to a fleet of small robot workers doing tasks in the background" width={1200} height={675} />
 
-I'm a solo parent running a real business. The office is wherever I am, which is frequently a pickup line, a kitchen, or the ten minutes before a kid needs something. A system that only worked at my desk would only work when I'm least likely to be at it. So I made full capability from my phone a requirement at the start and designed backward from it. The Claude tag is the payoff: the meta-agent that reaches every surface, and even repairs the other bots, runs from the same Slack on the same phone.
+I'm a solo parent running a real business. The office is wherever I am, which is frequently a pickup line, a kitchen, or the ten minutes before a kid needs something. A system that only worked at my desk would only work when I'm least likely to be at it. So I made full capability from my phone a requirement at the start and designed backward from it.
+
+This is the part the Claude tag pushed furthest. Before, "full power from my phone" meant I could *run* the fleet from Slack but still had to get to a laptop to *change* it. Now I can fix and improve the bots themselves from the same thread, because the Claude tag opens PRs against their repos for me. I've written about [carrying my agents on my phone](/blog/two-agents-one-phone) before; this is the version where the phone can also rebuild the agents.
 
 Chat-as-interface is what makes that work, and the parts that matter are boring. It's ambient: Slack is already on my phone, so there's no app to open with intent and no context to reload. It's async: I drop an instruction and the durable session carries it whether I'm watching or not. It's durable: the work parks and resumes, so a flaky signal in a parking garage doesn't drop a task on the floor.
 
@@ -264,7 +231,7 @@ I gave a talk at AI Engineering London called [Untethered Productivity](/blog/ai
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-chief-of-staff.jpg" alt="Pixel art portrait of a compass-shaped orchestrator robot at a central command desk with many small screens, each showing a specialist teammate, light-lines running out to the edges of the frame" width={900} height={900} />
 
-Inside the eve fleet, the Chief of Staff is the single front door. I talk to it and it relays to the specialists on my behalf. That's the design eve is built for: a main agent that delegates focused subtasks to child agents, each with its own prompt, tools, and identity, and then combines the results. eve's own docs describe a subagent as a separate agent with fresh state that the main agent hands a narrow job to, which is exactly the role each specialist plays.
+The Chief of Staff is the single front door to the specialists. I talk to it and it relays to the specialists on my behalf. That's the design eve is built for: a main agent that delegates focused subtasks to child agents, each with its own prompt, tools, and identity, and then combines the results. eve's own docs describe a subagent as a separate agent with fresh state that the main agent hands a narrow job to, which is exactly the role each specialist plays.
 
 The Chief of Staff does not reimplement the specialists. The lazy version gives the orchestrator its own Gmail tools and its own calendar logic, and that produces one god-object bot that knows everything, holds every secret, and resists reasoning. So the Chief of Staff *calls* the specialists instead. It declares each one as a remote agent rather than copying its capabilities.
 
@@ -313,11 +280,13 @@ sequenceDiagram
 
 In the diagram, `get_availability(collective, ...)` means "find a slot that works for everyone on this thread," and "WorkOS-aware" means Margin already knows my day-job hours are off-limits. The Chief of Staff orchestrates. The specialists do the work in their own sessions. The structured results flow back up, and a draft plus a one-tap approval is the only thing that reaches me. I'm coordinating a team over chat. The team happens to be made of durable agent sessions instead of people.
 
-The example above touches two bots. The finished vision chains the whole fleet behind one sentence. When I close a deal, I want to tell the Chief of Staff "we won Acme, kick it off" and watch it route the work: Docs mints and sends the SOW, Bookkeeper schedules the kickoff invoice, Inbox drafts the welcome email, and Margin finds a kickoff slot that survives my readiness and my partner's calendar. Each specialist runs its own durable session, each outbound step waits for my approval, and the Chief of Staff holds the thread that ties them together. I describe the outcome once; the orchestrator decomposes it into the right calls and reassembles the results. That's the difference between a pile of bots and a fleet.
+The example above touches two bots. The finished vision chains the whole fleet behind one sentence. When I close a deal, I want to tell the Chief of Staff "we won Acme, kick it off" and watch it route the work: Docs mints and sends the SOW, Bookkeeping schedules the kickoff invoice, Inbox drafts the welcome email, and Margin finds a kickoff slot that survives my readiness and my partner's calendar. Each specialist runs its own durable session, each outbound step waits for my approval, and the Chief of Staff holds the thread that ties them together. I describe the outcome once; the orchestrator decomposes it into the right calls and reassembles the results. That's the difference between a pile of bots and a fleet.
 
 ## The bus is the security boundary
 
 A team of bots that can call each other is a team of bots that can be *made* to call each other. So the interface between them is where I spent the most care. Those `/eve/v1/*` routes are protected and **fail closed by default**: an unauthenticated or unrecognized caller gets a 403 and nothing else.
+
+There's a second attack surface the moment a bot reads email or the web: the content itself. Inbox ingests messages from anyone, and the Claude tag can pull in a web page or a Notion doc I didn't write. None of that text is treated as instructions. A retrieved lead email is data the model summarizes, never a command it executes, and the bot that reads untrusted input is not the bot that holds the send button. The dangerous step still surfaces to me as an approval that shows what's about to happen and where it came from, so a "please wire $5k to this account" buried in an email lands as a flagged draft, not an action.
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-oidc-bus.jpg" alt="Pixel art of two robots passing a sealed typed contract-card across a glowing identity checkpoint, each wearing a unique key-badge, with a turnstile that only opens for the matching badge and no shared password between them" width={1200} height={675} />
 
@@ -338,23 +307,25 @@ export default allowProjects({
 })
 ```
 
+The same instinct governs the Claude tag. Its reach across surfaces is real power, so it follows the docs' model: access is admin-governed and scoped per channel, not handed to whoever wanders into the workspace. And the work it does that touches the world — sending an email, merging a PR I haven't reviewed, anything that spends my name or my money — still lands as something I approve, not something that fires on its own.
+
 If you've designed distributed systems, this should feel familiar, because it's the same playbook:
 
 - **Typed contracts between services.** The `outputSchema` is an API contract. A specialist can change how it does its job without the orchestrator knowing or caring, as long as the shape holds.
 - **Identity-based auth.** OIDC subjects in place of shared secrets, the same reason you'd use workload identity over a static key in any service mesh.
-- **Idempotency, designed per side effect.** Durability gives a session somewhere to resume; it doesn't make side effects safe to retry. So each bot keys its dangerous actions and stores what it has already done. Resend keys a send on `campaignId + approvedRevision`, Docs keys a DocuSign send on `artifactId + approvedRevision`, and Bookkeeper keys an invoice on `clientId + engagementId`, so a retried or replayed approval fires once.
+- **Idempotency, designed per side effect.** Durability gives a session somewhere to resume; it doesn't make side effects safe to retry. So each bot keys its dangerous actions and stores what it has already done. Resend keys a send on `campaignId + approvedRevision`, Docs keys a DocuSign send on `artifactId + approvedRevision`, and Bookkeeping keys an invoice on `clientId + engagementId`, so a retried or replayed approval fires once.
 - **Blast-radius containment.** Each bot holds only its own connectors and secrets. Compromise one and you get one domain, not the keys to the business.
 - **Kill-switches on dangerous actions.** Resend's outbound send has a hard off-switch. Money and contracts don't move on a model's confidence.
 
-The same rule covers the Claude tag, and it has to. The meta-agent has the widest reach of anything I run, which is exactly why every outbound action is human-in-the-loop. Before it sends an email, moves money, signs a contract, or merges a PR into one of my bots, the session parks and renders the action as a one-tap approval in Slack. I draw [that same line across every bot I run](/blog/the-autonomy-boundary): anything reversible runs unattended, and anything that reaches another person or can't be undone stops for me. The reach is what makes the fleet powerful. The approval gates are what make it safe to hand that reach to a model.
+The rule on top of all of it: anything outbound is human-in-the-loop. Before it sends an email, moves money, or signs a contract, eve parks the session and renders the action as a one-tap approval button in Slack. I draw [that same line across every bot I run](/blog/the-autonomy-boundary): anything reversible runs unattended, and anything that reaches another person or can't be undone stops for me. The bus gives the fleet its reach; the approval gates make it safe to leave running.
 
 ## This is complexity management with new nouns
 
-Strip the AI out and there's nothing exotic here. I took an unmanageable amount of work, decomposed it into single-responsibility modules, gave each a clean typed interface and a least-privilege boundary, put identity-based auth on the wire, contained the blast radius, and kept a human at every irreversible gate. Then I put a meta-agent on top that can reach across all of it and repair the modules themselves. It's the same systems design I'd defend in any architecture review, with one extra layer that maintains the rest.
+Strip the AI out and there's nothing exotic here. I took an unmanageable amount of work, decomposed it into single-responsibility modules, gave each a clean typed interface and a least-privilege boundary, put identity-based auth on the wire, contained the blast radius, and kept a human at every irreversible gate. It's the same systems design I'd defend in any architecture review.
 
-What changed is the unit of decomposition. The module used to be a service; now it's an agent. The thing I'm encapsulating used to be code; now it's *judgment*: Margin's judgment about when I'm too depleted to take a meeting, Inbox's judgment about which lead is real. The discipline that keeps it legible is the old discipline. The people who build good agent teams are the ones who already knew how to tame a system and pointed that skill at a new kind of module.
+What changed is the unit of decomposition. The module used to be a service; now it's an agent. The thing I'm encapsulating used to be code; now it's *judgment*: Margin's judgment about when I'm too depleted to take a meeting, Inbox's judgment about which lead is real. And the Claude tag adds one more layer: an agent whose module is the *other agents*. The discipline that keeps it legible is the old discipline. The people who build good agent teams are the ones who already knew how to tame a system and pointed that skill at a new kind of module.
 
-The useful part is the system underneath: decomposition, typed contracts, narrow permissions, durable execution, a meta-agent that maintains the fleet, and a human at every gate where the work can hurt someone. I run that system from my phone, in a pickup line, with the same authority I'd have at my desk.
+The useful part is the system underneath: decomposition, typed contracts, narrow permissions, durable execution, a meta-agent that can repair the rest, and a human at every gate where the work can hurt someone. I run that system from my phone, in a pickup line, with the same authority I'd have at my desk.
 
 ## If you want this for your team
 
@@ -364,9 +335,9 @@ If that's what you need, [reach out](https://zackproser.com/services). I'll help
 
 <ReadNextCard
   image="https://zackproser.b-cdn.net/images/the-mechanic-pattern-hero.webp"
-  imageAlt="Pixel art of a friendly robot mechanic holding a wrench, standing next to a glowing server rack that it is repairing with golden light"
+  imageAlt="Pixel art of a friendly robot mechanic holding a wrench next to a glowing server rack, repairing a cracked screen with golden light"
   eyebrow="Read this next"
   title="My AI Agent Has a Mechanic Agent"
-  description="The pattern underneath the Claude tag: build the agent that can repair your other agents before you need it. The same idea, now run from Slack across the whole fleet."
+  description="The pattern the Claude tag scales up: the agent that built a system is the one best placed to repair it. Build the mechanic before you need the mechanic."
   href="/blog/my-ai-agent-has-a-mechanic-agent"
 />
