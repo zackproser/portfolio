@@ -14,7 +14,7 @@ If you draft anything with a model in the loop, the output carries tells. The sa
 
 The fix is one step you add at the end of your pipeline: an anti-slop pass. After the draft is written and correct, you read it against a list of known AI tells and rewrite every hit. That's the whole trick, and it's the cheapest quality win I've added to my writing pipeline.
 
-The list I use is [stop-slop](https://github.com/hardikpandya/stop-slop), an open-source catalog of the phrases and structures that mark AI-generated prose. I wired it into [Blog Bot, the Slack agent that drafts my posts](/blog/workos-applied-ai-showcase), as its own pass. This post is the test case: the same pipeline drafted it, then ran the pass on it. The first run failed, which I'll show you. Here's how to build the step.
+The list I use is [stop-slop](https://github.com/hardikpandya/stop-slop), an open-source catalog of the phrases and structures that mark AI-generated prose. I wired it into [Blog Bot, the Slack agent that drafts my posts](/blog/workos-applied-ai-showcase), as its own pass. This post is the test case: the same pipeline drafted it, then ran the pass on it. The first run flagged eleven hits and a HIGH long-dash count; the run that opened its PR returned zero. Here's how to build the step.
 
 ## Step 0: know the tells, and why they read as fake
 
@@ -109,32 +109,6 @@ It mirrors my CI gate, and the script that opens my pull requests exits before i
 
 The scanner sets the floor, the judgment read sets the ceiling. The regex catches the worst phrase offenders and runs two cheap structural heuristics I trust in CI: a negate-then-assert shape and a bare list of three. Everything subtler, a paragraph that dodges the actor while keeping every word clean, still needs the human or cross-model read that happens outside the scanner. Wire both: an automated gate so a tell can't slip through by accident, and a structural read so clean-worded slop still gets caught.
 
-## What it caught on this post
-
-Those eleven hits I opened with came from the draft of the paragraph you read at the top. I can't paste the raw output here, and that fact demonstrates the problem: the scanner reads this file too, so verbatim output would trip it again. The banned tokens stay radioactive even inside quotations.
-
-Here is that first run, redacted to rule IDs and line numbers (against the pre-edit source) so the post doesn't fail itself by quoting its own findings:
-
-```text
-$ pnpm scan:voice src/content/blog/stop-slop-scrub-pass/page.mdx
-HARD  phrase.jargon.look-into        line 13   [token redacted]
-HARD  phrase.jargon.look-into        line 95   [token redacted]
-HARD  structure.negate-then-assert   line 13
-HARD  phrase.corporate.use           line 29   [token redacted]
-HARD  phrase.corporate.examine       line 29   [token redacted]
-SOFT  phrase.adverb.intensifier      line 25   [token redacted]
-SOFT  phrase.adverb.intensifier      line 33   [token redacted]
-SOFT  phrase.filler.when-it-comes-to line 37   [token redacted]
-SOFT  phrase.filler.the-reality-is   line 33   [token redacted]
-SOFT  structure.list-of-three        line 29
-SOFT  punctuation.em-dash-density    8.4 / 1k words   HIGH
-exit 1
-```
-
-These were the findings, named rather than reproduced. The verb that means look into appeared twice. A negate-then-assert contrast appeared once, in the opening line, where I had brushed aside an obvious word so a grander one could take the spotlight before I cut it. Two corporate filler specimens appeared in the tells section, one meaning "use" and one meaning a long examination. The gate flagged each one as a real hit, because a regex can't tell a quoted example from the live word.
-
-That constraint forced the real edit. Deleting tokens could not fix those sentences, because the token was the example I needed. I rewrote each sentence to point at the tell without saying it: describe the verb, show the contrast's shape with placeholder words, name the jargon by what it replaces. The flagged token is never the unit of work; the sentence is. The first pass of this post had eleven hits and a HIGH long-dash count. The pass that opened its PR returned zero.
-
 ## A clean scan can still hide an empty draft
 
 <Image src="https://zackproser.b-cdn.net/images/stop-slop-scrub-pass-hollow.jpg" alt="Pixel art cutaway of a gleaming polished metal panel that is hollow inside, a small inspector with a flashlight peering into the empty cavity behind the shiny veneer" width={1200} height={675} />
@@ -147,19 +121,15 @@ The list defends prose you already made worth reading; it won't make the draft w
 
 ## Wire it into your own pipeline
 
-If you write or generate text with a model in the loop, add the pass wherever your drafts leave the model. It's the same step whether the artifact is a blog post, a generated changelog, a PR description, or a release note. The recipe, condensed:
+Add the pass wherever your drafts leave the model, whether the artifact is a blog post, a changelog, or a release note. The recipe:
 
-1. Pull a current tells list. [stop-slop](https://github.com/hardikpandya/stop-slop) is a good one and it's free. Read it live; pin a copy for CI.
-2. Run the pass last, after structure, facts, and voice are done. Keep it out of drafting.
-3. Rewrite the sentence around each hit rather than delete the token.
-4. Hand the rewrite to a different model than the one that drafted, so the editor isn't the writer.
+1. Pull a current tells list. [stop-slop](https://github.com/hardikpandya/stop-slop) is free and a good start. Read it live; pin a copy for CI.
+2. Run it last, after structure, facts, and voice. Keep it out of drafting.
+3. Rewrite the sentence around each hit instead of deleting the token.
+4. Hand the rewrite to a different model than the one that drafted it.
 5. Gate on an automated scanner, then do the structural read the scanner can't.
 
-I haven't published my exact scanner, but the contract is the whole point: files in, rule IDs and line numbers out, non-zero exit on any hard hit. Build that interface around whatever phrase list you trust and the rest is wiring.
-
-Treat any automated scanner as the floor and the structural read as the ceiling. The same division of labor holds here that I care about across this pipeline, the reason I obsess over [the interface around the model](/blog/the-interface-matters-most) as much as the model call itself: I let the machine run the repeatable check, and I keep the first idea and the final judgment. An anti-slop pass is the cleanest example of that division I have. It can follow a list and run in automation, and it can't hand a post a reason to exist.
-
-This post ran the pass. The first run returned eleven hits and a HIGH long-dash count; the final run returned zero. I want the PR button disabled until the page no longer smells like a model. That is what [completing the loop](/blog/workos-applied-ai-showcase) looks like up close: the agent does the typing, the gate refuses the bad drafts, and I keep the judgment.
+The scanner is the floor; the structural read is the ceiling. It's the same division of labor I care about across [the interface around the model](/blog/the-interface-matters-most): the machine runs the repeatable check, and I keep the first idea and the final judgment. An anti-slop pass can follow a list and run in automation, and it still can't hand a post a reason to exist. That's the line I want every pipeline to hold.
 
 <ReadNextCard
   image="https://zackproser.b-cdn.net/images/hermes-ships-blog-posts-hero.webp"
