@@ -392,10 +392,8 @@
   color: var(--fg-muted); text-transform: uppercase;
 }
 .blog-post-page .post-body ul,
-.blog-post-page .post-body ol { padding-left: 1.5em; margin: 1em 0; }
-.blog-post-page .post-body ul { list-style: disc; }
-.blog-post-page .post-body ol { list-style: decimal; }
-.blog-post-page .post-body li { margin: .4em 0; padding-left: .25em; }
+.blog-post-page .post-body ol { padding-left: 1.3em; margin: 1em 0; }
+.blog-post-page .post-body li { margin: .4em 0; }
 .blog-post-page .post-body li::marker { color: var(--accent); }
 .blog-post-page .post-body hr {
   border: 0; height: 1px; background: var(--border);
