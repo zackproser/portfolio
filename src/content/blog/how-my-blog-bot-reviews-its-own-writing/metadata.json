@@ -2,7 +2,13 @@
   "title": "How My Blog Bot Reviews Its Own Writing Before I Read It",
   "author": "Zachary Proser",
   "date": "2026-06-24",
-  "description": "Before a draft reaches me, my blog bot hands it to two cold readers from different model families that score it against a rubric and force a revision loop. The implementation, the gate, and a real pass where it caught my own AI tell.",
+  "description": "Before a draft reaches me, my blog bot hands it to two cold readers from different model families that score it against a rubric and force a revision loop.",
   "image": "https://zackproser.b-cdn.net/images/blog-bot-self-review-hero.jpg",
-  "tags": ["AI", "Writing", "Applied AI", "Tools", "Craft"]
+  "tags": [
+    "AI",
+    "Writing",
+    "Applied AI",
+    "Tools",
+    "Craft"
+  ]
 }
