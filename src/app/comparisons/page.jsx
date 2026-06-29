@@ -4,8 +4,8 @@ import { createMetadata } from '@/utils/createMetadata'
 import { DynamicComparisonSearch } from '@/components/dynamic-comparison-search'
 
 export const metadata = createMetadata({
-  title: "Developer Tool Comparisons",
-  description: "Compare developer tools side by side to find the best fit for your needs"
+  title: "Developer Tool Comparisons — Compare Tools Side by Side",
+  description: "Compare developer and AI tools side by side — features, pricing, and trade-offs — to find the best fit for your stack and your team's needs."
 });
 
 export default async function ComparisonsIndex() {
