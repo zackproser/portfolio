@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   metadataBase: new URL('https://zackproser.com'),
   title: 'Best AI Tools for Small Business Owners | Zack Proser',
-  description: 'Skip the AI overwhelm. If you\'re a small business owner wondering which AI tools actually matter, start here. Four tools that solve real problems: Claude, WisprFlow, Granola, and Claude Max.',
+  description: 'Skip the AI overwhelm. Four tools small business owners actually need in 2026: Claude, WisprFlow, Granola, and Claude Max.',
   openGraph: {
     type: 'website',
     title: 'Skip the AI Overwhelm. Start Here.',

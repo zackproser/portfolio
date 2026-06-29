@@ -2,9 +2,9 @@ import { generateOgUrl } from '@/utils/ogUrl'
 import { PartnershipsContent } from './PartnershipsContent'
 
 const data = {
-  title: 'Partnerships',
+  title: 'Partnerships — Sponsorships, Newsletter Sends & Affiliates',
   description:
-    'How brands work with Modern Coding / zackproser.com. Sponsored articles, newsletter sends, affiliates, workshops, retainers — pricing, editorial standards, and intake.',
+    'How brands work with Modern Coding / zackproser.com — sponsored articles, newsletter sends, affiliates, workshops, and retainers.',
 };
 
 const ogUrl = generateOgUrl(data);
