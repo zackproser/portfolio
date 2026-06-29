@@ -2,8 +2,15 @@
   "title": "Granola for Engineers: AI Meeting Notes for Technical Teams",
   "author": "Zachary Proser",
   "date": "2026-04-24",
-  "description": "Software engineers sit in design reviews, incident retrospectives, and planning sessions where technical accuracy matters. Granola documents the details so you can focus on problem-solving.",
+  "description": "Engineers sit in design reviews, incident retros, and planning where technical accuracy matters. Granola documents the details so you can solve problems.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["granola", "engineering", "software", "meetings", "productivity", "ai"],
+  "tags": [
+    "granola",
+    "engineering",
+    "software",
+    "meetings",
+    "productivity",
+    "ai"
+  ],
   "hiddenFromIndex": true
 }
