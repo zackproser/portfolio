@@ -1,11 +1,25 @@
 {
-  "title": "How to Wire an Anti-Slop Pass Into Your Blogging or Artifact Pipeline",
+  "title": "Wiring an Anti-Slop Pass Into Your Pipeline",
   "author": "Zachary Proser",
   "date": "2026-06-24",
-  "description": "If you generate anything with a model in the loop, you need a step that reads the finished draft against a list of AI tells and rewrites every hit. Here's how I wired one into my pipeline, where it sits, and the catch nobody mentions.",
+  "description": "If a model is in your loop, you need a step that reads the finished draft against a list of AI tells and rewrites every hit. Here's how I wired one in.",
   "image": "https://zackproser.b-cdn.net/images/stop-slop-scrub-pass-hero.webp",
   "slug": "stop-slop-scrub-pass",
   "type": "blog",
-  "keywords": ["AI writing tells", "stop-slop", "de-slop", "anti-slop pass", "AI slop", "writing pipeline", "artifact pipeline", "voice"],
-  "tags": ["AI", "Writing", "Tools", "Craft"]
+  "keywords": [
+    "AI writing tells",
+    "stop-slop",
+    "de-slop",
+    "anti-slop pass",
+    "AI slop",
+    "writing pipeline",
+    "artifact pipeline",
+    "voice"
+  ],
+  "tags": [
+    "AI",
+    "Writing",
+    "Tools",
+    "Craft"
+  ]
 }
