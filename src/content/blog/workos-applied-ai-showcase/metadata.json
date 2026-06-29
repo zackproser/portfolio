@@ -1,8 +1,8 @@
 {
-  "title": "Applied AI: Three Learnings from Shipping — My Talk at the WorkOS Applied AI Showcase",
+  "title": "Three Learnings From Shipping Applied AI",
   "author": "Zachary Proser",
   "date": "2026-05-20",
-  "description": "I closed the WorkOS Applied AI Showcase with three learnings from shipping internal AI tooling: interface beats stack, complete the loop, and the imagination gap. Bartleby vs Blog Bot, capture → plan → execute → ship, and re-asking the question every quarter.",
+  "description": "My WorkOS Applied AI Showcase talk: three learnings from shipping internal AI tooling. Interface beats stack, complete the loop, close the imagination gap.",
   "image": "https://img.youtube.com/vi/V2PuEAeNXUU/maxresdefault.jpg",
   "slug": "/blog/workos-applied-ai-showcase",
   "keywords": [
