@@ -1,9 +1,16 @@
 {
-  "title": "Granola for UX Research Sessions: AI Notes for User Interviews and Design Reviews",
+  "title": "Granola for UX Research Sessions",
   "author": "Zachary Proser",
   "date": "2026-04-24",
-  "description": "UX researchers run user interviews, usability tests, and synthesis sessions where nuanced observations matter. Granola captures the verbatim moments that define product decisions.",
+  "description": "UX researchers run interviews, usability tests, and synthesis sessions where nuance matters. Granola captures the moments that define product decisions.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["granola", "ux-research", "design", "user-interviews", "meetings", "ai"],
+  "tags": [
+    "granola",
+    "ux-research",
+    "design",
+    "user-interviews",
+    "meetings",
+    "ai"
+  ],
   "hiddenFromIndex": true
 }
