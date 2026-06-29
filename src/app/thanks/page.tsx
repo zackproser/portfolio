@@ -1,5 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
+
+export const metadata: Metadata = {
+  title: 'Thank You — Modern Coding',
+  description:
+    'Your preferences have been updated. Explore the best AI tools for small business, read the blog, or head back to the homepage.',
+  robots: { index: false, follow: true },
+};
 
 export default function ThanksPage() {
   return (
