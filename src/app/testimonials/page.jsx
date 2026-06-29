@@ -20,8 +20,8 @@ const img = {
 }
 
 const data = {
-  title: 'Testimonials — Zachary Proser',
-  description: 'Fourteen on the record — engineers, PMs, designers, CEOs, professors — on what it is like to work with Zachary Proser.',
+  title: 'Testimonials — Working With Zachary Proser',
+  description: 'Fourteen on the record — engineers, PMs, designers, CEOs, and professors — on what it is like to work with Zachary Proser across 12 companies.',
 }
 
 const ogUrl = generateOgUrl(data)
