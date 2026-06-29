@@ -2,9 +2,9 @@ import { generateOgUrl } from '@/utils/ogUrl'
 import { ContactContent } from './ContactContent'
 
 const data = {
-  title: 'Contact me',
+  title: 'Contact Zachary Proser — AI Engineering & Consulting',
   description:
-    'Have a project in mind? Let\'s discuss how I can help.'
+    'Have a project in mind? Get in touch to discuss AI engineering, RAG pipelines, consulting, workshops, or speaking — usually a same-week reply.'
 };
 
 const ogUrl = generateOgUrl(data);
