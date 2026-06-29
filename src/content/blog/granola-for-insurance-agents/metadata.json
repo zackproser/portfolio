@@ -1,9 +1,14 @@
 {
-  "title": "Granola for Insurance Agents - AI Meeting Intelligence for Policy Sales",
+  "title": "Granola for Insurance Agents",
   "author": "Zachary Proser",
   "date": "2026-4-28",
-  "description": "How insurance agents use Granola's AI to track client needs assessments, document policy discussions, and streamline insurance sales with intelligent conversation capture.",
+  "description": "How insurance agents use Granola's AI to track needs assessments, document policy discussions, and streamline sales with intelligent conversation capture.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["ai", "insurance", "sales", "productivity"],
+  "tags": [
+    "ai",
+    "insurance",
+    "sales",
+    "productivity"
+  ],
   "hiddenFromIndex": true
 }
