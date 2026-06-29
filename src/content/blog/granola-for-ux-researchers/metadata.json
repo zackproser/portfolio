@@ -1,9 +1,14 @@
 {
-  "title": "Granola for UX Researchers - AI Meeting Intelligence for User Research",
-  "author": "Zachary Proser", 
+  "title": "Granola for UX Researchers",
+  "author": "Zachary Proser",
   "date": "2026-4-28",
-  "description": "How UX researchers use Granola's AI to capture user interviews, analyze behavior patterns, and transform qualitative research with intelligent conversation analysis.",
+  "description": "How UX researchers use Granola's AI to capture user interviews, analyze behavior patterns, and transform qualitative research with conversation analysis.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["ai", "ux", "research", "design"],
+  "tags": [
+    "ai",
+    "ux",
+    "research",
+    "design"
+  ],
   "hiddenFromIndex": true
 }

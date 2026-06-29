@@ -1,9 +1,14 @@
 {
-  "title": "Granola for Life Coaches: Client Session Documentation and Progress Tracking",
+  "title": "Granola for Life Coaches (Session Notes)",
   "author": "Zachary Proser",
   "date": "2026-4-26",
-  "description": "How life coaches use Granola to document client sessions, track progress, and maintain detailed coaching records.",
+  "description": "How life coaches use Granola to document client sessions, track progress, and maintain coaching records, so you can stay present instead of taking notes.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["ai", "life coaching", "client management", "sessions"],
+  "tags": [
+    "ai",
+    "life coaching",
+    "client management",
+    "sessions"
+  ],
   "hiddenFromIndex": true
 }

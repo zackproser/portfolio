@@ -2,7 +2,14 @@
   "title": "Your Attention Is the Bottleneck, Not Your Agents",
   "author": "Zachary Proser",
   "date": "2026-06-24",
-  "description": "Agent capacity is cheap now and getting cheaper; my attention is the fixed, scarce resource. Everything I build is attention-budget design: the autonomy boundary, the PR gate, and running everything from Slack are all ways of spending my looking only where it counts. The written version of my AI Engineering London talk.",
+  "description": "Agent capacity is cheap; my attention is the scarce resource. The autonomy boundary, the PR gate, and a Slack-first workflow are all attention-budget design.",
   "image": "https://zackproser.b-cdn.net/images/attention-is-the-bottleneck-hero.jpg",
-  "tags": ["AI", "Agents", "Applied AI", "Slack", "Developer Tools", "Automation"]
+  "tags": [
+    "AI",
+    "Agents",
+    "Applied AI",
+    "Slack",
+    "Developer Tools",
+    "Automation"
+  ]
 }

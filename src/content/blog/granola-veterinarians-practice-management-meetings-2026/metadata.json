@@ -1,9 +1,14 @@
 {
-  "title": "Granola for Veterinarians: Practice Management and Team Meeting Documentation",
+  "title": "Granola for Veterinarians",
   "author": "Zachary Proser",
   "date": "2026-4-26",
-  "description": "How veterinary practices use Granola to document team meetings, case conferences, and practice management discussions.",
+  "description": "How veterinary practices use Granola to document team meetings, case conferences, and practice management discussions, keeping records accurate without notes.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["ai", "veterinary", "practice management", "meetings"],
+  "tags": [
+    "ai",
+    "veterinary",
+    "practice management",
+    "meetings"
+  ],
   "hiddenFromIndex": true
 }

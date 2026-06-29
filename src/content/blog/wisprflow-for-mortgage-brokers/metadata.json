@@ -1,9 +1,14 @@
 {
-  "title": "WisprFlow for Mortgage Brokers - Voice Documentation for Loan Processing",
+  "title": "WisprFlow for Mortgage Brokers",
   "author": "Zachary Proser",
   "date": "2026-4-28",
   "description": "How mortgage brokers use WisprFlow to dictate loan files, document borrower communications, and streamline mortgage processing with voice-driven efficiency.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
-  "tags": ["ai", "voice-coding", "mortgage", "finance"],
+  "tags": [
+    "ai",
+    "voice-coding",
+    "mortgage",
+    "finance"
+  ],
   "hiddenFromIndex": true
 }

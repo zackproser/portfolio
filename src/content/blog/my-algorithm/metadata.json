@@ -1,8 +1,14 @@
 {
-  "title": "My Algorithm",
+  "title": "My Algorithm: Forty Years of Appetite",
   "author": "Zachary Proser",
   "date": "2026-05-18",
-  "description": "Gasoline and electricity, the line that won't dim. Forty years inside the appetite I have never been able to turn off.",
+  "description": "Gasoline and electricity, the line that won't dim. Forty years inside the appetite I have never been able to turn off. An interactive self-portrait.",
   "image": "https://zackproser.b-cdn.net/images/my-algorithm-hero.webp",
-  "tags": ["adhd", "autism", "neurodivergent", "interactive", "three-js"]
+  "tags": [
+    "adhd",
+    "autism",
+    "neurodivergent",
+    "interactive",
+    "three-js"
+  ]
 }
