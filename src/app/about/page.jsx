@@ -7,7 +7,7 @@ import { generateOgUrl } from "@/utils/ogUrl"
 import { resumeData } from "@/data/resume"
 
 const data = {
-  title: "About Zachary Proser",
+  title: "About Zachary Proser — AI Engineer & Technical Writer",
   description:
     "AI Engineer on the Applied AI team at WorkOS. Full-stack open-source hacker, technical writer, and operator behind Modern Coding.",
 }
