@@ -10,6 +10,44 @@ const claudeSkills = 'https://zackproser.b-cdn.net/images/claude-skills.webp'
 
 export const speakingEngagements = [
   {
+    id: 'aie-worlds-fair-2026-lifestyles-ai-native',
+    slug: 'lifestyles-of-the-ai-native',
+    type: 'public',
+    title: 'Lifestyles of the AI-Native: Stop Typing. Start Operating.',
+    event: "AI Engineer World's Fair 2026",
+    date: 'July 2, 2026',
+    isoDate: '2026-07-02',
+    location: 'Moscone West, San Francisco, CA',
+    description: "A hands-on workshop with Nick Nisi at the AI Engineer World's Fair in San Francisco. One hour, one repo, four moves: voice coding, agentic loops and goals, verification gates, and scheduled tasks. Every attendee's check-in fed a live board showing the room's toil, the automations worth building, and the hours per week reclaimed — with an AI-Native score measured before and after. Conference organizer swyx told us our workshops are the gold standard for AI Engineer content.",
+    image: 'https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-hero.webp', // PLACEHOLDER — upload hero photo to Bunny CDN
+    audience: 'AI engineers and developers',
+    topics: ['Claude Code', 'Voice Coding', 'Agentic Loops', 'Verification Gates', 'Scheduled Tasks', 'AI-Native Workflows'],
+    slidevUrl: 'https://aie-deck.workos-internal.workers.dev',
+    gallery: [
+      // PLACEHOLDERS — swap src values once photos are uploaded to Bunny CDN
+      { src: 'https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-room.webp', alt: "Packed workshop room at the AI Engineer World's Fair 2026 for Lifestyles of the AI-Native" },
+      { src: 'https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-zack-nick.webp', alt: 'Zack Proser and Nick Nisi presenting Lifestyles of the AI-Native at Moscone West' },
+      { src: 'https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-board.webp', alt: "The live board showing the room's toil migrating to automation, with AI-Native scores before and after" },
+    ],
+    links: [
+      {
+        type: 'blog',
+        url: '/blog/lifestyles-of-the-ai-native',
+        label: 'Read the write-up'
+      },
+      {
+        type: 'github',
+        url: 'https://github.com/workos/aie-ai-native-workshop',
+        label: 'Workshop repo — run it yourself'
+      },
+      {
+        type: 'link',
+        url: 'https://aie-glossary.workos-internal.workers.dev',
+        label: 'The AI-Native glossary'
+      }
+    ]
+  },
+  {
     id: 'workos-applied-ai-showcase',
     slug: 'workos-applied-ai-showcase',
     type: 'public',
