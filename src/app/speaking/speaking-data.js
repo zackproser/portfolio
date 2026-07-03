@@ -19,15 +19,14 @@ export const speakingEngagements = [
     isoDate: '2026-07-02',
     location: 'Moscone West, San Francisco, CA',
     description: "A hands-on workshop with Nick Nisi at the AI Engineer World's Fair in San Francisco. One hour, one repo, four moves: voice coding, agentic loops and goals, verification gates, and scheduled tasks. Every attendee's check-in fed a live board showing the room's toil, the automations worth building, and the hours per week reclaimed — with an AI-Native score measured before and after. Conference organizer swyx told us our workshops are the gold standard for AI Engineer content.",
-    image: 'https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-hero.webp', // PLACEHOLDER — upload hero photo to Bunny CDN
+    image: 'https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-hero.jpg',
     audience: 'AI engineers and developers',
     topics: ['Claude Code', 'Voice Coding', 'Agentic Loops', 'Verification Gates', 'Scheduled Tasks', 'AI-Native Workflows'],
     slidevUrl: 'https://aie-deck.workos-internal.workers.dev',
     gallery: [
-      // PLACEHOLDERS — swap src values once photos are uploaded to Bunny CDN
-      { src: 'https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-room.webp', alt: "Packed workshop room at the AI Engineer World's Fair 2026 for Lifestyles of the AI-Native" },
-      { src: 'https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-zack-nick.webp', alt: 'Zack Proser and Nick Nisi presenting Lifestyles of the AI-Native at Moscone West' },
-      { src: 'https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-board.webp', alt: "The live board showing the room's toil migrating to automation, with AI-Native scores before and after" },
+      { src: 'https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-room.jpg', alt: "The full workshop room at Moscone West, laptops open, with the Lifestyles of the AI-Native title slide on screen" },
+      { src: 'https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-zack-nick.jpg', alt: "Zack Proser and Nick Nisi cracking each other up behind the giant AIE letters at the AI Engineer World's Fair" },
+      { src: 'https://zackproser.b-cdn.net/images/aie-sf-2026-aie-letters.jpg', alt: "Zack Proser and Nick Nisi posing behind the giant AIE letters on the red carpet at Moscone West" },
     ],
     links: [
       {
