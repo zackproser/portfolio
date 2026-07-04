@@ -96,7 +96,7 @@ const talks = [
     imageAlt: 'Untethered Productivity talk at AI Engineering London',
     primary: { label: 'Watch →', href: 'https://www.youtube.com/watch?v=so9l_MwS2yg' },
     detailHref: '/speaking/untethered-productivity',
-    handsOn: true,
+    handsOn: false,
   },
 ]
 
