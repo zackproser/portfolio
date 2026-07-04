@@ -43,19 +43,21 @@ export const metadata = createMetadata({
  * cloud. Detail data (dates, galleries, decks) stays in speaking-data.js;
  * this is the offering layer.
  */
+/* Ordered by the format we most want booked: the marquee keynote first,
+ * then the hands-on workshops that convert into enterprise engagements. */
 const talks = [
   {
     id: 'T.01',
-    name: 'Untethered Productivity',
-    badge: 'Keynote / talk · AIE London',
-    outcome: ['Your engineers ship faster ', 'without burning out.'],
+    name: 'DevSecCon Keynote',
+    badge: 'Keynote · DevSecCon 2025',
+    outcome: ['Your security audience leaves thinking about AI ', 'like practitioners.'],
     description:
-      'Signal management, context switching, and sustainable agent workflows — the balance between massive AI productivity gains and staying healthy, creative, and sane.',
-    image: 'https://img.youtube.com/vi/so9l_MwS2yg/maxresdefault.jpg',
-    imageAlt: 'Untethered Productivity talk at AI Engineering London',
-    primary: { label: 'Watch →', href: 'https://www.youtube.com/watch?v=so9l_MwS2yg' },
-    detailHref: '/speaking/untethered-productivity',
-    handsOn: true,
+      'The conference keynote on modern AI and security — where the real risks and the real gains sit once agents are in the loop.',
+    image: 'https://img.youtube.com/vi/kwIzRkzO_Z4/hqdefault.jpg',
+    imageAlt: 'DevSecCon 2025 keynote',
+    primary: { label: 'Watch →', href: 'https://www.youtube.com/watch?v=kwIzRkzO_Z4' },
+    detailHref: '/speaking/devseccon-2025-keynote',
+    handsOn: false,
   },
   {
     id: 'T.02',
@@ -85,17 +87,27 @@ const talks = [
   },
   {
     id: 'T.04',
-    name: 'DevSecCon Keynote',
-    badge: 'Keynote · DevSecCon 2025',
-    outcome: ['Your security audience leaves thinking about AI ', 'like practitioners.'],
+    name: 'Untethered Productivity',
+    badge: 'Keynote / talk · AIE London',
+    outcome: ['Your engineers ship faster ', 'without burning out.'],
     description:
-      'The conference keynote on modern AI and security — where the real risks and the real gains sit once agents are in the loop.',
-    image: 'https://img.youtube.com/vi/kwIzRkzO_Z4/hqdefault.jpg',
-    imageAlt: 'DevSecCon 2025 keynote',
-    primary: { label: 'Watch →', href: 'https://www.youtube.com/watch?v=kwIzRkzO_Z4' },
-    detailHref: '/speaking/devseccon-2025-keynote',
-    handsOn: false,
+      'Signal management, context switching, and sustainable agent workflows — the balance between massive AI productivity gains and staying healthy, creative, and sane.',
+    image: 'https://img.youtube.com/vi/so9l_MwS2yg/maxresdefault.jpg',
+    imageAlt: 'Untethered Productivity talk at AI Engineering London',
+    primary: { label: 'Watch →', href: 'https://www.youtube.com/watch?v=so9l_MwS2yg' },
+    detailHref: '/speaking/untethered-productivity',
+    handsOn: true,
   },
+]
+
+/* Compressed credibility for an organizer skimming on a phone — every logo
+ * maps to a real engagement in speaking-data.js. */
+const stageLogos = [
+  { name: 'AI Engineer', src: '/images/logos/aiengineer.svg', className: 'invert dark:invert-0' },
+  { name: 'Anthropic', src: '/images/logos/anthropic.svg', className: 'dark:invert' },
+  { name: 'a16z', src: '/images/logos/a16z.svg', className: 'dark:invert' },
+  { name: 'Cohere', src: '/images/logos/cohere.svg', className: 'grayscale dark:invert' },
+  { name: 'WorkOS', src: '/images/logos/workos.svg', className: 'grayscale dark:invert' },
 ]
 
 function OutcomeHeadline({ parts }) {
@@ -145,6 +157,16 @@ export default function Speaking() {
   const sortedByDate = [...speakingEngagements].sort((a, b) =>
     (b.isoDate || '').localeCompare(a.isoDate || '')
   )
+  // Ledger stats computed from the data so they never drift from the record.
+  const stats = {
+    engagements: speakingEngagements.length,
+    workshops: speakingEngagements.filter((e) =>
+      /workshop/i.test(`${e.title} ${e.description || ''}`)
+    ).length,
+    stages: new Set(
+      speakingEngagements.filter((e) => e.type === 'public').map((e) => e.event)
+    ).size,
+  }
 
   return (
     <div className="editorial-home flex flex-col min-h-screen text-charcoal-50 dark:text-parchment-100 theme-transition">
@@ -170,6 +192,40 @@ export default function Speaking() {
               </span>{' '}
               — swyx, AI Engineer.
             </p>
+
+            {/* Ledger stats + stage logos — compressed credibility, phone-first */}
+            <div className="mt-8 flex flex-wrap items-baseline gap-x-8 gap-y-2 border-t border-b border-parchment-300 dark:border-slate-700 py-4">
+              {[
+                [stats.engagements, 'talks & trainings'],
+                [stats.workshops, 'hands-on workshops'],
+                [stats.stages, 'stages'],
+              ].map(([n, label]) => (
+                <div key={label} className="flex items-baseline gap-2">
+                  <span className="font-serif text-2xl font-extrabold text-charcoal-50 dark:text-parchment-100">
+                    {String(n).padStart(2, '0')}
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 flex flex-wrap items-center gap-x-7 gap-y-3">
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500">
+                As seen at
+              </span>
+              {stageLogos.map((logo) => (
+                <img
+                  key={logo.name}
+                  src={logo.src}
+                  alt={logo.name}
+                  className={`h-5 w-auto opacity-60 ${logo.className}`}
+                />
+              ))}
+              <span className="font-mono text-xs uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400 opacity-80">
+                DevSecCon
+              </span>
+            </div>
 
             <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr] items-start mt-10">
               {/* Reel slot. TODO: swap in the 60–90s sizzle reel once cut
@@ -199,11 +255,20 @@ export default function Speaking() {
                   >
                     Request the speaker one-sheet <span>→</span>
                   </TrackedLink>
-                  <div className="flex items-center justify-between mt-4 pt-3.5 border-t border-parchment-300 dark:border-slate-700 font-mono text-xs text-parchment-600 dark:text-slate-400">
-                    <span className="uppercase tracking-wider">Speaking fees</span>
-                    {/* TODO: replace with a from-price once set, to match the
-                        workshop page's transparency. */}
-                    <span className="text-charcoal-50 dark:text-parchment-100 font-semibold">On request</span>
+                  {/* Two fee postures on purpose: conference talks are pipeline
+                      marketing (sometimes cheap or free); private/corporate
+                      keynotes filter for budget the way the workshop page's
+                      $15k from-price does.
+                      TODO: publish the corporate from-price once Zack sets it. */}
+                  <div className="mt-4 pt-3.5 border-t border-parchment-300 dark:border-slate-700 font-mono text-xs text-parchment-600 dark:text-slate-400 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="uppercase tracking-wider">Conference talks</span>
+                      <span className="text-charcoal-50 dark:text-parchment-100 font-semibold">Let&rsquo;s talk</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="uppercase tracking-wider">Private &amp; corporate</span>
+                      <span className="text-charcoal-50 dark:text-parchment-100 font-semibold">On request</span>
+                    </div>
                   </div>
                   <TrackedLink
                     href="/contact"
