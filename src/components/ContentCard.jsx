@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { ClientSideIcon } from './ClientSideIcon'
+import { formatDate } from '@/lib/formatDate'
 
 const wakka = 'https://zackproser.b-cdn.net/images/wakka.webp'
 
@@ -132,12 +133,7 @@ export function ContentCard({ article }) {
   }
   
   // Format the date using the proper utility to avoid timezone issues
-  const formattedDate = date ? new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'UTC'
-  }) : '';
+  const formattedDate = date ? formatDate(date) : '';
 
   // Handle image object or string with improved fallback
   let imageSource; 

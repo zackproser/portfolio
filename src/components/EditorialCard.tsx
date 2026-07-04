@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Route } from 'next'
 import type { Content } from '@/types/content'
+import { formatDate } from '@/lib/formatDate'
 
 const fallbackImage = 'https://zackproser.b-cdn.net/images/wakka.webp'
 
@@ -48,11 +49,7 @@ export function EditorialCard({ article, index, kind }: EditorialCardProps) {
   const idx = String(index).padStart(2, '0')
 
   const formattedDate = date
-    ? new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        timeZone: 'UTC',
-      })
+    ? formatDate(date, { day: undefined, month: 'short', year: 'numeric' })
     : ''
 
   const isExternal = href.startsWith('http')
