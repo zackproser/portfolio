@@ -15,18 +15,33 @@ const extractYoutubeId = (url) => {
   }
 }
 
+// Pull a start time from t= / start= URL params (supports bare seconds and 1h2m3s forms)
+const extractStartSeconds = (url) => {
+  try {
+    const match = url.match(/[?&](?:t|start)=([0-9hms]+)/)
+    if (!match) return null
+    const value = match[1]
+    if (/^\d+$/.test(value)) return Number(value)
+    const parts = value.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/)
+    if (!parts) return null
+    return (Number(parts[1] || 0) * 3600) + (Number(parts[2] || 0) * 60) + Number(parts[3] || 0)
+  } catch {
+    return null
+  }
+}
+
 // Function to create the embed URL with appropriate parameters
-const getEmbedUrl = (videoId) => {
-  return `https://www.youtube.com/embed/${videoId}?rel=0&showinfo=0`
+const getEmbedUrl = (videoId, start) => {
+  return `https://www.youtube.com/embed/${videoId}?rel=0&showinfo=0${start ? `&start=${start}` : ''}`
 }
 
 // Single video component with loading state
-const YouTubeVideo = ({ url, title }) => {
+const YouTubeVideo = ({ url, title, start = null }) => {
   const videoId = extractYoutubeId(url)
-  
+
   if (!videoId) return <div className="text-red-500">Invalid YouTube URL</div>
-  
-  const embedUrl = getEmbedUrl(videoId)
+
+  const embedUrl = getEmbedUrl(videoId, start ?? extractStartSeconds(url))
   
   return (
     <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden mb-3 border border-gray-200 shadow-sm">
@@ -43,9 +58,9 @@ const YouTubeVideo = ({ url, title }) => {
 }
 
 // Multiple videos or single video wrapper
-const YoutubeEmbed = ({ urls, title }) => {
+const YoutubeEmbed = ({ urls, title, start = null }) => {
   if (!urls) return null
-  
+
   // If urls is an array, render multiple videos
   if (Array.isArray(urls)) {
     return (
@@ -58,11 +73,11 @@ const YoutubeEmbed = ({ urls, title }) => {
       </div>
     )
   }
-  
+
   // If urls is a single string, render a single video
   return (
     <Suspense fallback={<VideoSkeleton />}>
-      <YouTubeVideo url={urls} title={title} />
+      <YouTubeVideo url={urls} title={title} start={start} />
     </Suspense>
   )
 }

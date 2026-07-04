@@ -229,14 +229,18 @@ export default function Speaking() {
 
             <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr] items-start mt-10">
               {/* Reel slot. TODO: swap in the 60–90s sizzle reel once cut
-                  (DevSecCon 2025 keynote + AIE London footage). Until then the
-                  full keynote holds the slot — real footage, no dead UI. */}
+                  (DevSecCon 2025 keynote + AIE London footage). Until then,
+                  Zack's Applied AI Showcase segment holds the slot — recent,
+                  him on stage, cued to his segment. */}
               <div>
                 <div className="editorial-rule-label text-parchment-600 dark:text-slate-400 mb-3">
-                  Watch · DevSecCon 2025 keynote
+                  Watch · Applied AI Showcase segment
                 </div>
                 <div className="rounded-md overflow-hidden border border-parchment-300 dark:border-slate-700 shadow-lg">
-                  <YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote" />
+                  <YoutubeEmbed
+                    urls="https://www.youtube.com/watch?v=V2PuEAeNXUU&t=3765s"
+                    title="Applied AI Showcase — Zack Proser's segment"
+                  />
                 </div>
               </div>
 
@@ -256,10 +260,11 @@ export default function Speaking() {
                     Request the speaker one-sheet <span>→</span>
                   </TrackedLink>
                   {/* Two fee postures on purpose: conference talks are pipeline
-                      marketing (sometimes cheap or free); private/corporate
-                      keynotes filter for budget the way the workshop page's
-                      $15k from-price does.
-                      TODO: publish the corporate from-price once Zack sets it. */}
+                      marketing (sometimes cheap or free); the corporate
+                      from-price filters for budget the way the workshop page's
+                      $15k does, and sits below it so the workshop reads as the
+                      obvious upgrade. Number is tunable — Zack delegated the
+                      initial call. */}
                   <div className="mt-4 pt-3.5 border-t border-parchment-300 dark:border-slate-700 font-mono text-xs text-parchment-600 dark:text-slate-400 space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="uppercase tracking-wider">Conference talks</span>
@@ -267,7 +272,7 @@ export default function Speaking() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="uppercase tracking-wider">Private &amp; corporate</span>
-                      <span className="text-charcoal-50 dark:text-parchment-100 font-semibold">On request</span>
+                      <span className="text-charcoal-50 dark:text-parchment-100 font-semibold">From $7,500</span>
                     </div>
                   </div>
                   <TrackedLink
