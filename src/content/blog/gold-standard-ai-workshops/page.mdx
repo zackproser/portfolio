@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { SlidevEmbed } from '@/components/SlidevEmbed'
 import GitHubRepoCard from '@/components/GitHubRepoCard'
 import ReadNextCard from '@/components/ReadNextCard'
 import { createMetadata } from '@/utils/createMetadata'
@@ -25,9 +26,7 @@ For [Lifestyles of the AI-Native](/blog/lifestyles-of-the-ai-native), the hour o
 
 **The deck.** Hand-built HTML with its own animation engine and commissioned pixel art, deployed to the edge, so every attendee follows along on their phone from a QR code.
 
-<Image src="https://zackproser.b-cdn.net/images/aie-sf-2026-deck-cover.jpg" alt="The deck's cover slide: Lifestyles of the AI-Native — voice-coding, agent skills, hooks, scheduled tasks. Stop typing. Start operating." width={1200} height={675} />
-
-<span className="text-xs text-zinc-400 dark:text-zinc-500">The cover slide as the room saw it — commissioned pixel art, live QR to the board.</span>
+<SlidevEmbed src="https://aie-deck.workos-internal.workers.dev" title="Lifestyles of the AI-Native — AI Engineer World's Fair 2026" />
 
 **The live board.** A real-time app that renders the room's check-in data: where the toil is, what to automate, hours per week reclaimed.
 
