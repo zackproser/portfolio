@@ -161,7 +161,7 @@ export default function Speaking() {
   const stats = {
     engagements: speakingEngagements.length,
     workshops: speakingEngagements.filter((e) =>
-      /workshop/i.test(`${e.title} ${e.description || ''}`)
+      /workshop/i.test(e.title) || /\b(a|an|the|\d+[\s-]hour|hands-on|live)\s+workshop/i.test(e.description || '')
     ).length,
     stages: new Set(
       speakingEngagements.filter((e) => e.type === 'public').map((e) => e.event)
