@@ -1,0 +1,116 @@
+import Image from 'next/image'
+import Link from 'next/link'
+import { SlidevEmbed } from '@/components/SlidevEmbed'
+import GitHubRepoCard from '@/components/GitHubRepoCard'
+import ReadNextCard from '@/components/ReadNextCard'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# What Makes an AI Workshop the Gold Standard
+
+<Image src="https://zackproser.b-cdn.net/images/aie-sf-2026-aie-letters.jpg" alt="Zack Proser and Nick Nisi posing behind the giant AIE letters on the red carpet at the AI Engineer World's Fair, sponsor wall behind them" width={1200} height={900} />
+
+At the AI Engineer World's Fair in San Francisco this week, swyx — who founded and runs the AI Engineer conferences — told Nick Nisi and me that our workshops are the gold standard for AI Engineer content. He asked for our help raising the bar across the event, so other presenters can deliver workshops that land the same way.
+
+That comment made me sit down and articulate what we actually do differently. It comes down to five principles, and none of them are secrets. They're just work.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-sf-2026-workos-booth.jpg" alt="Filming an interview at the WorkOS booth at the AI Engineer World's Fair, with studio lighting and the Infrastructure for Auth backdrop" width={1200} height={900} />
+
+<span className="text-xs text-zinc-400 dark:text-zinc-500">The WorkOS booth at Moscone West — the workshop was one piece of a bigger presence.</span>
+
+## 1. A workshop is a product, not a talk
+
+For [Lifestyles of the AI-Native](/blog/lifestyles-of-the-ai-native), the hour on stage was the tip of a stack of shipped software.
+
+**The deck.** Hand-built HTML with its own animation engine and commissioned pixel art, deployed to the edge, so every attendee follows along on their phone from a QR code.
+
+<SlidevEmbed src="https://aie-deck.workos-internal.workers.dev" title="Lifestyles of the AI-Native — AI Engineer World's Fair 2026" />
+
+**The live board.** A real-time app that renders the room's check-in data: where the toil is, what to automate, hours per week reclaimed.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-sf-2026-live-board.jpg" alt="The live board UI: where the room walked in, the migration from manual to automated, and the top hooks and scheduled tasks" width={1200} height={675} />
+
+<span className="text-xs text-zinc-400 dark:text-zinc-500">The board itself — this is what the projector showed as check-ins arrived.</span>
+
+**The glossary.** Every term we use, behind a chat interface that answers questions during and after the session. Every question it gets logged is a signal about where the room is struggling.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-sf-2026-glossary.png" alt="The AI-Native glossary app: searchable definitions with cross-links and a floating ask-anything chat" width={1200} height={873} />
+
+**The coach.** A local MCP server in the repo that interviews attendees, scores how AI-native their setup is from a local scan, and feeds the board. Opt-in, anonymous, and plain about privacy: only confirmed answers and score numbers ever leave the machine.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-sf-2026-coach.jpg" alt="Pixel art of the workshop coach interviewing a developer, with an AI-Native score gauge rising from before to after" width={1200} height={670} />
+
+**The playground.** Pre-built exercises with failing checks, so every activity has a concrete, verifiable finish line.
+
+A talk asks the audience to trust you. A product lets them verify everything themselves — during the session and for months after.
+
+<GitHubRepoCard repo="workos/aie-ai-native-workshop" fallbackTitle="aie-ai-native-workshop" fallbackDescription="The full workshop stack: deck, curriculum, playground exercises, live board, coach MCP server, and glossary. All open source." />
+
+## 2. The room does the work
+
+Our rule: every concept earns at most a few minutes of slides before the room has to do it. The deck alternates between short teaching beats and "now you try it" dividers, and every activity slide contains the exact words to say or type:
+
+> "Set up Handy for me."
+>
+> `/goal bun playground/loops/check.ts passes`
+>
+> "Fan this diff out to Codex for an adversarial review, then fix everything it finds."
+
+No paraphrasing required, no "you'll figure out the syntax later." Attendees speak or paste the prompt and it works, because we tested every one against the repo they cloned. Activities get explicit time caps — voice setup gets five minutes, and we walk the room while it happens.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-sf-2026-stage-crowd.jpg" alt="Zack Proser and Nick Nisi in front of the full workshop room at the AI Engineer World's Fair, rows of attendees at laptops behind them" width={1200} height={900} />
+
+<span className="text-xs text-zinc-400 dark:text-zinc-500">The room at Moscone West, minutes before kickoff.</span>
+
+The failure mode this prevents is the one everybody has sat through: ninety minutes of capability slides, then "try it at home." Nobody tries it at home. The workshop is the only hour you'll ever get where a hundred motivated people will actually run your instructions — spend it on their keyboards, and their microphones.
+
+## 3. Show the room its own data
+
+The strongest moment in our AI Engineer World's Fair session wasn't anything Nick or I said. It was the projector.
+
+At the open, attendees ran a check-in and the live board lit up with the room's collective toil, clustered by theme: everyone drowning in the same five recurring time-sinks. At the close, they checked in again — and the room watched its own dots migrate from "manual" to "automated," while a counter totaled the engineering hours per week the room had just reclaimed, next to each person's AI-native score, before and after.
+
+Claims persuade people who already agree with you. Their own number, computed from their own answers, on a screen in front of their peers — that lands differently. Design the finale so the data does the closing argument.
+
+## 4. Everything survives the hour
+
+The test of a workshop is what still exists the following Monday. We design the artifacts first and the hour around them. Attendees left San Francisco with:
+
+- Voice coding installed and working on their machine
+- A repo wired with hooks and verification gates
+- A scheduled task that runs without them — the proof arrives in their inbox
+- The glossary, still answering questions
+- Their before-and-after score on the board
+
+The scheduled task is the one I care most about. It converts the workshop's ideas into running automation on the attendee's own infrastructure before they leave the room. They don't have to remember what we taught; a cron expression remembers for them.
+
+## 5. Onboarding is curriculum
+
+Every workshop bleeds its first fifteen minutes on environment setup — unless you treat setup as part of the material. Ours is one sentence: clone the repo, open Claude Code, and say **"set me up for the workshop."** A skill in the repo installs and verifies every tool, wires the coach, and prints a status report.
+
+That's a bit recursive, and deliberately so: the first thing attendees experience is an agent doing toil they'd otherwise do by hand — which is the entire thesis of the workshop, delivered in minute one, by the setup step itself.
+
+## The receipts
+
+The format keeps proving itself across venues and formats:
+
+- **[Lifestyles of the AI-Native](/blog/lifestyles-of-the-ai-native)** — AI Engineer World's Fair 2026, San Francisco. Voice, loops, gates, schedules, live board.
+- **[Skills at Scale](/speaking/aie-london-skills-at-scale)** — AI Engineering London, with Nick Nisi. Eighty minutes on Claude Code skills across workflows, agents, and teams.
+- **[Claude Cowork Workshop with Anthropic](/blog/claude-cowork-workshop-anthropic)** — 800 registrations for 150 seats at the WorkOS office, with Anthropic's Claude Code team joining for Q&A.
+
+## Bring one to your org
+
+Nick and I build and deliver these end-to-end: curriculum, exercises, live infrastructure, and the follow-through materials your team keeps. If your engineering org needs to get from "we have Copilot licenses" to operating fleets of agents with verification gates and scheduled automation, [get in touch](/contact).
+
+And if you're a workshop presenter who wants to raise your own bar: the entire AI Engineer World's Fair stack is open source. Study it, fork it, steal the patterns. That's what it's for.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/aie-sf-2026-lifestyles-hero.jpg"
+  imageAlt="Lifestyles of the AI-Native workshop at the AI Engineer World's Fair 2026"
+  eyebrow="Read this next"
+  title="Lifestyles of the AI-Native"
+  description="The full write-up of our AI Engineer World's Fair 2026 workshop: voice coding, agentic loops, verification gates, and scheduled tasks."
+  href="/blog/lifestyles-of-the-ai-native"
+/>
