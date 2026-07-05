@@ -1,0 +1,15 @@
+{
+  "title": "Multi-Model Review as a Discipline",
+  "author": "Zachary Proser",
+  "date": "2026-07-05",
+  "description": "I use one model to check another when a miss would cost me. The useful parts are boring: cold context, a hostile brief, a fixed rubric, a gate on stakes, and a human on disagreement. Here is the reusable pattern underneath my code-review and blog-review loops.",
+  "image": "https://zackproser.b-cdn.net/images/multi-model-review-discipline-hero.jpg",
+  "tags": [
+    "AI",
+    "Agents",
+    "Developer Tools",
+    "AI Engineering",
+    "Code Review",
+    "Multi-agent"
+  ]
+}

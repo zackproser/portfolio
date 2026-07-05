@@ -1,0 +1,173 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import Mermaid from '@/components/Mermaid'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# Multi-Model Review as a Discipline
+
+<Image src="https://zackproser.b-cdn.net/images/multi-model-review-discipline-hero.jpg" alt="Pixel art of an amber author robot handing its work to a panel of two differently-colored reviewer robots from different model families, each reading independently with a red pen and an identical checklist, a majority-vote tally board above them" width={1408} height={792} />
+
+I have two systems that do the same thing in different domains. One [makes a GPT-class model attack every diff Claude writes](/blog/codex-reviews-claudes-diffs) before the diff reaches me. The other [makes two cold readers grade every blog draft](/blog/how-my-blog-bot-reviews-its-own-writing) before I read a word of it. People treat these as two clever hacks. They are the same one pattern, and the pattern has a name I'd give it if I were teaching it: multi-model review.
+
+The implementation details live in those two posts. Here I am pulling out the reusable pattern: why one model reviewing another works at all, when it is worth what it costs, how to wire it so it stays honest, and how it fails. If you're going to put a second model in front of a first one's output, these are the parts that decide whether it earns its place or just adds latency.
+
+## The one reason it works: agreement bias
+
+<Image src="https://zackproser.b-cdn.net/images/multi-model-review-discipline-agreement-bias.jpg" alt="Pixel art of a robot grading its own test in a mirror, both it and its reflection nodding and wearing the same blindfold over the same eye, a red error on the page neither can see" width={1408} height={792} />
+
+Ask a model to review the thing it just produced and you get a confident pass. Not because it's lying. Because review and authorship are running in the same context, with the same assumptions loaded, and the reasoning that produced the mistake still feels correct on the second read. You're asking the author to proofread their own sentence, and the author reads what they meant, not what they typed.
+
+Call this agreement bias, and it has three parts worth separating, because a good multi-model setup is aimed at all three at once.
+
+**Shared blind spots.** Every model has a fingerprint of characteristic mistakes: the edge case it tends to skip, the footgun it doesn't know about, the class of bug it's statistically prone to. When the same model reviews, it brings the exact same blind spots to the read. It can't see the mistake for the same reason it made it.
+
+**Context contamination.** A reviewer that saw the authoring prompt inherits the author's premises. If the task said "assume this input is validated upstream," the author trusts that and so does any reviewer sharing that context. A reviewer that only sees the output asks the question the premise suppressed: where's the validation?
+
+**Self-sycophancy.** In my own loops, a model reviewing its own work is consistently softer than a cold cross-model read. Hand a model its own work and ask "any problems?" and the prior is approval. Hand a *different* model the same work cold, with instructions to find problems, and the prior flips to suspicion. You want the suspicious prior.
+
+The fix for all three is the same move: change *who* reviews and *what they can see*. That's the whole discipline. Everything below is how to do that move well.
+
+## The four properties that make a review honest
+
+A second model in the loop does nothing on its own. I've seen setups that add a "reviewer" call and change nothing: same model, same prompt transcript still in context, one vague instruction to "check this," then a cheerful approve. That is rubber-stamping in a more expensive way. Four properties are what separate a review that catches things from theater.
+
+<Mermaid chart={`
+flowchart TD
+  O["author model output"] --> R["reviewer"]
+  R --> P1["1. different model family<br/>(breaks shared blind spots)"]
+  R --> P2["2. cold context<br/>(output only, not the prompt)"]
+  R --> P3["3. adversarial brief<br/>(find the flaw, don't praise)"]
+  R --> P4["4. fixed rubric + structured verdict<br/>(can't talk its way to a pass)"]
+  P1 --> V["a verdict worth acting on"]
+  P2 --> V
+  P3 --> V
+  P4 --> V
+`} />
+
+**Different model family.** The author is Claude; the reviewer is a GPT-class model, or the reverse. Different labs' models tend to fail differently enough to be useful. Where they agree is stronger signal; where they split is where I want a human looking. Same-family or same-model review still catches obvious errors, but I do not trust it for the misses that made me want a second read in the first place.
+
+**Cold context.** The reviewer gets the artifact and nothing else. Not the drafting transcript, not the chain of thought, not the author's defense of why it's right. Cold does not mean ignorant: give it the artifact and the public contract it has to satisfy, just not the author's reasoning. Starve it of the story that produced the thing, and it reads what is on the page instead of what was intended.
+
+**Adversarial brief.** The instruction is "assume the author is wrong; find the bug, the hole, the irreversible step; do not praise this." A neutral "review this" gets you politeness. A hostile brief gets you findings. The [brief I use for diffs](/blog/codex-reviews-claudes-diffs) is four sentences and it's the most reusable part of the whole setup.
+
+**Fixed rubric and structured verdict.** The reviewer scores the same dimensions in the same order every time, and returns a verdict against a schema: an enum plus line- or section-anchored findings, not a paragraph of prose. Structure is what lets you *wire* the verdict to something: a `block` that fails a CI gate, a score below the bar that triggers another pass. A schema makes the dodge visible: a block has to name a concrete failure mode, and an approve records exactly what was checked. It is a much harder thing to wave through than a request for prose.
+
+The contract is small and worth pasting once, because the exact fields are what the pipeline keys off:
+
+```json
+{
+  "verdict": "approve | comment | block",
+  "completeRead": true,
+  "findings": [
+    { "severity": "blocker | major | minor",
+      "location": "path:line or section",
+      "failureMode": "how it breaks, who it hurts, when",
+      "fix": "the concrete change" }
+  ]
+}
+```
+
+The `completeRead` flag is the one people forget, and it's what closes the verdict-laundering hole below: if the reviewer couldn't see the whole artifact, it sets that false, and the gate treats the run as a comment no matter what verdict it returned.
+
+Get those four right and a single reviewer already earns its keep. The next question is whether one reviewer is enough.
+
+## Majority vote: when one reviewer isn't enough
+
+<Image src="https://zackproser.b-cdn.net/images/multi-model-review-discipline-majority-vote.jpg" alt="Pixel art of three differently-colored reviewer robots holding verdict paddles over one document — two green APPROVE, one red BLOCK — with a central tally box resolving the split by majority" width={1408} height={792} />
+
+One cold reviewer flips the prior from approval to suspicion. But one reviewer is still one opinion, and a suspicious model produces false positives. It flags things that are fine. If you gate hard on a single reviewer's `block`, its false positives become your bottleneck. Two ways out, and they're different tools.
+
+The first is a **panel with a vote.** Run an odd number of reviewers, ideally from different families, and take the majority verdict. Three reviewers, block only if two agree. You are accepting the tradeoff that one correct lone block can get outvoted, so do not use a vote where a single plausible safety finding must stop the line. The useful part is the threshold: one weird block is noise, two independent blocks are worth stopping for. It trades model cost for a lower false-positive rate, and it only works if the reviewers' errors are not tightly correlated (more on that below). A single model's idiosyncratic flag gets outvoted; a real bug two independent readers both catch survives. Use it where a false block is expensive, because a human has to stop and adjudicate every one, and the extra model calls are cheap next to that interruption.
+
+The second, which I lean on more, is **disagreement as a flashlight.** Don't average the verdicts into a number. Route the split to a human. When two reviewers agree, trust it: an agreed approve passes this gate, an agreed block stops. When they *disagree*, that's the one spot worth a person's judgment, so surface exactly that finding and let the human rule. This is cheaper than a full panel (two reviewers, not three or five) and it spends the scarcest resource, human attention, only on the genuinely ambiguous line instead of the whole artifact.
+
+<Mermaid chart={`
+flowchart TD
+  A["artifact"] --> R1["reviewer A (family 1)"]
+  A --> R2["reviewer B (family 2)"]
+  R1 --> C{"agree?"}
+  R2 --> C
+  C -->|"both approve"| SHIP["passes this gate"]
+  C -->|"both block"| STOP["stops, author must fix"]
+  C -->|"they split"| H["route this finding to a human"]
+`} />
+
+The mental model: a vote is for when you want to *remove* the human from the loop and trust the ensemble. A flashlight is for when you want to *aim* the human at the one place they're needed. Most of the time I want the flashlight, because [my attention is the bottleneck, not the models](/blog/the-autonomy-boundary), and averaging verdicts throws away the most useful thing a disagreement tells me: here is the line neither model is sure about.
+
+## When it's worth the cost, and when it isn't
+
+Every review pass costs latency and money and a false-positive budget. Multi-model review is not free and shouldn't run on everything. The discipline includes knowing when *not* to invoke it.
+
+<Image src="https://zackproser.b-cdn.net/images/multi-model-review-discipline-gate.jpg" alt="Pixel art of a decision gate: a trivial work item sails through an open lane while a heavy high-stakes item marked with a lock and a money symbol is diverted to a two-robot review station" width={1408} height={792} />
+
+Gate on stakes, not on volume. The question for each artifact is: what does a missed error cost, and can I take it back? That maps onto a simple rule I use everywhere.
+
+- **High stakes, irreversible, or outbound → always review.** Auth changes, migrations, anything touching money, anything that leaves the building (an email to a client, a deploy to prod, a published post). A missed error here is expensive and often one-way. Pay for the second read every time.
+- **Low stakes and reversible → skip it.** A typo fix, a README tweak, a formatting change. The review would cost more attention than the error it might catch. Let it through.
+- **In between → cheap heuristics decide.** Lines changed, paths touched, a risk glob for the dangerous directories: `auth/**`, `billing/**`, `migrations/**`, deploy config, customer-facing copy. The [diff hook gates on exactly this](/blog/codex-reviews-claudes-diffs): trivial and cold passes straight through, hot paths always wake the reviewer.
+
+<Mermaid chart={`
+flowchart TD
+  A["artifact a model produced"] --> Q1{"high stakes, outbound,<br/>or irreversible?"}
+  Q1 -->|yes| REV["always review"]
+  Q1 -->|no| Q2{"trivial and reversible?"}
+  Q2 -->|yes| SKIP["skip: review costs<br/>more than the miss"]
+  Q2 -->|"in between"| H["cheap heuristics:<br/>LOC, paths, risk glob"]
+  H -->|"hot"| REV
+  H -->|"cold"| SKIP
+`} />
+
+The gate matters for more than cost. A reviewer that runs on everything, including the trivial, generates a stream of low-value findings, and a reviewer you learn to ignore is worse than no reviewer. Scarcity is what keeps the verdict meaningful. When my diff hook blocks, I read it, because it only fires on changes where a careful read was worth wanting anyway.
+
+## The failure modes
+
+<Image src="https://zackproser.b-cdn.net/images/multi-model-review-discipline-failure-modes.jpg" alt="Pixel art of two broken reviewers: one asleep stamping APPROVE on everything, one crying wolf with a red BLOCK on a clean page beside a pile of ignored alerts" width={1408} height={792} />
+
+The pattern breaks in specific, predictable ways. Knowing them is most of what separates a review loop that works from one that lulls you.
+
+**The rubber stamp.** The reviewer is not really cold, or not really a different family, or the brief is not really adversarial — and it agrees with everything. This is the default failure, and it's dangerous because it *looks* like review. You added a step, you feel safer, and nothing is being caught. The tell is a reviewer whose approve rate sits near 100%. The first version of my diff reviewer did this — I had pointed it at the same model that wrote the code, and it waved through a change that moved an auth check below the handler because, warm, it still believed the code was fine. A reviewer that never blocks is not reviewing.
+
+**The wolf-crier.** The opposite. The brief is so hostile the reviewer blocks everything, half of it noise, and you learn to click past the findings. Now a real block is buried in false ones. The fix is to demand a *concrete failure mode* for every block (how it breaks, who it hurts, when), and downgrade everything softer to a comment. "This could be cleaner" is never a block.
+
+**Correlated reviewers.** You think you have two independent reads, but both saw the same prompt transcript, both got the same leading examples, or both were asked the same vague question, so their errors correlate. A vote across correlated reviewers isn't the ensemble you think it is; it's one opinion wearing two hats. Independence is the whole value. Different families, cold context, and separate calls are what buy it.
+
+**Verdict laundering.** The review produces a clean-looking structured verdict that the pipeline trusts blindly, but the reviewer never saw the whole artifact — a file got truncated for size, a payload got dropped — and "approve" now means "approve of the half I saw." Fail closed on the `completeRead` flag from the schema above: if the reviewer could not see everything, the gate downgrades the run to a comment no matter what it returned. A partial read is never a pass.
+
+**Reviewing the diff, not the decision.** The deepest limit, and it's not a bug. A reviewer grades the artifact in front of it: is this code correct, is this draft honest, is this shape valid. It has no opinion on whether you should have built the feature at all, or whether the architecture is sound, or whether the post is worth writing. The cross-model loop protects the *execution*. It cannot protect the *decision*. That judgment stays yours, always.
+
+## The shape, independent of domain
+
+Strip the domain away and the discipline is four moves and two rules.
+
+The moves: take an artifact, hand it to a model from a different family, cold, with an adversarial brief and a fixed rubric, and wire its structured verdict to something that can stop the pipeline. The rules: gate on stakes so the reviewer stays scarce and worth reading, and treat disagreement as a flashlight, not a vote to average, so the human lands on the one line that needs them.
+
+It works for diffs. It works for prose. It works for any artifact a model produces and a human would otherwise have to check by hand: a generated SQL query before it runs, a config change before it deploys, a summary before it goes to a customer, an extraction before it's trusted downstream. The artifact changes; the review contract does not. The author is the worst possible judge of its own work — for the same reason a person is — and a cold reader from a different lineage, briefed to be hostile and held to a fixed bar, is the cheapest good judge you can put in the loop.
+
+If you copy nothing else, copy this line into the top of the hook or workflow file:
+
+> Different model family. Cold context. Hostile brief. Structured verdict. Gate on stakes. Human on disagreement.
+
+And do not start with a panel. Start with one cold reviewer on one high-stakes path, and add reviewers only when a real false-positive or false-negative rate tells you to.
+
+The two posts below are this pattern made concrete — one for code, one for prose. Read whichever is closer to your problem.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/codex-reviews-claudes-diffs-hero.jpg"
+  imageAlt="Pixel art of two robots at facing desks: an amber Claude robot slides a glowing diff to a cyan Codex robot holding a red pen, circling a missed line"
+  eyebrow="Read this next — for code"
+  title="I Make Codex Review Every Diff Claude Writes"
+  description="The discipline above, wired into a Claude Code Stop hook: the adversarial brief, the fixed rubric, the fail-closed gate, and the bugs a cold cross-model reviewer catches."
+  href="/blog/codex-reviews-claudes-diffs"
+/>
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/blog-bot-self-review-hero.jpg"
+  imageAlt="Pixel art of a writer-robot holding up its own manuscript to two floating critic masks scanning it like a grading machine"
+  eyebrow="Read this next — for prose"
+  title="How My Blog Bot Reviews Its Own Writing Before I Read It"
+  description="The same pattern applied to writing: two cold readers from different labs score every draft against a fixed rubric and block it before I waste time polishing something weak."
+  href="/blog/how-my-blog-bot-reviews-its-own-writing"
+/>
