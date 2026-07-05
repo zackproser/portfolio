@@ -1,0 +1,206 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import Mermaid from '@/components/Mermaid'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# Agent Fleet Operations: The Day-30 Reality
+
+<Image src="https://zackproser.b-cdn.net/images/agent-fleet-operations-day-30-hero.jpg" alt="Pixel art of a worn agent fleet on day 30: one bot flashes a red error, one leaks glowing coins, one stands frozen with a question mark, while a tired founder studies a wall of monitoring gauges" width={1408} height={792} />
+
+By day 30, one of my bots had been dead for three days and every dashboard I trusted was still green. It had not crashed. It had simply stopped getting the work, and nothing about it looked wrong. I found out by accident, when a human asked why a batch of leads from earlier that week had never been triaged.
+
+I already wrote the post about [building the fleet](/blog/the-agent-fleet): single-purpose bots, one job each, an orchestrator in front, the whole thing driven from Slack. That post is the architecture. This one is what happens after the demo works and you have to keep it alive for a month.
+
+The first week made me overconfident. Standing up a new bot is a good afternoon: you describe the job, wire the tools, watch the first task run clean in a Slack thread, and feel like you bought yourself a free win. Then week two arrives. The bill is bigger than you modeled. A bot you were sure was running hasn't done anything in three days and never said so. Another one dies on every single request starting at 9am for a reason that has nothing to do with the model. None of these are exotic. They're the standard tax on running software that talks to other software, and an agent fleet is still software.
+
+By day 30 I had five boring problems: spend was climbing on its own, one bot had gone quiet, the prompts had moved under me, one contract break killed every request at once, and I still did not have the dashboard I should have built first. Here is each one, and the observability that turns the quiet ones loud.
+
+## The failure classes are boring, which is the point
+
+Before the specifics, the shape. When I sat down and listed everything that had gone wrong across the fleet in its first month, none of it was "the AI did something spooky." It was missed triggers, fat contexts, drifting contracts, bad boundaries, and dashboards measuring the wrong thing.
+
+<Mermaid chart={`
+flowchart TD
+  F["Fleet failure, week 2+"] --> C["Cost creep<br/>(slow, silent, no crash)"]
+  F --> S["Silent failure<br/>(no error, no work)"]
+  F --> D["Model + prompt drift<br/>(output shifts under you)"]
+  F --> X["Schema break<br/>(every request dies at once)"]
+  F --> B["Blast radius<br/>(one bot's mistake spreads)"]
+  C --> M["What all of them share:<br/>you don't find out from the bot"]
+  S --> M
+  D --> M
+  X --> M
+  B --> M
+`} />
+
+The thing every box has in common is the last one: the bot doesn't tell you. A crash is a gift, because a crash is loud. The failures that hurt are the quiet ones, where the bot is happily reporting nothing while the work rots. Everything below is a variation on that theme, and the monitoring section at the end exists entirely to make the quiet failures loud.
+
+## Cost creep is the tax you don't notice paying
+
+<Image src="https://zackproser.b-cdn.net/images/agent-fleet-operations-day-30-cost-creep.jpg" alt="Pixel art of a worker robot doing the same small task while a pile of glowing coins grows into a mound beside it and a wall chart creeps steadily upward" width={1408} height={792} />
+
+Per-request, every bot is cheap. That's the trap. A single Slack triage call costs a fraction of a cent, so no individual action ever feels like it's worth watching. The cost doesn't arrive as a spike you can point at. It arrives as a slope.
+
+A few things push the slope up quietly. Context grows: a bot that summarizes a thread pulls in more history as the thread gets longer, so the same "cheap" call gets more expensive every day the conversation lives. Retries stack: a flaky downstream turns one call into three, and you pay for all three. Chattier prompts sneak in: I add one more instruction to a system prompt to fix an edge case, and now every call the bot ever makes carries that extra weight. None of these trip an alarm because none of them is wrong. They're all individually reasonable, and they compound.
+
+The number that caught me was [Zack: real detail — the actual monthly token/cost figure and which bot was the worst offender, e.g. "Inbox's spend roughly tripled between week one and week four, from about $X to about $Y, almost entirely from context growth"]. I'd modeled the fleet on the cost of a clean single call. I hadn't modeled a month of context accretion across ten bots all running many times a day.
+
+The fix is unglamorous: attribute cost per bot, per day, and look at the slope, not the total. A flat total hides a bot that's climbing while another one goes quiet. I now tag every model call with the bot name and the task type so I can see which specialist is getting more expensive and ask why. Usually the answer is "its context got fat" and the fix is trimming what I feed it, not switching models. The point isn't the specific dollar figure. It's that a fleet's cost is a set of independent slopes, and you have to watch them as slopes.
+
+## Silent failure: the bot that's fine and doing nothing
+
+<Image src="https://zackproser.b-cdn.net/images/agent-fleet-operations-day-30-silent-failure.jpg" alt="Pixel art of a robot standing content with a calm green status light while the conveyor belt behind it sits empty, a trigger pipe hanging disconnected" width={1408} height={792} />
+
+This is the failure that taught me the most, because there was nothing to see. A bot that crashes shows up in your logs and your gut. A bot that simply stops receiving work looks identical to a bot that had a quiet day. Both did nothing. Only one of them was supposed to.
+
+The version that got me was a trigger-path problem. The bots reach me and each other over [Vercel Connect](/blog/reviewing-vercels-eve-agent-framework), and the event that was supposed to wake a bot [Zack: real detail — describe the exact Vercel Connect trigger-path gotcha: what changed or misfired so events silently stopped arriving (a reconnect that didn't re-subscribe? a filter that dropped the event type? a deploy that rotated something?), and how long it ran dead before you noticed]. From the bot's side, everything was healthy. The process was up, the routes answered, the last deploy was green. It just never got told there was work to do. It sat there with a calm green light being perfectly useless.
+
+The trap is that "healthy" and "working" are different questions, and most health checks answer the wrong one.
+
+<Mermaid chart={`
+flowchart LR
+  E["upstream event"] -->|delivered?| T["trigger path"]
+  T -->|"arrives"| B["bot wakes, does work"]
+  T -.->|"silently dropped"| N["nothing happens"]
+  B --> H["health check: UP ✅"]
+  N --> H2["health check: UP ✅"]
+  H2 -->|"looks identical"| Q["you never find out"]
+`} />
+
+The two paths converge on the same green checkmark. A process-up health check passes in both branches, because the process *is* up. The only way to tell the working bot from the dead one is to stop asking "are you running?" and start asking "when did you last actually succeed?" A bot that hasn't completed its real job inside its expected window is failing, even if every light is green. That's the check I didn't have on day one and the one I lean on hardest now: last-success-time per bot, with an alert when it goes stale.
+
+## Drift: the output moves while you're not looking
+
+<Image src="https://zackproser.b-cdn.net/images/agent-fleet-operations-day-30-drift.jpg" alt="Pixel art of a robot whose structured output grows messier across faded copies of itself over time, pulled from one side by a provider symbol and the other by a human hand holding a prompt sheet" width={1408} height={792} />
+
+The fleet is built on Claude Opus through the Vercel AI Gateway, and the model is the one part of the system I don't own. That is fine, until it is not. Two things move over a month. The provider moves the model, and I move the prompt.
+
+When the provider moves the model, an update lands under a name I did not change. A prompt that produced tidy structured output last week starts adding a friendly preamble, or reorders fields, or gets slightly more verbose, and a downstream step that parsed the old shape starts choking. Nothing in my code changed. The ground moved.
+
+The prompt drift is on me. I patch a bot's system prompt to handle an edge case, and the patch has side effects I didn't test for on the common case. Three of those over a month and a bot's behavior has wandered somewhere I never decided to send it. Each individual edit was reasonable. The sum is a bot that behaves differently than the one I thought I was running.
+
+The defense against both is the same, and it's the subject of its own post: I don't trust a single model's output to be stable or correct on its own. I [make a second model from a different lab review the first one's work](/blog/codex-reviews-claudes-diffs) on anything that matters, and my [blog bot grades its own drafts with two cold readers before I ever see them](/blog/how-my-blog-bot-reviews-its-own-writing). Cross-checking catches drift the same way it catches bugs: the reviewer notices when the output stopped matching the contract, even when the writer thinks it did fine. Where the gateway lets me pin a specific model version instead of a moving alias, I pin it [Zack: real detail — confirm whether you pin an exact Opus version through the AI Gateway or ride a moving alias]. Pinning only delays the reckoning: eventually I upgrade on purpose, and the review layer is what tells me the upgrade changed something I cared about.
+
+## The schema break: every request dies at once
+
+<Image src="https://zackproser.b-cdn.net/images/agent-fleet-operations-day-30-schema-break.jpg" alt="Pixel art of a robot fallen over mid-request with a jagged mismatched schema puzzle piece jammed in its intake slot, a red failed-requests tally glowing above it" width={1408} height={792} />
+
+This is the one that's current, because it happened [Zack: real detail — when; "this week" / "today" / the actual date]. Not a slow slope, not a quiet nothing. A bot that was working fine started failing on *every* request, all at once, cleanly, from a specific moment.
+
+The cause was a schema mismatch [Zack: real detail — the exact shape that changed: which bot, which payload/field, what the producer started sending vs. what the consumer expected. e.g. "an upstream field went from a string to an object" / "a required key was renamed" / "a nullable field started arriving null and the parser assumed non-null"]. One side of a typed boundary changed its shape, the other side kept expecting the old one, and every message that crossed that boundary bounced. Because the fleet uses typed contracts between bots — the [`outputSchema` on every remote-agent call](/blog/the-agent-fleet) — the mismatch failed loudly and immediately instead of silently corrupting data. That's the good news. The bad news is that "loudly and immediately" still means the bot is down until you fix it.
+
+The contract that rejected it is a few lines of Zod on the consuming side. When the producer changed the shape, this is what threw instead of letting a malformed lead through:
+
+```ts
+// consumer still expects lead.v3; producer regressed to an older shape
+const Lead = z.object({
+  id: z.string(),
+  source: z.string(),
+  // the field that moved: contact used to be a nested object.
+  // the producer started sending a bare email string instead.
+  contact: z.object({ email: z.string().email(), name: z.string() }),
+})
+
+// eve validates every remote-agent result against outputSchema.
+// A shape it can't parse is a thrown error, not a silent pass.
+const lead = Lead.parse(result) // ❌ ZodError the moment the shape drifts
+```
+
+Schema breaks in a fleet are the *good* failure. A schema break is a crash, and a crash is honest. The typed boundary did exactly its job — it refused to pass a message it couldn't validate rather than passing garbage downstream and letting a bot act on it. Given the choice between a bot that dies on a bad shape and a bot that cheerfully sends a client an email built from a malformed payload, I'll take the one that dies every time.
+
+<Mermaid chart={`
+sequenceDiagram
+  participant P as Producer bot
+  participant C as Consumer bot
+  Note over P,C: typed contract (outputSchema) between them
+  P->>C: payload (old shape) ✅ validates
+  Note over P: producer changes the shape
+  P->>C: payload (new shape) ❌ fails validation
+  C-->>P: validation error, result rejected
+  Note over C: dies loudly instead of acting on bad data
+`} />
+
+Adding more validation would have missed the point — the validation worked exactly as designed. A fleet has a lot of typed boundaries, each one a place where a change on one side breaks the other, and when a bot dies on every request the *first* place I look now is a boundary, not the model. I burned real time [Zack: real detail — how long, roughly] suspecting the model before I checked the shape, because "the AI is being weird" is a more exciting hypothesis than "someone renamed a field." It's almost never the exciting hypothesis.
+
+## Blast radius: the reason one bad bot doesn't take the business down
+
+Every one of the failures above is survivable because of a decision I made at build time and only fully appreciated at run time: least privilege, per bot. Each specialist holds only its own connectors and its own secrets. Inbox has mail tools. Margin has calendar tools. Neither can reach into the other, and neither holds anything that would let it wreck a domain it doesn't own.
+
+That containment is what turns a fleet incident from a catastrophe into an annoyance. When the schema-break bot went down, it went down alone. It didn't take the orchestrator with it, it didn't corrupt another bot's data, and it couldn't — it has no reach past its own boundary. The same is true for cost: a bot whose spend runs away runs it away inside one domain, on one scoped key, where I can see it and cap it. And the same is true for the scariest class, a bot that gets fed a malicious instruction: the bot that reads untrusted email is not the bot that holds the send button, so the worst a poisoned input can do is produce a draft I have to approve.
+
+This is the operational payoff of a boundary you drew for security reasons. I wrote the whole rule down in [The Autonomy Boundary](/blog/the-autonomy-boundary): anything reversible runs unattended, anything outbound or irreversible stops for a human. On day one that reads like a safety principle. By day 30 it reads like an uptime principle, because the same gate that stops a bot from emailing your list a mistake also stops a *broken* bot from doing it at scale while you're asleep.
+
+## The monitoring I wish I'd built on day one
+
+<Image src="https://zackproser.b-cdn.net/images/agent-fleet-operations-day-30-monitoring.jpg" alt="Pixel art control room where a founder watches a wall of per-bot gauges — heartbeat, cost, last-success-time, error rate — with a single alert routing to the phone in his hand" width={1408} height={792} />
+
+The embarrassing part: most of these were visibility failures. I had bots. I did not have a fleet dashboard. I built observability the way most people build tests, after the first thing broke. Here is the short list I would wire in from the start next time, one bot at a time.
+
+**Last-success-time.** The single most valuable signal. Stop asking whether the process answers pings; ask when the bot last did the job. A bot that is up but has not succeeded inside its expected window is the silent failure, and this is the check that catches it.
+
+**Cost attributed per bot, per day.** Tag every model call with the bot and task type. Watch the slope of each bot, not the sum of all of them. The sum hides the climber.
+
+**Error rate with a floor, over a window.** The alert I use is five straight failures, or more than half of the last ten runs failing inside fifteen minutes. A single flaky retry stays quiet; a bot that starts failing every request at 9am pages me on the fifth one. That is the schema-break detector.
+
+**The heartbeat that means "did work," not "am alive."** Emit a real success event on task completion and alert on its absence. Absence of success is the signal; presence of a process is noise.
+
+The instrumentation under all four is one durable run record per task, created the moment a bot is *triggered* and updated when it *finishes*. Two writes, not one. Recording receipt separately from completion is what lets me tell "never started" apart from "started and hung." The trigger-path failure is the one case that writes nothing at all — a bot that never gets the event cannot record getting it — so I catch that one from the outside. A scheduled check expects each bot to have at least one record inside its normal cadence, and alerts when the window comes up empty.
+
+```json
+// written at trigger (task_received)
+{ "bot": "inbox", "task_type": "triage_lead", "run_id": "r_9f2a...",
+  "received_at": "2026-07-05T14:02:10Z", "status": "received" }
+
+// same run_id, updated at completion (task_completed)
+{ "bot": "inbox", "task_type": "triage_lead", "run_id": "r_9f2a...",
+  "received_at": "2026-07-05T14:02:10Z",
+  "completed_at": "2026-07-05T14:02:19Z",
+  "status": "success",
+  "tokens_in": 8421, "tokens_out": 512, "cost_usd": 0.031,
+  "schema_version": "lead.v3", "error_class": null }
+```
+
+Last-success-time is the newest `completed_at` where `status === "success"`, per bot. Cost creep is the daily sum of `cost_usd` grouped by `bot` and `task_type` — the slope, not the total. The schema-break alert watches `error_class` and the `error_rate` derived from it. And `schema_version` on every record answers "did every failure start the moment the contract changed?" in one query instead of an afternoon of log-tailing.
+
+The two writes are what localize a stale bot instead of just flagging it. No run record at all in the window means the trigger path is dead. The bot never got the work. A record stuck at `received` with no `completed_at` means it got the work and hung, crashed, or timed out mid-run. A `completed` record with a `status` of failure means it ran and hit a handled error — a schema break, a downstream 500, a bad tool call. Three completely different debugging paths, and silence alone can't tell them apart, which is exactly why I stopped relying on silence.
+
+The staleness rule is per bot, not global. Inbox should succeed at least once every few business hours; a scheduled research run should succeed once per its interval. The alert I actually use is "no success in 2× this bot's normal gap" — long enough to ignore a slow morning, short enough to catch a bot that quietly stopped getting work [Zack: real detail — the real thresholds you set, if they differ per bot].
+
+<Mermaid chart={`
+flowchart LR
+  subgraph fleet["each bot emits"]
+    A["last-success-time"]
+    B["cost + task tag"]
+    C["error rate"]
+    D["real success heartbeat"]
+  end
+  A --> W["one wall I look at"]
+  B --> W
+  C --> W
+  D --> W
+  W -->|"threshold crossed"| P["one alert to my phone"]
+`} />
+
+The design goal is one place I look and one alert that reaches me, because [my attention is the scarce resource, not the agents](/blog/attention-is-the-bottleneck). A monitoring setup that pages me for everything is as useless as one that pages me for nothing; both burn the budget I'm trying to protect. The whole point of the fleet is to spend my attention only where it counts, and observability is how I make sure the fleet spends it on the two failures that are actually happening instead of the ten that aren't.
+
+## What a month taught me
+
+I still run the fleet every day, and it does real work. The mistake is treating the launch as proof that the system is operated. The demo proves the architecture is possible. The month proves whether you can keep it alive, and keeping it alive is a different skill: it's cost attribution, staleness detection, cross-model review, typed boundaries that fail loud, blast-radius containment, and one honest dashboard.
+
+The reassuring part is that none of those are new skills. They're the same things you'd do to keep any distributed system healthy. The unit changed from a service to an agent, but the operational discipline didn't. If you've run production software before, you already know how to run a fleet. You just have to remember that the demo lied to you about how easy it would be, the same way every demo does.
+
+When I run an AI-transformation workshop, the day-30 material is the part teams remember, because it is the part nobody demos. The autonomy-boundary table and the four monitoring signals above are usually where we start. If your team is past the demo and about to operate agents for real, [reach out](https://zackproser.com/services).
+
+Build the fleet. Then build the boring parts that keep it standing on day 30, because day 30 is coming whether you built them or not.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/the-autonomy-boundary-hero.jpg"
+  imageAlt="Pixel art of a robot pausing at a glowing gate, waiting for a human hand to approve before an irreversible action"
+  eyebrow="Read this next"
+  title="The Autonomy Boundary"
+  description="The one rule that turns a fleet incident from a catastrophe into an annoyance: anything reversible runs unattended, anything outbound stops for a human — enforced in code, not willpower."
+  href="/blog/the-autonomy-boundary"
+/>
