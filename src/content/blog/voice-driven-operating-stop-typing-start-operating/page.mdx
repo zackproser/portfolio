@@ -1,0 +1,97 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import Mermaid from '@/components/Mermaid'
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+export const campaign = 'voice-driven-operating-stop-typing-start-operating'
+
+# Voice-Driven Operating: Stop Typing, Start Operating
+
+<Image src="https://zackproser.b-cdn.net/images/voice-driven-operating-hero.jpg" alt="Pixel art of a founder leaning back from a dim keyboard, speaking a sentence into a glowing mic that streams across the room as light to a fleet of worker robots springing into action" width={1408} height={792} />
+
+*Disclosure: this post recommends WisprFlow, a voice-dictation tool I use and pay for. Those are affiliate links — if you sign up through one I may earn a commission, at no cost to you. I only recommend tools I actually run, and this one I use every working day.*
+
+"Stop typing, start operating" was the [tagline of the workshop Nick Nisi and I taught at the AI Engineer World's Fair](/blog/lifestyles-of-the-ai-native), and it's the shortest description of how I actually work now. Most people hear it as a line about voice coding: dictate instead of type, save some wrist strain. That's the small version. The real version is about what the keyboard *is* once you have a [fleet of agents that can already do the work](/blog/the-agent-fleet): a slow, narrow straw between the thing in your head and the ten machines standing ready to act on it.
+
+When your output was your own typing, faster typing was a nice-to-have. When your output is a fleet, the keyboard becomes the bottleneck. So you route around it.
+
+## The typist and the operator
+
+Here's the frame from the workshop. Most engineers using AI tools today nurse one session along: type a prompt, watch it work, nudge it, type again. Hands on keys the whole time, attention pinned to one agent. That's the typist. The operator does something different: describes intent out loud, hands a whole job to an agent, and moves to the next one while the first runs.
+
+<Image src="https://zackproser.b-cdn.net/images/voice-driven-operating-typist-vs-operator.jpg" alt="Pixel art split: on the left a hunched figure typing one prompt to a single agent; on the right the same figure standing and speaking freely while five robots work in parallel" width={1408} height={792} />
+
+WisprFlow matters, but the bigger change is where I spend my hands and attention. A typist is rate-limited by how fast they can compose text with their fingers. If you type in the common 40 to 70 words-per-minute range, that rate also drops the moment you have to think. Conversational speech tends to run around 150 words a minute without effort. When I switched to dictation my throughput to the machine roughly tripled: WisprFlow clocked my working loop at [about 179 words per minute](/blog/wisprflow-review), because I am talking, not typing.
+
+Speed matters because of what it changes once the machine is a fleet. I care less about writing faster and more about *dispatching* faster. Voice is how one person keeps a fleet fed.
+
+## Voice-to-agent handoff, in practice
+
+The stack has two parts. The bottom layer is dictation: a voice tool that turns speech into text in whatever field has focus: a terminal, a Slack box, a prompt. I use <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> for this because it's the first dictation tool I've used that handles developer speech (variable names, jargon, the occasional "wrap that in a try-catch") without turning it into mush. The top layer is the agents: the [fleet that runs my business from Slack](/blog/the-agent-fleet), where a sentence dropped in the right channel routes the job to the agent that owns it: the blog channel opens a draft PR, the research bot returns sources, the repo bot opens a maintenance branch.
+
+Stack those two and the loop is: think it, say it, an agent runs it, it hands you back an artifact to approve.
+
+<Mermaid chart={`
+flowchart LR
+  T["thought"] -->|speak| D["dictation<br/>(voice → text)"]
+  D --> S["Slack / terminal / prompt"]
+  S -->|routes to| A["the right agent"]
+  A -->|does the work| R["a reviewable artifact<br/>(PR, draft, reply)"]
+  R -->|"speak: 'ship it' / 'fix X'"| A
+`} />
+
+A concrete pass through it [Zack: real detail — describe a real end-to-end voice loop you actually run, e.g. "I say a two-sentence spec into the Slack blog-bot channel while making coffee; it drafts the post, generates images, opens a PR; I skim it on my phone and say 'tighten the intro and ship'"]. The thing that makes this feel different from "voice coding" is that I'm rarely dictating the *work*. I'm dictating the *instruction*, and an agent does the work. My words are the API call, not the implementation.
+
+The practical rule: voice is a bad way to write a function and a great way to run a company of agents.
+
+## Where it breaks down
+
+I'd be lying if I said this is frictionless. Voice-driven operating has sharp edges, and pretending it doesn't is how people bounce off it in a day.
+
+<Image src="https://zackproser.b-cdn.net/images/voice-driven-operating-breakdown.jpg" alt="Pixel art of a person speaking while transcribed words hit a wall of jumbled symbols — a code bracket, a variable name, a URL — with a small keyboard pulled back in for the fiddly bits" width={1408} height={792} />
+
+**Precise tokens are miserable to dictate.** A variable name with unusual casing, a URL, a regex, an exact file path: anything where the *characters* matter and there is no natural-language version. Dictation guesses, guesses wrong, and you spend more time correcting than you saved. The first time you try to say a nested file path or an env var like NEXT_PUBLIC_SITE_URL out loud, you understand the limit immediately. The move is to not fight it: dictate the intent ("rename the handler to something clearer and update its callers") and let the agent produce the exact tokens, or drop back to the keyboard for the five characters that need to be exact. Voice for meaning, keys for precision.
+
+**It's socially awkward and environment-dependent.** You can't dictate in a quiet coffee shop, on a train, or in an open office without feeling like the person narrating their emails on speakerphone. Voice-driven operating assumes a room you can talk in. [Zack: real detail — how you handle this: a home office, headset, do you push-to-talk, what's your actual environment?]
+
+**The transcription tax is real when accuracy dips.** Every misheard word is a context switch. You were operating; now you are proofreading. The better the dictation engine, the smaller this tax, which is exactly why the quality of the bottom layer matters so much. Even a high-sounding accuracy number is a tax: at an illustrative 92%, you are touching roughly every twelfth word by hand. This is the difference between voice being a speedup and voice being a nuisance.
+
+**It rewards a fleet and punishes a blank page.** If you don't have agents standing by, dictating just gives you text faster, and text was never your bottleneck. Voice-driven operating pays off in proportion to how much real work is waiting on the other side of your instruction. On a day with no agents wired up, it's just a fast notepad.
+
+## The ergonomic and focus case
+
+<Image src="https://zackproser.b-cdn.net/images/voice-driven-operating-ergonomics.jpg" alt="Pixel art of a person standing and pacing while dictating to their computer, wrists relaxed, a faded ghost of the old hunched-over-keyboard posture behind them" width={1408} height={792} />
+
+There's a quieter reason I stuck with this past the novelty, and it's physical. Typing all day is a repetitive strain on wrists, hands, and posture. You are hunched, static, loaded in the same joints for hours. Dictating lets me stand, pace, look away from the screen, and keep working. [Zack: real detail — your own ergonomic story: did you have wrist/RSI issues, does dictation genuinely help, do you use a walking desk?] For anyone managing a hand or wrist injury, voice is access, not optimization: the difference between working and not.
+
+It also changes where my attention goes. Typing keeps your eyes and hands bound to the machine, which sounds like focus but is often the opposite. You fiddle, you tweak, you get pulled into the mechanics. Speaking an instruction and looking away forces you to actually finish the thought before you dispatch it. It moves your attention up a level, from *how do I type this* to *what do I actually want done*. And moving attention up a level is the entire game, because [your attention is the bottleneck, not your agents](/blog/attention-is-the-bottleneck). The whole point of a fleet is to spend your looking only where it counts, and voice keeps your looking off the keyboard and on the decisions.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+One honesty check before you buy anything: if you do not have a room where you can talk out loud, or your day is mostly editing exact tokens rather than dispatching work, dictation will not change your life. Voice pays off when you have jobs to hand off and a place to say them.
+
+## Should you switch
+
+Not everyone should, and the honest answer depends on one question: do you have real work waiting on the other side of your voice? If you're still typing prompts to a single chatbot and babysitting it, voice will make you a slightly faster typist and nothing more. Fix the fleet first. Build the agents that can take a whole job, put the [approval gate](/blog/the-autonomy-boundary) between them and anything irreversible, and *then* the keyboard reveals itself as the slow part.
+
+So the honest recommendation is segmented:
+
+- **No fleet yet:** don't start with voice. Read [The Agent Fleet](/blog/the-agent-fleet), build a minimal one (a bot that opens PRs, a bot that drafts or researches, a bot that posts status back), then come back.
+- **Fleet already running:** spend one week dictating only the dispatch layer, the instructions and not the code. Pick ten jobs you'd normally type into Slack or a prompt and say them instead; track whether the artifact comes back usable.
+- **Wrist or RSI pain:** trial voice as an accessibility layer first, not a productivity system. The bar is lower and the payoff is more immediate.
+
+Once you cross that line, the switch is small and the payoff compounds. Get a dictation tool good enough that you forget it is there (for developer speech, that is WisprFlow for me) and start saying the thing instead of typing it. Give it a week; the first two days feel clumsy and then the keyboard starts to feel weirdly heavy. You'll still touch it for the precise tokens. You just won't route your whole day through it anymore.
+
+Stop typing, start operating. The agents are already standing by.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/the-agent-fleet-hero-v2.jpg"
+  imageAlt="Pixel art of a fleet of single-purpose robots working under a meta-agent, all driven from a Slack channel"
+  eyebrow="Read this next"
+  title="The Agent Fleet That Runs My Business"
+  description="The fleet on the other side of the microphone: single-purpose bots driven from Slack, the meta-agent above them, and the approval gate that makes dictating whole jobs safe."
+  href="/blog/the-agent-fleet"
+/>
