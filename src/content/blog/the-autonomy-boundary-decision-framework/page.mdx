@@ -135,8 +135,10 @@ flowchart TD
   W -->|no| E{"earned notify<br/>and rollback fast?"}
   E -->|yes| NT["notify: act,<br/>then ping me"]
   E -->|no| S
-  Q2 -->|yes| U["run unattended"]
+  Q2 -->|yes| GR{"graduated to<br/>unattended config?"}
   Q2 -->|no| S
+  GR -->|yes| U["run unattended"]
+  GR -->|no| S
 `} />
 
 ## Apply it to your own agents
