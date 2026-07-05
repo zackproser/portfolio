@@ -1,0 +1,166 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import Mermaid from '@/components/Mermaid'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# The Autonomy Boundary: A Decision Framework
+
+<Image src="https://zackproser.b-cdn.net/images/autonomy-boundary-framework-hero.jpg" alt="Pixel art of a wall-mounted 2x2 decision grid glowing in a control room: a green run-unattended quadrant full of busy robots, a yellow supervised quadrant, and two red human-gate quadrants where a hand hovers over a lever, axes labeled reversible-to-irreversible and small-to-large blast radius" width={1408} height={792} />
+
+The first time you hand an agent a real token, the question changes. You stop asking whether it can do the work and start asking what it is allowed to break while you are asleep. I answered that once by [drawing one rule across three of my bots](/blog/the-autonomy-boundary): anything reversible runs unattended, anything irreversible or outbound stops for a human. That post is the story of the line. This one is the framework behind it, generalized so you can run it on your own agents without borrowing my three specific answers.
+
+For inbox triage, draft generation, branch prep, and other narrow chores, the agent can usually do the work. The part that keeps you up is which of its side effects you let happen without you in the room. "It feels risky" is not a procedure you can apply the same way twice at 3am. You need something you can run in one second, on an action you have never seen before, and get the same answer every time.
+
+## Score every action on two axes
+
+Don't classify agents. Classify *actions*. The same bot might draft a reply (safe) and send it (not), and lumping the whole bot into one trust bucket is how you end up either babysitting a drafting loop or letting a send loop run wild. The unit of the decision is one action, and every action gets scored on two axes.
+
+<Image src="https://zackproser.b-cdn.net/images/autonomy-boundary-framework-two-axes.jpg" alt="Pixel art of an action being weighed on a balance scale: one pan a clock icon labeled 'can I undo it?', the other a blast-radius ring spreading from 'just me' out to 'a stranger, production, the public'" width={1408} height={792} />
+
+**Axis one: reversibility.** Can you restore the system to its prior state in about a minute, on a rollback path you have actually tested? A draft in a folder is reversible; you delete it. A commit on a private branch is reversible; you drop the branch. A sent email, a merged deploy, a deleted row with no backup, a charged card: not reversible. Note the trap here. Some actions are *mechanically* reversible and *practically* not. You can email a retraction after a bot sends a stranger something wrong under your name, but the impression already landed. Anything that spends trust or reputation counts as irreversible no matter what the API claims.
+
+**Axis two: blast radius.** If this action is wrong, how far does the damage travel? A bad draft that only you see has a blast radius of one: you. A wrong reply sent to a customer reaches a person. A bad merge reaches production and everyone who touches it. A mass email reaches your whole list at once. Blast radius is the axis most people skip, and it's the one that separates "annoying" from "career-ending." Two irreversible actions are not equally dangerous if one hurts only you and the other hurts ten thousand strangers.
+
+Reversibility asks *can I take it back*. Blast radius asks *how bad is it if I can't*. You need both, because they fail independently: a technically reversible action with a huge blast radius (a bulk label change in a shared queue you can roll back, but that confused ten people for an hour first) can be worse than an irreversible one that only touches you (spending a small nonrefundable personal API credit).
+
+## The 2×2 that places the gate
+
+Put the two axes on a grid and the decision falls out of the quadrant an action lands in. Reversibility runs across the top, blast radius down the side:
+
+| | **Reversible** | **Irreversible** |
+| --- | --- | --- |
+| **Small blast radius** (just me) | **Run unattended** (draft a reply, commit to a branch, provision a scratch VM) | **Supervise** (small but permanent: rotate a personal secret without recording it, spend a nonrefundable personal credit) |
+| **Large blast radius** (a person, prod, the public) | **Notify** (a bulk label change in a shared queue with an audit log and one-click rollback) | **NEVER unattended** (send to a stranger, merge + deploy, delete a prod row with no backup) |
+
+The rule the grid encodes:
+
+- **Reversible + small (top-left) → run unattended.** Mistakes here are free and private. Point all the autonomy you have at this corner. Drafting, branching, provisioning a scratch VM, generating an image nobody has seen: let it rip, every few minutes, forever.
+- **Irreversible + large (bottom-right) → hard human gate, sometimes never.** The send, the merge, the deploy, the destructive migration. A person approves every one, and the worst of them are not granted at all.
+- **The two middle cells → the lighter gears, and only when the rollback is real.** *Reversible but wide* (bottom-left) can drop to notify: the agent acts and immediately pings you, but only once rollback is genuinely fast and the blast is bounded. *Irreversible but small* (top-right) stays at supervise: a person approves, because you cannot take it back even though it only touches you. When in doubt, a middle cell stays supervised.
+
+The hard part is not drawing the grid. It is refusing to lie to yourself when an action lands near a boundary. Take one agent through it: inbox triage. Reading a message is reversible and small, so it runs unattended. Applying a label in my own mailbox, same. Applying a label in a shared support queue is reversible but wide, so it notifies until it has a clean run. Sending the reply is irreversible and outbound, so it stops at the gate. One agent, four actions, four different gears, all from one grid.
+
+## Three gears, not two
+
+The original rule was binary: unattended or human gate. In practice there's a useful middle, and naming it stops you from over-gating the safe-ish and under-gating the risky.
+
+<Image src="https://zackproser.b-cdn.net/images/autonomy-boundary-framework-ladder.jpg" alt="Pixel art of a three-rung ladder of trust: supervised at the bottom, notify in the middle, unattended at the top, with a hard ceiling marked 'never' above, a robot climbing as a verified-success meter fills" width={1408} height={792} />
+
+- **Unattended.** The agent acts silently and you find out only if you go looking. Reserved for the reversible-and-small quadrant. This is where you want as much of the work as possible to live.
+- **Notify.** The agent acts *and* pings you the instant it does, so an unattended action still has a human tail. Good for actions you've decided to trust but want to watch — a graduated label change in a shared queue that pings you every time it fires. The action is not gated, but it is never invisible.
+- **Supervise (approve-per-action).** The agent proposes; nothing happens until you approve. This is the human gate for anything irreversible, and for wide actions until they have earned notify. The trick that makes it bearable is that the proposal is a *finished artifact*, a complete draft or a ready-to-merge PR, so approving is a one-second read, not a co-authoring session.
+
+And above all three, a fourth state that isn't a gear at all:
+
+- **Never.** Some actions an agent may not take under any configuration, because the worst case is unacceptable regardless of how confident it is. These are not gated. The capability was never granted. Charging a card, a mass send, a `DROP TABLE`: the agent does not have the key.
+
+The move that makes this practical: a capability *graduates* between gears as it earns trust. A new category starts at supervise. After it's produced enough correct proposals that you have approved verbatim (not "after a tweak," verbatim), you let it drop to notify or unattended. Concretely: twenty inbox drafts in a row approved verbatim over at least a week, zero edits and zero reversions, can move a category from supervise to notify; one hallucinated promise to a customer sends it straight back to supervise. Trust is earned per capability, on evidence, and revoked the instant the evidence turns.
+
+<Mermaid chart={`
+stateDiagram-v2
+  [*] --> Supervise: new capability
+  Supervise --> Notify: enough verbatim approvals
+  Notify --> Unattended: sustained clean track record
+  Unattended --> Supervise: evidence turns (demote fast)
+  Notify --> Supervise: evidence turns
+  Supervise --> Never: worst case unacceptable
+  Never --> [*]: capability not granted
+`} />
+
+## The asleep test: the one-second tiebreaker
+
+When an action sits on a quadrant boundary and you're not sure, there's a single question that resolves it faster than any rubric.
+
+**Would I let this run while I'm asleep?**
+
+Not "is this technically reversible" in the abstract, but the version that catches your own self-deception: it is 3am, you're unconscious, the agent fires this action, and you find out in the morning. Do you sleep fine, or do you wake up in a cold sweat? If the honest answer is the cold sweat, it's a human gate, and you already knew the reversibility argument was you talking yourself into convenience. The asleep test cuts through the rationalization because it forces you to price the worst case at the moment you have the least control. I will sleep through a bot opening ten draft PRs. I will not sleep through it merging one. Everything you would genuinely let run overnight is unattended; everything else waits.
+
+## Enforce it in the system, not your willpower
+
+A framework you have to *remember* to apply is not a boundary. It's a hope, and hope fails exactly when you are busy, distracted, or wrong, which is precisely when the agent is still running. The gate has to live in code. Four primitives do the enforcing, and you can steal all of them.
+
+<Image src="https://zackproser.b-cdn.net/images/autonomy-boundary-framework-enforcement.jpg" alt="Pixel art of a robot stopped at a glowing approval gate with a human thumb over approve/deny, a big red master kill-switch on the wall, and staged permission keys on hooks — one granted, one still locked" width={1408} height={792} />
+
+**Staged permissions.** The strongest gate is one the agent physically cannot cross. If a bot only holds a read-and-draft scope and was never granted the send scope, it *cannot* send: the send scope was never granted, so "will not" never enters the picture. Grant the dangerous capability only the day you promote it, and for everything before that day the boundary is made of something harder than a flag: a permission you haven't given.
+
+**A hard disqualification list.** Some categories can never graduate, and that "never" has to be enforced ahead of any config the agent or a fat-fingered env var could flip. A check that runs *before* the trust setting is consulted:
+
+```typescript
+type Action = {
+  type: string
+  reversible: boolean
+  smallBlast: boolean
+  rollbackFast: boolean
+  scopeGranted: boolean
+}
+type Decision = "never" | "supervise" | "notify" | "unattended"
+
+// Actions that may NEVER run unattended, regardless of config.
+const DISQUALIFIED = new Set(["mass_send", "delete_no_backup", "charge_card"])
+// Capabilities that earned each gear (graduation ladders), from config.
+const UNATTENDED = toSet(process.env.UNATTENDED_ACTIONS)
+const NOTIFY = toSet(process.env.NOTIFY_ACTIONS)
+
+function decide(a: Action): Decision {
+  if (DISQUALIFIED.has(a.type)) return "never"          // hard block, checked first
+  if (!a.scopeGranted) return "supervise"               // default deny: no scope, no autonomy
+  if (!a.reversible) return "supervise"                 // irreversible: a person approves
+  if (!a.smallBlast) {
+    // reversible but wide: notify only once it earned it AND rollback is real
+    return a.rollbackFast && NOTIFY.has(a.type) ? "notify" : "supervise"
+  }
+  return UNATTENDED.has(a.type) ? "unattended" : "supervise" // reversible + small
+}
+```
+
+(`toSet` just splits and trims the comma-separated env var.) A config typo can promote an action into a graduated set. It cannot promote one past the hard-coded block (which returns `never` before config is ever read), and it cannot conjure a scope the agent was never granted. The dangerous actions sit behind three locks, and only one of them is a string you can edit by accident.
+
+**A kill switch.** One edit that reverts every graduated capability to supervised on the next tick. Emptying the config set is the whole mechanism, and it only works if each worker reads the set immediately before every side effect, not once at boot. The moment something smells wrong, you cut all autonomy without redeploying or reasoning about which bot to stop.
+
+**A reviewable artifact as the gate.** Where possible, make the human gate a thing that already exists and that a person naturally approves: a pull request, a draft in a thread. The agent [hands you a finished artifact instead of a chat reply](/blog/build-agents-that-open-prs), and the merge or the send *is* the gate. You're not inventing a checkpoint; you're using the most natural one there is.
+
+<Mermaid chart={`
+flowchart TD
+  A["agent wants to act"] --> D{"on the hard<br/>disqualified list?"}
+  D -->|yes| N["NEVER: capability<br/>never granted"]
+  D -->|no| R{"reversible?"}
+  R -->|no| B{"blast radius<br/>small (just me)?"}
+  B -->|no| G["hard human gate:<br/>approve the artifact"]
+  B -->|yes| S["supervise:<br/>a person approves"]
+  R -->|yes| W{"blast radius<br/>small (just me)?"}
+  W -->|yes| Q2{"would I let it<br/>run while asleep?"}
+  W -->|no| E{"earned notify<br/>and rollback fast?"}
+  E -->|yes| NT["notify: act,<br/>then ping me"]
+  E -->|no| S
+  Q2 -->|yes| U["run unattended"]
+  Q2 -->|no| S
+`} />
+
+## Apply it to your own agents
+
+Here's the procedure, start to finish, for an agent you're about to let off the leash.
+
+1. **List its actions, not its job.** Break the agent into the individual side effects it can produce: reads, writes, sends, merges, deletes, charges. The job is "triage my inbox"; the actions are "read a message," "apply a label," "write a draft," "send a reply." You gate actions.
+2. **Score each on both axes.** Reversible or not. Blast radius: just me, one person, a system, the public. Place it on the grid.
+3. **Read the quadrant.** Reversible-and-small can run unattended. Anything irreversible gets a gate. Anything wide gets at least notify, and stays supervised until rollback is real and the capability has earned it.
+4. **Apply the asleep test to the boundary cases.** The ones you're unsure about: would you sleep through it? That's the tiebreaker.
+5. **Enforce the gate in code.** Staged permission for the dangerous scope, a hard disqualification list for the never-actions, a kill switch, and a reviewable artifact as the human checkpoint.
+6. **Let capabilities graduate on evidence.** Start new actions at supervise. Promote to notify, then unattended, only after a track record you can point to. Demote the instant it breaks.
+
+Do this and you get the thing that makes the boundary worth having: it [stops throttling your agents and starts aiming them](/blog/attention-is-the-bottleneck). The whole reason to draw the line precisely is so you can turn the reversible half all the way up (drafting, branching, research, provisioning) while spending your scarce attention only on the handful of actions that could actually hurt. You are refusing to risk the irreversible to save ten seconds of clicking, and pouring every bit of freed autonomy into the half of the work where mistakes cost nothing.
+
+I keep the framework small: two axes, a grid, three gears, one tiebreaker, four enforcement primitives. Run it on your next agent before you grant it a single scope, and the gate places itself.
+
+If you are wiring agents into a real workflow, bring one agent, its current scopes, and the side effects it can produce; we leave with an action inventory, a filled-in 2x2 gate table, a disqualified list, and the code path that enforces it. That boundary review is the kind of thing I run in [AI transformation workshops](https://zackproser.com/services).
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/the-autonomy-boundary-hero.jpg"
+  imageAlt="Pixel art of a glowing boundary line splitting a control room: robots working unattended in green light on the left, a human hand poised over a red lever guarding an OUTBOUND door on the right"
+  eyebrow="Read this next"
+  title="The Autonomy Boundary"
+  description="The story behind the framework: how I drew this exact line across three real bots — an inbox classifier, a blog assistant, and Devin — and enforced it with staged OAuth scopes, a graduation ladder, and an agent that can't merge."
+  href="/blog/the-autonomy-boundary"
+/>
