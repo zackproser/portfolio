@@ -3,10 +3,10 @@ import { Calculator } from "@/components/calculator"
 
 export const metadata: Metadata = {
   title: "Project Cost Calculator | Next.js & AI Development",
-  description: "Calculate the cost of your custom Next.js and AI development project with our interactive pricing calculator.",
+  description: "Estimate the cost of your custom Next.js and AI development project with our interactive pricing calculator for RAG chatbots and Generative AI apps.",
   openGraph: {
     title: "Project Cost Calculator | Next.js & AI Development",
-    description: "Calculate the cost of your custom Next.js and AI development project with our interactive pricing calculator.",
+    description: "Estimate the cost of your custom Next.js and AI development project with our interactive pricing calculator for RAG chatbots and Generative AI apps.",
     images: [{ url: "/og-calculator.png" }],
   },
 }
