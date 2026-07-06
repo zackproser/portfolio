@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = createMetadata({
   title: 'AI-Assisted Developer Tools Compared',
-  description: 'Find and compare the best AI development tools for your next project',
+  description: 'Find and compare the best AI-assisted developer tools for your next project. Filter by capability, pricing, and use case to pick the right coding assistant.',
 });
 
 export default async function DevToolsPage() {
