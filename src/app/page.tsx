@@ -8,8 +8,8 @@ import { Metadata } from 'next'
 export const dynamic = 'force-dynamic'
 
 const baseMetadata = createMetadata({
-  title: 'Zachary Proser | Modern Coding — AI, RAG Pipelines & Developer Tools',
-  description: 'AI Engineering Mastery for Teams that Ship',
+  title: 'Zachary Proser — AI Engineer, RAG & Dev Tools',
+  description: 'Staff AI engineer Zachary Proser on building production AI: RAG pipelines, vector databases, LLM apps, and developer tools for teams that ship.',
 });
 
 export const metadata: Metadata = {
