@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   ...createMetadata({
     title: 'Build a Knowledge Base from Any Website | Firecrawl Demo',
     description:
-      'Interactive demo showing how to transform any website into a structured knowledge base using Firecrawl. See the complete pipeline: crawl → extract → categorize → searchable knowledge base.',
+      'Interactive demo showing how to transform any website into a structured knowledge base with Firecrawl — crawl, extract, categorize, and build a searchable index.',
     type: 'demo',
     slug: 'firecrawl-knowledge-base',
     author: 'Zachary Proser',
