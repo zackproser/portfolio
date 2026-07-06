@@ -9,7 +9,7 @@ import RagDemoClient from './RagDemoClient'
 export const metadata: Metadata = createMetadata({
   title: 'RAG Visualized | Interactive Retrieval-Augmented Generation Demo',
   description:
-    'Step through retrieval-augmented generation interactively. Learn why RAG reduces hallucinations, keeps costs in check, and helps engineers ship trustworthy copilots fast. Interactive visualization of embeddings, vector search, and LLM composition.',
+    'Step through retrieval-augmented generation interactively. See why RAG reduces hallucinations and cost, with embeddings, vector search, and LLM composition visualized.',
   type: 'demo',
   author: 'Zachary Proser',
   keywords: [
