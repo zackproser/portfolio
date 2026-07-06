@@ -3,7 +3,7 @@ import ProjectsClient from './projects-client'
 
 export const metadata = createMetadata({
   title: "Zachary Proser's projects",
-  description: "Searchable list of Zachary Proser's projects and contributions",
+  description: "A searchable list of Zachary Proser's projects and open-source contributions across AI, machine learning, infrastructure, developer tools, and web.",
   author: "Zachary Proser",
   type: "website",
 });
