@@ -17,7 +17,7 @@ import { getSubscriberCount } from '@/components/SubscriberCount'
 
 export const metadata: Metadata = createMetadata({
   title: "Zack Proser - Full-Stack AI Engineer | Enterprise AI Solutions",
-  description: "Staff-level Full-Stack AI Engineer with 13+ years experience building scalable systems and 3+ years specializing in AI/LLM solutions. From fine-tuning models to enterprise RAG systems.",
+  description: "Staff-level Full-Stack AI Engineer with 13+ years building scalable systems and 3+ years on AI/LLM solutions, from fine-tuning to enterprise RAG.",
   author: "Zachary Proser",
   keywords: [
     "Staff AI Engineer",
