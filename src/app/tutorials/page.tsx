@@ -10,7 +10,7 @@ import Link from 'next/link'
 // Base metadata using createMetadata
 const baseMetadata = createMetadata({
   title: 'Hands-On Project-Based Learning',
-  description: 'Master modern development through practical, hands-on projects and in-depth tutorials',
+  description: 'Master modern software and AI development through practical, hands-on projects and in-depth tutorials covering RAG pipelines, developer workflows, and more.',
 });
 
 // Export final metadata including metadataBase
