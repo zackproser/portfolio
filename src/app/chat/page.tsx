@@ -3,8 +3,8 @@ import ChatPageClient from './ChatPageClient'
 import { createMetadata } from '@/utils/createMetadata'
 
 export const metadata: Metadata = createMetadata({
-  title: 'Chat with my writing',
-  description: 'Chat with a custom RAG pipeline of my blog content using Pinecone, OpenAI, and LangChain.',
+  title: 'Chat With My Writing — RAG Q&A on My Blog',
+  description: 'Chat with a custom RAG pipeline built over my blog content using Pinecone, OpenAI, and LangChain. Ask questions and get grounded answers from my writing.',
 })
 
 export default async function ChatPage() {
