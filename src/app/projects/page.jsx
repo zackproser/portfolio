@@ -171,7 +171,7 @@ const projects = [
     company: "Personal"
   },
   {
-    name: 'Pinecone\\'s first AWS Reference Architecture',
+    name: 'Pinecone\'s first AWS Reference Architecture',
     description: 'The Pinecone AWS Reference Architecture is a production-ready distributed system that demonstrates Pinecone and AWS best practices at scale',
     link: 'https://github.com/pinecone-io/aws-reference-architecture-pulumi',
     logo: RefArch,
