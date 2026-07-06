@@ -3,7 +3,7 @@ import ProjectsClient from './projects-client'
 
 export const metadata = createMetadata({
   title: "Zachary Proser's projects",
-  description: "Searchable list of Zachary Proser's projects and contributions",
+  description: "A searchable list of Zachary Proser's projects and open-source contributions across AI, machine learning, infrastructure, developer tools, and web.",
   author: "Zachary Proser",
   type: "website",
 });
@@ -171,7 +171,7 @@ const projects = [
     company: "Personal"
   },
   {
-    name: 'Pinecone\'s first AWS Reference Architecture',
+    name: 'Pinecone\\'s first AWS Reference Architecture',
     description: 'The Pinecone AWS Reference Architecture is a production-ready distributed system that demonstrates Pinecone and AWS best practices at scale',
     link: 'https://github.com/pinecone-io/aws-reference-architecture-pulumi',
     logo: RefArch,
