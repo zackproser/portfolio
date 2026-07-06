@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   ...createMetadata({
     title: 'Web Scraping for AI Demo | Firecrawl in Action',
     description:
-      'Interactive demo showing how Firecrawl turns any website into clean, structured data for AI agents, RAG pipelines, and LLM applications. See the web crawling pipeline visualized.',
+      'Interactive demo showing how Firecrawl turns any website into clean, structured data for AI agents, RAG pipelines, and LLM applications, with the pipeline visualized.',
     type: 'demo',
     slug: 'firecrawl',
     author: 'Zachary Proser',

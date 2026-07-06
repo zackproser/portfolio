@@ -3,7 +3,7 @@ import PublicationsClient from './publications-client'
 
 export const metadata = createMetadata({
   title: "Zachary Proser's publications",
-  description: "Searchable list of Zachary Proser's publications",
+  description: "A searchable list of Zachary Proser's published articles and tutorials on AI, security, authentication, vector databases, and developer tooling across the web.",
   author: "Zachary Proser",
   type: "website",
 });

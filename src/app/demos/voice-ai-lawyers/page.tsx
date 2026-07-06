@@ -8,7 +8,7 @@ import LawyerDemoClient from './LawyerDemoClient'
 
 export const metadata: Metadata = {
   ...createMetadata({
-    title: 'Voice AI for Lawyers | Legal Dictation, Client Notes & Billing',
+    title: 'Voice AI for Lawyers | Dictation & Client Notes',
     description:
       'Interactive demo: see how attorneys use voice AI to dictate briefs and motions in minutes, capture client consultations automatically, and bill more hours per day.',
     type: 'demo',
