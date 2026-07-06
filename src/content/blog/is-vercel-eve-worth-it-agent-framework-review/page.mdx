@@ -6,13 +6,13 @@ import rawMetadata from './metadata.json'
 
 export const metadata = createMetadata(rawMetadata)
 
-# Is Vercel's eve Worth It? An Agent Framework Review
+# Vercel's eve agentic framework review. Is eve worth it?
 
 <Image src="https://zackproser.b-cdn.net/images/is-eve-worth-it-hero.jpg" alt="Pixel art of a developer at a fork in the road holding a signpost, weighing a clean pre-built agent factory against a workshop of hand-wired glue code, a glowing question mark overhead" width={1408} height={792} />
 
-I spent the last few weeks building a real business on Vercel's [eve](https://vercel.com/eve), [a fleet of agents that run my website](/blog/reviewing-vercels-eve-agent-framework), deployed, handing work to each other over authenticated POSTs and parking for my approval in Slack. That post is the long build story. This one answers the question people actually ask me after reading it: should I use eve, or something else?
+I spent the last few weeks building a real business on Vercel's [eve](https://vercel.com/eve): [a fleet of agents that run my website](/blog/reviewing-vercels-eve-agent-framework), deployed, handing work to each other over authenticated POSTs and parking for my approval in Slack. That post is the long build story. This one is the verdict people ask me for after reading it.
 
-Short version: if you already live on Vercel and want production agents without writing the Slack bridge, the durable-run store, the approval queue, and the cron glue yourself, yes. It's the fastest path I've found, and I'd reach for it again. If you don't, you may spend that week adopting Vercel's assumptions when what you needed was a portable TypeScript agent library, so it's worth knowing which case you're in. I'm making the call I wish someone had made for me before I spent a week learning eve's conventions.
+For me, the verdict is an emphatic yes, and I want to be clear that it's a *for me* — grounded in a specific journey, not a generic thumbs-up. I reached for eve because I had already built the hard version of this exact system somewhere else, watched it strain under its own growth, and learned the lesson it happens to be built around. So the honest way to answer "is eve worth it" is to tell you why I reached for it, what it fixed, and where its edges still cut.
 
 ## What eve is, in one paragraph
 
@@ -32,6 +32,14 @@ website-manager/
 ```
 
 The part that matters for a buying decision is what that bundling buys you. The plumbing every agent needs in production (durable sessions that survive crashes and deploys, sandboxed compute, human-in-the-loop approvals, channel connectors, cron) ships with the framework instead of being glue you write and maintain. Work that took days to scaffold takes minutes. That's the whole pitch, and mostly it's true.
+
+## Why I reached for it: the lesson from the last build
+
+Before the portfolio fleet, I built [the WorkOS blog bot](https://workos.com/blog/cloudflare-workers-workflows-ai-blog-bot): a Slack-native publishing system on Cloudflare Workers and Durable Workflows. It was a genuinely capable distributed system hiding behind a Slack message: a multi-model pipeline (Haiku to classify, Opus to draft), durable step functions with per-step retries and checkpointing, D1 for state, R2 for artifacts, seven external APIs, a proposal system that pitched its own posts. I'm proud of it. I also felt exactly where it started to hurt.
+
+Here's the lesson that build taught me, and it's the reason eve landed for me the way it did: **the more capable an agentic system becomes, the more ruthlessly you have to pursue organization and separation of concerns, or adding the next feature quietly regresses the last one.** Every new capability I bolted on shared more surface with the ones already there: the same router, the same state machine, the same tangle of connector code. Past a certain complexity, a change meant to add one behavior would degrade another one I'd already shipped, because the concerns weren't cleanly separated enough to change one without touching the rest. The plumbing and the judgment lived too close together.
+
+That's the failure mode eve is built to prevent, and it's why "is it worth it" isn't an abstract question for me. eve makes an agent a *directory* — one job, its own instructions, its own typed tools, its own scoped secrets — and it owns the shared substrate (durability, sandboxes, connectors, approvals, cron) so that substrate isn't duplicated and drifting across every bot. The organization I had to impose by hand and defend by discipline on the Cloudflare build is the framework's default. When I split the portfolio work into separate single-purpose bots on eve, adding a capability to one stopped being able to regress another, because they no longer shared anything but the framework underneath them. That's not a feature on a comparison chart. It's the specific pain from the last system that this one removed.
 
 ## What it nails
 
@@ -78,7 +86,7 @@ flowchart TD
   O -->|"no, need multi-cloud<br/>or self-host"| A["a portable framework<br/>(e.g. Mastra) or roll your own"]
 `} />
 
-If you already live in the Vercel and AI SDK world, eve's conventions will feel like home, the AI Gateway lets you route model calls without putting a provider key in every project, and you'll have a deployed agent the same day. The opinions are working *for* you. This is the clear "yes" lane, and it's the lane I'm in.
+If you already live in the Vercel and AI SDK world, eve's conventions will feel like home, the AI Gateway lets you route model calls without putting a provider key in every project, and you'll have a deployed agent the same day. The opinions are working *for* you. This is the clear "yes" lane, and it's the lane I'm in. It's also the lane where the separation-of-concerns payoff shows up: because each bot is its own directory on a shared substrate, the fleet keeps growing without the add-a-feature-break-a-feature tax that finally caught up with my hand-built system.
 
 If you don't, if you need to run multi-cloud, self-host, or stay portable across providers, then eve's Vercel-native assumptions cost you more than they help. Durable execution runs on Vercel Workflows, the sandbox on Vercel Sandbox, connectors on Vercel Connect. That tight integration is exactly what makes it good, and exactly what makes it a poor fit if leaving Vercel is a requirement. A more portable framework or a lower-level library you wire yourself will serve you better here, at the cost of writing the plumbing eve gives you for free. The name that comes up most in the same breath is [Mastra](https://mastra.ai): also TypeScript, also agents/tools/workflows, but not tied to one cloud. What you gain is the freedom to self-host or run multi-cloud; what you give up is exactly eve's advantage, the managed Vercel Connect / Sandbox / Workflows substrate you'd now assemble and operate yourself. If "we can never be locked to Vercel" is a hard requirement, that's your fork in the road. If it isn't, eve's tighter integration is the reason to pick it.
 
@@ -88,7 +96,7 @@ If you don't, if you need to run multi-cloud, self-host, or stay portable across
 
 ## Quick verdict by who you are
 
-- **Solo builder / small team already on Vercel:** Yes. This is the strongest case. You get production agents in a day and you spend your time on the bot's actual job instead of on plumbing. This is me.
+- **Solo builder / small team already on Vercel:** An emphatic yes, and the strongest case. You get production agents in a day, you spend your time on the bot's actual job instead of on plumbing, and the directory-per-bot structure keeps the system from regressing on itself as you add capabilities. This is me, and it's the lesson from my last build made into a default. Start with the build post below and copy the directory shape before you customize anything.
 - **Enterprise on Vercel wanting governance and observability:** Strong yes, with eyes open on the beta status. The enterprise controls and Agent Runs are there, but pin versions and pilot before you bet a critical workflow on it.
 - **Team that needs multi-cloud or self-hosting:** Not yet, maybe not ever, by design. Look at a portable framework (see the Mastra comparison above). eve is not trying to be that, and that's fine.
 - **Someone who wants to learn agent internals from the ground up:** No. eve's whole value is hiding the substrate. If your goal is to *understand* durable execution and connectors, build the hard way once first, then come to eve to stop doing it by hand. (I write up the hard-way lessons as I hit them; the [newsletter](/newsletter) is where those land.)
@@ -96,9 +104,9 @@ If you don't, if you need to run multi-cloud, self-host, or stay portable across
 
 ## Would I run my business on it?
 
-I already do. The fleet is running while I write this — bots handing work to each other over authenticated POSTs, parking for my approval in Slack, surviving deploys without dropping a task. Three months in, uptime has been solid, one dependency-drift incident required pinning the AI SDK (exactly the beta churn I warned about above), and I've since added two more bots to the fleet without touching the substrate. That, not any feature list, is the review that counts. The conventions are good enough that I stopped thinking about the framework and started thinking about the bots, which is what I want from infrastructure: boring enough that I stop naming it in my commits.
+I already do, and after everything in this build I'd make the same call again without hesitation. The fleet is running while I write this: bots handing work to each other over authenticated POSTs, parking for my approval in Slack, surviving deploys without dropping a task [Zack: real detail — how it's actually held up since the original review: uptime, any incidents, whether the beta churn bit again, whether you've added or removed bots]. That, not any feature list, is the review that counts. The conventions are good enough that I stopped thinking about the framework and started thinking about the bots, which is what I want from infrastructure: boring enough that I stop naming it in my commits.
 
-Is eve worth it? If you're on Vercel and you want real agents in production without building the substrate yourself: without hesitation. If you're not, it's a genuinely good framework asking you to adopt a platform, and whether that's worth it is a question about your infrastructure, not about eve.
+So, is eve worth it? For me it's an emphatic yes, and now you know exactly why: I built the capable-but-tangled version once, felt the separation-of-concerns tax first-hand, and eve is the framework that makes the clean version the default. If you're on Vercel and you want real agents in production without hand-building and then policing that substrate yourself, I'd reach for it again tomorrow. If you're not on Vercel, it's still a genuinely good framework, it's just asking you to adopt a platform, and that trade is a question about your infrastructure, not about eve.
 
 <ReadNextCard
   image="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-hero.jpg"
