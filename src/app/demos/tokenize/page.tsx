@@ -6,7 +6,7 @@ import TokenizeDemoLoader from './TokenizeDemoLoader'
 
 export const metadata: Metadata = createMetadata({
   title: "Interactive tokenization demo for developers",
-  description: 'Explore how language models break text into tokens. Visualize different tokenization methods and understand their impact on AI performance, context limits, and costs.',
+  description: 'Explore how language models break text into tokens. Visualize tokenization methods and see their impact on AI performance, context limits, and cost.',
   type: 'demo',
   author: 'Zachary',
 })
