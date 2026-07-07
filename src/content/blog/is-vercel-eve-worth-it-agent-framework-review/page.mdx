@@ -1,0 +1,123 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import Mermaid from '@/components/Mermaid'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# Vercel's eve agentic framework review. Is eve worth it?
+
+<Image src="https://zackproser.b-cdn.net/images/is-eve-worth-it-hero.jpg" alt="Pixel art of a developer at a fork in the road holding a signpost, weighing a clean pre-built agent factory against a workshop of hand-wired glue code, a glowing question mark overhead" width={1408} height={792} />
+
+For months my business has run on Vercel's [eve](https://vercel.com/eve). A [fleet of agents runs my website](/blog/reviewing-vercels-eve-agent-framework): deployed, handing work to each other over authenticated POSTs, and stopping to let me sign off in Slack. It started as three bots. It's nine now. I told the whole build story in that post; the question everyone asks me next is whether it was worth it.
+
+For how I work, yes. I picked eve because I had already built the equivalent system on Cloudflare, mirroring its infrastructure, and watched it grow the way well-used software does: feature after feature, until I owned too much of the internal plumbing and too many wrappers around services like Slack. eve solves exactly that, and it's the lesson that build taught me.
+
+## What eve is, in one paragraph
+
+<Image src="https://zackproser.b-cdn.net/images/is-eve-worth-it-directory-model.jpg" alt="Pixel art of an agent depicted as an open directory of labeled folders — instructions.md, tools, skills, channels, schedules — with a robot assembling itself from the files, on a foundation slab of durability, sandbox, approvals, and connectors" width={1408} height={792} />
+
+eve is Vercel's open-source way to turn a folder of agent files into a deployed Vercel app. It hands you the pieces you'd otherwise own and maintain yourself: durable runs, sandboxed compute, approvals, channels, tracing, and eval hooks. An agent is a *directory of files*. Instructions live in markdown. Each tool is a single TypeScript file, and the filename becomes the tool name, so you skip registration. Skills are markdown playbooks the agent pulls in on demand, and channels and schedules are files too. eve reads that directory and compiles it into an app that runs on Vercel Functions; [the docs](https://vercel.com/docs/eve) and the [source](https://github.com/vercel/eve) are both open. On stage Vercel called it "Next.js for agents," and the analogy holds up: convention over configuration. The layout fits in one look:
+
+```text
+website-manager/
+└── agent/
+    ├── instructions.md   # the always-on system prompt
+    ├── agent.ts          # model + runtime config (optional)
+    ├── tools/            # one typed tool per file (filename = tool name)
+    ├── skills/           # markdown procedures loaded on demand
+    ├── channels/         # Slack, HTTP, web, etc.
+    └── schedules/        # cron jobs as files
+```
+
+The point is the code I don't have to write. On my hand-rolled version I owned the retries, the checkpoints, the Slack delivery, the cron, the approvals, and the secrets. eve owns all of that now. Scaffolding that used to eat days now takes minutes. My build backed up that promise.
+
+## Why I reached for it: the lesson from the last build
+
+The fleet on my portfolio is my second serious pass at this pattern. Before it, I built [the WorkOS blog bot](https://workos.com/blog/cloudflare-workers-workflows-ai-blog-bot), a Slack-native publishing system running on Cloudflare Workers and Durable Workflows. Behind a single Slack message sat a genuine distributed system: a multi-model pipeline (Haiku doing classification, Opus doing the drafting), durable step functions with per-step retries and checkpointing, D1 holding state, R2 holding artifacts, seven external APIs, and a proposal engine that pitched its own posts. I'm proud of that thing. I also know where it started to ache.
+
+That ache made eve click for me: **the more capable an agentic system gets, the more ruthlessly you must pursue organization and separation of concerns, or the next feature regresses the last.** Each capability I added leaned on the same shared surface as the ones before it: everything reached into one router, one state machine, one pile of connector code. Past a certain complexity, adding one behavior would regress another. The wiring and the judgment lived in the same files, so touching one disturbed the rest.
+
+Vercel designed eve for that failure mode, which turns "is it worth it" into a deployment decision for me. In eve, an agent *is* a directory: one job, its own instructions, its own typed tools, its own scoped secrets. Vercel owns the shared layer, durability, sandboxes, connectors, approvals, and cron, so I don't copy it into each bot and then watch the copies drift apart. On the Cloudflare version I hand-built the organization and defended it with discipline. On eve, the framework makes that shape the default. Once I split the portfolio work into separate single-purpose bots on eve, a new capability in one stopped regressing the others, because they share the framework beneath them and little else.
+
+## What it nails
+
+I wrote the first version of this review with those three bots running: content, ops, and growth. Even at three, these were the parts I'd have missed first, and they still are at nine.
+
+**Conventions kill boilerplate.** A bot is an `agent/` directory, and the filename does the wiring. There's no registry to update and no registration call to remember. The gap between "I wrote a tool" and "the model can call it" is gone. Day to day, that's the single biggest win. A coding agent has fewer places to get the wiring wrong, so it botches the scaffolding less.
+
+**It soaks up the glue-code sprawl.** Hand-rolled agents fail the same way each time: duplicated connector code for Slack, cron, durable sessions, and secrets, and that glue is where the bugs are. eve takes that off my plate. Each bot's repo holds only the code that differs from the others. I don't copy the connector layer into every bot and watch it rot in nine directions, because I never wrote it.
+
+**Durability and approvals are built in.** Sessions run on Vercel's durable workflow machinery, so state persists across steps and a task survives a deploy or a cold start and picks up where it stopped. Drop `needsApproval: true` on any tool and the session parks until a human answers. Those are the two pieces I'd bolt on with less rigor by hand, and having them native is the reason I'm comfortable leaving the fleet running.
+
+**Vercel-native deploy.** An eve agent is an ordinary Vercel project, so `vercel deploy` ships the code I ran on my machine. One pipeline carries the app.
+
+**Slack Connect, once it's wired, is the best I've used.** You attach a managed connector and avoid nursing your own webhook bridge. That's the piece that moved this from a weekend experiment to something I reach for on my phone each day.
+
+## Where I lost time
+
+<Image src="https://zackproser.b-cdn.net/images/is-eve-worth-it-friction.jpg" alt="Pixel art of the sharp edges of a tool — a silent-delivery pipe with no error light, a spinning version-drift dial, a stack of duplicate app icons — with a developer holding a 'pin your versions' shield" width={1408} height={792} />
+
+The file conventions are the part I trust. Where I lost hours was moving fast: pre-release package versions and connector setup. Set aside genuine time for these parts.
+
+**The silent trigger-path gotcha.** I routed Slack through Vercel Connect, and the event trigger had to land on the route eve serves (`/eve/v1/slack`, which you set with `--trigger-path`). Skip that flag and Connect registers its webhook at a default path, then forwards verified Slack events to a route eve isn't listening on. I saw no 404, no failed-delivery banner, and the Agent Runs page stayed blank because no run kicked off. This one burned real debugging hours, because a bot that goes quiet with no error sends you rifling through your code before you check the wiring.
+
+The fix is one flag. When you register the Slack trigger through Connect, point it at the route eve serves instead of letting it fall back to the default:
+
+```bash
+# the flag that has to be there — send Slack's verified events to eve's route
+--trigger-path /eve/v1/slack
+```
+
+**Dependency drift.** A fresh install can float pre-release builds of the packages underneath. In my case a CANARY `@ai-sdk` build snapped a tool loop mid-run with a type-validation error, and a too-new `@vercel/connect` shipped a verifier that 401'd Slack events. Pin `@ai-sdk`, `@vercel/connect`, and `eve` itself, and commit the lockfile. The versions underneath move quickly, so pin them and let the lockfile hold the line.
+
+**Thin observability when delivery fails without a signal.** eve gives you an Agent Runs view covering sessions, turns, and token usage, and it's good. But the failures that sting happen before a run begins, when an event doesn't land. The run view can't surface those, because there's no run to inspect. Debugging turned into diffing connector configs, since no stack trace pointed anywhere useful.
+
+**Platform-shaped limits.** Cron tighter than once a day needs a paid plan. Deployment protection will block the Slack webhook until you allow it through. The connector setup can leave you staring at a pile of duplicate Slack apps. I kept shipping through all of it, but any one of these can claim an afternoon you hadn't budgeted.
+
+<Image src="https://zackproser.b-cdn.net/images/is-eve-worth-it-vs-alternatives.jpg" alt="Pixel art decision scale weighing 'pick eve' (Vercel triangle, Slack icon, fast-deploy rocket) against 'pick something else' (portable multi-cloud toolbox, self-hosted server), the needle tilting based on where you already live" width={1408} height={792} />
+
+## The one question that decides it
+
+eve is opinionated, and every opinion points at Vercel. If your agent is already headed there, eve removes work. If your infra plan says multi-cloud or self-hosted, eve adds a platform migration before it adds any value. The deciding factor is **where your agent already lives.**
+
+<Mermaid chart={`
+flowchart TD
+  Q["Should I build on eve?"] --> V{"Already on Vercel<br/>+ the AI SDK?"}
+  V -->|yes| P{"Want production plumbing<br/>(durability, approvals,<br/>channels) built in?"}
+  V -->|no| O{"Willing to adopt<br/>Vercel's platform<br/>for this?"}
+  P -->|yes| E["eve is likely your<br/>fastest path"]
+  P -->|no, I want raw control| L["a lower-level library<br/>(AI SDK + your own glue)"]
+  O -->|yes| E
+  O -->|"no, need multi-cloud<br/>or self-host"| A["a portable framework<br/>(e.g. Mastra) or roll your own"]
+`} />
+
+If you already live on Vercel and the AI SDK, eve feels like someone handed that stack a filesystem and a deploy button. The AI Gateway routes your model calls without a provider key stashed in each project, and you can have a deployed agent by end of day. The opinions work in your favor, and that's where I work.
+
+If you need multi-cloud, self-hosting, or provider portability, eve's Vercel-native assumptions cost you more than they return. Durable execution rides on Vercel Workflows. The sandbox is Vercel Sandbox and the connectors are Vercel Connect. That tight coupling is what makes it fast to build on. It's also why it's the wrong choice the moment leaving Vercel becomes a requirement. Here you're better served by a more portable framework or a lower-level library you wire yourself, at the price of building the layer eve hands you for free. The alternative that surfaces most often in the same conversation is [Mastra](https://mastra.ai): also TypeScript, also agents, tools, and workflows, but portable across clouds. You buy the freedom to self-host or run multi-cloud, and you give back eve's edge, the managed Connect, Sandbox, and Workflows layer you'd now have to stand up and operate yourself. If "we can't be tied to Vercel" is a hard line, the decision's made for you. If it isn't, eve's tighter integration is the reason to pick it.
+
+<Image src="https://zackproser.b-cdn.net/images/is-eve-worth-it-verdict-by-persona.jpg" alt="Pixel art lineup of five developer archetypes at their own gates with verdict stamps: solo builder (green check), enterprise (green check with caution flag), multi-cloud team (red x), learner (red x pointed to a build-it-yourself door), ship-this-quarter team (yellow wait sign)" width={1408} height={792} />
+
+## Quick verdict by who you are
+
+- **Solo builder / small team already on Vercel:** Yes, and it's the easiest call of the lot. You get agents deployed in a day and you spend your hours on the bot's job while eve owns the runtime. The directory-per-bot layout stops the system from regressing on itself as it grows. That's me, and it's the lesson from my last build turned into a default. Start with the build post below and lift the directory shape before you touch anything else.
+- **Enterprise on Vercel wanting governance and observability:** Go ahead, with your eyes open. Agent Runs gave me session history, turns, and token usage, but pin your versions and pilot it before you stake a critical workflow on it.
+- **Team that needs multi-cloud or self-hosting:** Look elsewhere. eve is a poor fit today by design, and a poor fit for the long haul. Reach for a portable framework instead (see the Mastra comparison above). eve is aimed at Vercel-native agents, and that's fine.
+- **Someone who wants to learn agent internals from the ground up:** Skip it for that goal. eve's whole value is hiding the machinery. If what you want is to *understand* durable execution and connectors, build it the hard way once, then come to eve to stop doing it by hand. (I write up those hard-way lessons as I hit them; the [newsletter](/newsletter) is where they land.)
+- **Anyone who needs it rock-solid in production this quarter:** Pin your versions with care and pilot before you commit. The packages underneath still move quickly, so treat a pinned lockfile as non-negotiable.
+
+## Would I run my business on it?
+
+I do, and I'd make the same call again without hesitation. Since that initial three-bot build, the fleet has grown into [nine single-purpose bots plus a Chief of Staff orchestrator](/blog/the-agent-fleet), with a meta-agent I run over the top that opens PRs against the other bots' repos from Slack. Each one still runs its own durable eve session, trades work over authenticated POSTs, survives redeploys and cold starts without dropping a task, and parks every outbound action for my approval. A running fleet counts for more with me than any feature list. The conventions are solid enough that I quit thinking about the framework and started thinking about the bots. That's what I want from infrastructure: dull enough that it stops showing up by name in my commits.
+
+My answer is still yes. I built the capable-but-tangled version once, felt the separation-of-concerns tax in my own hands, and eve makes the clean version the default. If you're on Vercel and you want real agents in production without hand-building and then policing that machinery yourself, I'd reach for it again tomorrow. If your stack lives somewhere else, eve is still a good framework that asks you to adopt a platform, and that trade belongs to your infrastructure plan, not mine.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/reviewing-vercel-eve-agent-framework-hero.jpg"
+  imageAlt="Pixel art of three robot agents running a tiny website storefront together — one writing a post, one watching analytics, one scheduling social"
+  eyebrow="Read this next"
+  title="Reviewing Vercel's eve by hiring my website three AI employees"
+  description="The full build: how I stood up a content bot, an ops bot, and a growth bot on eve, wired them through Slack Connect, and got them handing work to each other — including every sharp edge I hit."
+  href="/blog/reviewing-vercels-eve-agent-framework"
+/>

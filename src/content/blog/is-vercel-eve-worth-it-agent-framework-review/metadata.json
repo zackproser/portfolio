@@ -1,0 +1,15 @@
+{
+  "title": "Vercel's eve agentic framework review. Is eve worth it?",
+  "author": "Zachary Proser",
+  "date": "2026-07-05",
+  "description": "My verdict on eve, Vercel's open-source agentic framework: an emphatic yes. Why I reached for it after building the WorkOS blog bot, the separation-of-concerns lesson that made it the right call, what it nails, and the sharp edges to budget for.",
+  "image": "https://zackproser.b-cdn.net/images/is-eve-worth-it-hero.jpg",
+  "tags": [
+    "AI",
+    "Agents",
+    "Vercel",
+    "Developer Tools",
+    "Review",
+    "Multi-agent"
+  ]
+}
