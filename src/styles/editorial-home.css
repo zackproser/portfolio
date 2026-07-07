@@ -959,7 +959,7 @@
   z-index: 2;
   max-width: 1160px;
   margin: 0 auto;
-  padding: clamp(28px, 5vh, 56px) 24px 90px;
+  padding: clamp(18px, 3vh, 40px) 24px 90px;
   pointer-events: none;
 }
 .mof-content a,
@@ -974,7 +974,7 @@
 .mof-h1 {
   font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
   font-weight: 800;
-  font-size: clamp(38px, 5vw, 62px);
+  font-size: clamp(36px, 4.2vw, 54px);
   line-height: 1.04;
   letter-spacing: -0.025em;
   margin: 0;
@@ -987,23 +987,23 @@
   margin-top: 4px;
 }
 .mof-lede {
-  margin: 18px 0 0;
-  font-size: 16.5px;
-  line-height: 1.62;
+  margin: 14px 0 0;
+  font-size: 15.5px;
+  line-height: 1.58;
   max-width: 54ch;
   text-wrap: pretty;
 }
 .mof-lede strong { font-weight: 600; }
-.mof-lede-follow { margin-top: 12px; }
+.mof-lede-follow { margin-top: 10px; }
 .mof-kicker {
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
   font-style: italic;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.5;
   max-width: 54ch;
 }
-.mof-capture { margin-top: 22px; max-width: 560px; }
+.mof-capture { margin-top: 16px; max-width: 560px; }
 .mof-secondary { margin-top: 20px; }
 
 /* preview card — an actual link, driven by the canvas engine */
@@ -1196,4 +1196,17 @@
 }
 @media (max-width: 480px) {
   .mof-content { padding-top: 400px; }
+}
+
+
+/* Short desktop viewports: compress further so the capture card's fine
+ * print clears the fold under the site header. */
+@media (min-width: 1024px) and (max-height: 880px) {
+  .mof-content { padding-top: 14px; }
+  .mof-h1 { font-size: clamp(32px, 3.6vw, 44px); }
+  .mof-lede { margin-top: 11px; font-size: 14.5px; line-height: 1.5; }
+  .mof-lede-follow { margin-top: 8px; }
+  .mof-kicker { margin-top: 8px; font-size: 15px; }
+  .mof-capture { margin-top: 12px; }
+  .mof-eyebrow { margin-bottom: 8px; }
 }
