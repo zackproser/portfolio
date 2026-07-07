@@ -1107,15 +1107,6 @@ export function MindOnFireHero() {
         </span>
       </a>
 
-      <div className="mof-legend text-parchment-600 dark:text-slate-400">
-        the mind = {POST_COUNT} real essays, graphed
-        <br />
-        hover a star to preview · click to read
-        <br />
-        the fire lifts essays off the crown — catch one
-        <br />
-        mindonfire.net
-      </div>
     </section>
   )
 }
