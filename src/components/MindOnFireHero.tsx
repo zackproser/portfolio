@@ -797,17 +797,17 @@ export function MindOnFireHero() {
         for (const em of postEmbers) if (em.id === shownEmberId) em.held = true
       }
       if (hover) tapHit = null
-      else if (tapHit && (t > tapHit.until || (tapHit.kind === 1 && !postEmbers[tapHit.i]))) tapHit = null
-      if (tapHit && tapHit.kind === 1 && postEmbers[tapHit.i]) postEmbers[tapHit.i].held = true
+      else if (tapHit && (t > tapHit.until || (tapHit.kind === 1 && (!postEmbers[tapHit.i] || postEmbers[tapHit.i].post !== tapHit.post)))) tapHit = null
+      if (tapHit && tapHit.kind === 1 && postEmbers[tapHit.i] && postEmbers[tapHit.i].post === tapHit.post) postEmbers[tapHit.i].held = true
 
       if (hover || cardHover || tapHit) {
         autoHit = null
         autoNextAt = t + 4
       } else if (autoHit) {
-        if (t > autoHit.until || (autoHit.kind === 1 && !postEmbers[autoHit.i])) {
+        if (t > autoHit.until || (autoHit.kind === 1 && (!postEmbers[autoHit.i] || postEmbers[autoHit.i].post !== autoHit.post))) {
           autoHit = null
           autoNextAt = t + 1.4 + Math.random() * 1.8
-        } else if (autoHit.kind === 1) {
+        } else if (autoHit.kind === 1 && postEmbers[autoHit.i] && postEmbers[autoHit.i].post === autoHit.post) {
           postEmbers[autoHit.i].held = true
         }
       } else if (t > autoNextAt && ignite > 3 && stars.length) {
@@ -864,7 +864,7 @@ export function MindOnFireHero() {
 
       /* focus ring */
       const focusHit = hover || tapHit || autoHit
-      if (focusHit && (focusHit.kind === 0 || postEmbers[focusHit.i])) {
+      if (focusHit && (focusHit.kind === 0 || (postEmbers[focusHit.i] && postEmbers[focusHit.i].post === focusHit.post))) {
         const hs = hitPos(focusHit)
         ctx.globalCompositeOperation = 'source-over'
         ctx.strokeStyle = 'rgba(' + P.edge + ',0.9)'
