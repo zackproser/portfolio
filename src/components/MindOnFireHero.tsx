@@ -172,6 +172,7 @@ export function MindOnFireHero() {
       query = null
       autoHit = null
       tapHit = null
+      comet = null
       stars.length = 0
       links.length = 0
       clusterGeo.length = 0
