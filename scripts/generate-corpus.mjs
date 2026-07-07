@@ -20,11 +20,10 @@ function extractExcerpt(mdxPath, fallback) {
       const s = line.trim()
       if (!s) {
         if (buf.join(' ').length > 100) break
-        buf = []
         continue
       }
-      if (/^(import|export|#|<|!\[|\{|-|\*|\||```|>)/.test(s)) {
-        buf = []
+      if (/^(import|export|#|<|@|!\[|\{|-|\*|\||```|>)/.test(s)) {
+        if (buf.length > 0) break
         continue
       }
       buf.push(s)
