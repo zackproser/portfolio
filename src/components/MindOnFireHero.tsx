@@ -161,6 +161,12 @@ export function MindOnFireHero() {
     }
 
     function layout() {
+      layoutGen++
+      query = null
+      autoHit = null
+      tapHit = null
+      logoCX = W >= 1024 ? W * 0.735 : W * 0.5
+      logoCY = H * 0.46
       stars.length = 0
       links.length = 0
       clusterGeo.length = 0
@@ -256,8 +262,6 @@ export function MindOnFireHero() {
       canvas.style.width = W + 'px'
       canvas.style.height = H + 'px'
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0)
-      logoCX = W >= 1024 ? W * 0.735 : W * 0.5
-      logoCY = H * 0.46
       const heightOnly = W === lastW && lastH > 0 && Math.abs(H - lastH) < 140
       lastW = W
       lastH = H
@@ -352,11 +356,14 @@ export function MindOnFireHero() {
         logoMap = { cx2, cy2, hh }
         raw.forEach((q) => {
           const by = (q.y - cy2) / hh
+          const bx = (q.x - cx2) / hh
+          const warm = q.c === 1 && q.r > 130 && q.r > q.b
           const p: LogoP = {
-            bx: (q.x - cx2) / hh,
+            bx,
             by,
             colD: q.r + ',' + q.g + ',' + q.b,
-            flame: q.c === 1 && q.r > 130 && q.r > q.b && by < -0.12,
+            /* crown fire, plus the tongues running down the front forehead */
+            flame: warm && (by < -0.12 || (bx < -0.08 && by < 0.2)),
             ghost: q.c === 0,
             ph: Math.random() * 6.2832,
             sx: 0,
@@ -660,8 +667,9 @@ export function MindOnFireHero() {
     preview.addEventListener('mouseleave', onCardLeave)
 
     /* ---------- live queries ---------- */
-    let query: { p: { x: number; y: number }; nn: number[]; t0: number } | null = null
+    let query: { p: { x: number; y: number }; nn: number[]; t0: number; gen: number } | null = null
     let qIndex = 0
+    let layoutGen = 0
     let lastQueryAt = -999
     const esc = (s: string) =>
       s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
@@ -681,9 +689,12 @@ export function MindOnFireHero() {
           return { i, d: dx * dx + dy * dy }
         })
         .sort((a, b) => a.d - b.d)
-      query = { p: qp, nn: best.slice(0, 6).map((b) => b.i), t0: now }
+      const gen = layoutGen
+      query = { p: qp, nn: best.slice(0, 6).map((b) => b.i), t0: now, gen }
       query.nn.forEach((idx, k) => {
-        setTimeout(() => { if (!disposed) stars[idx].flare = 1 }, 350 + k * 120)
+        setTimeout(() => {
+          if (!disposed && gen === layoutGen && stars[idx]) stars[idx].flare = 1
+        }, 350 + k * 120)
       })
       const match = POSTS[stars[query.nn[0]].post]
       if (match && queryLog) {
@@ -714,9 +725,17 @@ export function MindOnFireHero() {
         trail: [], done: false, labelUntil: 0,
       }
     }
-    /* the capture form lives inside EditorialNewsletter — listen for its submit */
-    const captureForm = hero.querySelector('form')
-    captureForm?.addEventListener('submit', onNewsletterSignup)
+    /* EditorialNewsletter renders a [role="status"] node only on confirmed
+       signup — watch for it rather than firing on mere submit */
+    const captureBox = hero.querySelector('.mof-capture')
+    let signupSeen = false
+    const successObs = new MutationObserver(() => {
+      if (!signupSeen && captureBox && captureBox.querySelector('[role="status"]')) {
+        signupSeen = true
+        onNewsletterSignup()
+      }
+    })
+    if (captureBox) successObs.observe(captureBox, { childList: true, subtree: true })
 
     /* ---------- render ---------- */
     function frame(ms: number) {
@@ -855,6 +874,7 @@ export function MindOnFireHero() {
       }
 
       /* live query */
+      if (query && query.gen !== layoutGen) query = null
       if (query) {
         const qt = t - query.t0
         const qp = query.p
@@ -916,6 +936,9 @@ export function MindOnFireHero() {
             ctx.fillText('← YOU', comet.tx + 10, comet.ty + 3)
             ctx.textAlign = 'center'
           } else {
+            for (let yi = stars.length - 1; yi >= 0; yi--) {
+              if (stars[yi].post < 0) stars.splice(yi, 1)
+            }
             youStar = { fx: comet.tx / W, fy: comet.ty / H }
             stars.push({
               x: comet.tx, y: comet.ty, r: 5.5, tint: 3,
@@ -978,7 +1001,7 @@ export function MindOnFireHero() {
       hero.removeEventListener('click', onClick)
       preview.removeEventListener('mouseenter', onCardEnter)
       preview.removeEventListener('mouseleave', onCardLeave)
-      captureForm?.removeEventListener('submit', onNewsletterSignup)
+      successObs.disconnect()
     }
   }, [router])
 
