@@ -117,6 +117,26 @@ export function MindOnFireHero() {
       edge: string; queryRing: string; halo: string; comp: GlobalCompositeOperation
     }
     let P: Palette
+
+    /* ---------- canvas / layout ---------- */
+    let DPR = Math.min(window.devicePixelRatio || 1, 1.75)
+    let W = 0
+    let H = 0
+    let logoCX = 0
+    let logoCY = 0
+    let born = 0
+    let lastT = 0
+    let running = false
+    let rafId = 0
+
+    const stars: Star[] = []
+    const links: Array<[number, number]> = []
+    const clusterGeo: Array<{ cx: number; cy: number; R: number }> = []
+    let youStar: { fx: number; fy: number } | null = null
+
+    /* forward-declared so refreshPalette and resize can schedule a frame */
+    let frame: (ms: number) => void
+
     const refreshPalette = () => {
       P = isDark()
         ? {
@@ -144,22 +164,6 @@ export function MindOnFireHero() {
     refreshPalette()
     const themeObs = new MutationObserver(refreshPalette)
     themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
-
-    /* ---------- canvas / layout ---------- */
-    let DPR = Math.min(window.devicePixelRatio || 1, 1.75)
-    let W = 0
-    let H = 0
-    let logoCX = 0
-    let logoCY = 0
-    let born = 0
-    let lastT = 0
-    let running = false
-    let rafId = 0
-
-    const stars: Star[] = []
-    const links: Array<[number, number]> = []
-    const clusterGeo: Array<{ cx: number; cy: number; R: number }> = []
-    let youStar: { fx: number; fy: number } | null = null
 
     const rnd = (i: number, salt: number) => {
       const x = Math.sin((i + 1) * 127.1 + salt * 311.7) * 43758.5453
@@ -741,7 +745,7 @@ export function MindOnFireHero() {
     }
 
     /* ---------- render ---------- */
-    function frame(ms: number) {
+    frame = (ms: number) => {
       if (disposed || !ctx) return
       const t = ms / 1000
       const dt = Math.min(0.05, t - lastT || 0.016)

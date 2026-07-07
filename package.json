@@ -7,7 +7,7 @@
     "dev": "concurrently \"next dev\" \"pnpm stripe:webhook\"",
     "build": "node scripts/generate-corpus.mjs && prisma generate && (prisma migrate deploy || echo 'Database migration failed, continuing with build...') && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "build-no-db": "node scripts/generate-corpus.mjs && npm run prebuild && prisma generate && NODE_OPTIONS=--max-old-space-size=6144 next build",
-    "build-with-tests": "npm run test && npm run prebuild && prisma generate && prisma migrate deploy && NODE_OPTIONS=--max-old-space-size=6144 next build",
+    "build-with-tests": "npm run test && node scripts/generate-corpus.mjs && npm run prebuild && prisma generate && prisma migrate deploy && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "build-only": "prisma generate && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "start": "next start",
     "lint": "next lint",
