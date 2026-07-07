@@ -5,8 +5,8 @@
   "packageManager": "pnpm@10.13.1",
   "scripts": {
     "dev": "concurrently \"next dev\" \"pnpm stripe:webhook\"",
-    "build": "prisma generate && (prisma migrate deploy || echo 'Database migration failed, continuing with build...') && NODE_OPTIONS=--max-old-space-size=6144 next build",
-    "build-no-db": "npm run prebuild && prisma generate && NODE_OPTIONS=--max-old-space-size=6144 next build",
+    "build": "node scripts/generate-corpus.mjs && prisma generate && (prisma migrate deploy || echo 'Database migration failed, continuing with build...') && NODE_OPTIONS=--max-old-space-size=6144 next build",
+    "build-no-db": "node scripts/generate-corpus.mjs && npm run prebuild && prisma generate && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "build-with-tests": "npm run test && npm run prebuild && prisma generate && prisma migrate deploy && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "build-only": "prisma generate && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "start": "next start",
@@ -29,7 +29,8 @@
     "og:migrate": "node scripts/og/migrate-og-images-to-cdn.js",
     "prisma:seed": "tsx --tsconfig prisma/tsconfig.json prisma/seed.ts",
     "prisma:seed-production": "./scripts/seed-production.sh",
-    "knip": "knip"
+    "knip": "knip",
+    "corpus": "node scripts/generate-corpus.mjs"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
