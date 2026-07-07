@@ -8,9 +8,9 @@ import RealtorDemoClient from './RealtorDemoClient'
 
 export const metadata: Metadata = {
   ...createMetadata({
-    title: 'Voice AI for Real Estate Agents | Dictate Listings, Capture Client Calls',
+    title: 'Voice AI for Real Estate Agents | Dictate Listings',
     description:
-      'Interactive demo: see how top-producing agents use voice AI to dictate MLS listings in 2 minutes, capture buyer consultations automatically, and save 11+ hours per week.',
+      'Interactive demo: see how top-producing agents use voice AI to dictate MLS listings in 2 minutes, capture buyer consultations automatically, and save 11+ hours a week.',
     type: 'demo',
     slug: 'voice-ai-realtors',
     author: 'Zachary Proser',

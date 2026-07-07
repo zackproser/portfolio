@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   ...createMetadata({
     title: 'Voice-First AI Demo | WisprFlow & Granola in Action',
     description:
-      'Interactive demo of voice-driven development. See how WisprFlow (179 WPM voice-to-text) and Granola (AI meeting notes) transform developer productivity with live visualizations.',
+      'Interactive demo of voice-driven development. See how WisprFlow voice-to-text (179 WPM) and Granola AI meeting notes transform developer productivity, visualized live.',
     type: 'demo',
     slug: 'voice-ai',
     author: 'Zachary Proser',

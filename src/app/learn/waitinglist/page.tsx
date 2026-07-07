@@ -13,7 +13,7 @@ const zpSchoolForHackers = 'https://zackproser.b-cdn.net/images/zp-school-for-ha
 
 export const metadata: Metadata = createMetadata({
   title: "Join the Waiting List - School for Hackers",
-  description: "Sign up for our waiting list and be the first to know when our AI development courses launch. Learn to build cutting-edge AI applications through project-based learning.",
+  description: "Join the waiting list to be first to know when our AI development courses launch. Learn to build cutting-edge AI applications through project-based learning.",
 });
 
 export default async function LearningHome() {
