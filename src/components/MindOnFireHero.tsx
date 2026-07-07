@@ -75,6 +75,11 @@ export function MindOnFireHero() {
   const previewRef = useRef<HTMLAnchorElement>(null)
   const queryLogRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const onSuccessRef = useRef<(() => void) | null>(null)
+
+  const handleNewsletterSuccess = () => {
+    onSuccessRef.current?.()
+  }
 
   useEffect(() => {
     const heroN = heroRef.current
@@ -721,7 +726,7 @@ export function MindOnFireHero() {
       sx: number; sy: number; tx: number; ty: number; t0: number
       trail: Array<{ x: number; y: number }>; done: boolean; labelUntil: number
     } | null = null
-    const onNewsletterSignup = () => {
+    onSuccessRef.current = () => {
       if (reduced || disposed) return
       const members = stars.filter((s) => s.c === 5 && s.post >= 0)
       const target = members.length
@@ -734,17 +739,6 @@ export function MindOnFireHero() {
         trail: [], done: false, labelUntil: 0,
       }
     }
-    /* EditorialNewsletter renders a [role="status"] node only on confirmed
-       signup — watch for it rather than firing on mere submit */
-    const captureBox = hero.querySelector('.mof-capture')
-    let signupSeen = false
-    const successObs = new MutationObserver(() => {
-      if (!signupSeen && captureBox && captureBox.querySelector('[role="status"]')) {
-        signupSeen = true
-        onNewsletterSignup()
-      }
-    })
-    if (captureBox) successObs.observe(captureBox, { childList: true, subtree: true })
 
     /* ---------- render ---------- */
     function frame(ms: number) {
@@ -1010,7 +1004,6 @@ export function MindOnFireHero() {
       hero.removeEventListener('click', onClick)
       preview.removeEventListener('mouseenter', onCardEnter)
       preview.removeEventListener('mouseleave', onCardLeave)
-      successObs.disconnect()
     }
   }, [router])
 
@@ -1067,6 +1060,7 @@ export function MindOnFireHero() {
               }
               fine="Unsubscribe in one click · No spam, ever"
               ctaLabel="Subscribe →"
+              onSuccess={handleNewsletterSuccess}
             />
           </div>
 
