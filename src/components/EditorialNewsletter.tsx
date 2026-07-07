@@ -19,6 +19,8 @@ interface EditorialNewsletterProps {
   meta?: string
   /** Submit button label. Defaults to "Subscribe →". */
   ctaLabel?: string
+  /** Optional callback invoked after successful subscription. */
+  onSuccess?: () => void
 }
 
 export function EditorialNewsletter({
@@ -30,6 +32,7 @@ export function EditorialNewsletter({
   promise,
   meta,
   ctaLabel = 'Subscribe →',
+  onSuccess,
 }: EditorialNewsletterProps) {
   const referrer = usePathname()
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
@@ -66,6 +69,7 @@ export function EditorialNewsletter({
       }
       setStatus('success')
       form.reset()
+      onSuccess?.()
     } catch (err) {
       setStatus('error')
       setErrorMessage(err instanceof Error ? err.message : 'Something went wrong')

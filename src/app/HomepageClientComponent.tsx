@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { track } from '@vercel/analytics'
 import { EditorialCard } from '@/components/EditorialCard'
 import { SectionHead } from '@/components/SectionHead'
-import { EditorialNewsletter } from '@/components/EditorialNewsletter'
+import { MindOnFireHero } from '@/components/MindOnFireHero'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import { speakingEngagements } from './speaking/speaking-data'
 import type { Content } from '@/types/content'
@@ -27,102 +27,11 @@ interface Props {
 }
 
 // ----- Hero ---------------------------------------------------------
+// The Mind on Fire hero: the mark alive over the essay corpus.
+// See src/components/MindOnFireHero.tsx — everything below it is unchanged.
 
 function EditorialHero() {
-  return (
-    <section className="pt-8 pb-8 md:pt-10 md:pb-10">
-      <div className="container mx-auto max-w-6xl px-4 md:px-6 grid gap-8 lg:gap-12 lg:grid-cols-[1.45fr_1fr] lg:items-start">
-        <div className="editorial-hero-c-main">
-          <div className="editorial-eyebrow editorial-eyebrow--ruled text-parchment-600 dark:text-slate-400">
-            <span className="editorial-eyebrow-rule" aria-hidden />
-            <span>
-              <span className="editorial-eyebrow-section text-burnt-400 dark:text-amber-400">§ 00</span>
-              {' · From inside the building'}
-            </span>
-          </div>
-          <h1 className="editorial-hero-h1 text-charcoal-50 dark:text-parchment-100">
-            Most AI advice{' '}
-            <span className="editorial-strike">is bullshit.</span>
-            <br />
-            <em className="editorial-h1-em text-burnt-400 dark:text-amber-400">
-              Here&rsquo;s what actually ships.
-            </em>
-          </h1>
-          <p className="editorial-greeting text-parchment-600 dark:text-slate-300">
-            Hi, I&rsquo;m <span className="text-burnt-400 dark:text-amber-400">Zack</span>{' '}
-            <span className="editorial-greeting-wave" role="img" aria-label="waving hand">👋</span>
-          </p>
-          <p className="editorial-lede editorial-lede--tight text-parchment-600 dark:text-slate-300">
-            I&rsquo;m an AI engineer on the Applied AI team at WorkOS &mdash; we power
-            authentication for OpenAI, Cursor, and a lot of the labs you&rsquo;ve
-            heard of. Fifteen years of web engineering before that. I help with
-            the AI enablement function for our whole org: internal tooling,
-            workshops, harnesses for teammates, helping everyone level up. I
-            write down what I learn.
-          </p>
-
-          {/* Newsletter — the dominant CTA, rendered as a bordered card. */}
-          <EditorialNewsletter
-            location="hero"
-            variant="card"
-            label="The Modern Coding letter"
-            meta="5,000+ engineers"
-            title="Dispatches from the edge of applied AI."
-            promise={
-              <>
-                <b>What lands in your inbox:</b> what I&rsquo;m building, what I&rsquo;m
-                learning, the tools I&rsquo;d actually pay for, and the occasional
-                workshop or tutorial. Names named, vendors graded, evals included.
-              </>
-            }
-            fine="Unsubscribe in one click · No spam, ever"
-            ctaLabel="Subscribe →"
-          />
-
-          <div className="editorial-secondary text-parchment-600 dark:text-slate-400">
-            <Link href="/blog">Read the archive →</Link>
-            <span>·</span>
-            <Link href="/services">Workshops &amp; AI enablement →</Link>
-          </div>
-
-        </div>
-
-        <aside className="editorial-hero-c-side">
-          <div className="editorial-portrait editorial-portrait--c">
-            <Image
-              src="https://zackproser.b-cdn.net/images/zack-sketch-beard.webp"
-              alt="Portrait of Zachary Proser"
-              fill
-              sizes="(max-width: 1024px) 80vw, 320px"
-              className="editorial-portrait-image"
-              priority
-            />
-          </div>
-          <div className="editorial-portrait-plate text-parchment-600 dark:text-slate-400">
-            <span>Plate I · Duotone</span>
-            <span>Source Serif</span>
-          </div>
-
-          <div className="editorial-erratum">
-            <span className="editorial-erratum-stamp">Errata</span>
-            <div className="editorial-erratum-head text-burnt-400 dark:text-amber-400">
-              <span>Things I will not write about</span>
-            </div>
-            <ul className="editorial-erratum-list">
-              <li>&ldquo;Agents are eating SaaS&rdquo;</li>
-              <li>Frameworks I tried for 20 minutes</li>
-              <li>Demos that don&rsquo;t pass an eval</li>
-              <li>&ldquo;5 prompts that changed my life&rdquo;</li>
-              <li className="editorial-erratum-keep">
-                What I&rsquo;m actually building
-                <br />for engineers who ship.
-              </li>
-            </ul>
-          </div>
-        </aside>
-      </div>
-    </section>
-  )
+  return <MindOnFireHero />
 }
 
 // ----- Stat row -----------------------------------------------------
