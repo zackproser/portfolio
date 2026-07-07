@@ -339,7 +339,8 @@ export function MindOnFireHero() {
           }
           return out
         }
-        const dm = dilate(dilate(dilate(cm)))
+        let dm = cm
+        for (let di = 0; di < 5; di++) dm = dilate(dm)
         /* sky floods from top + sides only (the crop severs the neck) */
         const sky = new Uint8Array(LW * cropH)
         const st2: number[] = []
@@ -354,6 +355,10 @@ export function MindOnFireHero() {
           if (ix < LW - 1) st2.push(i + 1)
           st2.push(i - LW, i + LW)
         }
+        /* grow sky back to the true color edge so the ground carries no
+           outline ring from the dilation */
+        let skyD = sky
+        for (let di = 0; di < 5; di++) skyD = dilate(skyD)
 
         let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9
         const raw: Array<{ x: number; y: number; r: number; g: number; b: number; c: number }> = []
@@ -362,7 +367,7 @@ export function MindOnFireHero() {
             const i = y * LW + x
             const r = d[i * 4], g = d[i * 4 + 1], b = d[i * 4 + 2]
             const colored = cm[i] === 1
-            if (!colored && sky[i]) continue
+            if (!colored && skyD[i]) continue
             if (colored) { if (x % 2 !== 0 || y % 2 !== 0) continue }
             else if (x % 3 !== 0 || y % 3 !== 0) continue
             raw.push({ x, y, r, g, b, c: colored ? 1 : 0 })
@@ -395,30 +400,24 @@ export function MindOnFireHero() {
           if (p.flame && q.y - minY < hh * 0.22) crownSrc.push(p)
         })
 
-        /* light mode: the figure's own silhouette as a dark ground —
-           the pixel render then draws identically in both themes */
-        const cut = document.createElement('canvas')
-        cut.width = LW
-        cut.height = cropH
-        const cctx = cut.getContext('2d')
-        if (cctx) {
-          cctx.drawImage(im, 0, 0, LW, LH)
-          const cid = cctx.getImageData(0, 0, LW, cropH)
+        /* light mode ground: the figure's exact silhouette (color + the
+           enclosed black face/hair), filled near-black — no blur, no aura */
+        const mk = document.createElement('canvas')
+        mk.width = LW
+        mk.height = cropH
+        const mctx = mk.getContext('2d')
+        if (mctx) {
+          const gid = mctx.createImageData(LW, cropH)
           for (let i = 0; i < LW * cropH; i++) {
-            if (!cm[i] && sky[i]) cid.data[i * 4 + 3] = 0
+            if (cm[i] || !skyD[i]) {
+              gid.data[i * 4] = 15
+              gid.data[i * 4 + 1] = 15
+              gid.data[i * 4 + 2] = 31
+              gid.data[i * 4 + 3] = 255
+            }
           }
-          cctx.putImageData(cid, 0, 0)
-          const mk = document.createElement('canvas')
-          mk.width = LW
-          mk.height = cropH
-          const mctx = mk.getContext('2d')
-          if (mctx) {
-            mctx.drawImage(cut, 0, 0)
-            mctx.globalCompositeOperation = 'source-in'
-            mctx.fillStyle = '#100e1c'
-            mctx.fillRect(0, 0, LW, cropH)
-            logoGround = mk
-          }
+          mctx.putImageData(gid, 0, 0)
+          logoGround = mk
         }
         logoReady = true
         if (reduced) rafId = requestAnimationFrame(frame)
@@ -435,22 +434,18 @@ export function MindOnFireHero() {
       const cs = Math.cos(sway)
 
       if (!P.dark && logoGround) {
-        /* the identical pixel render, carried on a dark ground shaped by
-           the figure itself, feathered into the parchment */
+        /* the figure's own black, exactly its shape — the additive pixel
+           render below then matches dark mode one-for-one */
         const k = SC / logoMap.hh
-        const gw = logoGround.width * k
-        const gh = logoGround.height * k
-        const gx = logoCX - logoMap.cx2 * k
-        const gy = logoCY - logoMap.cy2 * k
         ctx.save()
-        ctx.globalAlpha = 0.88 * headA
-        try { ctx.filter = 'blur(16px)' } catch { /* older browsers: unblurred ground */ }
-        const s1 = 1.1
-        ctx.drawImage(logoGround, logoCX - (logoCX - gx) * s1, logoCY - (logoCY - gy) * s1, gw * s1, gh * s1)
-        try { ctx.filter = 'blur(5px)' } catch { /* noop */ }
-        ctx.globalAlpha = 0.97 * headA
-        ctx.drawImage(logoGround, gx, gy, gw, gh)
-        try { ctx.filter = 'none' } catch { /* noop */ }
+        ctx.globalAlpha = headA
+        ctx.drawImage(
+          logoGround,
+          logoCX - logoMap.cx2 * k,
+          logoCY - logoMap.cy2 * k,
+          logoGround.width * k,
+          logoGround.height * k,
+        )
         ctx.restore()
       }
 
