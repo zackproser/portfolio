@@ -183,6 +183,12 @@ export function MindOnFireHero() {
       if (W < 1024) {
         logoCX = W * 0.5
         logoCY = 215
+        if (youStar) {
+          stars.push({
+            x: youStar.fx * W, y: youStar.fy * H, r: 5.5, tint: 3,
+            phase: 1.7, delay: 0, flare: 0.5, post: -1, c: 5,
+          })
+        }
         return
       }
       logoCX = W * 0.735
@@ -806,15 +812,28 @@ export function MindOnFireHero() {
         }
       } else if (t > autoNextAt && ignite > 3 && stars.length) {
         const pickEmber = postEmbers.length > 0 && Math.random() < 0.25
-        let ai = pickEmber ? (Math.random() * postEmbers.length) | 0 : (Math.random() * stars.length) | 0
-        if (!pickEmber && stars[ai].post < 0) ai = 0
-        autoHit = {
-          kind: pickEmber ? 1 : 0,
-          i: ai,
-          post: pickEmber ? postEmbers[ai].post : stars[ai].post,
-          until: t + 3.4,
+        if (pickEmber) {
+          const ai = (Math.random() * postEmbers.length) | 0
+          autoHit = {
+            kind: 1,
+            i: ai,
+            post: postEmbers[ai].post,
+            until: t + 3.4,
+          }
+        } else {
+          const validStars = stars.filter((s) => s.post >= 0)
+          if (validStars.length > 0) {
+            const ai = (Math.random() * validStars.length) | 0
+            const starIdx = stars.indexOf(validStars[ai])
+            autoHit = {
+              kind: 0,
+              i: starIdx,
+              post: stars[starIdx].post,
+              until: t + 3.4,
+            }
+            stars[starIdx].flare = 1
+          }
         }
-        if (!pickEmber) stars[ai].flare = 1
       }
       updatePreview(hover || tapHit || autoHit, !!(hover || tapHit))
 
