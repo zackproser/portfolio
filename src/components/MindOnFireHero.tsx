@@ -134,6 +134,7 @@ export function MindOnFireHero() {
             halo: 'rgba(20,18,32,',
             comp: 'source-over',
           }
+      if (reduced && !running) rafId = requestAnimationFrame(frame)
     }
     refreshPalette()
     const themeObs = new MutationObserver(refreshPalette)
@@ -276,6 +277,7 @@ export function MindOnFireHero() {
       layout()
       preview.classList.remove('mof-show')
       lastKey = null
+      if (reduced && !running) rafId = requestAnimationFrame(frame)
     }
 
     /* ---------- the mark ---------- */
