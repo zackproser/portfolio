@@ -73,7 +73,6 @@ export function MindOnFireHero() {
   const heroRef = useRef<HTMLElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const previewRef = useRef<HTMLAnchorElement>(null)
-  const queryLogRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const onSuccessRef = useRef<(() => void) | null>(null)
 
@@ -85,15 +84,13 @@ export function MindOnFireHero() {
     const heroN = heroRef.current
     const canvasN = canvasRef.current
     const previewN = previewRef.current
-    const queryLogN = queryLogRef.current
-    if (!heroN || !canvasN || !previewN || !queryLogN) return
+    if (!heroN || !canvasN || !previewN) return
     const ctxN = canvasN.getContext('2d')
     if (!ctxN) return
     /* non-null aliases so narrowing survives into the nested engine fns */
     const hero: HTMLElement = heroN
     const canvas: HTMLCanvasElement = canvasN
     const preview: HTMLAnchorElement = previewN
-    const queryLog: HTMLDivElement = queryLogN
     const ctx: CanvasRenderingContext2D = ctxN
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -695,8 +692,6 @@ export function MindOnFireHero() {
     let qIndex = 0
     let layoutGen = 0
     let lastQueryAt = -999
-    const esc = (s: string) =>
-      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
 
     function fireQuery(now: number) {
       const item = QUERIES[qIndex % QUERIES.length]
@@ -720,14 +715,6 @@ export function MindOnFireHero() {
           if (!disposed && gen === layoutGen && stars[idx]) stars[idx].flare = 1
         }, 350 + k * 120)
       })
-      const match = POSTS[stars[query.nn[0]].post]
-      if (match && queryLog) {
-        queryLog.innerHTML =
-          '<span class="mof-q">thought · &ldquo;' + esc(item.q) + '&rdquo;</span><br />' +
-          '<span class="mof-m">nearest essay · ' + esc(match.t) + '</span>'
-        queryLog.classList.add('mof-show')
-        setTimeout(() => { if (!disposed && queryLog) queryLog.classList.remove('mof-show') }, 5000)
-      }
       lastQueryAt = now
     }
 
@@ -1120,7 +1107,6 @@ export function MindOnFireHero() {
         </span>
       </a>
 
-      <div ref={queryLogRef} className="mof-query-log" />
       <div className="mof-legend text-parchment-600 dark:text-slate-400">
         the mind = {POST_COUNT} real essays, graphed
         <br />
