@@ -996,6 +996,12 @@ export function MindOnFireHero() {
     const onResize = () => resize()
     window.addEventListener('resize', onResize)
 
+    let ro: ResizeObserver | null = null
+    if ('ResizeObserver' in window) {
+      ro = new ResizeObserver(() => resize())
+      ro.observe(hero)
+    }
+
     let io: IntersectionObserver | null = null
     if ('IntersectionObserver' in window && !reduced) {
       io = new IntersectionObserver(
@@ -1020,6 +1026,7 @@ export function MindOnFireHero() {
       cancelAnimationFrame(rafId)
       if (hideTimer) clearTimeout(hideTimer)
       themeObs.disconnect()
+      ro?.disconnect()
       io?.disconnect()
       window.removeEventListener('resize', onResize)
       hero.removeEventListener('mousemove', onMove)
