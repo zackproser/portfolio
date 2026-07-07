@@ -1184,3 +1184,16 @@
     animation: none;
   }
 }
+
+/* Mind on Fire hero — stacked layout on narrow screens: the mark burns
+ * in a band up top, copy + capture flow beneath it. */
+@media (max-width: 1023px) {
+  .mof-hero { min-height: 0; }
+  .mof-hero::after { display: none; }
+  .mof-content { padding-top: 430px; padding-bottom: 48px; }
+  .mof-copy { max-width: 640px; margin: 0 auto; }
+  .mof-query-log { display: none; }
+}
+@media (max-width: 480px) {
+  .mof-content { padding-top: 400px; }
+}

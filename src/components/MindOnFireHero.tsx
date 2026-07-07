@@ -165,11 +165,18 @@ export function MindOnFireHero() {
       query = null
       autoHit = null
       tapHit = null
-      logoCX = W >= 1024 ? W * 0.735 : W * 0.5
-      logoCY = H * 0.46
       stars.length = 0
       links.length = 0
       clusterGeo.length = 0
+      /* narrow screens: the mark burns in a band above the copy — no
+         constellation overlay (the corpus lives in the rails below) */
+      if (W < 1024) {
+        logoCX = W * 0.5
+        logoCY = 215
+        return
+      }
+      logoCX = W * 0.735
+      logoCY = H * 0.46
       const members: number[][] = CLUSTERS.map(() => [])
       POSTS.forEach((p, i) => members[clusterFor(p, i)].push(i))
 
@@ -406,7 +413,7 @@ export function MindOnFireHero() {
 
     function drawLogo(t: number, headA: number) {
       if (!ctx || !logoReady || headA <= 0) return
-      LOGO_H = Math.min(H * 0.56, W * 0.31)
+      LOGO_H = W < 1024 ? Math.min(W * 0.72, 330) : Math.min(H * 0.56, W * 0.31)
       const SC = LOGO_H
       const px = Math.max(1.05, SC / 330)
       const sway = 0.05 * Math.sin(t * 0.3)
