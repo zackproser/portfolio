@@ -554,7 +554,7 @@ export function MindOnFireHero() {
     type Ember = {
       id: number; x: number; y: number; vx: number; vy: number; wob: number
       r: number; life: number; age: number; post: number; held: boolean
-      wasHeld: boolean
+      wasHeld: boolean; userCaught: boolean; wasUserCaught: boolean
     }
     const postEmbers: Ember[] = []
     let emberSeq = 1
@@ -575,13 +575,16 @@ export function MindOnFireHero() {
           post: (Math.random() * POSTS.length) | 0,
           held: false,
           wasHeld: false,
+          userCaught: false,
+          wasUserCaught: false,
         })
       }
       ctx.globalCompositeOperation = P.comp
       for (let i = postEmbers.length - 1; i >= 0; i--) {
         const em = postEmbers[i]
-        if (em.held && !em.wasHeld) sparkBurst(em.x, em.y, 6, 0.35) /* caught! */
+        if (em.userCaught && !em.wasUserCaught) sparkBurst(em.x, em.y, 6, 0.35) /* caught! */
         em.wasHeld = em.held
+        em.wasUserCaught = em.userCaught
         if (!em.held) {
           em.age += dt
           em.x += (em.vx + Math.sin(em.wob + em.age * 2.2) * 9) * dt
@@ -802,17 +805,23 @@ export function MindOnFireHero() {
 
       /* hover / tap / attract */
       hover = mouseIn ? hitTest(mouseX, mouseY) : null
-      for (const em of postEmbers) em.held = false
+      for (const em of postEmbers) { em.held = false; em.userCaught = false }
       if (hover) {
         if (hover.kind === 0) stars[hover.i].flare = Math.max(stars[hover.i].flare, 0.5)
-        else postEmbers[hover.i].held = true
+        else {
+          postEmbers[hover.i].held = true
+          postEmbers[hover.i].userCaught = true
+        }
       }
       if (cardHover && shownEmberId != null) {
         for (const em of postEmbers) if (em.id === shownEmberId) em.held = true
       }
       if (hover) tapHit = null
       else if (tapHit && (t > tapHit.until || (tapHit.kind === 1 && (!postEmbers[tapHit.i] || postEmbers[tapHit.i].post !== tapHit.post)))) tapHit = null
-      if (tapHit && tapHit.kind === 1 && postEmbers[tapHit.i] && postEmbers[tapHit.i].post === tapHit.post) postEmbers[tapHit.i].held = true
+      if (tapHit && tapHit.kind === 1 && postEmbers[tapHit.i] && postEmbers[tapHit.i].post === tapHit.post) {
+        postEmbers[tapHit.i].held = true
+        postEmbers[tapHit.i].userCaught = true
+      }
 
       if (hover || cardHover || tapHit) {
         autoHit = null
