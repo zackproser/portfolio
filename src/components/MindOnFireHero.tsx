@@ -108,6 +108,20 @@ export function MindOnFireHero() {
 
     const ppEl = (sel: string) => preview.querySelector(sel) as HTMLElement
 
+    /* essays you've read — your trail through the corpus */
+    let readSet: Set<string>
+    try {
+      readSet = new Set(JSON.parse(localStorage.getItem('mofRead') || '[]') as string[])
+    } catch {
+      readSet = new Set()
+    }
+    const markRead = (slug: string) => {
+      readSet.add(slug)
+      try {
+        localStorage.setItem('mofRead', JSON.stringify([...readSet].slice(-500)))
+      } catch { /* private mode */ }
+    }
+
     /* ---------- theme ---------- */
     const isDark = () => document.documentElement.classList.contains('dark')
     type Palette = {
@@ -117,7 +131,9 @@ export function MindOnFireHero() {
     let P: Palette
 
     /* ---------- canvas / layout ---------- */
-    let DPR = Math.min(window.devicePixelRatio || 1, 1.75)
+    const dprCap = () =>
+      ((navigator as unknown as { deviceMemory?: number }).deviceMemory ?? 4) >= 8 ? 2 : 1.75
+    let DPR = Math.min(window.devicePixelRatio || 1, dprCap())
     let W = 0
     let H = 0
     let logoCX = 0
@@ -130,7 +146,15 @@ export function MindOnFireHero() {
     const stars: Star[] = []
     const links: Array<[number, number]> = []
     const clusterGeo: Array<{ cx: number; cy: number; R: number }> = []
-    let youStar: { fx: number; fy: number } | null = null
+    let youStar: { fx: number; fy: number; since?: string } | null = null
+    try {
+      const savedYou = JSON.parse(localStorage.getItem('mofYou') || 'null') as
+        | { fx: number; fy: number; since?: string }
+        | null
+      if (savedYou && typeof savedYou.fx === 'number' && typeof savedYou.fy === 'number') {
+        youStar = savedYou
+      }
+    } catch { /* ignore */ }
 
     /* forward-declared so refreshPalette and resize can schedule a frame */
     let frame: (ms: number) => void
@@ -277,7 +301,7 @@ export function MindOnFireHero() {
     function resize() {
       if (!hero || !canvas || !ctx) return
       const rect = hero.getBoundingClientRect()
-      DPR = Math.min(window.devicePixelRatio || 1, 1.75)
+      DPR = Math.min(window.devicePixelRatio || 1, dprCap())
       W = rect.width
       H = rect.height
       canvas.width = W * DPR
@@ -304,6 +328,7 @@ export function MindOnFireHero() {
     const crownSrc: LogoP[] = []
     let logoReady = false
     let logoGround: HTMLCanvasElement | null = null
+    let ghostBake: HTMLCanvasElement | null = null
     let logoMap = { cx2: 0, cy2: 0, hh: 1 }
     let LOGO_H = 0
 
@@ -421,6 +446,21 @@ export function MindOnFireHero() {
           mctx.putImageData(gid, 0, 0)
           logoGround = mk
         }
+        /* bake the silhouette speckle once — it never moves relative to
+           itself, so per-frame it becomes a single drawImage */
+        const gb = document.createElement('canvas')
+        gb.width = LW
+        gb.height = cropH
+        const gctx = gb.getContext('2d')
+        if (gctx) {
+          for (const gp of logoP) {
+            if (!gp.ghost) continue
+            const grain = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(gp.ph * 37.7))
+            gctx.fillStyle = 'rgba(34,38,64,' + (0.36 * grain).toFixed(3) + ')'
+            gctx.fillRect(gp.bx * hh + cx2 - 1.1, gp.by * hh + cy2 - 1.1, 2.2, 2.2)
+          }
+          ghostBake = gb
+        }
         logoReady = true
         if (reduced) rafId = requestAnimationFrame(frame)
       }
@@ -453,18 +493,20 @@ export function MindOnFireHero() {
 
       /* additive pixels on dark ground — same look in both themes */
       ctx.globalCompositeOperation = 'lighter'
-      /* silhouette pass */
-      for (const p of logoP) {
-        p.sx = logoCX + p.bx * cs * SC
-        p.sy = logoCY + p.by * SC
-        if (!p.ghost) continue
-        const grain = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(p.ph * 37.7))
-        ctx.fillStyle = 'rgba(34,38,64,' + (0.36 * grain * headA).toFixed(3) + ')'
-        ctx.fillRect(p.sx - px * 0.8, p.sy - px * 0.8, px * 1.6, px * 1.6)
+      /* silhouette: baked at init, one draw call per frame */
+      if (ghostBake) {
+        ctx.save()
+        ctx.globalAlpha = headA
+        ctx.translate(logoCX, logoCY)
+        ctx.scale((SC / logoMap.hh) * cs, SC / logoMap.hh)
+        ctx.drawImage(ghostBake, -logoMap.cx2, -logoMap.cy2)
+        ctx.restore()
       }
       /* fire + circuitry pass */
       for (const p of logoP) {
         if (p.ghost) continue
+        p.sx = logoCX + p.bx * cs * SC
+        p.sy = logoCY + p.by * SC
         let a = 0.94 * headA
         if (p.flame) a *= 0.74 + 0.26 * Math.sin(t * (6 + surge * 5) + p.ph)
         else if (p.bx > 0.02) a *= 0.7 + 0.3 * Math.sin(t * (2.2 + surge * 1.5) + (p.bx + p.by) * 9)
@@ -495,7 +537,7 @@ export function MindOnFireHero() {
     function stepFlames(dt: number, headA: number) {
       if (!ctx) return
       if (headA > 0.3 && logoReady && crownSrc.length) {
-        const want = Math.min(3 + Math.round(surge * 3), 120 + Math.round(surge * 40) - flames.length)
+        const want = Math.min(3 + Math.round(surge * 3), 150 + Math.round(surge * 40) - flames.length)
         for (let s = 0; s < want; s++) {
           const src = crownSrc[(Math.random() * crownSrc.length) | 0]
           const spark = Math.random() < 0.12 + surge * 0.1
@@ -628,7 +670,6 @@ export function MindOnFireHero() {
       let bi = -1
       let kind: 0 | 1 = 0
       for (let i = 0; i < stars.length; i++) {
-        if (stars[i].post < 0) continue
         const dx = stars[i].x - x
         const dy = stars[i].y - y
         const d2 = dx * dx + dy * dy
@@ -663,10 +704,39 @@ export function MindOnFireHero() {
       if (hideTimer) { clearTimeout(hideTimer); hideTimer = null }
       const key = hit.kind + ':' + (hit.kind === 1 ? postEmbers[hit.i].id : hit.i) + ':' + hit.post
       const post = POSTS[hit.post]
+      if (key !== lastKey && hit.post < 0) {
+        /* the visitor's own star */
+        const pos = hitPos(hit)
+        ppEl('.mof-pp-title').textContent = 'You — reading since ' + (youStar?.since || 'today')
+        ppEl('.mof-pp-date').textContent = ''
+        ppEl('.mof-pp-cat').textContent = 'YOUR STAR'
+        ppEl('.mof-pp-initial').textContent = '✦'
+        ppEl('.mof-pp-art').style.background = PP_GRADS[3]
+        ppEl('.mof-pp-excerpt').textContent =
+          'Your marker in the corpus. The next dispatch lands in your inbox first.'
+        const youImg = ppEl('.mof-pp-img') as HTMLImageElement
+        youImg.removeAttribute('src')
+        youImg.style.display = 'none'
+        preview.href = '/newsletter'
+        preview.classList.add('mof-show')
+        hero.style.cursor = isUser ? 'pointer' : ''
+        lastKey = key
+        shownPost = hit.post
+        shownEmberId = null
+        const cw = preview.offsetWidth || 304
+        const chh = preview.offsetHeight || 280
+        let px = pos.x + 20
+        let py = pos.y + 16
+        if (px + cw > W - 8) px = pos.x - cw - 20
+        if (py + chh > H - 8) py = pos.y - chh - 16
+        preview.style.left = Math.min(Math.max(8, px), Math.max(8, W - cw - 8)) + 'px'
+        preview.style.top = Math.min(Math.max(8, py), Math.max(8, H - chh - 8)) + 'px'
+        return
+      }
       if (key !== lastKey && post) {
         const pos = hitPos(hit)
         ppEl('.mof-pp-title').textContent = post.t
-        ppEl('.mof-pp-date').textContent = (post.d || '') + (hit.post === 0 ? ' · LATEST' : IS_FRESH[hit.post] ? ' · NEW' : '')
+        ppEl('.mof-pp-date').textContent = (post.d || '') + (hit.post === 0 ? ' · LATEST' : IS_FRESH[hit.post] ? ' · NEW' : readSet.has(post.s) ? ' · READ' : '')
         ppEl('.mof-pp-cat').textContent = hit.kind === 1 ? 'RISING THOUGHT' : CLUSTERS[stars[hit.i].c].label
         ppEl('.mof-pp-initial').textContent = (post.t.charAt(0) || 'Z').toUpperCase()
         ppEl('.mof-pp-art').style.background = PP_GRADS[hit.kind === 1 ? 1 : CLUSTERS[stars[hit.i].c].tint]
@@ -723,7 +793,7 @@ export function MindOnFireHero() {
         return
       }
       const post = POSTS[hit.post]
-      if (!post) return
+      if (!post && hit.post >= 0) return
       /* the star bursts, then you travel */
       const pos = hitPos(hit)
       if (pos) {
@@ -731,6 +801,11 @@ export function MindOnFireHero() {
         if (hit.kind === 0) stars[hit.i].flare = 1
       }
       if (navTimer) clearTimeout(navTimer)
+      if (hit.post < 0) {
+        navTimer = setTimeout(() => { if (!disposed) router.push('/newsletter' as Route) }, 260)
+        return
+      }
+      markRead(post.s)
       navTimer = setTimeout(() => { if (!disposed) router.push(('/blog/' + post.s) as Route) }, 260)
     }
     hero.addEventListener('mousemove', onMove, { passive: true })
@@ -842,8 +917,11 @@ export function MindOnFireHero() {
         } else {
           const validStars = stars.filter((s) => s.post >= 0)
           if (validStars.length > 0) {
-            const ai = (Math.random() * validStars.length) | 0
-            const starIdx = stars.indexOf(validStars[ai])
+            /* introduce what the visitor hasn't read yet */
+            const unread = validStars.filter((s) => !readSet.has(POSTS[s.post].s))
+            const pool = unread.length > 0 ? unread : validStars
+            const ai = (Math.random() * pool.length) | 0
+            const starIdx = stars.indexOf(pool[ai])
             autoHit = {
               kind: 0,
               i: starIdx,
@@ -904,11 +982,12 @@ export function MindOnFireHero() {
       for (const st of stars) {
         const a = Math.min(1, Math.max(0, (ignite - st.delay) / 0.5))
         if (a <= 0) continue
-        const fresh = st.post >= 0 && IS_FRESH[st.post]
+        const read = st.post >= 0 && readSet.has(POSTS[st.post].s)
+        const fresh = !read && st.post >= 0 && IS_FRESH[st.post]
         const tw = fresh
           ? 0.68 + 0.32 * Math.sin(t * 2.3 + st.phase)
           : 0.78 + 0.22 * Math.sin(t * 1.3 + st.phase)
-        let alpha = Math.min(1, a * tw * (P.dark ? 0.95 : 0.9) * (1 + clusterGlow[st.c] * 0.22) * (fresh ? 1.08 : 1))
+        let alpha = Math.min(1, a * tw * (P.dark ? 0.95 : 0.9) * (1 + clusterGlow[st.c] * 0.22) * (fresh ? 1.08 : 1) * (read ? 0.78 : 1))
         let size = st.r + (fresh ? 0.7 : 0)
         if (st.post === 0) {
           /* the newest thought wears a slow-breathing halo */
@@ -935,6 +1014,16 @@ export function MindOnFireHero() {
         ctx.beginPath()
         ctx.arc(st.x, st.y, size, 0, 6.2832)
         ctx.fill()
+        if (read) {
+          /* a thin ember ring — the trail you've burned */
+          ctx.globalCompositeOperation = 'source-over'
+          ctx.strokeStyle = 'rgba(' + P.edge + ',' + (a * 0.4).toFixed(3) + ')'
+          ctx.lineWidth = 1
+          ctx.beginPath()
+          ctx.arc(st.x, st.y, size + 3, 0, 6.2832)
+          ctx.stroke()
+          ctx.globalCompositeOperation = P.comp
+        }
       }
 
       /* focus ring */
@@ -1062,7 +1151,12 @@ export function MindOnFireHero() {
             for (let yi = stars.length - 1; yi >= 0; yi--) {
               if (stars[yi].post < 0) stars.splice(yi, 1)
             }
-            youStar = { fx: comet.tx / W, fy: comet.ty / H }
+            youStar = {
+              fx: comet.tx / W,
+              fy: comet.ty / H,
+              since: new Date().toISOString().slice(0, 10),
+            }
+            try { localStorage.setItem('mofYou', JSON.stringify(youStar)) } catch { /* ignore */ }
             stars.push({
               x: comet.tx, y: comet.ty, r: 5.5, tint: 3,
               phase: 1.7, delay: 0, flare: 1, post: -1, c: 5,
