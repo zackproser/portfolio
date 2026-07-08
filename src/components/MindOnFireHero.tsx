@@ -127,7 +127,6 @@ export function MindOnFireHero() {
     }
 
     /* ---------- theme ---------- */
-    const isDark = () => document.documentElement.classList.contains('dark')
     type Palette = {
       dark: boolean; tints: string[]; nebula: string; label: string
       edge: string; queryRing: string; halo: string; comp: GlobalCompositeOperation
@@ -164,38 +163,22 @@ export function MindOnFireHero() {
     /* forward-declared so refreshPalette and resize can schedule a frame */
     let frame: (ms: number) => void
 
+    /* the hero panel is always the night sky, whatever the page theme —
+       one palette, one render path, no light-mode colorization */
     const refreshPalette = () => {
-      P = isDark()
-        ? {
-            dark: true,
-            tints: ['243,156,18', '230,126,34', '148,163,184', '251,247,240'],
-            nebula: 'rgba(243,156,18,0.05)',
-            label: 'rgba(148,163,184,',
-            edge: '243,156,18',
-            queryRing: '251,247,240',
-            halo: 'rgba(15,15,31,',
-            comp: 'lighter',
-          }
-        : {
-            dark: false,
-            tints: ['198,74,0', '212,106,20', '44,62,80', '107,90,66'],
-            nebula: 'rgba(139,115,85,0.07)',
-            label: 'rgba(107,90,66,',
-            edge: '211,84,0',
-            queryRing: '44,62,80',
-            halo: 'rgba(20,18,32,',
-            comp: 'source-over',
-          }
+      P = {
+        dark: true,
+        tints: ['243,156,18', '230,126,34', '148,163,184', '251,247,240'],
+        nebula: 'rgba(243,156,18,0.05)',
+        label: 'rgba(148,163,184,',
+        edge: '243,156,18',
+        queryRing: '251,247,240',
+        halo: 'rgba(15,15,31,',
+        comp: 'lighter',
+      }
       if (reduced && !running) rafId = requestAnimationFrame(frame)
     }
     refreshPalette()
-    let sweepAt = -999 /* theme-flip dusk sweep timestamp, canvas seconds */
-    const themeObs = new MutationObserver(() => {
-      const wasDark = P.dark
-      refreshPalette()
-      if (P.dark !== wasDark && !reduced) sweepAt = lastT
-    })
-    themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 
     const rnd = (i: number, salt: number) => {
       const x = Math.sin((i + 1) * 127.1 + salt * 311.7) * 43758.5453
@@ -1332,22 +1315,6 @@ export function MindOnFireHero() {
         ctx.textAlign = 'center'
       }
 
-      /* dusk sweep: a soft gradient crosses the sky on theme flip */
-      const sw = t - sweepAt
-      if (sw >= 0 && sw < 0.7) {
-        const sx2 = (sw / 0.7) * (W + 400) - 200
-        const sg = ctx.createLinearGradient(sx2 - 180, 0, sx2 + 180, 0)
-        const tone = P.dark ? '15,15,31' : '251,247,240'
-        sg.addColorStop(0, 'rgba(' + tone + ',0)')
-        sg.addColorStop(0.5, 'rgba(' + tone + ',0.5)')
-        sg.addColorStop(1, 'rgba(' + tone + ',0)')
-        ctx.globalCompositeOperation = 'source-over'
-        ctx.fillStyle = sg
-        ctx.fillRect(0, 0, W, H)
-        /* the fire flares once as the sweep crosses the mark */
-        if (Math.abs(sx2 - logoCX) < 120) surge = Math.max(surge, 0.8)
-      }
-
       if (running) rafId = requestAnimationFrame(frame)
     }
 
@@ -1414,7 +1381,6 @@ export function MindOnFireHero() {
       cancelAnimationFrame(rafId)
       if (hideTimer) clearTimeout(hideTimer)
       if (navTimer) clearTimeout(navTimer)
-      themeObs.disconnect()
       ro?.disconnect()
       io?.disconnect()
       window.removeEventListener('resize', onResize)
@@ -1430,7 +1396,7 @@ export function MindOnFireHero() {
   return (
     <section
       ref={heroRef}
-      className="mof-hero"
+      className="mof-hero dark"
       tabIndex={0}
       aria-label={`The corpus: ${POST_COUNT} essays as constellations. Focus and use arrow keys to browse, Enter to read.`}
     >

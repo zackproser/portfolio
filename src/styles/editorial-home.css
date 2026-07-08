@@ -938,6 +938,12 @@
   position: relative;
   min-height: min(calc(100svh - 64px), 920px);
   overflow: hidden;
+  /* the sky is always night, whatever the page theme */
+  background-color: #1a1a2e;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.03) 1px, transparent 1px);
+  background-size: 120px 120px;
 }
 .mof-sky {
   position: absolute;
@@ -949,9 +955,6 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse 80% 70% at 24% 45%, rgba(251, 247, 240, 0.52), transparent 68%);
-}
-.dark .mof-hero::after {
   background: radial-gradient(ellipse 80% 70% at 24% 45%, rgba(15, 15, 31, 0.52), transparent 68%);
 }
 .mof-content {
