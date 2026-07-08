@@ -616,6 +616,7 @@ export function MindOnFireHero() {
       id: number; x: number; y: number; vx: number; vy: number; wob: number
       r: number; life: number; age: number; post: number; held: boolean
       wasHeld: boolean
+      turn: number
       toInbox?: boolean; userCaught: boolean; wasUserCaught: boolean
     }
     const postEmbers: Ember[] = []
@@ -624,12 +625,16 @@ export function MindOnFireHero() {
       if (!ctx) return
       if (logoReady && crownSrc.length && ignite > 2 && postEmbers.length < 4 && Math.random() < dt * 0.6) {
         const src = crownSrc[(Math.random() * crownSrc.length) | 0]
+        /* thoughts scatter in a fan off the crown — up, sideways, curling */
+        const ang = -Math.PI / 2 + (Math.random() - 0.5) * 2.2
+        const sp = 13 + Math.random() * 13
         postEmbers.push({
           id: emberSeq++,
           x: src.sx + (Math.random() * 20 - 10),
           y: src.sy - 6,
-          vx: Math.random() * 8 - 4,
-          vy: -(15 + Math.random() * 9),
+          vx: Math.cos(ang) * sp,
+          vy: Math.sin(ang) * sp - 4,
+          turn: (Math.random() - 0.5) * 0.4,
           wob: Math.random() * 6.2832,
           r: 5.2 + Math.random() * 1.6,
           life: 8,
@@ -666,6 +671,14 @@ export function MindOnFireHero() {
               }
             }
           } else {
+            /* slow curl: each thought wanders its own arc */
+            const ca = Math.cos(em.turn * dt)
+            const sa = Math.sin(em.turn * dt)
+            const nvx = em.vx * ca - em.vy * sa
+            em.vy = em.vx * sa + em.vy * ca
+            em.vx = nvx
+            /* drift away from the copy column rather than over it */
+            if (W >= 1024 && em.x < W * 0.52) em.vx += 20 * dt
             em.x += (em.vx + Math.sin(em.wob + em.age * 2.2) * 9) * dt
             em.y += em.vy * dt
             /* occasionally an uncaught thought peels off toward the capture card */
@@ -674,7 +687,7 @@ export function MindOnFireHero() {
             }
           }
         }
-        if (em.age >= em.life || em.y < 54) { postEmbers.splice(i, 1); continue }
+        if (em.age >= em.life || em.y < 54 || em.y > H - 16 || em.x < 16 || em.x > W - 10) { postEmbers.splice(i, 1); continue }
         const a = Math.min(1, em.age / 0.6, (em.life - em.age) / 1.2) * headA
         const flick = 0.82 + 0.18 * Math.sin(t * 5 + em.wob)
         if (P.dark) {
