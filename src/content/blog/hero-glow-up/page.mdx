@@ -6,7 +6,7 @@ export const metadata = createMetadata(rawMetadata)
 
 # The Hero Glow-Up: My Whole Blog, Burning in Semantic Space
 
-<Image src="https://zackproser.b-cdn.net/images/hero-glow-up-hero.webp" alt="The new zackproser.com hero: the Mind on Fire mark rendered as burning pixels on a night-sky panel, surrounded by constellations of essays, with a preview card showing a talk at a16z" width={1600} height={900} />
+<Image src="https://zackproser.b-cdn.net/images/hero-glow-up-hero.webp" alt="The new zackproser.com hero: the Mind on Fire mark rendered as burning pixels on a night-sky panel, surrounded by six constellations of essays" width={1600} height={900} />
 
 My homepage used to lead with a portrait of me. A nice duotone sketch, a greeting, a paragraph of bio. I never quite loved it. It said "here is a guy" when what I wanted it to say was "here is fifteen years of work — come dig in."
 
@@ -14,7 +14,7 @@ So I burned it down and replaced it with the thing you see above: the Mind on Fi
 
 ## Three problems with the old hero
 
-**The portrait said the least interesting thing about me.** A face tells you nothing about the work. The writing is the work — 159 essays on RAG pipelines, evals, AI tooling, infrastructure, and the craft of shipping — and it was buried behind an archive link.
+**The portrait said the least interesting thing about me.** A face tells you nothing about the work. The writing is the work — 160 essays on RAG pipelines, evals, AI tooling, infrastructure, and the craft of shipping — and it was buried behind an archive link.
 
 **I wanted the writing itself to be the interface.** Accessible, but also exciting to browse. A list of posts is accessible and boring. I wanted something closer to a map: a neural-net, graph-like feel where each point is a piece of writing and related pieces cluster together, so wandering through them is cheap and interesting at the same time.
 
@@ -26,31 +26,45 @@ I named the company after a belief, paraphrased from Plutarch: the mind is a fir
 
 And yes — I also love the original *Man on Fire* with Denzel. The new Netflix series is... fine.
 
-The new hero's headline is the belief, verbatim: **"The mind is a fire / to be ignited."** The mark from mindonfire.net sits at the center, sampled pixel by pixel from the actual logo artwork into a few thousand canvas particles. The flames flicker. The gold circuit traces shimmer in slow waves. Real fire particles and sparks rise off the crown continuously. Ride your cursor over the head and the fire surges to meet it; swipe fast and the flames bend with the gesture.
+The new hero's headline is the belief, verbatim: **"The mind is a fire / to be ignited."** The mark from mindonfire.net sits at the center, sampled pixel by pixel from the actual logo artwork into a few thousand canvas particles. The flames flicker. The gold circuit traces shimmer in slow waves. Ride your cursor over the head and the fire surges to meet it; swipe fast and the flames bend with the gesture.
 
 ## Every star is an essay
 
-<Image src="https://zackproser.b-cdn.net/images/hero-glow-up-fire-card.webp" alt="Close-up of the flame crown with rising ember meteors, and a preview card showing a recent essay with its pixel-art hero image and a NEW tag" width={1360} height={1160} />
+At build time, a script scans every published essay — title, slug, date, opening paragraph, hero image — and writes one JSON file. The hero lays those essays out as six pinned constellations, one per topic: RAG & retrieval, AI-assisted dev, evals & fine-tuning, infrastructure, voice & tools, career & enablement. Each cluster is a phyllotaxis spiral — the sunflower-seed pattern — so every star sits a comfortable distance from its neighbors and every one of them is a stable, clickable target.
 
-Around the mark, the corpus. At build time, a script scans every published essay — title, slug, date, opening paragraph, hero image — and writes one JSON file. The hero lays those essays out as six pinned constellations, one per topic: RAG & retrieval, AI-assisted dev, evals & fine-tuning, infrastructure, voice & tools, career & enablement. Each cluster is a phyllotaxis spiral — the sunflower-seed pattern — so every star sits a comfortable distance from its neighbors and every one of them is a stable, clickable target.
+Hover a star and its whole constellation warms: the connecting lines brighten, the sibling stars lift, the label sharpens, and a card appears with the essay's real hero image, date, and opening paragraph. Click and you're reading it. Essays from the last two months glint brighter and carry a NEW tag; the single newest post wears a slow-breathing halo. Essays you've already read cool down and take on a thin ember ring, so return visitors can see their own trail burned through the corpus — and the parts of the sky they haven't explored yet.
 
-Hover a star and a card appears with the essay's real hero image, date, and opening paragraph. Click and you're reading it. Essays from the last two months glint brighter and carry a NEW tag; the single newest post wears a slow-breathing halo. Essays you've already read cool down and take on a thin ember ring, so return visitors can see their own trail burned through the corpus — and the parts of the sky they haven't explored yet.
+Leave the page alone and the sky browses itself. Every few seconds a star flares and presents its card, holds it long enough to read the opening lines, lets it fade, and moves on to another essay — a slideshow of the archive that stops the instant your cursor takes over:
 
-Because the whole thing derives from a build-time scan, it maintains itself. When this post merges, the sky gains its 160th star without anyone touching the hero. The count in the copy updates too.
+<Image src="https://zackproser.b-cdn.net/images/hero-glow-up-attract.webp" alt="Attract mode: with no interaction, a star flares and presents its preview card — here a talk at a16z about taking AI applications to production" width={1600} height={900} />
 
-Leave the page alone and it browses itself: every few seconds a star flares and presents its card, one essay after another, until your cursor takes over. Every few seconds a live vector-search vignette fires — a ring expands over a cluster and connector lines constellate to the nearest essays, because retrieval is both my subject matter and my resume, and the sky should act like it.
+Each pass features a different essay, so two visits rarely open the same way:
 
-## Catch an ember
+<Image src="https://zackproser.b-cdn.net/images/hero-glow-up-card-catch22.webp" alt="A preview card surfaced by the hero: Corporate AI Catch-22, with its category, date, hero image, and opening paragraph" width={350} height={320} />
 
-<Image src="https://zackproser.b-cdn.net/images/hero-glow-up-ember-card.webp" alt="A rising ember caught mid-flight above the flame crown, showing its RISING THOUGHT preview card for a randomly selected essay" width={900} height={860} />
+Because the whole thing derives from a build-time scan, it maintains itself. When this post merges, the sky gains its 160th star without anyone touching the hero — you can see the count already reads 160 in the screenshots, because the build that captured them included this post.
 
-My favorite detail: the fire lifts essays off the crown. Embers detach and streak across the sky like meteors — different directions, different speeds, each dragging a short comet tail — and every one of them carries a randomly selected essay. Hover an ember and it freezes mid-flight while its card shows, labeled RISING THOUGHT. Click it and you're reading that essay. Thoughts escaping a burning mind, and you can catch them.
+## The fire has a bestiary
 
-There are quieter easter eggs, too. Press "t" and a glowing thread animates through every star in publish order, oldest to newest, with year markers along the way — five-plus years of writing as one continuous stroke — then fades. Subscribe to the newsletter and a comet streaks in and lands a star labeled YOU in the career cluster. It survives reloads. Hover it later and the card reads "You — reading since" the day you signed up.
+Watch the crown for a minute and you'll see the fire is made of different creatures.
+
+**Sparks** are the small stuff: short-lived fire particles that flicker up off the flames and gutter out. Pure atmosphere. You can't catch them, but they answer your cursor — hover the head and they spawn faster and fly higher.
+
+**Embers are essays.** Every few seconds the fire lifts a bigger, brighter orb off the crown and it streaks across the sky like a meteor — each one launched in its own direction across a wide fan, at its own speed, bending along its own slow arc, dragging a short comet tail. Every ember carries a randomly selected essay. Hover one and it freezes mid-flight, a focus ring snaps around it, and its card appears labeled RISING THOUGHT:
+
+<Image src="https://zackproser.b-cdn.net/images/hero-glow-up-ember-card.webp" alt="A rising ember caught mid-flight above the flame crown, frozen while its RISING THOUGHT preview card shows a randomly selected essay" width={900} height={860} />
+
+Let go and it resumes its arc. Click it — or click any star — and the target bursts into a ring of sparks before the page navigates, so you see your catch land. Occasionally an uncaught ember peels away from its arc and drifts down into the corner of the newsletter card, landing with a small pop of sparks. Thoughts finding their way to the inbox.
+
+**The line runners** are the searches. Every few seconds a ring expands over one of the constellations and connector lines run outward from it, star to star, linking the essays nearest to that point in the cluster — a live vector-search vignette, because retrieval is both my subject matter and my resume, and the sky should act like it. The lines draw themselves, hold, and dissolve. And there's a bigger line runner hiding behind a key: press "t" and a glowing thread animates through every star in publish order, oldest to newest, year markers ticking past — five-plus years of writing as one continuous stroke — then fades completely.
+
+<Image src="https://zackproser.b-cdn.net/images/hero-glow-up-fire-card.webp" alt="Close-up of the flame crown: ember meteors glowing around the fire, and a preview card for a recent essay carrying a NEW tag" width={1360} height={1160} />
+
+One more inhabitant: subscribe to the newsletter and a comet streaks in from off-screen and lands a star labeled YOU in the career cluster, while the surrounding stars flare in a welcoming ripple. Your star survives reloads. Hover it later and the card reads "You — reading since" the day you signed up.
 
 ## One sky, both themes
 
-<Image src="https://zackproser.b-cdn.net/images/hero-glow-up-night-band.webp" alt="Light mode: the hero renders as a night-sky band with the burning mark and constellations, transitioning to the parchment page below with stats and workshop sections" width={1440} height={1500} />
+<Image src="https://zackproser.b-cdn.net/images/hero-glow-up-night-band.webp" alt="Light mode: the hero renders as a night-sky band with the burning mark, a preview card showing, and the parchment page below with stats and workshop sections" width={1440} height={1500} />
 
 Light mode nearly broke this design. The mark's cream flames vanish on a parchment page, and every recoloring attempt made it worse — washed out, or wearing weird backdrops. The fix that finally worked was structural instead of cosmetic: the hero panel is always the night sky, in both themes. In light mode the rest of the page stays parchment and the hero reads as a deliberate dark band, the way a photo spread runs full-bleed black in a printed magazine. One palette, one render path, and the light-mode problem stopped existing as a category.
 
