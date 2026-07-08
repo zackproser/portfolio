@@ -1,0 +1,25 @@
+{
+  "title": "The mind is a fire: I rebuilt my homepage as a living map of everything I've written",
+  "author": "Zachary Proser",
+  "date": "2026-07-08",
+  "description": "My old homepage centered a photo of my face. The new one is the Mind on Fire mark alive over my entire corpus — every essay a star, clustered by topic, hover to preview, click to read, and fire rising off the crown. Here's what it is, how it works, and why I built it.",
+  "image": "https://zackproser.b-cdn.net/images/mind-on-fire-hero.webp",
+  "type": "blog",
+  "tags": [
+    "Design",
+    "Canvas",
+    "Portfolio",
+    "Data Visualization",
+    "Branding",
+    "Next.js"
+  ],
+  "keywords": [
+    "portfolio hero animation",
+    "canvas constellation",
+    "mind on fire",
+    "interactive homepage",
+    "semantic clustering",
+    "phyllotaxis layout",
+    "developer portfolio design"
+  ]
+}

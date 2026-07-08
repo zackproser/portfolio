@@ -1,0 +1,114 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# The mind is a fire: I rebuilt my homepage as a living map of everything I've written
+
+<Image src="https://zackproser.b-cdn.net/images/mind-on-fire-hero.webp" alt="The zackproser.com homepage: a dark editorial layout with the headline 'The mind is a fire to be ignited' on the left, and on the right a pixel-rendered profile of a head whose hair becomes flame and whose neck becomes circuitry, surrounded by clusters of glowing dots labeled RAG & RETRIEVAL, VOICE & TOOLS, AI-ASSISTED DEV, EVALS & FINE-TUNING, INFRASTRUCTURE, and CAREER & ENABLEMENT" width={1760} height={1100} />
+
+For years the first thing you saw on my homepage was a photo of my face, centered. It did the job a headshot does. It never told you anything about the work.
+
+The new homepage is the Mind on Fire mark burning over my entire body of writing. Every glowing dot on the right is one real essay — 159 of them the day I shipped this — laid out in constellations by topic. Hover a star and a preview card opens with the post's opening lines. Click it and you're reading. Fire rises off the crown of the mark, and the embers that peel off it are clickable: catch one and it hands you a random essay from the archive.
+
+This is a walk through what it is, how it works under the hood, and the reasons I threw out the portrait.
+
+## Why the face had to go
+
+A centered headshot is a decision to make the site about me as a person before it's about anything I've made. I've written for over twenty years and shipped software for fifteen, and none of that was visible above the fold. You had to scroll and trust me. The photo was a bottleneck between a visitor and the 159 reasons they might actually stick around.
+
+I wanted the opposite: the writing itself, all of it, presented in a way that was easy to browse and genuinely fun to poke at. Most "browse my blog" experiences are a reverse-chronological list of ten cards and a pagination arrow. That format buries everything I wrote more than a month ago. I wanted a shape where five years of essays are all present at once, where wandering between them is cheap, and where the wandering is its own small pleasure.
+
+## The name is the whole thesis
+
+I named my company Mind on Fire because of a line usually attributed to Plutarch: the mind is a fire to be kindled, not a vessel to be filled. That's the belief underneath everything I do — teaching, writing, the consultancy. You don't pour knowledge into people. You light something and it spreads on its own.
+
+I also love the original *Man on Fire*, the Tony Scott film with Denzel Washington. The title has lived rent-free in my head for years. (The new Netflix series is fine. It's fine.) "Mind on Fire" is my own bend on it: the same heat, pointed at ideas instead of revenge.
+
+The headline on the page — *The mind is a fire to be ignited* — is that thesis stated plainly, and the mark literally is a mind on fire: a head whose hair turns to flame and whose neck turns to circuitry. The homepage finally argues its own name.
+
+## One brand, not two
+
+My personal site and my LLC's site — [mindonfire.net](https://mindonfire.net) — had grown apart. Same person, same work, two different visual languages that shared almost nothing. A visitor moving between them felt the seam. The consultancy looked like one company and the portfolio looked like a different person's hobby.
+
+Rebuilding the hero around the Mind on Fire mark, its palette of ember orange and slate, and its night-sky ground pulled the two back into one identity. Now the portfolio reads as the front door of the same practice, not a separate property that happens to share my name.
+
+## The core idea: writing as a graph
+
+I spend my working life on retrieval and embeddings — putting text into vector space so related things land near each other. It felt dishonest to describe that work on a page that presented my writing as a flat list.
+
+So the corpus is a graph. Each essay is a node. They cluster into six regions by subject — RAG & retrieval, voice & tools, AI-assisted dev, evals & fine-tuning, infrastructure, and career & enablement — and thin lines connect each post to its nearest neighbor inside its cluster. The layout evokes a neural net or a night sky on purpose. It's the honest picture of how the work actually relates to itself: dense where I've written a lot, sparse where I've written little, everything within one gesture of everything else.
+
+The labels are a promise, so I don't get to fake them. Cluster assignment runs at build time from an audited set of rules — explicit overrides first, then a tag map, then keyword rules ordered most-specific-first. Every dot under "RAG & RETRIEVAL" genuinely earned its place there. When I add a post, the sky re-clusters itself.
+
+## How it's actually built
+
+The whole scene is a single `<canvas>` painted by a `requestAnimationFrame` loop. None of the stars are DOM nodes — at 159 posts plus fire, embers, links, and glow, that would be thousands of elements thrashing layout. The canvas draws it all in one pass and stays smooth.
+
+The data comes from a build step. A script scans `src/content/blog/*/metadata.json`, drops anything flagged `hiddenFromIndex`, pulls the opening paragraph out of each `page.mdx` for the preview text, assigns a cluster, and writes a single `corpus.json`. That file is the only thing the hero reads. The star count, the previews, the constellation shapes, even the "159 essays" in the copy — all of it regenerates from the content directory every time I build. I never hand-update the hero. I write a post, and the next build folds it into the sky.
+
+Inside each cluster the stars are placed on a phyllotaxis spiral — the same golden-angle packing sunflowers use — so the dots distribute evenly without clumping or leaving holes, no matter how many posts a cluster holds. Then a second pass pushes any star that landed on the mark's silhouette back out, so the figure stays legible against the field.
+
+The mark itself is sampled into pixels. I load the logo image once, read its pixels, and split them into three roles: the warm flame pixels along the crown and forehead, the cool circuitry pixels down the neck, and the dark silhouette. The flame pixels flicker on a sine wave; the circuitry pixels pulse more slowly; the silhouette is baked to an offscreen canvas once so it costs a single draw call per frame instead of thousands.
+
+## Hover to preview, click to read
+
+Every star is a real destination. Move over one and a card fades in with the post's category, date, title, and its actual opening sentence — the same excerpt pulled at build time.
+
+<Image src="https://zackproser.b-cdn.net/images/mind-on-fire-preview-card.webp" alt="A preview card floating over the constellation, labeled RAG & RETRIEVAL, titled 'Pinecone vs Chroma', showing the opening line 'This page contains a detailed comparison of the Pinecone and Chroma vector databases' and a 'Read essay' link, with an amber gradient art panel above it" width={900} height={865} />
+
+The card carries the post's hero image when it has one, or falls back to the amber gradient and the title's first letter, shown here. Dates get little annotations — LATEST on the newest post, NEW on anything from the last couple months, READ on anything you've already opened. The site remembers what you've read in `localStorage` and draws a faint ember ring around those stars, so your trail through the corpus is visible the next time you come back.
+
+## The fire answers your cursor
+
+The mark isn't a looping GIF. The fire is a live particle system that reacts to you. Ride your cursor across the mark and the flames surge — more sparks, taller tongues, faster flicker. Sweep the pointer sideways near the crown and the motion becomes wind that pushes the embers in the direction you moved.
+
+<Image src="https://zackproser.b-cdn.net/images/mind-on-fire-fire-surge.webp" alt="Close interaction with the mark: the flames off the crown have surged brighter and taller with more sparks scattering upward as the cursor rides over the figure" width={1760} height={1100} />
+
+It's a small thing, and most visitors will never consciously notice it. But the difference between a video and something that responds is the difference between watching a fire and sitting next to one. One of them acknowledges you're there.
+
+## The easter egg: catch a rising thought
+
+This is my favorite part, and it's the one I most wanted to capture for this post.
+
+Thoughts rise off the mark's crown as embers — glowing motes that curl upward and drift on their own arcs, trailing a short tail like a meteor. Each one is carrying a random essay. Hover an ember before it fades, or click it, and its preview card opens like any star's, labeled RISING THOUGHT.
+
+<Image src="https://zackproser.b-cdn.net/images/mind-on-fire-ember-thought.webp" alt="An ember caught in flight above the flames, its preview card open and labeled RISING THOUGHT, surfacing the essay 'GitHub Copilot review' with its opening line about signing up to try GitHub Copilot" width={1760} height={1100} />
+
+It's the literal image of the whole site working: the mind is on fire, and the fire throws off ideas, and any idea you reach out and catch turns out to be something I wrote. A few of them even drift toward the newsletter card and disappear into it, like a thought finding its way to your inbox.
+
+## The stuff you'll only find if you look
+
+I hid a few more things in there for the people who poke at pages.
+
+When the sky is idle, it browses itself. Every few seconds it surfaces an essay you haven't read, warming its cluster and opening its card, so the page is never dead and never repeats what you've already seen. The moment you move your mouse, it hands control back to you.
+
+Press **`t`** and a thread draws itself through every post in chronological order, oldest to newest, stamping the year as it crosses each one. Five years of writing traced in a single stroke.
+
+<Image src="https://zackproser.b-cdn.net/images/mind-on-fire-chronology.webp" alt="The chronology thread active: a single glowing line weaves through the entire constellation connecting posts in time order, with year labels 2011, 2014, 2018, 2019, 2021, 2022, 2023, and 2024 marking points along the path" width={1760} height={1100} />
+
+The whole thing is keyboard-navigable — focus the hero, arrow through the stars newest-to-oldest, Enter to read. And when you subscribe to the newsletter, a comet flies in from off-screen and lands as a permanent star in the corpus, the nearby stars flaring in welcome. It's marked YOU, and it's still there when you return.
+
+## It behaves itself
+
+An animated hero is easy to get wrong in ways that hurt people, so the canvas is decorative and the substance is real DOM. The headline, the bio, and the newsletter form are server-rendered HTML that works with the canvas turned off entirely. There's a screen-reader-only list of recent essays behind it. The `<canvas>` is `aria-hidden`.
+
+If you've asked your system for reduced motion, you don't get a paused animation — you get a composed poster: a settled sky with one recent unread essay already in focus and its card open, painted once and left alone. The loop pauses whenever the hero scrolls off-screen, caps its pixel ratio on lower-memory devices, and plays its entrance exactly once per session instead of every navigation. There's even a `?snap` mode that renders a settled, chrome-free frame so the social-share image is a real screenshot of the hero itself.
+
+## Why bother
+
+A homepage is an argument about what matters. Mine used to argue that the most important thing was my face. Now it argues that the most important thing is the work, that the work is one connected body rather than a pile of posts, and that the connections are worth exploring for their own sake.
+
+It also just makes me want to click around, which is the truest test. A portfolio you don't enjoy visiting is one you stop maintaining. This one I keep opening on purpose — to catch an ember and see what comes up.
+
+Go break it. Ride the fire, catch a thought, press `t`, and if you want the ideas to keep landing in your inbox, drop a star in the corpus.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/portfolio-that-pays-rent-hero.jpg"
+  imageAlt="Illustration for The Portfolio That Pays Rent"
+  title="The Portfolio That Pays Rent"
+  description="The homepage is the front door. This is the argument for why a developer's site should earn its keep — and how mine does."
+  href="/blog/portfolio-that-pays-rent"
+/>

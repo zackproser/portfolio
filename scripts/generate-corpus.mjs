@@ -68,6 +68,7 @@ const OVERRIDES = {
   'pinecone-reference-architecture-scaling': 0,
   'pinecone-reference-architecture-technical-walkthrough': 0,
   'run-your-own-tech-blog': 5,
+  'mind-on-fire-homepage': 5,
   'wash-three-walls-with-one-bucket': 5,
   'you-get-to-keep-the-neural-connections': 5,
   /* audited corrections — every dot under a label belongs there */
