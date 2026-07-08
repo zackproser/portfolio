@@ -1181,7 +1181,7 @@ export function MindOnFireHero() {
         }
         if (qt > 5.4) query = null
       }
-      if (t - lastQueryAt > 7 && ignite > 2.4) fireQuery(t)
+      if (!SNAP && t - lastQueryAt > 7 && ignite > 2.4) fireQuery(t)
 
       /* subscriber comet */
       if (comet) {
