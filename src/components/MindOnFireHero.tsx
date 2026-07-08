@@ -223,6 +223,7 @@ export function MindOnFireHero() {
             phase: 1.7, delay: 0, flare: 0.5, post: -1, c: 5,
           })
         }
+        chronoOrder = []
         return
       }
       logoCX = W * 0.735
@@ -332,7 +333,16 @@ export function MindOnFireHero() {
       layout()
       preview.classList.remove('mof-show')
       lastKey = null
-      if (reduced && !running) rafId = requestAnimationFrame(frame)
+      if (reduced) {
+        const candidates = stars.filter((sst) => sst.post >= 0 && !readSet.has(POSTS[sst.post].s))
+        const pick = candidates.length ? candidates[0] : stars.find((sst) => sst.post >= 0)
+        if (pick) {
+          const pi = stars.indexOf(pick)
+          stars[pi].flare = 0.7
+          autoHit = { kind: 0, i: pi, post: stars[pi].post, until: Number.MAX_SAFE_INTEGER }
+        }
+        if (!running) rafId = requestAnimationFrame(frame)
+      }
     }
 
     /* ---------- the mark ---------- */
