@@ -335,8 +335,14 @@ export function MindOnFireHero() {
       preview.classList.remove('mof-show')
       lastKey = null
       if (reduced) {
-        const candidates = stars.filter((sst) => sst.post >= 0 && !readSet.has(POSTS[sst.post].s))
-        const pick = candidates.length ? candidates[0] : stars.find((sst) => sst.post >= 0)
+        let pick: Star | undefined
+        for (const si of chronoOrder) {
+          if (!readSet.has(POSTS[stars[si].post].s)) {
+            pick = stars[si]
+            break
+          }
+        }
+        if (!pick && chronoOrder.length) pick = stars[chronoOrder[0]]
         if (pick) {
           const pi = stars.indexOf(pick)
           stars[pi].flare = 0.7
@@ -1357,8 +1363,14 @@ export function MindOnFireHero() {
       /* a composed poster, not a paused video: settled sky, one recent
          unread essay pre-focused with its card open */
       born = -10
-      const candidates = stars.filter((sst) => sst.post >= 0 && !readSet.has(POSTS[sst.post].s))
-      const pick = candidates.length ? candidates[0] : stars.find((sst) => sst.post >= 0)
+      let pick: Star | undefined
+      for (const si of chronoOrder) {
+        if (!readSet.has(POSTS[stars[si].post].s)) {
+          pick = stars[si]
+          break
+        }
+      }
+      if (!pick && chronoOrder.length) pick = stars[chronoOrder[0]]
       if (pick) {
         const pi = stars.indexOf(pick)
         stars[pi].flare = 0.7
