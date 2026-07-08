@@ -184,7 +184,12 @@ export function MindOnFireHero() {
       if (reduced && !running) rafId = requestAnimationFrame(frame)
     }
     refreshPalette()
-    const themeObs = new MutationObserver(refreshPalette)
+    let sweepAt = -999 /* theme-flip dusk sweep timestamp, canvas seconds */
+    const themeObs = new MutationObserver(() => {
+      const wasDark = P.dark
+      refreshPalette()
+      if (P.dark !== wasDark && !reduced) sweepAt = lastT
+    })
     themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 
     const rnd = (i: number, salt: number) => {
@@ -588,7 +593,8 @@ export function MindOnFireHero() {
     type Ember = {
       id: number; x: number; y: number; vx: number; vy: number; wob: number
       r: number; life: number; age: number; post: number; held: boolean
-      wasHeld: boolean; userCaught: boolean; wasUserCaught: boolean
+      wasHeld: boolean
+      toInbox?: boolean; userCaught: boolean; wasUserCaught: boolean
     }
     const postEmbers: Ember[] = []
     let emberSeq = 1
@@ -621,8 +627,30 @@ export function MindOnFireHero() {
         em.wasUserCaught = em.userCaught
         if (!em.held) {
           em.age += dt
-          em.x += (em.vx + Math.sin(em.wob + em.age * 2.2) * 9) * dt
-          em.y += em.vy * dt
+          if (em.toInbox) {
+            /* a thought finds its way to the inbox */
+            const card = hero.querySelector('.mof-capture')
+            const cr = card?.getBoundingClientRect()
+            const hr = hero.getBoundingClientRect()
+            if (cr) {
+              const tx2 = cr.right - hr.left - 24
+              const ty2 = cr.top - hr.top + 8
+              em.x += (tx2 - em.x) * dt * 1.4
+              em.y += (ty2 - em.y) * dt * 1.4
+              if (Math.abs(tx2 - em.x) < 12 && Math.abs(ty2 - em.y) < 12) {
+                sparkBurst(em.x, em.y, 5, 0.3)
+                postEmbers.splice(i, 1)
+                continue
+              }
+            }
+          } else {
+            em.x += (em.vx + Math.sin(em.wob + em.age * 2.2) * 9) * dt
+            em.y += em.vy * dt
+            /* occasionally an uncaught thought peels off toward the capture card */
+            if (W >= 1024 && em.age > 3 && Math.random() < dt * 0.12) {
+              em.toInbox = true
+            }
+          }
         }
         if (em.age >= em.life || em.y < 54) { postEmbers.splice(i, 1); continue }
         const a = Math.min(1, em.age / 0.6, (em.life - em.age) / 1.2) * headA
@@ -1166,6 +1194,22 @@ export function MindOnFireHero() {
         }
       }
 
+      /* dusk sweep: a soft gradient crosses the sky on theme flip */
+      const sw = t - sweepAt
+      if (sw >= 0 && sw < 0.7) {
+        const sx2 = (sw / 0.7) * (W + 400) - 200
+        const sg = ctx.createLinearGradient(sx2 - 180, 0, sx2 + 180, 0)
+        const tone = P.dark ? '15,15,31' : '251,247,240'
+        sg.addColorStop(0, 'rgba(' + tone + ',0)')
+        sg.addColorStop(0.5, 'rgba(' + tone + ',0.5)')
+        sg.addColorStop(1, 'rgba(' + tone + ',0)')
+        ctx.globalCompositeOperation = 'source-over'
+        ctx.fillStyle = sg
+        ctx.fillRect(0, 0, W, H)
+        /* the fire flares once as the sweep crosses the mark */
+        if (Math.abs(sx2 - logoCX) < 120) surge = Math.max(surge, 0.8)
+      }
+
       if (running) rafId = requestAnimationFrame(frame)
     }
 
@@ -1181,7 +1225,16 @@ export function MindOnFireHero() {
       running = true
       rafId = requestAnimationFrame(frame)
     } else {
+      /* a composed poster, not a paused video: settled sky, one recent
+         unread essay pre-focused with its card open */
       born = -10
+      const candidates = stars.filter((sst) => sst.post >= 0 && !readSet.has(POSTS[sst.post].s))
+      const pick = candidates.length ? candidates[0] : stars.find((sst) => sst.post >= 0)
+      if (pick) {
+        const pi = stars.indexOf(pick)
+        stars[pi].flare = 0.7
+        autoHit = { kind: 0, i: pi, post: stars[pi].post, until: Number.MAX_SAFE_INTEGER }
+      }
       rafId = requestAnimationFrame(frame)
     }
     const onResize = () => resize()
