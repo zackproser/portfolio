@@ -617,24 +617,26 @@ export function MindOnFireHero() {
       r: number; life: number; age: number; post: number; held: boolean
       wasHeld: boolean
       turn: number
+      trail: Array<{ x: number; y: number }>
       toInbox?: boolean; userCaught: boolean; wasUserCaught: boolean
     }
     const postEmbers: Ember[] = []
     let emberSeq = 1
     function stepEmbers(dt: number, headA: number, t: number, ignite: number) {
       if (!ctx) return
-      if (logoReady && crownSrc.length && ignite > 2 && postEmbers.length < 4 && Math.random() < dt * 0.6) {
+      if (logoReady && crownSrc.length && ignite > 2 && postEmbers.length < 7 && Math.random() < dt * 1.2) {
         const src = crownSrc[(Math.random() * crownSrc.length) | 0]
         /* thoughts scatter in a fan off the crown — up, sideways, curling */
-        const ang = -Math.PI / 2 + (Math.random() - 0.5) * 2.2
-        const sp = 13 + Math.random() * 13
+        const ang = -Math.PI / 2 + (Math.random() - 0.5) * 2.4
+        const sp = 32 + Math.random() * 46
         postEmbers.push({
           id: emberSeq++,
           x: src.sx + (Math.random() * 20 - 10),
           y: src.sy - 6,
           vx: Math.cos(ang) * sp,
-          vy: Math.sin(ang) * sp - 4,
-          turn: (Math.random() - 0.5) * 0.4,
+          vy: Math.sin(ang) * sp - 6,
+          turn: (Math.random() - 0.5) * 0.5,
+          trail: [],
           wob: Math.random() * 6.2832,
           r: 5.2 + Math.random() * 1.6,
           life: 8,
@@ -682,13 +684,27 @@ export function MindOnFireHero() {
             em.x += (em.vx + Math.sin(em.wob + em.age * 2.2) * 9) * dt
             em.y += em.vy * dt
             /* occasionally an uncaught thought peels off toward the capture card */
-            if (W >= 1024 && em.age > 3 && Math.random() < dt * 0.12) {
+            if (W >= 1024 && em.age > 3 && Math.random() < dt * 0.05) {
               em.toInbox = true
             }
           }
         }
         if (em.age >= em.life || em.y < 54 || em.y > H - 16 || em.x < 16 || em.x > W - 10) { postEmbers.splice(i, 1); continue }
         const a = Math.min(1, em.age / 0.6, (em.life - em.age) / 1.2) * headA
+        /* a short fading tail — a meteor, not a bubble */
+        if (!em.held) {
+          em.trail.push({ x: em.x, y: em.y })
+          if (em.trail.length > 9) em.trail.shift()
+        }
+        for (let ti = 1; ti < em.trail.length; ti++) {
+          const ta = (ti / em.trail.length) * 0.4 * a
+          ctx.strokeStyle = 'hsla(' + (40 - 18 * (em.age / em.life)) + ',94%,' + (P.dark ? 62 : 46) + '%,' + ta.toFixed(3) + ')'
+          ctx.lineWidth = (ti / em.trail.length) * 2
+          ctx.beginPath()
+          ctx.moveTo(em.trail[ti - 1].x, em.trail[ti - 1].y)
+          ctx.lineTo(em.trail[ti].x, em.trail[ti].y)
+          ctx.stroke()
+        }
         const flick = 0.82 + 0.18 * Math.sin(t * 5 + em.wob)
         if (P.dark) {
           ctx.fillStyle = 'hsla(36,95%,62%,' + (a * 0.16).toFixed(3) + ')'
