@@ -20,7 +20,7 @@ import corpus from '@/data/corpus.json'
  * Canvas is decorative: copy + newsletter capture are SSR'd DOM.
  * ------------------------------------------------------------------ */
 
-type Post = { t: string; s: string; d: string; e: string; img: string }
+type Post = { t: string; s: string; d: string; e: string; img: string; c: number }
 type Star = {
   x: number; y: number; r: number; tint: number; phase: number
   delay: number; flare: number; post: number; c: number
@@ -46,20 +46,11 @@ const QUERIES = [
   { q: 'code by voice, faster than typing', c: 1 },
   { q: 'my team ignores the AI tools we bought', c: 5 },
 ]
-const CLUSTER_RULES = [
-  /rag|retriev|vector|pinecone|embedding|semantic-search|langchain|chatbot|knowledge-base/,
-  /voice|whisper|talon|tool|review|setup|workflow|productivity|video|demo|speaking/,
-  /copilot|cursor|codeium|windsurf|aider|claude|chatgpt|gpt|gemini|llm|coding-assistant|ai-assisted|autocomplete|agent|mcp/,
-  /eval|fine-?tun|llama|mistral|dataset|training|jupyter|notebook|mnist|neural|machine-learning|deep-learning|model/,
-  /terraform|pulumi|aws|docker|kubernetes|infra|cloud|linux|cli|git|next-?js|vercel|database|postgres|architecture/,
-  /career|job|interview|advice|developer|engineer|team|workshop|enablement|writing|blog|reader|salary|manager/,
-]
-function clusterFor(post: Post, idx: number): number {
-  const hay = (post.t + ' ' + post.s).toLowerCase()
-  for (let r = 0; r < CLUSTER_RULES.length; r++) {
-    if (CLUSTER_RULES[r].test(hay)) return r
-  }
-  return idx % CLUSTERS.length
+/* cluster assignment happens at build time in generate-corpus.mjs —
+   overrides + tag map + audited keyword rules — so every dot under a
+   label genuinely belongs to that category */
+function clusterOf(post: Post): number {
+  return post.c >= 0 && post.c < CLUSTERS.length ? post.c : 5
 }
 
 /* fresh ink: posts from roughly the last 60 days glint brighter */
@@ -203,7 +194,7 @@ export function MindOnFireHero() {
       logoCX = W * 0.735
       logoCY = H * 0.46
       const members: number[][] = CLUSTERS.map(() => [])
-      POSTS.forEach((p, i) => members[clusterFor(p, i)].push(i))
+      POSTS.forEach((p, i) => members[clusterOf(p)].push(i))
 
       let spacing = Math.max(19, Math.min(27, W / 62))
       if (W < 1000) spacing = Math.max(10, spacing * 0.55)
@@ -747,7 +738,7 @@ export function MindOnFireHero() {
     preview.addEventListener('mouseleave', onCardLeave)
 
     /* ---------- live queries ---------- */
-    let query: { p: { x: number; y: number }; nn: number[]; t0: number; gen: number; q: string } | null = null
+    let query: { p: { x: number; y: number }; nn: number[]; t0: number; gen: number } | null = null
     let qIndex = 0
     let layoutGen = 0
     let lastQueryAt = -999
@@ -768,7 +759,7 @@ export function MindOnFireHero() {
         })
         .sort((a, b) => a.d - b.d)
       const gen = layoutGen
-      query = { p: qp, nn: best.slice(0, 6).map((b) => b.i), t0: now, gen, q: item.q }
+      query = { p: qp, nn: best.slice(0, 6).map((b) => b.i), t0: now, gen }
       query.nn.forEach((idx, k) => {
         setTimeout(() => {
           if (!disposed && gen === layoutGen && stars[idx]) stars[idx].flare = 1
@@ -1002,22 +993,6 @@ export function MindOnFireHero() {
           ctx.stroke()
         }
         const ea = qt < 3.8 ? 1 : Math.max(0, 1 - (qt - 3.8) / 1.2)
-        /* the thought types itself beside the ring, then fades with it */
-        if (qt > 0.2 && ea > 0.02) {
-          const alphaT = (qt < 0.5 ? (qt - 0.2) / 0.3 : 1) * ea
-          const chars = Math.min(query.q.length, Math.floor((qt - 0.2) * 26))
-          const done = chars >= query.q.length
-          const caret = !done && Math.floor(t * 3) % 2 === 0 ? '▌' : ''
-          const text = '\u201C' + query.q.slice(0, chars) + (done ? '\u201D' : caret)
-          ctx.font = '500 11.5px ui-monospace, SF Mono, Menlo, monospace'
-          ctx.textAlign = 'left'
-          const tw2 = ctx.measureText(text).width
-          let tx = qp.x + 16
-          if (tx + tw2 > W - 12) tx = qp.x - tw2 - 16
-          ctx.fillStyle = 'rgba(' + P.queryRing + ',' + (0.8 * alphaT).toFixed(3) + ')'
-          ctx.fillText(text, Math.max(12, tx), qp.y - 14)
-          ctx.textAlign = 'center'
-        }
         if (ea > 0 && qt > 0.35) {
           const prog = Math.min(1, (qt - 0.35) / 0.8)
           ctx.lineWidth = 1
