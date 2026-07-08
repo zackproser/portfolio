@@ -175,7 +175,11 @@ for (const dir of fs.readdirSync(blogDir)) {
   })
 }
 
-posts.sort((a, b) => (b.fullDate || '').localeCompare(a.fullDate || ''))
+posts.sort((a, b) => {
+  const dateA = a.fullDate ? new Date(a.fullDate).getTime() : 0
+  const dateB = b.fullDate ? new Date(b.fullDate).getTime() : 0
+  return dateB - dateA
+})
 fs.mkdirSync(path.dirname(outFile), { recursive: true })
 fs.writeFileSync(outFile, JSON.stringify({ count: posts.length, posts }))
 console.log(`corpus: ${posts.length} indexable posts (${hidden} hidden) → src/data/corpus.json`)

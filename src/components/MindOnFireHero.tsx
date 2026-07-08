@@ -621,6 +621,7 @@ export function MindOnFireHero() {
     let shownPost: number | null = null
     let shownEmberId: number | null = null
     let lastFocus: Hit | null = null
+    let navTimer: ReturnType<typeof setTimeout> | null = null
 
     function hitTest(x: number, y: number): Hit | null {
       let bestD = 676
@@ -729,7 +730,8 @@ export function MindOnFireHero() {
         sparkBurst(pos.x, pos.y, 14, 0.4)
         if (hit.kind === 0) stars[hit.i].flare = 1
       }
-      setTimeout(() => { if (!disposed) router.push(('/blog/' + post.s) as Route) }, 260)
+      if (navTimer) clearTimeout(navTimer)
+      navTimer = setTimeout(() => { if (!disposed) router.push(('/blog/' + post.s) as Route) }, 260)
     }
     hero.addEventListener('mousemove', onMove, { passive: true })
     hero.addEventListener('mouseleave', onLeave)
@@ -1120,6 +1122,7 @@ export function MindOnFireHero() {
       running = false
       cancelAnimationFrame(rafId)
       if (hideTimer) clearTimeout(hideTimer)
+      if (navTimer) clearTimeout(navTimer)
       themeObs.disconnect()
       ro?.disconnect()
       io?.disconnect()
