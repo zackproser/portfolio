@@ -464,8 +464,8 @@ export function MindOnFireHero() {
       for (const p of logoP) {
         if (p.ghost) continue
         let a = 0.94 * headA
-        if (p.flame) a *= 0.74 + 0.26 * Math.sin(t * 6 + p.ph)
-        else if (p.bx > 0.02) a *= 0.7 + 0.3 * Math.sin(t * 2.2 + (p.bx + p.by) * 9)
+        if (p.flame) a *= 0.74 + 0.26 * Math.sin(t * (6 + surge * 5) + p.ph)
+        else if (p.bx > 0.02) a *= 0.7 + 0.3 * Math.sin(t * (2.2 + surge * 1.5) + (p.bx + p.by) * 9)
         ctx.fillStyle = 'rgba(' + p.colD + ',' + Math.min(a, 1).toFixed(3) + ')'
         ctx.fillRect(p.sx - px * 0.62, p.sy - px * 0.62, px * 1.24, px * 1.24)
       }
@@ -477,14 +477,14 @@ export function MindOnFireHero() {
     function stepFlames(dt: number, headA: number) {
       if (!ctx) return
       if (headA > 0.3 && logoReady && crownSrc.length) {
-        const want = Math.min(3, 120 - flames.length)
+        const want = Math.min(3 + Math.round(surge * 3), 120 + Math.round(surge * 40) - flames.length)
         for (let s = 0; s < want; s++) {
           const src = crownSrc[(Math.random() * crownSrc.length) | 0]
-          const spark = Math.random() < 0.12
+          const spark = Math.random() < 0.12 + surge * 0.1
           flames.push({
             x: src.sx + (Math.random() * 14 - 7),
             y: src.sy + 2,
-            vy: -(40 + Math.random() * 60) * (spark ? 1.6 : 1),
+            vy: -(40 + Math.random() * 60) * (spark ? 1.6 : 1) * (1 + surge * 0.45),
             vx: Math.random() * 10 - 5,
             wob: Math.random() * 6.2832,
             life: spark ? 1.6 : 0.85 + Math.random() * 0.7,
@@ -499,7 +499,14 @@ export function MindOnFireHero() {
         f.age += dt
         if (f.age >= f.life) { flames.splice(i, 1); continue }
         const p = f.age / f.life
-        f.x += (f.vx + Math.sin(f.wob + f.age * 9) * 14) * dt
+        let wind = 0
+        if (mouseIn) {
+          const wdx = f.x - mouseX
+          const wdy = f.y - mouseY
+          const wd2 = wdx * wdx + wdy * wdy
+          if (wd2 < 19600) wind = mouseVX * 0.35 * (1 - wd2 / 19600) /* 140px reach */
+        }
+        f.x += (f.vx + wind + Math.sin(f.wob + f.age * 9) * 14) * dt
         f.y += f.vy * dt
         const hue = 46 - 40 * p
         const lig = P.dark ? 68 - 20 * p : 62 - 20 * p
@@ -574,6 +581,11 @@ export function MindOnFireHero() {
     let mouseX = -9999
     let mouseY = -9999
     let mouseIn = false
+    let mouseVX = 0 /* smoothed cursor x-velocity, px/s — the wind */
+    let lastMoveX = -1
+    let lastMoveT = 0
+    let surge = 0 /* eased 0..1 while the pointer is on the mark */
+    const clusterGlow = CLUSTERS.map(() => 0)
     let hover: Hit | null = null
     let cardHover = false
     let hideTimer: ReturnType<typeof setTimeout> | null = null
@@ -653,12 +665,20 @@ export function MindOnFireHero() {
 
     const onMove = (e: MouseEvent) => {
       const r = hero.getBoundingClientRect()
-      mouseX = e.clientX - r.left
+      const nx = e.clientX - r.left
+      const now = performance.now()
+      if (lastMoveX >= 0 && now > lastMoveT) {
+        const v = ((nx - lastMoveX) / Math.max(8, now - lastMoveT)) * 1000
+        mouseVX = mouseVX * 0.8 + Math.max(-900, Math.min(900, v)) * 0.2
+      }
+      lastMoveX = nx
+      lastMoveT = now
+      mouseX = nx
       mouseY = e.clientY - r.top
       const target = e.target as HTMLElement | null
       mouseIn = !(target && target.closest && target.closest('.mof-copy'))
     }
-    const onLeave = () => { mouseIn = false }
+    const onLeave = () => { mouseIn = false; mouseVX = 0; lastMoveX = -1 }
     const onCardEnter = () => { cardHover = true }
     const onCardLeave = () => { cardHover = false }
     const onClick = (e: MouseEvent) => {
@@ -684,7 +704,7 @@ export function MindOnFireHero() {
     preview.addEventListener('mouseleave', onCardLeave)
 
     /* ---------- live queries ---------- */
-    let query: { p: { x: number; y: number }; nn: number[]; t0: number; gen: number } | null = null
+    let query: { p: { x: number; y: number }; nn: number[]; t0: number; gen: number; q: string } | null = null
     let qIndex = 0
     let layoutGen = 0
     let lastQueryAt = -999
@@ -705,7 +725,7 @@ export function MindOnFireHero() {
         })
         .sort((a, b) => a.d - b.d)
       const gen = layoutGen
-      query = { p: qp, nn: best.slice(0, 6).map((b) => b.i), t0: now, gen }
+      query = { p: qp, nn: best.slice(0, 6).map((b) => b.i), t0: now, gen, q: item.q }
       query.nn.forEach((idx, k) => {
         setTimeout(() => {
           if (!disposed && gen === layoutGen && stars[idx]) stars[idx].flare = 1
@@ -761,7 +781,7 @@ export function MindOnFireHero() {
       /* links */
       ctx.lineWidth = 0.9
       for (const [a, b] of links) {
-        const la = (P.dark ? 0.2 : 0.26) * labelA
+        const la = Math.min(0.6, (P.dark ? 0.2 : 0.26) * labelA * (1 + clusterGlow[stars[a].c] * 0.9))
         ctx.strokeStyle = 'rgba(' + P.edge + ',' + la.toFixed(3) + ')'
         ctx.beginPath()
         ctx.moveTo(stars[a].x, stars[a].y)
@@ -820,13 +840,20 @@ export function MindOnFireHero() {
       }
       updatePreview(hover || tapHit || autoHit, !!(hover || tapHit))
 
+      /* the whole constellation warms when one of its stars has focus */
+      const focus = hover || tapHit || autoHit
+      const focusCluster = focus && focus.kind === 0 && stars[focus.i] ? stars[focus.i].c : -1
+      for (let ci = 0; ci < clusterGlow.length; ci++) {
+        clusterGlow[ci] += ((ci === focusCluster ? 1 : 0) - clusterGlow[ci]) * 0.08
+      }
+
       /* stars */
       ctx.globalCompositeOperation = P.comp
       for (const st of stars) {
         const a = Math.min(1, Math.max(0, (ignite - st.delay) / 0.5))
         if (a <= 0) continue
         const tw = 0.78 + 0.22 * Math.sin(t * 1.3 + st.phase)
-        let alpha = a * tw * (P.dark ? 0.95 : 0.9)
+        let alpha = Math.min(1, a * tw * (P.dark ? 0.95 : 0.9) * (1 + clusterGlow[st.c] * 0.22))
         let size = st.r
         if (st.flare > 0) {
           st.flare = Math.max(0, st.flare - 0.008)
@@ -857,6 +884,14 @@ export function MindOnFireHero() {
         ctx.stroke()
       }
 
+      /* the fire answers the cursor: surge while the pointer rides the mark */
+      const exS = (LOGO_H || 400) * 0.48
+      const eyS = (LOGO_H || 400) * 0.62
+      const sdx = (mouseX - logoCX) / exS
+      const sdy = (mouseY - logoCY) / eyS
+      surge += ((mouseIn && sdx * sdx + sdy * sdy < 1.3 ? 1 : 0) - surge) * 0.06
+      mouseVX *= 0.94 /* wind dies down between gestures */
+
       /* halo (dark only) + the mark + its fire */
       ctx.globalCompositeOperation = 'source-over'
       if (P.dark) {
@@ -877,7 +912,7 @@ export function MindOnFireHero() {
       if (labelA > 0.02) {
         for (let ci = 0; ci < clusterGeo.length; ci++) {
           const cg = clusterGeo[ci]
-          ctx.fillStyle = P.label + (0.9 * labelA).toFixed(2) + ')'
+          ctx.fillStyle = P.label + Math.min(1, 0.9 * labelA * (1 + clusterGlow[ci] * 0.6)).toFixed(2) + ')'
           ctx.fillText(CLUSTERS[ci].label, cg.cx, cg.cy - cg.R - 14)
         }
       }
@@ -895,6 +930,22 @@ export function MindOnFireHero() {
           ctx.stroke()
         }
         const ea = qt < 3.8 ? 1 : Math.max(0, 1 - (qt - 3.8) / 1.2)
+        /* the thought types itself beside the ring, then fades with it */
+        if (qt > 0.2 && ea > 0.02) {
+          const alphaT = (qt < 0.5 ? (qt - 0.2) / 0.3 : 1) * ea
+          const chars = Math.min(query.q.length, Math.floor((qt - 0.2) * 26))
+          const done = chars >= query.q.length
+          const caret = !done && Math.floor(t * 3) % 2 === 0 ? '▌' : ''
+          const text = '\u201C' + query.q.slice(0, chars) + (done ? '\u201D' : caret)
+          ctx.font = '500 11.5px ui-monospace, SF Mono, Menlo, monospace'
+          ctx.textAlign = 'left'
+          const tw2 = ctx.measureText(text).width
+          let tx = qp.x + 16
+          if (tx + tw2 > W - 12) tx = qp.x - tw2 - 16
+          ctx.fillStyle = 'rgba(' + P.queryRing + ',' + (0.8 * alphaT).toFixed(3) + ')'
+          ctx.fillText(text, Math.max(12, tx), qp.y - 14)
+          ctx.textAlign = 'center'
+        }
         if (ea > 0 && qt > 0.35) {
           const prog = Math.min(1, (qt - 0.35) / 0.8)
           ctx.lineWidth = 1
