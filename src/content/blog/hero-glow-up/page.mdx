@@ -1,0 +1,67 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# The Hero Glow-Up: My Whole Blog, Burning in Semantic Space
+
+<Image src="/images/hero-glow-up-hero.png" alt="The new zackproser.com hero: the Mind on Fire mark rendered as burning pixels on a night-sky panel, surrounded by constellations of essays, with a preview card showing a talk at a16z" width={1600} height={900} />
+
+My homepage used to lead with a portrait of me. A nice duotone sketch, a greeting, a paragraph of bio. I never quite loved it. It said "here is a guy" when what I wanted it to say was "here is fifteen years of work — come dig in."
+
+So I burned it down and replaced it with the thing you see above: the Mind on Fire mark rendered as living pixels, fire rising off its crown, surrounded by every essay I've ever published — each one a star you can hover, preview, and read.
+
+## Three problems with the old hero
+
+**The portrait said the least interesting thing about me.** A face tells you nothing about the work. The writing is the work — 159 essays on RAG pipelines, evals, AI tooling, infrastructure, and the craft of shipping — and it was buried behind an archive link.
+
+**I wanted the writing itself to be the interface.** Accessible, but also exciting to browse. A list of posts is accessible and boring. I wanted something closer to a map: a neural-net, graph-like feel where each point is a piece of writing and related pieces cluster together, so wandering through them is cheap and interesting at the same time.
+
+**My personal site was divorced from my company.** I run a consultancy, [Mind on Fire](https://mindonfire.net), and its site has a mark I love: a profile in flames, circuit traces for hair. My portfolio shared nothing with it — not the palette, not the typography, not the idea. Two halves of one professional identity that had never met.
+
+## Why "Mind on Fire"
+
+I named the company after a belief, paraphrased from Plutarch: the mind is a fire to be ignited, rather than a bucket to be filled. That is also, as it happens, how I feel about teaching, about workshops, and about writing things down and giving them away.
+
+And yes — I also love the original *Man on Fire* with Denzel. The new Netflix series is... fine.
+
+The new hero's headline is the belief, verbatim: **"The mind is a fire / to be ignited."** The mark from mindonfire.net sits at the center, sampled pixel by pixel from the actual logo artwork into a few thousand canvas particles. The flames flicker. The gold circuit traces shimmer in slow waves. Real fire particles and sparks rise off the crown continuously. Ride your cursor over the head and the fire surges to meet it; swipe fast and the flames bend with the gesture.
+
+## Every star is an essay
+
+<Image src="/images/hero-glow-up-fire-card.png" alt="Close-up of the flame crown with rising ember meteors, and a preview card showing a recent essay with its pixel-art hero image and a NEW tag" width={1360} height={1160} />
+
+Around the mark, the corpus. At build time, a script scans every published essay — title, slug, date, opening paragraph, hero image — and writes one JSON file. The hero lays those essays out as six pinned constellations, one per topic: RAG & retrieval, AI-assisted dev, evals & fine-tuning, infrastructure, voice & tools, career & enablement. Each cluster is a phyllotaxis spiral — the sunflower-seed pattern — so every star sits a comfortable distance from its neighbors and every one of them is a stable, clickable target.
+
+Hover a star and a card appears with the essay's real hero image, date, and opening paragraph. Click and you're reading it. Essays from the last two months glint brighter and carry a NEW tag; the single newest post wears a slow-breathing halo. Essays you've already read cool down and take on a thin ember ring, so return visitors can see their own trail burned through the corpus — and the parts of the sky they haven't explored yet.
+
+Because the whole thing derives from a build-time scan, it maintains itself. When this post merges, the sky gains its 160th star without anyone touching the hero. The count in the copy updates too.
+
+Leave the page alone and it browses itself: every few seconds a star flares and presents its card, one essay after another, until your cursor takes over. Every few seconds a live vector-search vignette fires — a ring expands over a cluster and connector lines constellate to the nearest essays, because retrieval is both my subject matter and my resume, and the sky should act like it.
+
+## Catch an ember
+
+<Image src="/images/hero-glow-up-ember-card.png" alt="A rising ember caught mid-flight above the flame crown, showing its RISING THOUGHT preview card for a randomly selected essay" width={900} height={860} />
+
+My favorite detail: the fire lifts essays off the crown. Embers detach and streak across the sky like meteors — different directions, different speeds, each dragging a short comet tail — and every one of them carries a randomly selected essay. Hover an ember and it freezes mid-flight while its card shows, labeled RISING THOUGHT. Click it and you're reading that essay. Thoughts escaping a burning mind, and you can catch them.
+
+There are quieter easter eggs, too. Press "t" and a glowing thread animates through every star in publish order, oldest to newest, with year markers along the way — five-plus years of writing as one continuous stroke — then fades. Subscribe to the newsletter and a comet streaks in and lands a star labeled YOU in the career cluster. It survives reloads. Hover it later and the card reads "You — reading since" the day you signed up.
+
+## One sky, both themes
+
+<Image src="/images/hero-glow-up-night-band.png" alt="Light mode: the hero renders as a night-sky band with the burning mark and constellations, transitioning to the parchment page below with stats and workshop sections" width={1440} height={1500} />
+
+Light mode nearly broke this design. The mark's cream flames vanish on a parchment page, and every recoloring attempt made it worse — washed out, or wearing weird backdrops. The fix that finally worked was structural instead of cosmetic: the hero panel is always the night sky, in both themes. In light mode the rest of the page stays parchment and the hero reads as a deliberate dark band, the way a photo spread runs full-bleed black in a printed magazine. One palette, one render path, and the light-mode problem stopped existing as a category.
+
+<Image src="/images/hero-glow-up-mobile.png" alt="Mobile layout: the burning mark alone in a band above the copy and newsletter capture" width={390} height={844} />
+
+On phones the overlay composition would have collapsed, so it doesn't try: the mark burns alone in a band up top, the copy flows beneath it, and the constellations stay desktop-only. The corpus is still one tap away in the content rails below.
+
+## The build notes
+
+For the curious: the whole thing is one Canvas 2D component, no WebGL, no three.js. The logo is sampled at runtime from the actual PNG — background flood-filled away, every remaining pixel classified as flame, circuit, or silhouette. The static silhouette bakes to an offscreen canvas once and draws as a single call per frame, which pays for the fire. Everything respects `prefers-reduced-motion` (those visitors get a composed still with one essay pre-focused, not a paused video), the entrance plays once per session, and the animation pauses entirely when the hero scrolls off screen. All the copy and the newsletter capture are server-rendered DOM; the canvas is decoration layered behind it.
+
+The essay data pipeline is about sixty lines: scan the blog directory, keep what's published, extract each opening paragraph, assign each post to a cluster using an audited mapping, write JSON. Publishing is the only maintenance this hero will ever need — which is the kind of maintenance I can commit to.
+
+Go [catch an ember](/) — one of them might be this post.
