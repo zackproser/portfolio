@@ -1170,3 +1170,26 @@
   .mof-capture { margin-top: 12px; }
   .mof-eyebrow { margin-bottom: 8px; }
 }
+
+/* keyboard access: the hero is focusable; arrows walk the corpus */
+.mof-hero:focus-visible {
+  outline: 2px solid #e67e22;
+  outline-offset: -2px;
+}
+/* screen-reader path to the corpus */
+.mof-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+/* ?snap — settled render for the OG screenshot pipeline */
+.mof-snap .mof-content,
+.mof-snap .mof-preview {
+  display: none !important;
+}

@@ -97,6 +97,10 @@ export function MindOnFireHero() {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const COARSE = window.matchMedia('(pointer: coarse)').matches
     let disposed = false
+    const SNAP = typeof location !== 'undefined' && location.search.includes('snap')
+
+    /* ?snap: a settled, chrome-free render for the OG screenshot pipeline */
+    if (SNAP) hero.classList.add('mof-snap')
 
     /* entrance plays once per session */
     let seen = false
@@ -146,6 +150,7 @@ export function MindOnFireHero() {
     const stars: Star[] = []
     const links: Array<[number, number]> = []
     const clusterGeo: Array<{ cx: number; cy: number; R: number }> = []
+    let chronoOrder: number[] = [] /* star indices, oldest essay first */
     let youStar: { fx: number; fy: number; since?: string } | null = null
     try {
       const savedYou = JSON.parse(localStorage.getItem('mofYou') || 'null') as
@@ -282,6 +287,12 @@ export function MindOnFireHero() {
           phase: 1.7, delay: 0, flare: 0.5, post: -1, c: 5,
         })
       }
+
+      chronoOrder = stars
+        .map((sst, i) => ({ i, post: sst.post }))
+        .filter((x) => x.post >= 0)
+        .sort((a, b) => b.post - a.post)
+        .map((x) => x.i)
 
       /* one faint line per star to its nearest in-cluster neighbor */
       const seenL: Record<string, 1> = {}
@@ -836,6 +847,47 @@ export function MindOnFireHero() {
       markRead(post.s)
       navTimer = setTimeout(() => { if (!disposed) router.push(('/blog/' + post.s) as Route) }, 260)
     }
+    /* "t" threads the corpus chronologically; arrows walk the stars */
+    let threadAt = -999
+    let kbCursor = -1
+    const onKey = (e: KeyboardEvent) => {
+      const tgt = e.target as HTMLElement | null
+      if (tgt && tgt.closest && tgt.closest('input, textarea, select')) return
+      if (e.key === 't' && !reduced) {
+        threadAt = lastT
+        return
+      }
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Enter' && e.key !== 'Escape') return
+      if (document.activeElement !== hero) return
+      if (e.key === 'Escape') {
+        kbCursor = -1
+        tapHit = null
+        return
+      }
+      if (!chronoOrder.length) return
+      e.preventDefault()
+      if (e.key === 'Enter') {
+        if (kbCursor >= 0) {
+          const st = stars[chronoOrder[kbCursor]]
+          const post = POSTS[st.post]
+          if (post) {
+            markRead(post.s)
+            router.push(('/blog/' + post.s) as Route)
+          }
+        }
+        return
+      }
+      kbCursor =
+        e.key === 'ArrowRight'
+          ? (kbCursor + 1) % chronoOrder.length
+          : (kbCursor - 1 + chronoOrder.length) % chronoOrder.length
+      const i = chronoOrder[kbCursor]
+      stars[i].flare = 1
+      tapHit = { kind: 0, i, post: stars[i].post, until: lastT + 30 }
+      autoHit = null
+    }
+    window.addEventListener('keydown', onKey)
+
     hero.addEventListener('mousemove', onMove, { passive: true })
     hero.addEventListener('mouseleave', onLeave)
     hero.addEventListener('click', onClick)
@@ -932,7 +984,7 @@ export function MindOnFireHero() {
         } else if (autoHit.kind === 1 && postEmbers[autoHit.i] && postEmbers[autoHit.i].post === autoHit.post) {
           postEmbers[autoHit.i].held = true
         }
-      } else if (t > autoNextAt && ignite > 3 && stars.length) {
+      } else if (!SNAP && t > autoNextAt && ignite > 3 && stars.length) {
         const pickEmber = postEmbers.length > 0 && Math.random() < 0.25
         if (pickEmber) {
           const ai = (Math.random() * postEmbers.length) | 0
@@ -1194,6 +1246,41 @@ export function MindOnFireHero() {
         }
       }
 
+      /* chronology thread: press "t" — five years of writing, one stroke */
+      const th = t - threadAt
+      if (th >= 0 && th < 5.5 && chronoOrder.length > 1) {
+        const fade = th < 4 ? 1 : Math.max(0, 1 - (th - 4) / 1.5)
+        const prog = Math.min(1, th / 4) * (chronoOrder.length - 1)
+        const whole = Math.floor(prog)
+        ctx.globalCompositeOperation = 'source-over'
+        ctx.strokeStyle = 'rgba(' + P.edge + ',' + (0.45 * fade).toFixed(3) + ')'
+        ctx.lineWidth = 1.3
+        ctx.beginPath()
+        ctx.moveTo(stars[chronoOrder[0]].x, stars[chronoOrder[0]].y)
+        for (let ci2 = 1; ci2 <= whole; ci2++) {
+          ctx.lineTo(stars[chronoOrder[ci2]].x, stars[chronoOrder[ci2]].y)
+        }
+        if (whole < chronoOrder.length - 1) {
+          const fA = stars[chronoOrder[whole]]
+          const fB = stars[chronoOrder[whole + 1]]
+          const fr = prog - whole
+          ctx.lineTo(fA.x + (fB.x - fA.x) * fr, fA.y + (fB.y - fA.y) * fr)
+        }
+        ctx.stroke()
+        ctx.font = '600 10px ui-monospace, SF Mono, Menlo, monospace'
+        ctx.textAlign = 'left'
+        let lastYear = ''
+        for (let ci2 = 0; ci2 <= whole; ci2++) {
+          const yr = (POSTS[stars[chronoOrder[ci2]].post]?.d || '').slice(0, 4)
+          if (yr && yr !== lastYear) {
+            lastYear = yr
+            ctx.fillStyle = P.label + (0.8 * fade).toFixed(2) + ')'
+            ctx.fillText(yr, stars[chronoOrder[ci2]].x + 8, stars[chronoOrder[ci2]].y - 8)
+          }
+        }
+        ctx.textAlign = 'center'
+      }
+
       /* dusk sweep: a soft gradient crosses the sky on theme flip */
       const sw = t - sweepAt
       if (sw >= 0 && sw < 0.7) {
@@ -1216,7 +1303,7 @@ export function MindOnFireHero() {
     /* ---------- boot ---------- */
     resize()
     initLogo()
-    if (!reduced && !seen) {
+    if (!reduced && !seen && !SNAP) {
       born = performance.now() / 1000
     } else {
       born = performance.now() / 1000 - 10 /* settled: no stagger for repeat visits */
@@ -1274,6 +1361,7 @@ export function MindOnFireHero() {
       ro?.disconnect()
       io?.disconnect()
       window.removeEventListener('resize', onResize)
+      window.removeEventListener('keydown', onKey)
       hero.removeEventListener('mousemove', onMove)
       hero.removeEventListener('mouseleave', onLeave)
       hero.removeEventListener('click', onClick)
@@ -1283,8 +1371,22 @@ export function MindOnFireHero() {
   }, [router])
 
   return (
-    <section ref={heroRef} className="mof-hero">
+    <section
+      ref={heroRef}
+      className="mof-hero"
+      tabIndex={0}
+      aria-label={`The corpus: ${POST_COUNT} essays as constellations. Focus and use arrow keys to browse, Enter to read.`}
+    >
       <canvas ref={canvasRef} className="mof-sky" aria-hidden="true" />
+      <nav className="mof-sr" aria-label="Recent essays">
+        <ul>
+          {POSTS.slice(0, 10).map((p) => (
+            <li key={p.s}>
+              <Link href={`/blog/${p.s}` as Route}>{p.t}</Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
       <div className="mof-content">
         <div className="mof-copy">
