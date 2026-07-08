@@ -1016,7 +1016,10 @@ export function MindOnFireHero() {
         for (const em of postEmbers) if (em.id === shownEmberId) em.held = true
       }
       if (hover && kbCursor < 0) tapHit = null
-      else if (tapHit && (t > tapHit.until || (tapHit.kind === 1 && (!postEmbers[tapHit.i] || postEmbers[tapHit.i].post !== tapHit.post)))) tapHit = null
+      else if (tapHit && (t > tapHit.until || (tapHit.kind === 1 && (!postEmbers[tapHit.i] || postEmbers[tapHit.i].post !== tapHit.post)))) {
+        tapHit = null
+        kbCursor = -1
+      }
       if (tapHit && tapHit.kind === 1 && postEmbers[tapHit.i] && postEmbers[tapHit.i].post === tapHit.post) {
         postEmbers[tapHit.i].held = true
         postEmbers[tapHit.i].userCaught = true
