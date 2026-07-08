@@ -980,7 +980,7 @@ export function MindOnFireHero() {
       if (cardHover && shownEmberId != null) {
         for (const em of postEmbers) if (em.id === shownEmberId) em.held = true
       }
-      if (hover) tapHit = null
+      if (hover && kbCursor < 0) tapHit = null
       else if (tapHit && (t > tapHit.until || (tapHit.kind === 1 && (!postEmbers[tapHit.i] || postEmbers[tapHit.i].post !== tapHit.post)))) tapHit = null
       if (tapHit && tapHit.kind === 1 && postEmbers[tapHit.i] && postEmbers[tapHit.i].post === tapHit.post) {
         postEmbers[tapHit.i].held = true
