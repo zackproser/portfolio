@@ -763,32 +763,6 @@ export function MindOnFireHero() {
       const ignite = t - born
       const headA = Math.min(1, Math.max(0, (ignite - 0.3) / 1.4))
 
-      /* nebulae */
-      ctx.globalCompositeOperation = 'source-over'
-      ctx.font = '600 11px ui-monospace, SF Mono, Menlo, monospace'
-      try { (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = '2px' } catch { /* older browsers */ }
-      ctx.textAlign = 'center'
-      const labelA = Math.min(1, ignite / 2)
-      for (const cg of clusterGeo) {
-        const nr = cg.R * 1.25
-        const g = ctx.createRadialGradient(cg.cx, cg.cy, 0, cg.cx, cg.cy, nr)
-        g.addColorStop(0, P.nebula)
-        g.addColorStop(1, 'rgba(0,0,0,0)')
-        ctx.fillStyle = g
-        ctx.fillRect(cg.cx - nr, cg.cy - nr, nr * 2, nr * 2)
-      }
-
-      /* links */
-      ctx.lineWidth = 0.9
-      for (const [a, b] of links) {
-        const la = Math.min(0.6, (P.dark ? 0.2 : 0.26) * labelA * (1 + clusterGlow[stars[a].c] * 0.9))
-        ctx.strokeStyle = 'rgba(' + P.edge + ',' + la.toFixed(3) + ')'
-        ctx.beginPath()
-        ctx.moveTo(stars[a].x, stars[a].y)
-        ctx.lineTo(stars[b].x, stars[b].y)
-        ctx.stroke()
-      }
-
       /* hover / tap / attract */
       hover = mouseIn ? hitTest(mouseX, mouseY) : null
       for (const em of postEmbers) em.held = false
@@ -842,9 +816,43 @@ export function MindOnFireHero() {
 
       /* the whole constellation warms when one of its stars has focus */
       const focus = hover || tapHit || autoHit
-      const focusCluster = focus && focus.kind === 0 && stars[focus.i] ? stars[focus.i].c : -1
+      let focusCluster = -1
+      if (focus) {
+        if (focus.kind === 0 && stars[focus.i]) {
+          focusCluster = stars[focus.i].c
+        } else if (focus.kind === 1) {
+          const matchStar = stars.find((s) => s.post === focus.post)
+          if (matchStar) focusCluster = matchStar.c
+        }
+      }
       for (let ci = 0; ci < clusterGlow.length; ci++) {
         clusterGlow[ci] += ((ci === focusCluster ? 1 : 0) - clusterGlow[ci]) * 0.08
+      }
+
+      /* nebulae */
+      ctx.globalCompositeOperation = 'source-over'
+      ctx.font = '600 11px ui-monospace, SF Mono, Menlo, monospace'
+      try { (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = '2px' } catch { /* older browsers */ }
+      ctx.textAlign = 'center'
+      const labelA = Math.min(1, ignite / 2)
+      for (const cg of clusterGeo) {
+        const nr = cg.R * 1.25
+        const g = ctx.createRadialGradient(cg.cx, cg.cy, 0, cg.cx, cg.cy, nr)
+        g.addColorStop(0, P.nebula)
+        g.addColorStop(1, 'rgba(0,0,0,0)')
+        ctx.fillStyle = g
+        ctx.fillRect(cg.cx - nr, cg.cy - nr, nr * 2, nr * 2)
+      }
+
+      /* links */
+      ctx.lineWidth = 0.9
+      for (const [a, b] of links) {
+        const la = Math.min(0.6, (P.dark ? 0.2 : 0.26) * labelA * (1 + clusterGlow[stars[a].c] * 0.9))
+        ctx.strokeStyle = 'rgba(' + P.edge + ',' + la.toFixed(3) + ')'
+        ctx.beginPath()
+        ctx.moveTo(stars[a].x, stars[a].y)
+        ctx.lineTo(stars[b].x, stars[b].y)
+        ctx.stroke()
       }
 
       /* stars */
