@@ -62,6 +62,16 @@ function clusterFor(post: Post, idx: number): number {
   return idx % CLUSTERS.length
 }
 
+/* fresh ink: posts from roughly the last 60 days glint brighter */
+const FRESH_CUT = (() => {
+  const now = new Date()
+  return new Date(now.getFullYear(), now.getMonth() - 2, 1)
+})()
+const IS_FRESH = POSTS.map((p) => {
+  const [y, m] = p.d.split('-').map(Number)
+  return Boolean(y && m) && new Date(y, m - 1, 1) >= FRESH_CUT
+})
+
 const PP_GRADS = [
   'linear-gradient(160deg,#e67e22,#7c3a03)',
   'linear-gradient(160deg,#d35400,#431407)',
@@ -474,6 +484,22 @@ export function MindOnFireHero() {
     /* ---------- fire + post embers ---------- */
     type Flame = { x: number; y: number; vx: number; vy: number; wob: number; life: number; age: number; r: number }
     const flames: Flame[] = []
+    /* radial spark pop, reusing the flame renderer */
+    function sparkBurst(x: number, y: number, n: number, life: number) {
+      for (let b = 0; b < n; b++) {
+        const ang = (b / n) * 6.2832 + Math.random() * 0.6
+        const sp = 40 + Math.random() * 80
+        flames.push({
+          x, y,
+          vx: Math.cos(ang) * sp,
+          vy: Math.sin(ang) * sp - 24,
+          wob: Math.random() * 6.2832,
+          life: life + Math.random() * 0.25,
+          age: 0,
+          r: 1.5 + Math.random() * 1.5,
+        })
+      }
+    }
     function stepFlames(dt: number, headA: number) {
       if (!ctx) return
       if (headA > 0.3 && logoReady && crownSrc.length) {
@@ -528,6 +554,7 @@ export function MindOnFireHero() {
     type Ember = {
       id: number; x: number; y: number; vx: number; vy: number; wob: number
       r: number; life: number; age: number; post: number; held: boolean
+      wasHeld: boolean
     }
     const postEmbers: Ember[] = []
     let emberSeq = 1
@@ -547,11 +574,14 @@ export function MindOnFireHero() {
           age: 0,
           post: (Math.random() * POSTS.length) | 0,
           held: false,
+          wasHeld: false,
         })
       }
       ctx.globalCompositeOperation = P.comp
       for (let i = postEmbers.length - 1; i >= 0; i--) {
         const em = postEmbers[i]
+        if (em.held && !em.wasHeld) sparkBurst(em.x, em.y, 6, 0.35) /* caught! */
+        em.wasHeld = em.held
         if (!em.held) {
           em.age += dt
           em.x += (em.vx + Math.sin(em.wob + em.age * 2.2) * 9) * dt
@@ -638,7 +668,7 @@ export function MindOnFireHero() {
       if (key !== lastKey && post) {
         const pos = hitPos(hit)
         ppEl('.mof-pp-title').textContent = post.t
-        ppEl('.mof-pp-date').textContent = post.d || ''
+        ppEl('.mof-pp-date').textContent = (post.d || '') + (hit.post === 0 ? ' · LATEST' : IS_FRESH[hit.post] ? ' · NEW' : '')
         ppEl('.mof-pp-cat').textContent = hit.kind === 1 ? 'RISING THOUGHT' : CLUSTERS[stars[hit.i].c].label
         ppEl('.mof-pp-initial').textContent = (post.t.charAt(0) || 'Z').toUpperCase()
         ppEl('.mof-pp-art').style.background = PP_GRADS[hit.kind === 1 ? 1 : CLUSTERS[stars[hit.i].c].tint]
@@ -695,7 +725,14 @@ export function MindOnFireHero() {
         return
       }
       const post = POSTS[hit.post]
-      if (post) router.push(('/blog/' + post.s) as Route)
+      if (!post) return
+      /* the star bursts, then you travel */
+      const pos = hitPos(hit)
+      if (pos) {
+        sparkBurst(pos.x, pos.y, 14, 0.4)
+        if (hit.kind === 0) stars[hit.i].flare = 1
+      }
+      setTimeout(() => { if (!disposed) router.push(('/blog/' + post.s) as Route) }, 260)
     }
     hero.addEventListener('mousemove', onMove, { passive: true })
     hero.addEventListener('mouseleave', onLeave)
@@ -860,9 +897,22 @@ export function MindOnFireHero() {
       for (const st of stars) {
         const a = Math.min(1, Math.max(0, (ignite - st.delay) / 0.5))
         if (a <= 0) continue
-        const tw = 0.78 + 0.22 * Math.sin(t * 1.3 + st.phase)
-        let alpha = Math.min(1, a * tw * (P.dark ? 0.95 : 0.9) * (1 + clusterGlow[st.c] * 0.22))
-        let size = st.r
+        const fresh = st.post >= 0 && IS_FRESH[st.post]
+        const tw = fresh
+          ? 0.68 + 0.32 * Math.sin(t * 2.3 + st.phase)
+          : 0.78 + 0.22 * Math.sin(t * 1.3 + st.phase)
+        let alpha = Math.min(1, a * tw * (P.dark ? 0.95 : 0.9) * (1 + clusterGlow[st.c] * 0.22) * (fresh ? 1.08 : 1))
+        let size = st.r + (fresh ? 0.7 : 0)
+        if (st.post === 0) {
+          /* the newest thought wears a slow-breathing halo */
+          ctx.globalCompositeOperation = 'source-over'
+          ctx.strokeStyle = 'rgba(' + P.edge + ',' + (a * (0.3 + 0.14 * Math.sin(t * 1.6))).toFixed(3) + ')'
+          ctx.lineWidth = 1.2
+          ctx.beginPath()
+          ctx.arc(st.x, st.y, size + 7 + 2 * Math.sin(t * 1.6), 0, 6.2832)
+          ctx.stroke()
+          ctx.globalCompositeOperation = P.comp
+        }
         if (st.flare > 0) {
           st.flare = Math.max(0, st.flare - 0.008)
           alpha = Math.min(1, alpha + st.flare * 0.9)
@@ -996,6 +1046,20 @@ export function MindOnFireHero() {
         if (ctm >= 2.2 && !comet.done) {
           comet.done = true
           comet.labelUntil = t + 3
+          /* applause: the constellation welcomes its newest reader */
+          const gen = layoutGen
+          const tx = comet.tx
+          const ty = comet.ty
+          stars
+            .map((sst, i) => ({ i, d: (sst.x - tx) * (sst.x - tx) + (sst.y - ty) * (sst.y - ty), c: sst.c, post: sst.post }))
+            .filter((x) => x.c === 5 && x.post >= 0)
+            .sort((x, y) => x.d - y.d)
+            .slice(0, 14)
+            .forEach((x, k) => {
+              setTimeout(() => {
+                if (!disposed && gen === layoutGen && stars[x.i]) stars[x.i].flare = 1
+              }, 120 + k * 70)
+            })
         }
         if (comet.done) {
           if (t < comet.labelUntil) {
