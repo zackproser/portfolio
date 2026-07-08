@@ -66,10 +66,11 @@ for (const dir of fs.readdirSync(blogDir)) {
     d: (meta.date || '').slice(0, 7),
     e: extractExcerpt(path.join(blogDir, dir, 'page.mdx'), meta.description),
     img: meta.image || '',
+    fullDate: meta.date || '',
   })
 }
 
-posts.sort((a, b) => (b.d || '').localeCompare(a.d || ''))
+posts.sort((a, b) => (b.fullDate || '').localeCompare(a.fullDate || ''))
 fs.mkdirSync(path.dirname(outFile), { recursive: true })
 fs.writeFileSync(outFile, JSON.stringify({ count: posts.length, posts }))
 console.log(`corpus: ${posts.length} indexable posts (${hidden} hidden) → src/data/corpus.json`)

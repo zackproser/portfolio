@@ -183,6 +183,7 @@ export function MindOnFireHero() {
       autoHit = null
       tapHit = null
       comet = null
+      lastFocus = null
       stars.length = 0
       links.length = 0
       clusterGeo.length = 0
@@ -628,6 +629,7 @@ export function MindOnFireHero() {
     let lastKey: string | null = null
     let shownPost: number | null = null
     let shownEmberId: number | null = null
+    let lastFocus: Hit | null = null
 
     function hitTest(x: number, y: number): Hit | null {
       let bestD = 676
@@ -660,6 +662,7 @@ export function MindOnFireHero() {
               preview.classList.remove('mof-show')
               if (hero) hero.style.cursor = ''
               lastKey = null
+              lastFocus = null
             }
           }, 280)
         }
@@ -861,7 +864,9 @@ export function MindOnFireHero() {
       updatePreview(hover || tapHit || autoHit, !!(hover || tapHit))
 
       /* the whole constellation warms when one of its stars has focus */
-      const focus = hover || tapHit || autoHit
+      const activeFocus = hover || tapHit || autoHit
+      if (activeFocus) lastFocus = activeFocus
+      const focus = activeFocus || (cardHover && lastFocus ? lastFocus : null)
       let focusCluster = -1
       if (focus) {
         if (focus.kind === 0 && stars[focus.i]) {
