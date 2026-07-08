@@ -890,7 +890,9 @@ export function MindOnFireHero() {
       kbCursor =
         e.key === 'ArrowRight'
           ? (kbCursor + 1) % chronoOrder.length
-          : (kbCursor - 1 + chronoOrder.length) % chronoOrder.length
+          : kbCursor === -1
+            ? chronoOrder.length - 1
+            : (kbCursor - 1 + chronoOrder.length) % chronoOrder.length
       const i = chronoOrder[kbCursor]
       stars[i].flare = 1
       tapHit = { kind: 0, i, post: stars[i].post, until: lastT + 30 }
