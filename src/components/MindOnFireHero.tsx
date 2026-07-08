@@ -207,6 +207,7 @@ export function MindOnFireHero() {
       query = null
       autoHit = null
       tapHit = null
+      kbCursor = -1 /* keyboard selection can't survive a reshuffled sky */
       comet = null
       lastFocus = null
       stars.length = 0
