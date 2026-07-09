@@ -11,7 +11,7 @@ import { generateProductFromArticle } from './productGenerator'; // Adjust path 
 import dynamic from 'next/dynamic'; // Although this file is server-only, dynamic is used for the ArticleContent component
 // import { getContentUrl } from './content-url' // Removed as it was unused
 import { contentLogger as logger } from '@/utils/logger'; // Import the centralized logger
-import { withCorrectOgSlug } from './og-slug';
+import { withCorrectSlug } from './og-slug';
 
 // Mark this file as server-side only (already present)
 export const config = {
@@ -362,11 +362,10 @@ export async function generateContentMetadata(contentType: string, directorySlug
     // Return raw metadata if available, otherwise an empty object conforms to Metadata type
     const baseMetadata = mdxModule?.metadata || {};
     // The MDX's createMetadata() auto-derives the slug from a stack-trace file
-    // path, which resolves to the dynamic route segment "[slug]" — so the OG
-    // image URL ends up with slug=[slug] and the /api/og route can never reach
-    // the pre-generated static image. We know the real slug here, so repair the
-    // OG / Twitter image URLs to point at it.
-    const repaired = withCorrectOgSlug(baseMetadata, directorySlug);
+    // path, which resolves to the dynamic route segment "[slug]" — poisoning
+    // the OG image URLs, og:url, and the canonical. We know the real slug
+    // here, so repair all of them.
+    const repaired = withCorrectSlug(baseMetadata, directorySlug);
     // Inject metadataBase here
     return {
       ...repaired,
