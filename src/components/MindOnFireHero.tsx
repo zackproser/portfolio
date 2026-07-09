@@ -1448,7 +1448,7 @@ export function MindOnFireHero() {
           <p className="mof-lede text-parchment-600 dark:text-slate-300">
             I&rsquo;m <strong>Zack</strong> &mdash; a builder, writer, and teacher.
             Applied AI at <strong>WorkOS</strong>, formerly Pinecone, Cloudflare,
-            and Gruntwork. Fifteen years across the whole stack: front-end to
+            and Gruntwork. Fifteen years across the whole stack: frontend to
             backend, distributed cloud systems, DevOps, and open source.{' '}
             <strong>Mind on Fire</strong> is my consultancy: software and applied
             AI that ships.
