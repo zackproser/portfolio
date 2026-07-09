@@ -1097,21 +1097,27 @@ export function MindOnFireHero() {
         const a = Math.min(1, Math.max(0, (ignite - st.delay) / 0.5))
         if (a <= 0) continue
         const read = st.post >= 0 && readSet.has(POSTS[st.post].s)
-        const fresh = !read && st.post >= 0 && IS_FRESH[st.post]
+        /* fresh ink outranks the read patina — recency is true for every
+           visitor, the patina only for this one */
+        const fresh = st.post >= 0 && IS_FRESH[st.post]
         const tw = fresh
           ? 0.68 + 0.32 * Math.sin(t * 2.3 + st.phase)
           : 0.78 + 0.22 * Math.sin(t * 1.3 + st.phase)
-        let alpha = Math.min(1, a * tw * (P.dark ? 0.95 : 0.9) * (1 + clusterGlow[st.c] * 0.22) * (fresh ? 1.08 : 1) * (read ? 0.78 : 1))
-        let size = st.r + (fresh ? 0.7 : 0)
+        let alpha = Math.min(1, a * tw * (P.dark ? 0.95 : 0.9) * (1 + clusterGlow[st.c] * 0.22) * (fresh ? 1.18 : 1) * (read && !fresh ? 0.78 : 1))
+        let size = st.r + (fresh ? 1 : 0)
         if (st.post === 0) {
           /* the newest thought wears a slow-breathing halo */
-          ctx.globalCompositeOperation = 'source-over'
-          ctx.strokeStyle = 'rgba(' + P.edge + ',' + (a * (0.3 + 0.14 * Math.sin(t * 1.6))).toFixed(3) + ')'
-          ctx.lineWidth = 1.2
+          const br = 0.5 + 0.5 * Math.sin(t * 1.6)
+          const hr = size + 8 + 3 * br
+          ctx.fillStyle = 'rgba(' + P.edge + ',' + (a * (0.05 + 0.06 * br)).toFixed(3) + ')'
           ctx.beginPath()
-          ctx.arc(st.x, st.y, size + 7 + 2 * Math.sin(t * 1.6), 0, 6.2832)
+          ctx.arc(st.x, st.y, hr * 2, 0, 6.2832)
+          ctx.fill()
+          ctx.strokeStyle = 'rgba(' + P.edge + ',' + (a * (0.5 + 0.35 * br)).toFixed(3) + ')'
+          ctx.lineWidth = 1.6
+          ctx.beginPath()
+          ctx.arc(st.x, st.y, hr, 0, 6.2832)
           ctx.stroke()
-          ctx.globalCompositeOperation = P.comp
         }
         if (st.flare > 0) {
           st.flare = Math.max(0, st.flare - 0.008)
@@ -1128,7 +1134,20 @@ export function MindOnFireHero() {
         ctx.beginPath()
         ctx.arc(st.x, st.y, size, 0, 6.2832)
         ctx.fill()
-        if (read) {
+        if (fresh) {
+          /* fresh ink glints: diffraction spikes that pulse with the twinkle */
+          const g = a * (0.25 + 0.55 * Math.max(0, Math.sin(t * 2.3 + st.phase)))
+          const L = size * 2.8
+          ctx.strokeStyle = 'rgba(251,247,240,' + g.toFixed(3) + ')'
+          ctx.lineWidth = 1
+          ctx.beginPath()
+          ctx.moveTo(st.x - L, st.y)
+          ctx.lineTo(st.x + L, st.y)
+          ctx.moveTo(st.x, st.y - L)
+          ctx.lineTo(st.x, st.y + L)
+          ctx.stroke()
+        }
+        if (read && !fresh) {
           /* a thin ember ring — the trail you've burned */
           ctx.globalCompositeOperation = 'source-over'
           ctx.strokeStyle = 'rgba(' + P.edge + ',' + (a * 0.4).toFixed(3) + ')'
