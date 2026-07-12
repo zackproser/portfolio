@@ -144,6 +144,31 @@ export function MindOnFireHero() {
       halo: 'rgba(15,15,31,',
     }
 
+    /* Soft, reusable light sprites avoid the hard rims and banding produced
+       by large low-alpha disks. They are baked once and only scaled at draw. */
+    function makeGlowSprite(core: string, middle: string) {
+      const sprite = document.createElement('canvas')
+      sprite.width = 96
+      sprite.height = 96
+      const spriteCtx = sprite.getContext('2d')
+      if (!spriteCtx) return sprite
+      const glow = spriteCtx.createRadialGradient(48, 48, 0, 48, 48, 48)
+      glow.addColorStop(0, core)
+      glow.addColorStop(0.12, middle)
+      glow.addColorStop(0.42, 'rgba(230,126,34,0.13)')
+      glow.addColorStop(0.72, 'rgba(211,84,0,0.035)')
+      glow.addColorStop(1, 'rgba(211,84,0,0)')
+      spriteCtx.fillStyle = glow
+      spriteCtx.fillRect(0, 0, 96, 96)
+      return sprite
+    }
+    const warmGlow = makeGlowSprite('rgba(255,250,240,0.96)', 'rgba(243,156,18,0.58)')
+    const emberGlow = makeGlowSprite('rgba(255,244,214,0.9)', 'rgba(230,126,34,0.48)')
+    const drawGlow = (sprite: HTMLCanvasElement, x: number, y: number, radius: number, alpha: number) => {
+      ctx.globalAlpha = Math.max(0, Math.min(1, alpha))
+      ctx.drawImage(sprite, x - radius, y - radius, radius * 2, radius * 2)
+    }
+
     /* ---------- canvas / layout ---------- */
     let W = 0
     let H = 0
@@ -160,6 +185,8 @@ export function MindOnFireHero() {
     const links: Array<[number, number]> = []
     const clusterGeo: Array<{ cx: number; cy: number; R: number }> = []
     let chronoOrder: number[] = [] /* star indices, oldest essay first */
+    let chronoDistances: number[] = []
+    let chronoLength = 0
     let youStar: { fx: number; fy: number; since?: string } | null = null
     try {
       const savedYou = JSON.parse(localStorage.getItem('mofYou') || 'null') as
@@ -198,6 +225,8 @@ export function MindOnFireHero() {
       stars.length = 0
       links.length = 0
       clusterGeo.length = 0
+      chronoDistances = []
+      chronoLength = 0
       /* narrow screens: the mark burns in a band above the copy — no
          constellation overlay (the corpus lives in the rails below) */
       if (W < 1024) {
@@ -280,6 +309,14 @@ export function MindOnFireHero() {
         .filter((x) => x.post >= 0)
         .sort((a, b) => b.post - a.post)
         .map((x) => x.i)
+      chronoDistances = [0]
+      chronoLength = 0
+      for (let i = 1; i < chronoOrder.length; i++) {
+        const a = stars[chronoOrder[i - 1]]
+        const b = stars[chronoOrder[i]]
+        chronoLength += Math.hypot(b.x - a.x, b.y - a.y)
+        chronoDistances.push(chronoLength)
+      }
 
       /* one faint line per star to its nearest in-cluster neighbor */
       const seenL: Record<string, 1> = {}
@@ -627,10 +664,8 @@ export function MindOnFireHero() {
         const alpha = Math.sin(Math.PI * Math.min(p * 1.15, 1)) * 0.85 * headA
         const rr = f.r * (1 - p * 0.65)
         if (f.r > 2) {
-          ctx.fillStyle = 'hsla(' + hue + ',90%,' + lig + '%,' + (alpha * 0.18).toFixed(3) + ')'
-          ctx.beginPath()
-          ctx.arc(f.x, f.y, rr * 3.2, 0, 6.2832)
-          ctx.fill()
+          drawGlow(emberGlow, f.x, f.y, rr * 4.2, alpha * 0.42)
+          ctx.globalAlpha = 1
         }
         ctx.fillStyle = 'hsla(' + hue + ',92%,' + lig + '%,' + alpha.toFixed(3) + ')'
         ctx.beginPath()
@@ -729,10 +764,8 @@ export function MindOnFireHero() {
           ctx.stroke()
         }
         const flick = 0.82 + 0.18 * Math.sin(t * 5 + em.wob)
-        ctx.fillStyle = 'hsla(36,95%,62%,' + (a * 0.16).toFixed(3) + ')'
-        ctx.beginPath()
-        ctx.arc(em.x, em.y, em.r * 3, 0, 6.2832)
-        ctx.fill()
+        drawGlow(warmGlow, em.x, em.y, em.r * 4.2, a * 0.62)
+        ctx.globalAlpha = 1
         ctx.fillStyle = 'hsla(' + (40 - 18 * (em.age / em.life)) + ',94%,64%,' + (a * flick).toFixed(3) + ')'
         ctx.beginPath()
         ctx.arc(em.x, em.y, em.r, 0, 6.2832)
@@ -764,6 +797,13 @@ export function MindOnFireHero() {
     let shownEmberId: number | null = null
     let lastFocus: Hit | null = null
     let navTimer: ReturnType<typeof setTimeout> | null = null
+    const prefetched = new Set<string>()
+    const prefetchRoute = (route: Route) => {
+      const key = String(route)
+      if (prefetched.has(key)) return
+      prefetched.add(key)
+      router.prefetch(route)
+    }
 
     function hitTest(x: number, y: number): Hit | null {
       let bestD = 676
@@ -812,6 +852,10 @@ export function MindOnFireHero() {
       if (!pos) return
       const key = hit.kind + ':' + (hit.kind === 1 ? hit.emberId : hit.i) + ':' + hit.post
       const post = POSTS[hit.post]
+      if (isUser) {
+        if (post) prefetchRoute(('/blog/' + post.s) as Route)
+        else if (hit.post < 0) prefetchRoute('/newsletter' as Route)
+      }
       if (key !== lastKey && hit.post < 0) {
         /* the visitor's own star */
         ppEl('.mof-pp-title').textContent = 'You — reading since ' + (youStar?.since || 'today')
@@ -911,12 +955,12 @@ export function MindOnFireHero() {
       if (navTimer) clearTimeout(navTimer)
       if (hit.post < 0) {
         if (reduced) router.push('/newsletter' as Route)
-        else navTimer = setTimeout(() => { if (!disposed) router.push('/newsletter' as Route) }, 260)
+        else navTimer = setTimeout(() => { if (!disposed) router.push('/newsletter' as Route) }, 140)
         return
       }
       markRead(post.s)
       if (reduced) router.push(('/blog/' + post.s) as Route)
-      else navTimer = setTimeout(() => { if (!disposed) router.push(('/blog/' + post.s) as Route) }, 260)
+      else navTimer = setTimeout(() => { if (!disposed) router.push(('/blog/' + post.s) as Route) }, 140)
     }
     /* "t" threads the corpus chronologically; arrows walk the stars */
     let threadAt = -999
@@ -961,6 +1005,7 @@ export function MindOnFireHero() {
       const i = chronoOrder[kbCursor]
       stars[i].flare = 1
       tapHit = { kind: 0, i, post: stars[i].post, until: lastT + 30 }
+      prefetchRoute(('/blog/' + POSTS[stars[i].post].s) as Route)
       autoHit = null
     }
     hero.addEventListener('keydown', onKey)
@@ -976,12 +1021,16 @@ export function MindOnFireHero() {
     preview.addEventListener('click', onPreviewClick)
 
     /* ---------- live queries ---------- */
-    let query: { p: { x: number; y: number }; nn: number[]; t0: number; gen: number } | null = null
+    let query: {
+      p: { x: number; y: number }; nn: number[]; t0: number; gen: number
+      label: string; labelX: number; labelY: number; labelW: number
+    } | null = null
     let qIndex = 0
     let layoutGen = 0
     let lastQueryAt = -999
 
     function fireQuery(now: number) {
+      lastQueryAt = now
       const item = QUERIES[qIndex % QUERIES.length]
       qIndex++
       const members: number[] = []
@@ -997,13 +1046,24 @@ export function MindOnFireHero() {
         })
         .sort((a, b) => a.d - b.d)
       const gen = layoutGen
-      query = { p: qp, nn: best.slice(0, 6).map((b) => b.i), t0: now, gen }
+      const labelW = Math.min(285, item.q.length * 6.2 + 44)
+      const labelX = Math.min(Math.max(10, qp.x - labelW / 2), W - labelW - 10)
+      const labelY = qp.y < 96 ? qp.y + 18 : qp.y - 34
+      query = {
+        p: qp,
+        nn: best.slice(0, 6).map((b) => b.i),
+        t0: now,
+        gen,
+        label: `SEARCH  “${item.q}”`,
+        labelX,
+        labelY,
+        labelW,
+      }
       query.nn.forEach((idx, k) => {
         setTimeout(() => {
           if (!disposed && gen === layoutGen && stars[idx]) stars[idx].flare = 1
         }, 350 + k * 120)
       })
-      lastQueryAt = now
     }
 
     /* ---------- subscriber comet ---------- */
@@ -1161,10 +1221,8 @@ export function MindOnFireHero() {
           /* the newest thought wears a slow-breathing halo */
           const br = 0.5 + 0.5 * Math.sin(t * 1.6)
           const hr = size + 8 + 3 * br
-          ctx.fillStyle = 'rgba(' + P.edge + ',' + (a * (0.05 + 0.06 * br)).toFixed(3) + ')'
-          ctx.beginPath()
-          ctx.arc(st.x, st.y, hr * 2, 0, 6.2832)
-          ctx.fill()
+          drawGlow(emberGlow, st.x, st.y, hr * 2.4, a * (0.18 + 0.14 * br))
+          ctx.globalAlpha = 1
           ctx.strokeStyle = 'rgba(' + P.edge + ',' + (a * (0.5 + 0.35 * br)).toFixed(3) + ')'
           ctx.lineWidth = 1.6
           ctx.beginPath()
@@ -1175,10 +1233,8 @@ export function MindOnFireHero() {
           st.flare = Math.max(0, st.flare - 0.48 * dt)
           alpha = Math.min(1, alpha + st.flare * 0.9)
           size += st.flare * 3
-          ctx.fillStyle = 'rgba(' + P.tints[st.tint] + ',' + (st.flare * 0.12).toFixed(3) + ')'
-          ctx.beginPath()
-          ctx.arc(st.x, st.y, size * 4, 0, 6.2832)
-          ctx.fill()
+          drawGlow(warmGlow, st.x, st.y, size * 5, st.flare * 0.5)
+          ctx.globalAlpha = 1
         }
         ctx.fillStyle = 'rgba(' + P.tints[st.tint] + ',' + alpha.toFixed(3) + ')'
         ctx.beginPath()
@@ -1282,10 +1338,40 @@ export function MindOnFireHero() {
           ctx.beginPath()
           ctx.arc(qp.x, qp.y, 3.4, 0, 6.2832)
           ctx.fill()
+
+          /* Give the retrieval vignette its missing semantic payload. The
+             dark pill keeps the query legible over links without hiding sky. */
+          const labelW = query.labelW
+          const labelH = 24
+          const lx = query.labelX
+          const ly = query.labelY
+          const rr = 6
+          ctx.globalCompositeOperation = 'source-over'
+          ctx.fillStyle = `rgba(9,10,22,${(0.82 * ea).toFixed(3)})`
+          ctx.strokeStyle = `rgba(${P.edge},${(0.38 * ea).toFixed(3)})`
+          ctx.lineWidth = 1
+          ctx.beginPath()
+          ctx.moveTo(lx + rr, ly)
+          ctx.lineTo(lx + labelW - rr, ly)
+          ctx.quadraticCurveTo(lx + labelW, ly, lx + labelW, ly + rr)
+          ctx.lineTo(lx + labelW, ly + labelH - rr)
+          ctx.quadraticCurveTo(lx + labelW, ly + labelH, lx + labelW - rr, ly + labelH)
+          ctx.lineTo(lx + rr, ly + labelH)
+          ctx.quadraticCurveTo(lx, ly + labelH, lx, ly + labelH - rr)
+          ctx.lineTo(lx, ly + rr)
+          ctx.quadraticCurveTo(lx, ly, lx + rr, ly)
+          ctx.closePath()
+          ctx.fill()
+          ctx.stroke()
+          ctx.font = '600 9px ui-monospace, SF Mono, Menlo, monospace'
+          ctx.textAlign = 'left'
+          ctx.fillStyle = `rgba(251,247,240,${(0.92 * labelA).toFixed(3)})`
+          ctx.fillText(query.label, lx + 9, ly + 15, labelW - 18)
+          ctx.textAlign = 'center'
         }
         if (qt > 5.4) query = null
       }
-      if (!SNAP && t - lastQueryAt > 7 && ignite > 2.4) fireQuery(t)
+      if (!SNAP && W >= 1024 && t - lastQueryAt > 7 && ignite > 2.4) fireQuery(t)
 
       /* subscriber comet */
       if (comet) {
@@ -1352,13 +1438,23 @@ export function MindOnFireHero() {
 
       /* chronology thread: press "t" — five years of writing, one stroke */
       const th = t - threadAt
-      if (th >= 0 && th < 5.5 && chronoOrder.length > 1) {
+      if (th >= 0 && th < 5.5 && chronoOrder.length > 1 && chronoLength > 0) {
         const fade = th < 4 ? 1 : Math.max(0, 1 - (th - 4) / 1.5)
-        const prog = Math.min(1, th / 4) * (chronoOrder.length - 1)
-        const whole = Math.floor(prog)
+        const timeProgress = Math.min(1, th / 4)
+        const eased = timeProgress < 0.5
+          ? 2 * timeProgress * timeProgress
+          : 1 - Math.pow(-2 * timeProgress + 2, 2) / 2
+        const distance = eased * chronoLength
+        let whole = 0
+        while (whole < chronoDistances.length - 1 && chronoDistances[whole + 1] <= distance) whole++
+        const next = Math.min(whole + 1, chronoOrder.length - 1)
+        const segmentLength = Math.max(1, chronoDistances[next] - chronoDistances[whole])
+        const segmentProgress = next === whole ? 0 : (distance - chronoDistances[whole]) / segmentLength
         ctx.globalCompositeOperation = 'source-over'
         ctx.strokeStyle = 'rgba(' + P.edge + ',' + (0.45 * fade).toFixed(3) + ')'
         ctx.lineWidth = 1.3
+        ctx.lineCap = 'round'
+        ctx.lineJoin = 'round'
         ctx.beginPath()
         ctx.moveTo(stars[chronoOrder[0]].x, stars[chronoOrder[0]].y)
         for (let ci2 = 1; ci2 <= whole; ci2++) {
@@ -1367,10 +1463,24 @@ export function MindOnFireHero() {
         if (whole < chronoOrder.length - 1) {
           const fA = stars[chronoOrder[whole]]
           const fB = stars[chronoOrder[whole + 1]]
-          const fr = prog - whole
-          ctx.lineTo(fA.x + (fB.x - fA.x) * fr, fA.y + (fB.y - fA.y) * fr)
+          ctx.lineTo(
+            fA.x + (fB.x - fA.x) * segmentProgress,
+            fA.y + (fB.y - fA.y) * segmentProgress,
+          )
         }
         ctx.stroke()
+        const runnerA = stars[chronoOrder[whole]]
+        const runnerB = stars[chronoOrder[next]]
+        const runnerX = runnerA.x + (runnerB.x - runnerA.x) * segmentProgress
+        const runnerY = runnerA.y + (runnerB.y - runnerA.y) * segmentProgress
+        ctx.globalCompositeOperation = 'lighter'
+        drawGlow(warmGlow, runnerX, runnerY, 16, 0.75 * fade)
+        ctx.globalAlpha = 1
+        ctx.fillStyle = `rgba(${P.queryRing},${(0.95 * fade).toFixed(3)})`
+        ctx.beginPath()
+        ctx.arc(runnerX, runnerY, 2.2, 0, 6.2832)
+        ctx.fill()
+        ctx.globalCompositeOperation = 'source-over'
         ctx.font = '600 10px ui-monospace, SF Mono, Menlo, monospace'
         ctx.textAlign = 'left'
         let lastYear = ''
@@ -1519,9 +1629,16 @@ export function MindOnFireHero() {
             AI that ships.
           </p>
           <p className="mof-lede mof-lede-follow text-parchment-600 dark:text-slate-300">
-            Every star above is one of my <strong>{POST_COUNT} essays</strong>;
-            my entire body of work burning in semantic space. Hover to preview,
-            click to read. Catch an ember as it rises.
+            <span className="hidden lg:inline">
+              Every star above is one of my <strong>{POST_COUNT} essays</strong>;
+              my entire body of work burning in semantic space. Hover to preview,
+              click to read. Catch an ember as it rises.
+            </span>
+            <span className="lg:hidden">
+              The fire above draws from my <strong>{POST_COUNT} essays</strong>.
+              Explore the full constellation on a larger screen, or browse every
+              essay below.
+            </span>
           </p>
           <p className="mof-kicker text-charcoal-50 dark:text-parchment-100">
             I do this work because I love it &mdash; and everything I learn,
