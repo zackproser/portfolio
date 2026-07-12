@@ -15,8 +15,7 @@ import corpus from '@/data/corpus.json'
  * Fire and "post embers" rise off the mark's crown; attract mode
  * surfaces essays on its own until the visitor takes over.
  *
- * The mark renders as sampled pixel particles in both themes; light
- * mode carries them on a dark ground shaped by the figure itself.
+ * The mark renders as sampled pixel particles on an always-dark sky.
  * Canvas is decorative: copy + newsletter capture are SSR'd DOM.
  * ------------------------------------------------------------------ */
 
@@ -25,7 +24,9 @@ type Star = {
   x: number; y: number; r: number; tint: number; phase: number
   delay: number; flare: number; post: number; c: number
 }
-type Hit = { kind: 0 | 1; i: number; post: number }
+type Hit =
+  | { kind: 0; i: number; post: number }
+  | { kind: 1; emberId: number; post: number }
 
 const POSTS: Post[] = (corpus as { posts: Post[] }).posts
 const POST_COUNT = (corpus as { count: number }).count
@@ -126,17 +127,24 @@ export function MindOnFireHero() {
       } catch { /* private mode */ }
     }
 
-    /* ---------- theme ---------- */
+    const capture = hero.querySelector<HTMLElement>('.mof-capture')
+    let inboxTarget: { x: number; y: number } | null = null
+
+    /* ---------- night-sky palette ---------- */
     type Palette = {
-      dark: boolean; tints: string[]; nebula: string; label: string
-      edge: string; queryRing: string; halo: string; comp: GlobalCompositeOperation
+      tints: string[]; nebula: string; label: string
+      edge: string; queryRing: string; halo: string
     }
-    let P: Palette
+    const P: Palette = {
+      tints: ['243,156,18', '230,126,34', '148,163,184', '251,247,240'],
+      nebula: 'rgba(243,156,18,0.05)',
+      label: 'rgba(148,163,184,',
+      edge: '243,156,18',
+      queryRing: '251,247,240',
+      halo: 'rgba(15,15,31,',
+    }
 
     /* ---------- canvas / layout ---------- */
-    const dprCap = () =>
-      ((navigator as unknown as { deviceMemory?: number }).deviceMemory ?? 4) >= 8 ? 2 : 1.75
-    let DPR = Math.min(window.devicePixelRatio || 1, dprCap())
     let W = 0
     let H = 0
     let logoCX = 0
@@ -145,6 +153,8 @@ export function MindOnFireHero() {
     let lastT = 0
     let running = false
     let rafId = 0
+    let framePending = false
+    let resizeRafId = 0
 
     const stars: Star[] = []
     const links: Array<[number, number]> = []
@@ -160,25 +170,17 @@ export function MindOnFireHero() {
       }
     } catch { /* ignore */ }
 
-    /* forward-declared so refreshPalette and resize can schedule a frame */
+    /* One scheduler serves both the continuous loop and reduced-motion
+       invalidations, so one-shot redraws cannot stack. */
     let frame: (ms: number) => void
-
-    /* the hero panel is always the night sky, whatever the page theme —
-       one palette, one render path, no light-mode colorization */
-    const refreshPalette = () => {
-      P = {
-        dark: true,
-        tints: ['243,156,18', '230,126,34', '148,163,184', '251,247,240'],
-        nebula: 'rgba(243,156,18,0.05)',
-        label: 'rgba(148,163,184,',
-        edge: '243,156,18',
-        queryRing: '251,247,240',
-        halo: 'rgba(15,15,31,',
-        comp: 'lighter',
-      }
-      if (reduced && !running) rafId = requestAnimationFrame(frame)
+    const requestFrame = () => {
+      if (disposed || framePending) return
+      framePending = true
+      rafId = requestAnimationFrame((ms) => {
+        framePending = false
+        frame(ms)
+      })
     }
-    refreshPalette()
 
     const rnd = (i: number, salt: number) => {
       const x = Math.sin((i + 1) * 127.1 + salt * 311.7) * 43758.5453
@@ -297,23 +299,36 @@ export function MindOnFireHero() {
       }
     }
 
-    let lastW = 0
-    let lastH = 0
+    function measureInboxTarget(heroRect?: DOMRect) {
+      if (!capture) { inboxTarget = null; return }
+      const hr = heroRect ?? hero.getBoundingClientRect()
+      const cr = capture.getBoundingClientRect()
+      inboxTarget = { x: cr.right - hr.left - 24, y: cr.top - hr.top + 8 }
+    }
+
     function resize() {
-      if (!hero || !canvas || !ctx) return
       const rect = hero.getBoundingClientRect()
-      DPR = Math.min(window.devicePixelRatio || 1, dprCap())
-      W = rect.width
-      H = rect.height
-      canvas.width = W * DPR
-      canvas.height = H * DPR
-      canvas.style.width = W + 'px'
-      canvas.style.height = H + 'px'
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0)
-      const heightOnly = W === lastW && lastH > 0 && Math.abs(H - lastH) < 140
-      lastW = W
-      lastH = H
-      if (heightOnly) return
+      const nextW = rect.width
+      const nextH = rect.height
+      if (nextW <= 0 || nextH <= 0) return
+      const requestedDpr = window.devicePixelRatio || 1
+      const backingW = Math.max(1, Math.round(nextW * requestedDpr))
+      const backingH = Math.max(1, Math.round(nextH * requestedDpr))
+      const cssChanged = nextW !== W || nextH !== H
+      const backingChanged = canvas.width !== backingW || canvas.height !== backingH
+
+      measureInboxTarget(rect)
+      if (!cssChanged && !backingChanged) return
+
+      W = nextW
+      H = nextH
+      if (backingChanged) {
+        canvas.width = backingW
+        canvas.height = backingH
+      }
+      canvas.style.width = `${W}px`
+      canvas.style.height = `${H}px`
+      ctx.setTransform(backingW / W, 0, 0, backingH / H, 0, 0)
       layout()
       preview.classList.remove('mof-show')
       lastKey = null
@@ -331,20 +346,21 @@ export function MindOnFireHero() {
           stars[pi].flare = 0.7
           autoHit = { kind: 0, i: pi, post: stars[pi].post, until: Number.MAX_SAFE_INTEGER }
         }
-        if (!running) rafId = requestAnimationFrame(frame)
+        if (!running) requestFrame()
       }
     }
 
     /* ---------- the mark ---------- */
     type LogoP = {
-      bx: number; by: number; colD: string; flame: boolean
-      ghost: boolean; ph: number; sx: number; sy: number
+      bx: number; by: number; colD: string; flame: boolean; animated: boolean
+      ghost: boolean; ph: number; sx: number; sy: number; colorGroup: number
     }
     const logoP: LogoP[] = []
+    const animatedLogoP: LogoP[] = []
     const crownSrc: LogoP[] = []
     let logoReady = false
-    let logoGround: HTMLCanvasElement | null = null
-    let ghostBake: HTMLCanvasElement | null = null
+    let staticLogoBake: HTMLCanvasElement | null = null
+    const animatedColors: string[] = []
     let logoMap = { cx2: 0, cy2: 0, hh: 1 }
     let LOGO_H = 0
 
@@ -428,58 +444,73 @@ export function MindOnFireHero() {
           const by = (q.y - cy2) / hh
           const bx = (q.x - cx2) / hh
           const warm = q.c === 1 && q.r > 130 && q.r > q.b
+          const flame = warm && (by < -0.12 || (bx < -0.08 && by < 0.2))
+          const animated = q.c === 1 && (flame || bx > 0.02)
+          const luminance = (q.r * 0.299 + q.g * 0.587 + q.b * 0.114) | 0
           const p: LogoP = {
             bx,
             by,
             colD: q.r + ',' + q.g + ',' + q.b,
             /* crown fire, plus the tongues running down the front forehead */
-            flame: warm && (by < -0.12 || (bx < -0.08 && by < 0.2)),
+            flame,
+            animated,
             ghost: q.c === 0,
             ph: Math.random() * 6.2832,
             sx: 0,
             sy: 0,
+            /* Eight warm brightness groups plus four cool groups preserve
+               the source palette while bounding per-frame state changes. */
+            colorGroup: warm
+              ? Math.max(0, Math.min(7, Math.floor(luminance / 32)))
+              : 8 + Math.max(0, Math.min(3, Math.floor(luminance / 64))),
           }
           logoP.push(p)
+          if (p.animated) animatedLogoP.push(p)
           if (p.flame && q.y - minY < hh * 0.22) crownSrc.push(p)
         })
 
-        /* light mode ground: the figure's exact silhouette (color + the
-           enclosed black face/hair), filled near-black — no blur, no aura */
-        const mk = document.createElement('canvas')
-        mk.width = LW
-        mk.height = cropH
-        const mctx = mk.getContext('2d')
-        if (mctx) {
-          const gid = mctx.createImageData(LW, cropH)
-          for (let i = 0; i < LW * cropH; i++) {
-            if (cm[i] || !skyD[i]) {
-              gid.data[i * 4] = 15
-              gid.data[i * 4 + 1] = 15
-              gid.data[i * 4 + 2] = 31
-              gid.data[i * 4 + 3] = 255
-            }
-          }
-          mctx.putImageData(gid, 0, 0)
-          logoGround = mk
-        }
-        /* bake the silhouette speckle once — it never moves relative to
-           itself, so per-frame it becomes a single drawImage */
+        /* Bake the silhouette and every non-animated colored pixel once.
+           Per-frame work is reserved for the flame/circuit subset. */
         const gb = document.createElement('canvas')
         gb.width = LW
         gb.height = cropH
         const gctx = gb.getContext('2d')
         if (gctx) {
           for (const gp of logoP) {
-            if (!gp.ghost) continue
-            const grain = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(gp.ph * 37.7))
-            gctx.fillStyle = 'rgba(34,38,64,' + (0.36 * grain).toFixed(3) + ')'
-            gctx.fillRect(gp.bx * hh + cx2 - 1.1, gp.by * hh + cy2 - 1.1, 2.2, 2.2)
+            if (gp.ghost) {
+              const grain = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(gp.ph * 37.7))
+              gctx.fillStyle = 'rgba(34,38,64,' + (0.36 * grain).toFixed(3) + ')'
+              gctx.fillRect(gp.bx * hh + cx2 - 1.1, gp.by * hh + cy2 - 1.1, 2.2, 2.2)
+            } else if (!gp.animated) {
+              const sourcePx = Math.max(1.05, 330 / 330) * (hh / 330)
+              gctx.fillStyle = 'rgba(' + gp.colD + ',0.94)'
+              gctx.fillRect(
+                gp.bx * hh + cx2 - sourcePx * 0.62,
+                gp.by * hh + cy2 - sourcePx * 0.62,
+                sourcePx * 1.24,
+                sourcePx * 1.24,
+              )
+            }
           }
-          ghostBake = gb
+          staticLogoBake = gb
+        }
+
+        const sums = Array.from({ length: 12 }, () => ({ r: 0, g: 0, b: 0, n: 0 }))
+        for (const p of animatedLogoP) {
+          const [r, g, b] = p.colD.split(',').map(Number)
+          const sum = sums[p.colorGroup]
+          sum.r += r; sum.g += g; sum.b += b; sum.n++
+        }
+        for (let i = 0; i < sums.length; i++) {
+          const s = sums[i]
+          animatedColors[i] = s.n
+            ? `${Math.round(s.r / s.n)},${Math.round(s.g / s.n)},${Math.round(s.b / s.n)}`
+            : '243,156,18'
         }
         logoReady = true
-        if (reduced) rafId = requestAnimationFrame(frame)
+        if (reduced) requestFrame()
       }
+      im.onerror = () => { logoReady = false }
       im.src = '/images/mind-on-fire.png'
     }
 
@@ -491,49 +522,50 @@ export function MindOnFireHero() {
       const sway = 0.05 * Math.sin(t * 0.3)
       const cs = Math.cos(sway)
 
-      if (!P.dark && logoGround) {
-        /* the figure's own black, exactly its shape — the additive pixel
-           render below then matches dark mode one-for-one */
-        const k = SC / logoMap.hh
-        ctx.save()
-        ctx.globalAlpha = headA
-        ctx.drawImage(
-          logoGround,
-          logoCX - logoMap.cx2 * k,
-          logoCY - logoMap.cy2 * k,
-          logoGround.width * k,
-          logoGround.height * k,
-        )
-        ctx.restore()
-      }
-
-      /* additive pixels on dark ground — same look in both themes */
       ctx.globalCompositeOperation = 'lighter'
-      /* silhouette: baked at init, one draw call per frame */
-      if (ghostBake) {
+      if (staticLogoBake) {
         ctx.save()
         ctx.globalAlpha = headA
         ctx.translate(logoCX, logoCY)
         ctx.scale((SC / logoMap.hh) * cs, SC / logoMap.hh)
-        ctx.drawImage(ghostBake, -logoMap.cx2, -logoMap.cy2)
+        ctx.drawImage(staticLogoBake, -logoMap.cx2, -logoMap.cy2)
         ctx.restore()
       }
-      /* fire + circuitry pass */
-      for (const p of logoP) {
-        if (p.ghost) continue
+
+      const paths = Array.from({ length: 12 }, () =>
+        Array.from({ length: 8 }, () => new Path2D()),
+      )
+      const normalizedPx = px / SC
+      for (const p of animatedLogoP) {
         p.sx = logoCX + p.bx * cs * SC
         p.sy = logoCY + p.by * SC
-        let a = 0.94 * headA
-        if (p.flame) a *= 0.74 + 0.26 * Math.sin(t * (6 + surge * 5) + p.ph)
-        else if (p.bx > 0.02) a *= 0.7 + 0.3 * Math.sin(t * (2.2 + surge * 1.5) + (p.bx + p.by) * 9)
-        ctx.fillStyle = 'rgba(' + p.colD + ',' + Math.min(a, 1).toFixed(3) + ')'
-        ctx.fillRect(p.sx - px * 0.62, p.sy - px * 0.62, px * 1.24, px * 1.24)
+        const pulse = p.flame
+          ? 0.74 + 0.26 * Math.sin(t * (6 + surge * 5) + p.ph)
+          : 0.7 + 0.3 * Math.sin(t * (2.2 + surge * 1.5) + (p.bx + p.by) * 9)
+        const alphaBin = Math.max(0, Math.min(7, Math.round(pulse * 7)))
+        paths[p.colorGroup][alphaBin].rect(
+          p.bx - normalizedPx * 0.62,
+          p.by - normalizedPx * 0.62,
+          normalizedPx * 1.24,
+          normalizedPx * 1.24,
+        )
       }
+      ctx.save()
+      ctx.translate(logoCX, logoCY)
+      ctx.scale(SC * cs, SC)
+      for (let color = 0; color < paths.length; color++) {
+        for (let alpha = 0; alpha < paths[color].length; alpha++) {
+          ctx.fillStyle = `rgba(${animatedColors[color]},${0.94 * headA * (alpha / 7)})`
+          ctx.fill(paths[color][alpha])
+        }
+      }
+      ctx.restore()
     }
 
     /* ---------- fire + post embers ---------- */
     type Flame = { x: number; y: number; vx: number; vy: number; wob: number; life: number; age: number; r: number }
     const flames: Flame[] = []
+    let flameSpawnBudget = 0
     /* radial spark pop, reusing the flame renderer */
     function sparkBurst(x: number, y: number, n: number, life: number) {
       for (let b = 0; b < n; b++) {
@@ -553,7 +585,13 @@ export function MindOnFireHero() {
     function stepFlames(dt: number, headA: number) {
       if (!ctx) return
       if (headA > 0.3 && logoReady && crownSrc.length) {
-        const want = Math.min(3 + Math.round(surge * 3), 150 + Math.round(surge * 40) - flames.length)
+        flameSpawnBudget += dt * (180 + surge * 180)
+        const available = Math.max(0, 150 + Math.round(surge * 40) - flames.length)
+        const want = Math.min(
+          Math.floor(flameSpawnBudget),
+          available,
+        )
+        flameSpawnBudget -= want
         for (let s = 0; s < want; s++) {
           const src = crownSrc[(Math.random() * crownSrc.length) | 0]
           const spark = Math.random() < 0.12 + surge * 0.1
@@ -569,7 +607,7 @@ export function MindOnFireHero() {
           })
         }
       }
-      ctx.globalCompositeOperation = P.comp
+      ctx.globalCompositeOperation = 'lighter'
       for (let i = flames.length - 1; i >= 0; i--) {
         const f = flames[i]
         f.age += dt
@@ -585,10 +623,10 @@ export function MindOnFireHero() {
         f.x += (f.vx + wind + Math.sin(f.wob + f.age * 9) * 14) * dt
         f.y += f.vy * dt
         const hue = 46 - 40 * p
-        const lig = P.dark ? 68 - 20 * p : 62 - 20 * p
-        const alpha = Math.sin(Math.PI * Math.min(p * 1.15, 1)) * (P.dark ? 0.85 : 0.72) * headA
+        const lig = 68 - 20 * p
+        const alpha = Math.sin(Math.PI * Math.min(p * 1.15, 1)) * 0.85 * headA
         const rr = f.r * (1 - p * 0.65)
-        if (P.dark && f.r > 2) {
+        if (f.r > 2) {
           ctx.fillStyle = 'hsla(' + hue + ',90%,' + lig + '%,' + (alpha * 0.18).toFixed(3) + ')'
           ctx.beginPath()
           ctx.arc(f.x, f.y, rr * 3.2, 0, 6.2832)
@@ -604,9 +642,9 @@ export function MindOnFireHero() {
     type Ember = {
       id: number; x: number; y: number; vx: number; vy: number; wob: number
       r: number; life: number; age: number; post: number; held: boolean
-      wasHeld: boolean
       turn: number
       trail: Array<{ x: number; y: number }>
+      trailAt: number
       toInbox?: boolean; userCaught: boolean; wasUserCaught: boolean
     }
     const postEmbers: Ember[] = []
@@ -626,33 +664,28 @@ export function MindOnFireHero() {
           vy: Math.sin(ang) * sp - 6,
           turn: (Math.random() - 0.5) * 0.5,
           trail: [],
+          trailAt: 0,
           wob: Math.random() * 6.2832,
           r: 5.2 + Math.random() * 1.6,
           life: 8,
           age: 0,
           post: (Math.random() * POSTS.length) | 0,
           held: false,
-          wasHeld: false,
           userCaught: false,
           wasUserCaught: false,
         })
       }
-      ctx.globalCompositeOperation = P.comp
+      ctx.globalCompositeOperation = 'lighter'
       for (let i = postEmbers.length - 1; i >= 0; i--) {
         const em = postEmbers[i]
         if (em.userCaught && !em.wasUserCaught) sparkBurst(em.x, em.y, 6, 0.35) /* caught! */
-        em.wasHeld = em.held
         em.wasUserCaught = em.userCaught
         if (!em.held) {
           em.age += dt
           if (em.toInbox) {
             /* a thought finds its way to the inbox */
-            const card = hero.querySelector('.mof-capture')
-            const cr = card?.getBoundingClientRect()
-            const hr = hero.getBoundingClientRect()
-            if (cr) {
-              const tx2 = cr.right - hr.left - 24
-              const ty2 = cr.top - hr.top + 8
+            if (inboxTarget) {
+              const { x: tx2, y: ty2 } = inboxTarget
               em.x += (tx2 - em.x) * dt * 1.4
               em.y += (ty2 - em.y) * dt * 1.4
               if (Math.abs(tx2 - em.x) < 12 && Math.abs(ty2 - em.y) < 12) {
@@ -681,13 +714,14 @@ export function MindOnFireHero() {
         if (em.age >= em.life || em.y < 54 || em.y > H - 16 || em.x < 16 || em.x > W - 10) { postEmbers.splice(i, 1); continue }
         const a = Math.min(1, em.age / 0.6, (em.life - em.age) / 1.2) * headA
         /* a short fading tail — a meteor, not a bubble */
-        if (!em.held) {
+        if (!em.held && t >= em.trailAt) {
           em.trail.push({ x: em.x, y: em.y })
           if (em.trail.length > 9) em.trail.shift()
+          em.trailAt = t + 1 / 60
         }
         for (let ti = 1; ti < em.trail.length; ti++) {
           const ta = (ti / em.trail.length) * 0.4 * a
-          ctx.strokeStyle = 'hsla(' + (40 - 18 * (em.age / em.life)) + ',94%,' + (P.dark ? 62 : 46) + '%,' + ta.toFixed(3) + ')'
+          ctx.strokeStyle = 'hsla(' + (40 - 18 * (em.age / em.life)) + ',94%,62%,' + ta.toFixed(3) + ')'
           ctx.lineWidth = (ti / em.trail.length) * 2
           ctx.beginPath()
           ctx.moveTo(em.trail[ti - 1].x, em.trail[ti - 1].y)
@@ -695,13 +729,11 @@ export function MindOnFireHero() {
           ctx.stroke()
         }
         const flick = 0.82 + 0.18 * Math.sin(t * 5 + em.wob)
-        if (P.dark) {
-          ctx.fillStyle = 'hsla(36,95%,62%,' + (a * 0.16).toFixed(3) + ')'
-          ctx.beginPath()
-          ctx.arc(em.x, em.y, em.r * 3, 0, 6.2832)
-          ctx.fill()
-        }
-        ctx.fillStyle = 'hsla(' + (40 - 18 * (em.age / em.life)) + ',94%,' + (P.dark ? 64 : 46) + '%,' + (a * flick).toFixed(3) + ')'
+        ctx.fillStyle = 'hsla(36,95%,62%,' + (a * 0.16).toFixed(3) + ')'
+        ctx.beginPath()
+        ctx.arc(em.x, em.y, em.r * 3, 0, 6.2832)
+        ctx.fill()
+        ctx.fillStyle = 'hsla(' + (40 - 18 * (em.age / em.life)) + ',94%,64%,' + (a * flick).toFixed(3) + ')'
         ctx.beginPath()
         ctx.arc(em.x, em.y, em.r, 0, 6.2832)
         ctx.fill()
@@ -750,9 +782,15 @@ export function MindOnFireHero() {
         if (d2 < bestD) { bestD = d2; bi = i; kind = 1 }
       }
       if (bi < 0) return null
-      return { kind, i: bi, post: kind === 1 ? postEmbers[bi].post : stars[bi].post }
+      return kind === 1
+        ? { kind: 1, emberId: postEmbers[bi].id, post: postEmbers[bi].post }
+        : { kind: 0, i: bi, post: stars[bi].post }
     }
-    const hitPos = (h: Hit) => (h.kind === 1 ? postEmbers[h.i] : stars[h.i])
+    const emberFor = (hit: Extract<Hit, { kind: 1 }>) =>
+      postEmbers.find((ember) => ember.id === hit.emberId)
+    const hitPos = (hit: Hit) => hit.kind === 1 ? emberFor(hit) : stars[hit.i]
+    const validHit = (hit: Hit | null): hit is Hit =>
+      Boolean(hit && (hit.kind === 0 ? stars[hit.i] : emberFor(hit)))
 
     function updatePreview(hit: Hit | null, isUser: boolean) {
       if (!hit) {
@@ -770,11 +808,12 @@ export function MindOnFireHero() {
         return
       }
       if (hideTimer) { clearTimeout(hideTimer); hideTimer = null }
-      const key = hit.kind + ':' + (hit.kind === 1 ? postEmbers[hit.i].id : hit.i) + ':' + hit.post
+      const pos = hitPos(hit)
+      if (!pos) return
+      const key = hit.kind + ':' + (hit.kind === 1 ? hit.emberId : hit.i) + ':' + hit.post
       const post = POSTS[hit.post]
       if (key !== lastKey && hit.post < 0) {
         /* the visitor's own star */
-        const pos = hitPos(hit)
         ppEl('.mof-pp-title').textContent = 'You — reading since ' + (youStar?.since || 'today')
         ppEl('.mof-pp-date').textContent = ''
         ppEl('.mof-pp-cat').textContent = 'YOUR STAR'
@@ -802,12 +841,13 @@ export function MindOnFireHero() {
         return
       }
       if (key !== lastKey && post) {
-        const pos = hitPos(hit)
+        const star = hit.kind === 0 ? stars[hit.i] : stars.find((item) => item.post === hit.post)
+        const cluster = star?.c ?? clusterOf(post)
         ppEl('.mof-pp-title').textContent = post.t
         ppEl('.mof-pp-date').textContent = (post.d || '') + (hit.post === 0 ? ' · LATEST' : IS_FRESH[hit.post] ? ' · NEW' : readSet.has(post.s) ? ' · READ' : '')
-        ppEl('.mof-pp-cat').textContent = hit.kind === 1 ? 'RISING THOUGHT' : CLUSTERS[stars[hit.i].c].label
+        ppEl('.mof-pp-cat').textContent = hit.kind === 1 ? 'RISING THOUGHT' : CLUSTERS[cluster].label
         ppEl('.mof-pp-initial').textContent = (post.t.charAt(0) || 'Z').toUpperCase()
-        ppEl('.mof-pp-art').style.background = PP_GRADS[hit.kind === 1 ? 1 : CLUSTERS[stars[hit.i].c].tint]
+        ppEl('.mof-pp-art').style.background = PP_GRADS[hit.kind === 1 ? 1 : CLUSTERS[cluster].tint]
         ppEl('.mof-pp-excerpt').textContent = post.e || ''
         const img = ppEl('.mof-pp-img') as HTMLImageElement
         if (post.img) { img.src = post.img; img.style.display = 'block' }
@@ -817,7 +857,7 @@ export function MindOnFireHero() {
         hero.style.cursor = isUser ? 'pointer' : ''
         lastKey = key
         shownPost = hit.post
-        shownEmberId = hit.kind === 1 ? postEmbers[hit.i].id : null
+        shownEmberId = hit.kind === 1 ? hit.emberId : null
         const cw = preview.offsetWidth || 304
         const chh = preview.offsetHeight || 280
         let px = pos.x + 20
@@ -870,24 +910,30 @@ export function MindOnFireHero() {
       }
       if (navTimer) clearTimeout(navTimer)
       if (hit.post < 0) {
-        navTimer = setTimeout(() => { if (!disposed) router.push('/newsletter' as Route) }, 260)
+        if (reduced) router.push('/newsletter' as Route)
+        else navTimer = setTimeout(() => { if (!disposed) router.push('/newsletter' as Route) }, 260)
         return
       }
       markRead(post.s)
-      navTimer = setTimeout(() => { if (!disposed) router.push(('/blog/' + post.s) as Route) }, 260)
+      if (reduced) router.push(('/blog/' + post.s) as Route)
+      else navTimer = setTimeout(() => { if (!disposed) router.push(('/blog/' + post.s) as Route) }, 260)
     }
     /* "t" threads the corpus chronologically; arrows walk the stars */
     let threadAt = -999
     let kbCursor = -1
     const onKey = (e: KeyboardEvent) => {
       const tgt = e.target as HTMLElement | null
-      if (tgt && tgt.closest && tgt.closest('input, textarea, select')) return
+      if (
+        e.defaultPrevented || e.repeat || e.metaKey || e.ctrlKey || e.altKey ||
+        document.activeElement !== hero || tgt?.isContentEditable ||
+        Boolean(tgt?.closest('input, textarea, select, [contenteditable="true"]'))
+      ) return
       if (e.key === 't' && !reduced) {
+        e.preventDefault()
         threadAt = lastT
         return
       }
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Enter' && e.key !== 'Escape') return
-      if (document.activeElement !== hero) return
       if (e.key === 'Escape') {
         kbCursor = -1
         tapHit = null
@@ -917,13 +963,17 @@ export function MindOnFireHero() {
       tapHit = { kind: 0, i, post: stars[i].post, until: lastT + 30 }
       autoHit = null
     }
-    window.addEventListener('keydown', onKey)
+    hero.addEventListener('keydown', onKey)
 
     hero.addEventListener('mousemove', onMove, { passive: true })
     hero.addEventListener('mouseleave', onLeave)
     hero.addEventListener('click', onClick)
     preview.addEventListener('mouseenter', onCardEnter)
     preview.addEventListener('mouseleave', onCardLeave)
+    const onPreviewClick = () => {
+      if (shownPost != null && shownPost >= 0) markRead(POSTS[shownPost].s)
+    }
+    preview.addEventListener('click', onPreviewClick)
 
     /* ---------- live queries ---------- */
     let query: { p: { x: number; y: number }; nn: number[]; t0: number; gen: number } | null = null
@@ -991,32 +1041,33 @@ export function MindOnFireHero() {
       if (hover) {
         if (hover.kind === 0) stars[hover.i].flare = Math.max(stars[hover.i].flare, 0.5)
         else {
-          postEmbers[hover.i].held = true
-          postEmbers[hover.i].userCaught = true
+          const ember = emberFor(hover)
+          if (ember) { ember.held = true; ember.userCaught = true }
         }
       }
       if (cardHover && shownEmberId != null) {
         for (const em of postEmbers) if (em.id === shownEmberId) em.held = true
       }
       if (hover && kbCursor < 0) tapHit = null
-      else if (tapHit && (t > tapHit.until || (tapHit.kind === 1 && (!postEmbers[tapHit.i] || postEmbers[tapHit.i].post !== tapHit.post)))) {
+      else if (tapHit && (t > tapHit.until || !validHit(tapHit))) {
         tapHit = null
         kbCursor = -1
       }
-      if (tapHit && tapHit.kind === 1 && postEmbers[tapHit.i] && postEmbers[tapHit.i].post === tapHit.post) {
-        postEmbers[tapHit.i].held = true
-        postEmbers[tapHit.i].userCaught = true
+      if (tapHit?.kind === 1) {
+        const ember = emberFor(tapHit)
+        if (ember) { ember.held = true; ember.userCaught = true }
       }
 
       if (hover || cardHover || tapHit) {
         autoHit = null
         autoNextAt = t + 4
       } else if (autoHit) {
-        if (t > autoHit.until || (autoHit.kind === 1 && (!postEmbers[autoHit.i] || postEmbers[autoHit.i].post !== autoHit.post))) {
+        if (t > autoHit.until || !validHit(autoHit)) {
           autoHit = null
           autoNextAt = t + 1.4 + Math.random() * 1.8
-        } else if (autoHit.kind === 1 && postEmbers[autoHit.i] && postEmbers[autoHit.i].post === autoHit.post) {
-          postEmbers[autoHit.i].held = true
+        } else if (autoHit.kind === 1) {
+          const ember = emberFor(autoHit)
+          if (ember) ember.held = true
         }
       } else if (!SNAP && t > autoNextAt && ignite > 3 && stars.length) {
         const pickEmber = postEmbers.length > 0 && Math.random() < 0.25
@@ -1024,7 +1075,7 @@ export function MindOnFireHero() {
           const ai = (Math.random() * postEmbers.length) | 0
           autoHit = {
             kind: 1,
-            i: ai,
+            emberId: postEmbers[ai].id,
             post: postEmbers[ai].post,
             until: t + 3.4,
           }
@@ -1062,7 +1113,8 @@ export function MindOnFireHero() {
         }
       }
       for (let ci = 0; ci < clusterGlow.length; ci++) {
-        clusterGlow[ci] += ((ci === focusCluster ? 1 : 0) - clusterGlow[ci]) * 0.08
+        const target = ci === focusCluster ? 1 : 0
+        clusterGlow[ci] = target + (clusterGlow[ci] - target) * Math.exp(-5 * dt)
       }
 
       /* nebulae */
@@ -1083,7 +1135,7 @@ export function MindOnFireHero() {
       /* links */
       ctx.lineWidth = 0.9
       for (const [a, b] of links) {
-        const la = Math.min(0.6, (P.dark ? 0.2 : 0.26) * labelA * (1 + clusterGlow[stars[a].c] * 0.9))
+        const la = Math.min(0.6, 0.2 * labelA * (1 + clusterGlow[stars[a].c] * 0.9))
         ctx.strokeStyle = 'rgba(' + P.edge + ',' + la.toFixed(3) + ')'
         ctx.beginPath()
         ctx.moveTo(stars[a].x, stars[a].y)
@@ -1092,7 +1144,7 @@ export function MindOnFireHero() {
       }
 
       /* stars */
-      ctx.globalCompositeOperation = P.comp
+      ctx.globalCompositeOperation = 'lighter'
       for (const st of stars) {
         const a = Math.min(1, Math.max(0, (ignite - st.delay) / 0.5))
         if (a <= 0) continue
@@ -1103,7 +1155,7 @@ export function MindOnFireHero() {
         const tw = fresh
           ? 0.68 + 0.32 * Math.sin(t * 2.3 + st.phase)
           : 0.78 + 0.22 * Math.sin(t * 1.3 + st.phase)
-        let alpha = Math.min(1, a * tw * (P.dark ? 0.95 : 0.9) * (1 + clusterGlow[st.c] * 0.22) * (fresh ? 1.18 : 1) * (read && !fresh ? 0.78 : 1))
+        let alpha = Math.min(1, a * tw * 0.95 * (1 + clusterGlow[st.c] * 0.22) * (fresh ? 1.18 : 1) * (read && !fresh ? 0.78 : 1))
         let size = st.r + (fresh ? 1 : 0)
         if (st.post === 0) {
           /* the newest thought wears a slow-breathing halo */
@@ -1120,15 +1172,13 @@ export function MindOnFireHero() {
           ctx.stroke()
         }
         if (st.flare > 0) {
-          st.flare = Math.max(0, st.flare - 0.008)
+          st.flare = Math.max(0, st.flare - 0.48 * dt)
           alpha = Math.min(1, alpha + st.flare * 0.9)
           size += st.flare * 3
-          if (P.dark) {
-            ctx.fillStyle = 'rgba(' + P.tints[st.tint] + ',' + (st.flare * 0.12).toFixed(3) + ')'
-            ctx.beginPath()
-            ctx.arc(st.x, st.y, size * 4, 0, 6.2832)
-            ctx.fill()
-          }
+          ctx.fillStyle = 'rgba(' + P.tints[st.tint] + ',' + (st.flare * 0.12).toFixed(3) + ')'
+          ctx.beginPath()
+          ctx.arc(st.x, st.y, size * 4, 0, 6.2832)
+          ctx.fill()
         }
         ctx.fillStyle = 'rgba(' + P.tints[st.tint] + ',' + alpha.toFixed(3) + ')'
         ctx.beginPath()
@@ -1155,20 +1205,22 @@ export function MindOnFireHero() {
           ctx.beginPath()
           ctx.arc(st.x, st.y, size + 3, 0, 6.2832)
           ctx.stroke()
-          ctx.globalCompositeOperation = P.comp
+          ctx.globalCompositeOperation = 'lighter'
         }
       }
 
       /* focus ring */
       const focusHit = hover || tapHit || autoHit
-      if (focusHit && (focusHit.kind === 0 || (postEmbers[focusHit.i] && postEmbers[focusHit.i].post === focusHit.post))) {
+      if (validHit(focusHit)) {
         const hs = hitPos(focusHit)
-        ctx.globalCompositeOperation = 'source-over'
-        ctx.strokeStyle = 'rgba(' + P.edge + ',0.9)'
-        ctx.lineWidth = 1.6
-        ctx.beginPath()
-        ctx.arc(hs.x, hs.y, hs.r + 5, 0, 6.2832)
-        ctx.stroke()
+        if (hs) {
+          ctx.globalCompositeOperation = 'source-over'
+          ctx.strokeStyle = 'rgba(' + P.edge + ',0.9)'
+          ctx.lineWidth = 1.6
+          ctx.beginPath()
+          ctx.arc(hs.x, hs.y, hs.r + 5, 0, 6.2832)
+          ctx.stroke()
+        }
       }
 
       /* the fire answers the cursor: surge while the pointer rides the mark */
@@ -1176,19 +1228,18 @@ export function MindOnFireHero() {
       const eyS = (LOGO_H || 400) * 0.62
       const sdx = (mouseX - logoCX) / exS
       const sdy = (mouseY - logoCY) / eyS
-      surge += ((mouseIn && sdx * sdx + sdy * sdy < 1.3 ? 1 : 0) - surge) * 0.06
-      mouseVX *= 0.94 /* wind dies down between gestures */
+      const surgeTarget = mouseIn && sdx * sdx + sdy * sdy < 1.3 ? 1 : 0
+      surge = surgeTarget + (surge - surgeTarget) * Math.exp(-3.7 * dt)
+      mouseVX *= Math.exp(-3.7 * dt) /* wind dies down between gestures */
 
-      /* halo (dark only) + the mark + its fire */
+      /* halo + the mark + its fire */
       ctx.globalCompositeOperation = 'source-over'
-      if (P.dark) {
-        const haloR = (LOGO_H || 400) * 0.72
-        const hg = ctx.createRadialGradient(logoCX, logoCY, haloR * 0.25, logoCX, logoCY, haloR)
-        hg.addColorStop(0, P.halo + '0.55)')
-        hg.addColorStop(1, P.halo + '0)')
-        ctx.fillStyle = hg
-        ctx.fillRect(logoCX - haloR, logoCY - haloR, haloR * 2, haloR * 2)
-      }
+      const haloR = (LOGO_H || 400) * 0.72
+      const hg = ctx.createRadialGradient(logoCX, logoCY, haloR * 0.25, logoCX, logoCY, haloR)
+      hg.addColorStop(0, P.halo + '0.55)')
+      hg.addColorStop(1, P.halo + '0)')
+      ctx.fillStyle = hg
+      ctx.fillRect(logoCX - haloR, logoCY - haloR, haloR * 2, haloR * 2)
       drawLogo(t, headA)
       stepFlames(dt, headA)
       stepEmbers(dt, headA, t, ignite)
@@ -1334,7 +1385,7 @@ export function MindOnFireHero() {
         ctx.textAlign = 'center'
       }
 
-      if (running) rafId = requestAnimationFrame(frame)
+      if (running) requestFrame()
     }
 
     /* ---------- boot ---------- */
@@ -1347,7 +1398,7 @@ export function MindOnFireHero() {
     }
     if (!reduced) {
       running = true
-      rafId = requestAnimationFrame(frame)
+      requestFrame()
     } else {
       /* a composed poster, not a paused video: settled sky, one recent
          unread essay pre-focused with its card open */
@@ -1365,15 +1416,24 @@ export function MindOnFireHero() {
         stars[pi].flare = 0.7
         autoHit = { kind: 0, i: pi, post: stars[pi].post, until: Number.MAX_SAFE_INTEGER }
       }
-      rafId = requestAnimationFrame(frame)
+      requestFrame()
     }
-    const onResize = () => resize()
-    window.addEventListener('resize', onResize)
+    const scheduleResize = () => {
+      if (resizeRafId || disposed) return
+      resizeRafId = requestAnimationFrame(() => {
+        resizeRafId = 0
+        resize()
+      })
+    }
 
     let ro: ResizeObserver | null = null
-    if ('ResizeObserver' in window) {
-      ro = new ResizeObserver(() => resize())
+    const supportsResizeObserver = typeof window.ResizeObserver === 'function'
+    if (supportsResizeObserver) {
+      ro = new ResizeObserver(scheduleResize)
       ro.observe(hero)
+      if (capture) ro.observe(capture)
+    } else {
+      window.addEventListener('resize', scheduleResize)
     }
 
     let io: IntersectionObserver | null = null
@@ -1383,7 +1443,8 @@ export function MindOnFireHero() {
           entries.forEach((en) => {
             if (en.isIntersecting && !running) {
               running = true
-              rafId = requestAnimationFrame(frame)
+              lastT = performance.now() / 1000
+              requestFrame()
             } else if (!en.isIntersecting) {
               running = false
             }
@@ -1398,17 +1459,21 @@ export function MindOnFireHero() {
       disposed = true
       running = false
       cancelAnimationFrame(rafId)
+      cancelAnimationFrame(resizeRafId)
+      framePending = false
       if (hideTimer) clearTimeout(hideTimer)
       if (navTimer) clearTimeout(navTimer)
       ro?.disconnect()
       io?.disconnect()
-      window.removeEventListener('resize', onResize)
-      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('resize', scheduleResize)
+      hero.removeEventListener('keydown', onKey)
       hero.removeEventListener('mousemove', onMove)
       hero.removeEventListener('mouseleave', onLeave)
       hero.removeEventListener('click', onClick)
       preview.removeEventListener('mouseenter', onCardEnter)
       preview.removeEventListener('mouseleave', onCardLeave)
+      preview.removeEventListener('click', onPreviewClick)
+      onSuccessRef.current = null
     }
   }, [router])
 
