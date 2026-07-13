@@ -254,7 +254,7 @@ export function MeetingNotesConcierge({ campaign, defaultRole, headline }: Conci
             rel="noopener noreferrer sponsored"
             onClick={handleClick}
           >
-            Try {pick.name} free <ArrowRight size={16} aria-hidden />
+            Get your first 3 months free <ArrowRight size={16} aria-hidden />
           </a>
         ) : (
           <div className="mnc-cta-note">

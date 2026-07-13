@@ -679,7 +679,7 @@ function FinalCTASection() {
           </h2>
           <p className="text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
             Top attorneys don&apos;t type faster &mdash; they don&apos;t type at all.
-            Both tools have free trials. No credit card required.
+            WisprFlow has a free trial with no credit card required. New Granola users get their first three months free.
           </p>
         </div>
 
@@ -735,7 +735,7 @@ function FinalCTASection() {
                 <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-teal-500" /> Mac, Windows, and iOS</li>
               </ul>
               <div className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-teal-600 to-cyan-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md">
-                Try Granola Free <ArrowRight className="h-4 w-4" />
+                Get 3 Months Free <ArrowRight className="h-4 w-4" />
               </div>
             </div>
           </a>

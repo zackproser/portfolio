@@ -160,6 +160,13 @@ const jsonLd = {
           { '@type': 'Offer', name: 'Basic', price: '0', priceCurrency: 'USD' },
           { '@type': 'Offer', name: 'Business', price: '14', priceCurrency: 'USD' },
           { '@type': 'Offer', name: 'Enterprise', price: '35', priceCurrency: 'USD' },
+          {
+            '@type': 'Offer',
+            name: 'New user offer',
+            price: '0',
+            priceCurrency: 'USD',
+            description: 'New Granola users get their first three months free.',
+          },
         ],
       },
     },
@@ -210,7 +217,7 @@ const jsonLd = {
           acceptedAnswer: {
             '@type': 'Answer',
             text:
-              'As of May 2026, Granola has three tiers: Basic (free), Business ($14/user/month), and Enterprise ($35/user/month). Confirm current pricing on granola.ai.',
+              'As of May 2026, Granola has three tiers: Basic (free), Business ($14/user/month), and Enterprise ($35/user/month). New users get their first three months free through this offer. Confirm current pricing on granola.ai.',
           },
         },
         {
@@ -268,7 +275,7 @@ export default function GranolaPillarPage() {
           <a href="#s11">11 Prompts</a><span className="sep">·</span>
           <a href="#s12">12 Where it breaks</a><span className="sep">·</span>
           <a href="#s14">14 The take</a><span className="sep">·</span>
-          <a href="#cta-trial">Try free →</a>
+          <a href="#cta-trial">3 months free →</a>
         </div>
       </div>
       <JumpBarScrollSpy />
@@ -393,15 +400,15 @@ export default function GranolaPillarPage() {
           <div className="post-measure">
             <div className="g-cta" id="cta-trial">
               <div className="g-cta-head">
-                <span className="left">§ 02 · Try it on next week&apos;s calendar</span>
+                <span className="left">§ 02 · Try it through a full quarter</span>
                 <span className="right">~5 min setup · cancel anytime</span>
               </div>
-              <h3>Run Granola through one meeting this week. Decide on Friday.</h3>
+              <h3>Run Granola through a full quarter of real meetings.</h3>
               <p>
-                Free trial, no credit card. The fastest way to know if it works for you is to put it on one meeting and read the output back. That is what I did. I have not switched in 12 months.
+                New users get their first three months free. That is enough time to test it across recurring 1:1s, customer calls, and the meetings that do not fit a neat template. I have not switched in 12 months.
               </p>
               <ul>
-                <li>Free plan available — no credit card to try</li>
+                <li>First three months free for new users</li>
                 <li>~5 minute setup, runs in the background</li>
                 <li>Cancel anytime · Mac, Windows, iOS clients</li>
               </ul>
@@ -412,7 +419,7 @@ export default function GranolaPillarPage() {
                   rel="sponsored noopener"
                   target="_blank"
                 >
-                  Start your free trial <span aria-hidden="true">↗</span>
+                  Get your first 3 months free <span aria-hidden="true">↗</span>
                 </a>
                 <a className="g-btn g-btn-secondary" href="#s16">
                   Send me the workflow guide first ↓
@@ -422,8 +429,8 @@ export default function GranolaPillarPage() {
                 <span>Mac</span><span className="dot">·</span>
                 <span>Windows</span><span className="dot">·</span>
                 <span>iOS</span><span className="dot">·</span>
-                <span>Free plan available</span><span className="dot">·</span>
-                <span>No credit card to try</span><span className="dot">·</span>
+                <span>New users</span><span className="dot">·</span>
+                <span>First 3 months free</span><span className="dot">·</span>
                 <span>Cancel anytime</span>
               </div>
             </div>
@@ -870,7 +877,7 @@ export default function GranolaPillarPage() {
                 <div className="g-tier-label"><span>Basic</span></div>
                 <div className="g-tier-name">Basic</div>
                 <div className="g-tier-price">$0<span className="per">/ mo</span></div>
-                <p className="g-tier-sub">For trying it on a week of meetings without committing.</p>
+                <p className="g-tier-sub">The permanent free tier. Limited history, all the core features.</p>
                 <ul>
                   <li>AI meeting notes</li>
                   <li>Limited meeting history</li>
@@ -884,7 +891,7 @@ export default function GranolaPillarPage() {
                   rel="sponsored noopener"
                   target="_blank"
                 >
-                  Try free →
+                  Get started free →
                 </a>
               </div>
               <div className="g-tier featured">
@@ -908,7 +915,7 @@ export default function GranolaPillarPage() {
                   rel="sponsored noopener"
                   target="_blank"
                 >
-                  Start free trial
+                  Get your first 3 months free
                 </a>
               </div>
               <div className="g-tier">
@@ -993,9 +1000,9 @@ export default function GranolaPillarPage() {
                 <span className="left">§ 10 · The plan I use</span>
                 <span className="right">$14 / mo · my recommended starting tier</span>
               </div>
-              <h3>Try the plan I use — Individual, free for the first week.</h3>
+              <h3>Try the plan I use — your first three months are free.</h3>
               <p>
-                If you want to follow the exact configuration I run — unlimited templates, the four shapes above, the prompt pack below — Individual is the tier. Free trial first, then $14/mo, then cancel any month it stops earning its line item.
+                If you want to follow the exact configuration I run — unlimited templates, the four shapes above, the prompt pack below — Individual is the tier. New users get three months free, then it is $14/mo. Cancel any month it stops earning its line item.
               </p>
               <div className="g-cta-actions">
                 <a
@@ -1004,7 +1011,7 @@ export default function GranolaPillarPage() {
                   rel="sponsored noopener"
                   target="_blank"
                 >
-                  Start free trial <span aria-hidden="true">↗</span>
+                  Get 3 months free <span aria-hidden="true">↗</span>
                 </a>
                 <a className="g-btn g-btn-secondary" href="#s16">
                   Get the workflow guide ↓
@@ -1012,7 +1019,7 @@ export default function GranolaPillarPage() {
               </div>
               <div className="g-cta-foot">
                 <span>Affiliate link</span><span className="dot">·</span>
-                <span>Commission if you stay past trial</span><span className="dot">·</span>
+                <span>First 3 months free for new users</span><span className="dot">·</span>
                 <span>I would recommend it either way</span>
               </div>
             </div>
@@ -1145,15 +1152,15 @@ export default function GranolaPillarPage() {
           <div className="post-measure">
             <div className="g-cta">
               <div className="g-cta-head">
-                <span className="left">§ 15 · Try it on next week&apos;s calendar</span>
+                <span className="left">§ 15 · Try it through a full quarter</span>
                 <span className="right">12 mo daily use · Zachary Proser</span>
               </div>
-              <h3>Run Granola through one meeting this week. Decide on Friday.</h3>
+              <h3>Put Granola on your calendar for three months. Decide after the quarter.</h3>
               <p>
-                Free trial, no credit card. Twelve months in I have not found a reason to switch. The fastest way to find out if it works for you is to put it on a real meeting this week.
+                Granola gives new users three months free. Twelve months in I have not found a reason to switch. A full quarter gives you real evidence across quiet weeks, packed calendars, and every meeting shape you actually attend.
               </p>
               <ul>
-                <li>Free plan available — no credit card to try</li>
+                <li>Three free months for new users</li>
                 <li>~5 minute setup, runs in the background</li>
                 <li>Cancel anytime · iOS, Mac, and Windows clients</li>
               </ul>
@@ -1164,7 +1171,7 @@ export default function GranolaPillarPage() {
                   rel="sponsored noopener"
                   target="_blank"
                 >
-                  Start your free trial <span aria-hidden="true">↗</span>
+                  Claim your 3 free months <span aria-hidden="true">↗</span>
                 </a>
                 <a className="g-btn g-btn-secondary" href="#s16">
                   Send me the workflow guide first ↓
@@ -1174,8 +1181,8 @@ export default function GranolaPillarPage() {
                 <span>Mac</span><span className="dot">·</span>
                 <span>Windows</span><span className="dot">·</span>
                 <span>iOS</span><span className="dot">·</span>
-                <span>Free plan available</span><span className="dot">·</span>
-                <span>No credit card to try</span><span className="dot">·</span>
+                <span>New users</span><span className="dot">·</span>
+                <span>3 months free</span><span className="dot">·</span>
                 <span>Cancel anytime</span>
               </div>
             </div>
@@ -1195,7 +1202,7 @@ export default function GranolaPillarPage() {
               </p>
               <GranolaCaptureForm />
               <p className="disclosure">
-                <strong>Affiliate disclosure.</strong> Granola pays me a commission if you stay on past the trial. It is the meeting tool I would recommend either way; the commission is what makes the time to write at this length economic. The take is mine. No edit rights granted.
+                <strong>Affiliate disclosure.</strong> This page uses Granola affiliate links. It is the meeting tool I would recommend either way. The recommendation is mine. No edit rights granted.
               </p>
             </div>
             <aside className="g-aside">

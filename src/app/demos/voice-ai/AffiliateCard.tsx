@@ -43,7 +43,7 @@ const PRODUCT_DATA = {
       'Auto-extracts action items',
       'Works on Mac, Windows, iOS'
     ],
-    cta: 'Try Granola Free'
+    cta: 'Get Your First 3 Months Free'
   }
 }
 
@@ -282,5 +282,3 @@ export function AffiliateDualCard({
     </div>
   )
 }
-
-

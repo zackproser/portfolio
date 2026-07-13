@@ -204,7 +204,9 @@ export function InlineAffiliateCTA({
       `}
     >
       <Icon className="h-4 w-4 !text-white" />
-      <span className="!text-white">Try {data.name} Free</span>
+      <span className="!text-white">
+        {product === 'granola' ? 'Get 3 Months Free' : `Try ${data.name} Free`}
+      </span>
       <ArrowRight className="h-3.5 w-3.5 !text-white" />
     </a>
   )
@@ -248,4 +250,3 @@ export function AffiliateLink({
     </a>
   )
 }
-
