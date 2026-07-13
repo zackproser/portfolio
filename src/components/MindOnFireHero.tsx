@@ -70,11 +70,14 @@ const PP_GRADS = [
   'linear-gradient(160deg,#475569,#1a1a2e)',
   'linear-gradient(160deg,#b08968,#2c3e50)',
 ]
+const INTERACTION_HINT = 'HOVER PREVIEW · CLICK TRAVEL · T TOUR · ← → BROWSE · ENTER READ'
+const TOUR_HINT = 'TIMELINE TOUR · FOLLOWING THE WRITING · ESC / T TO STOP'
 
 export function MindOnFireHero() {
   const heroRef = useRef<HTMLElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const previewRef = useRef<HTMLAnchorElement>(null)
+  const hintRef = useRef<HTMLParagraphElement>(null)
   const router = useRouter()
   const onSuccessRef = useRef<(() => void) | null>(null)
 
@@ -86,13 +89,15 @@ export function MindOnFireHero() {
     const heroN = heroRef.current
     const canvasN = canvasRef.current
     const previewN = previewRef.current
-    if (!heroN || !canvasN || !previewN) return
+    const hintN = hintRef.current
+    if (!heroN || !canvasN || !previewN || !hintN) return
     const ctxN = canvasN.getContext('2d')
     if (!ctxN) return
     /* non-null aliases so narrowing survives into the nested engine fns */
     const hero: HTMLElement = heroN
     const canvas: HTMLCanvasElement = canvasN
     const preview: HTMLAnchorElement = previewN
+    const hint: HTMLParagraphElement = hintN
     const ctx: CanvasRenderingContext2D = ctxN
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -165,8 +170,10 @@ export function MindOnFireHero() {
     const warmGlow = makeGlowSprite('rgba(255,250,240,0.96)', 'rgba(243,156,18,0.58)')
     const emberGlow = makeGlowSprite('rgba(255,244,214,0.9)', 'rgba(230,126,34,0.48)')
     const drawGlow = (sprite: HTMLCanvasElement, x: number, y: number, radius: number, alpha: number) => {
+      const previousAlpha = ctx.globalAlpha
       ctx.globalAlpha = Math.max(0, Math.min(1, alpha))
       ctx.drawImage(sprite, x - radius, y - radius, radius * 2, radius * 2)
+      ctx.globalAlpha = previousAlpha
     }
 
     /* ---------- canvas / layout ---------- */
@@ -177,6 +184,7 @@ export function MindOnFireHero() {
     let born = 0
     let lastT = 0
     let running = false
+    let heroVisible = true
     let rafId = 0
     let framePending = false
     let resizeRafId = 0
@@ -185,8 +193,10 @@ export function MindOnFireHero() {
     const links: Array<[number, number]> = []
     const clusterGeo: Array<{ cx: number; cy: number; R: number }> = []
     let chronoOrder: number[] = [] /* star indices, oldest essay first */
-    let chronoDistances: number[] = []
-    let chronoLength = 0
+    let chronoStops: number[] = [] /* legible preview beats along the tour */
+    let chronoTimes: number[] = [] /* seconds at which each essay is reached */
+    let chronoDepartures: number[] = [] /* departure time for each incoming segment */
+    let chronoDuration = 0
     let youStar: { fx: number; fy: number; since?: string } | null = null
     try {
       const savedYou = JSON.parse(localStorage.getItem('mofYou') || 'null') as
@@ -225,8 +235,10 @@ export function MindOnFireHero() {
       stars.length = 0
       links.length = 0
       clusterGeo.length = 0
-      chronoDistances = []
-      chronoLength = 0
+      chronoStops = []
+      chronoTimes = []
+      chronoDepartures = []
+      chronoDuration = 0
       /* narrow screens: the mark burns in a band above the copy — no
          constellation overlay (the corpus lives in the rails below) */
       if (W < 1024) {
@@ -309,13 +321,38 @@ export function MindOnFireHero() {
         .filter((x) => x.post >= 0)
         .sort((a, b) => b.post - a.post)
         .map((x) => x.i)
-      chronoDistances = [0]
-      chronoLength = 0
-      for (let i = 1; i < chronoOrder.length; i++) {
-        const a = stars[chronoOrder[i - 1]]
-        const b = stars[chronoOrder[i]]
-        chronoLength += Math.hypot(b.x - a.x, b.y - a.y)
-        chronoDistances.push(chronoLength)
+      if (chronoOrder.length) {
+        chronoStops = [0]
+        let lastStop = 0
+        for (let i = 1; i < chronoOrder.length - 1; i++) {
+          const previous = stars[chronoOrder[i - 1]]
+          const current = stars[chronoOrder[i]]
+          const previousYear = POSTS[previous.post]?.d.slice(0, 4)
+          const currentYear = POSTS[current.post]?.d.slice(0, 4)
+          const beginsYear = Boolean(currentYear && currentYear !== previousYear)
+          const changesSubject = current.c !== previous.c
+          /* Every year gets a beat. Subject changes and long runs provide
+             additional representative essays without turning the card into
+             an unreadable rapid-fire slideshow. */
+          if (beginsYear || (changesSubject && i - lastStop >= 9) || i - lastStop >= 13) {
+            chronoStops.push(i)
+            lastStop = i
+          }
+        }
+        if (chronoOrder.length > 1) chronoStops.push(chronoOrder.length - 1)
+
+        const stopSet = new Set(chronoStops)
+        chronoTimes = [0]
+        chronoDepartures = [0]
+        for (let i = 1; i < chronoOrder.length; i++) {
+          const from = stars[chronoOrder[i - 1]]
+          const to = stars[chronoOrder[i]]
+          const travel = Math.min(0.28, 0.1 + Math.hypot(to.x - from.x, to.y - from.y) / 1800)
+          const hold = stopSet.has(i - 1) ? (i === 1 ? 2.2 : 1.45) : 0
+          chronoDepartures.push(chronoTimes[i - 1] + hold)
+          chronoTimes.push(chronoDepartures[i] + travel)
+        }
+        chronoDuration = chronoTimes[chronoTimes.length - 1]
       }
 
       /* one faint line per star to its nearest in-cluster neighbor */
@@ -366,6 +403,7 @@ export function MindOnFireHero() {
       canvas.style.width = `${W}px`
       canvas.style.height = `${H}px`
       ctx.setTransform(backingW / W, 0, 0, backingH / H, 0, 0)
+      cancelTour()
       layout()
       preview.classList.remove('mof-show')
       lastKey = null
@@ -797,6 +835,10 @@ export function MindOnFireHero() {
     let shownEmberId: number | null = null
     let lastFocus: Hit | null = null
     let navTimer: ReturnType<typeof setTimeout> | null = null
+    let tourStartedAt: number | null = null
+    let tourCursor = 0
+    let tourStopCursor = 0
+    let tourHit: Extract<Hit, { kind: 0 }> | null = null
     const prefetched = new Set<string>()
     const prefetchRoute = (route: Route) => {
       const key = String(route)
@@ -913,7 +955,44 @@ export function MindOnFireHero() {
       }
     }
 
+    const hidePreviewNow = () => {
+      if (hideTimer) { clearTimeout(hideTimer); hideTimer = null }
+      preview.classList.remove('mof-show')
+      hero.style.cursor = ''
+      lastKey = null
+      lastFocus = null
+      shownPost = null
+      shownEmberId = null
+    }
+    const cancelTour = (hidePreview = true) => {
+      if (tourStartedAt === null) return
+      tourStartedAt = null
+      tourCursor = 0
+      tourStopCursor = 0
+      tourHit = null
+      hint.textContent = INTERACTION_HINT
+      if (hidePreview && !cardHover && !tapHit) hidePreviewNow()
+      autoNextAt = lastT + 2.5
+    }
+    const startTour = () => {
+      if (chronoOrder.length < 2 || chronoDuration <= 0) return
+      hidePreviewNow()
+      mouseIn = false
+      hover = null
+      tapHit = null
+      autoHit = null
+      kbCursor = -1
+      query = null
+      tourCursor = 0
+      tourStopCursor = 0
+      const first = chronoOrder[0]
+      tourHit = { kind: 0, i: first, post: stars[first].post }
+      tourStartedAt = lastT
+      hint.textContent = TOUR_HINT
+    }
+
     const onMove = (e: MouseEvent) => {
+      cancelTour()
       const r = hero.getBoundingClientRect()
       const nx = e.clientX - r.left
       const now = performance.now()
@@ -927,17 +1006,27 @@ export function MindOnFireHero() {
       mouseY = e.clientY - r.top
       const target = e.target as HTMLElement | null
       mouseIn = !(target && target.closest && target.closest('.mof-copy'))
+      if (reduced) requestFrame()
     }
-    const onLeave = () => { mouseIn = false; mouseVX = 0; lastMoveX = -1 }
-    const onCardEnter = () => { cardHover = true }
+    const onLeave = () => {
+      mouseIn = false
+      mouseVX = 0
+      lastMoveX = -1
+      if (reduced) requestFrame()
+    }
+    const onCardEnter = () => { cardHover = true; cancelTour(false) }
     const onCardLeave = () => { cardHover = false }
     const onClick = (e: MouseEvent) => {
+      cancelTour()
       const target = e.target as HTMLElement | null
       if (target && target.closest && target.closest('a, form, input, button, .mof-copy')) return
+      hero.focus({ preventScroll: true })
       const r = hero.getBoundingClientRect()
       const hit = hitTest(e.clientX - r.left, e.clientY - r.top)
       if (!hit) return
-      if (COARSE && !(preview.classList.contains('mof-show') && shownPost === hit.post)) {
+      const isCurrentCoarseHit = preview.classList.contains('mof-show') && shownPost === hit.post &&
+        (hit.kind === 0 || shownEmberId === hit.emberId)
+      if (COARSE && !isCurrentCoarseHit) {
         if (hit.kind === 0) stars[hit.i].flare = 1
         tapHit = { ...hit, until: lastT + 6 }
         autoHit = null
@@ -962,25 +1051,33 @@ export function MindOnFireHero() {
       if (reduced) router.push(('/blog/' + post.s) as Route)
       else navTimer = setTimeout(() => { if (!disposed) router.push(('/blog/' + post.s) as Route) }, 140)
     }
-    /* "t" threads the corpus chronologically; arrows walk the stars */
-    let threadAt = -999
+    /* "t" tours the corpus chronologically; arrows walk the stars */
     let kbCursor = -1
     const onKey = (e: KeyboardEvent) => {
       const tgt = e.target as HTMLElement | null
       if (
         e.defaultPrevented || e.repeat || e.metaKey || e.ctrlKey || e.altKey ||
-        document.activeElement !== hero || tgt?.isContentEditable ||
+        tgt?.isContentEditable ||
         Boolean(tgt?.closest('input, textarea, select, [contenteditable="true"]'))
       ) return
-      if (e.key === 't' && !reduced) {
+      const heroFocused = document.activeElement === hero
+      const pageFocus = heroFocused || document.activeElement === document.body
+      const timelineKey = e.key.toLowerCase() === 't'
+      const stopsActiveTour = tourStartedAt !== null && (timelineKey || e.key === 'Escape')
+      if ((stopsActiveTour || (timelineKey && pageFocus)) &&
+          !reduced && !COARSE && W >= 1024 && heroVisible) {
         e.preventDefault()
-        threadAt = lastT
+        if (tourStartedAt === null && timelineKey) startTour()
+        else cancelTour()
         return
       }
+      if (!heroFocused) return
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Enter' && e.key !== 'Escape') return
       if (e.key === 'Escape') {
         kbCursor = -1
         tapHit = null
+        hidePreviewNow()
+        if (reduced) requestFrame()
         return
       }
       if (!chronoOrder.length) return
@@ -1007,8 +1104,10 @@ export function MindOnFireHero() {
       tapHit = { kind: 0, i, post: stars[i].post, until: lastT + 30 }
       prefetchRoute(('/blog/' + POSTS[stars[i].post].s) as Route)
       autoHit = null
+      updatePreview(tapHit, true)
+      if (reduced) requestFrame()
     }
-    hero.addEventListener('keydown', onKey)
+    window.addEventListener('keydown', onKey)
 
     hero.addEventListener('mousemove', onMove, { passive: true })
     hero.addEventListener('mouseleave', onLeave)
@@ -1083,9 +1182,67 @@ export function MindOnFireHero() {
       const t = ms / 1000
       const dt = Math.min(0.05, t - lastT || 0.016)
       lastT = t
+      /* A known baseline makes every drawing section independent of prior
+         sections and prior frames. The chronology stroke additionally uses
+         save/restore below because it intentionally changes cap/join. */
+      ctx.globalAlpha = 1
+      ctx.globalCompositeOperation = 'source-over'
+      ctx.lineCap = 'butt'
+      ctx.lineJoin = 'miter'
+      ctx.setLineDash([])
+      ctx.shadowBlur = 0
+      ctx.shadowColor = 'rgba(0,0,0,0)'
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 0
+      ctx.filter = 'none'
+      ctx.textAlign = 'start'
+      ctx.font = '10px sans-serif'
       ctx.clearRect(0, 0, W, H)
       const ignite = t - born
       const headA = Math.min(1, Math.max(0, (ignite - 0.3) / 1.4))
+
+      let tourFrame: {
+        whole: number; next: number; segmentProgress: number; fade: number
+      } | null = null
+      if (tourStartedAt !== null) {
+        const elapsed = Math.max(0, t - tourStartedAt)
+        if (elapsed > chronoDuration + 2.5 || !chronoOrder.length) {
+          cancelTour()
+        } else {
+          while (tourCursor < chronoTimes.length - 1 && chronoTimes[tourCursor + 1] <= elapsed) {
+            tourCursor++
+          }
+          while (
+            tourStopCursor < chronoStops.length - 1 &&
+            chronoStops[tourStopCursor + 1] <= tourCursor
+          ) {
+            tourStopCursor++
+            const milestone = stars[chronoOrder[chronoStops[tourStopCursor]]]
+            if (milestone) milestone.flare = Math.max(milestone.flare, 1)
+          }
+          const stopIndex = chronoStops[tourStopCursor] ?? 0
+          const stopStarIndex = chronoOrder[stopIndex]
+          if (stars[stopStarIndex]) {
+            tourHit = { kind: 0, i: stopStarIndex, post: stars[stopStarIndex].post }
+          }
+          const next = Math.min(tourCursor + 1, chronoOrder.length - 1)
+          const departure = chronoDepartures[next] ?? chronoTimes[tourCursor]
+          const arrival = chronoTimes[next] ?? departure
+          const segmentProgress = next === tourCursor || elapsed <= departure
+            ? 0
+            : Math.min(1, (elapsed - departure) / Math.max(0.001, arrival - departure))
+          tourFrame = {
+            whole: tourCursor,
+            next,
+            segmentProgress,
+            fade: elapsed <= chronoDuration
+              ? 1
+              : Math.max(0, 1 - (elapsed - chronoDuration) / 2.5),
+          }
+          const runner = stars[chronoOrder[segmentProgress >= 0.5 ? next : tourCursor]]
+          if (runner) runner.flare = Math.max(runner.flare, 0.32)
+        }
+      }
 
       /* hover / tap / attract */
       hover = mouseIn ? hitTest(mouseX, mouseY) : null
@@ -1110,7 +1267,10 @@ export function MindOnFireHero() {
         if (ember) { ember.held = true; ember.userCaught = true }
       }
 
-      if (hover || cardHover || tapHit) {
+      if (tourHit) {
+        autoHit = null
+        autoNextAt = t + 4
+      } else if (hover || cardHover || tapHit) {
         autoHit = null
         autoNextAt = t + 4
       } else if (autoHit) {
@@ -1149,10 +1309,10 @@ export function MindOnFireHero() {
           }
         }
       }
-      updatePreview(hover || tapHit || autoHit, !!(hover || tapHit))
+      updatePreview(hover || tapHit || tourHit || autoHit, !!(hover || tapHit))
 
       /* the whole constellation warms when one of its stars has focus */
-      const activeFocus = hover || tapHit || autoHit
+      const activeFocus = hover || tapHit || tourHit || autoHit
       if (activeFocus) lastFocus = activeFocus
       const focus = activeFocus || (cardHover && lastFocus ? lastFocus : null)
       let focusCluster = -1
@@ -1258,7 +1418,7 @@ export function MindOnFireHero() {
       }
 
       /* focus ring */
-      const focusHit = hover || tapHit || autoHit
+      const focusHit = hover || tapHit || tourHit || autoHit
       if (validHit(focusHit)) {
         const hs = hitPos(focusHit)
         if (hs) {
@@ -1333,7 +1493,7 @@ export function MindOnFireHero() {
         }
         if (qt > 5.4) query = null
       }
-      if (!SNAP && W >= 1024 && t - lastQueryAt > 7 && ignite > 2.4) fireQuery(t)
+      if (!SNAP && tourStartedAt === null && W >= 1024 && t - lastQueryAt > 7 && ignite > 2.4) fireQuery(t)
 
       /* subscriber comet */
       if (comet) {
@@ -1398,39 +1558,36 @@ export function MindOnFireHero() {
         }
       }
 
-      /* chronology thread: press "t" — five years of writing, one stroke */
-      const th = t - threadAt
-      if (th >= 0 && th < 5.5 && chronoOrder.length > 1 && chronoLength > 0) {
-        const fade = th < 4 ? 1 : Math.max(0, 1 - (th - 4) / 1.5)
-        const timeProgress = Math.min(1, th / 4)
-        const eased = timeProgress < 0.5
-          ? 2 * timeProgress * timeProgress
-          : 1 - Math.pow(-2 * timeProgress + 2, 2) / 2
-        const distance = eased * chronoLength
-        let whole = 0
-        while (whole < chronoDistances.length - 1 && chronoDistances[whole + 1] <= distance) whole++
-        const next = Math.min(whole + 1, chronoOrder.length - 1)
-        const segmentLength = Math.max(1, chronoDistances[next] - chronoDistances[whole])
-        const segmentProgress = next === whole ? 0 : (distance - chronoDistances[whole]) / segmentLength
+      /* chronology tour: the thread advances essay by essay, pausing on
+         representative years and subject shifts while the DOM card tells
+         the story. No canvas labels compete with the constellation. */
+      if (tourFrame && chronoOrder.length > 1) {
+        const { whole, next, segmentProgress, fade } = tourFrame
+        ctx.save()
         ctx.globalCompositeOperation = 'source-over'
-        ctx.strokeStyle = 'rgba(' + P.edge + ',' + (0.45 * fade).toFixed(3) + ')'
         ctx.lineWidth = 1.3
         ctx.lineCap = 'round'
         ctx.lineJoin = 'round'
-        ctx.beginPath()
-        ctx.moveTo(stars[chronoOrder[0]].x, stars[chronoOrder[0]].y)
-        for (let ci2 = 1; ci2 <= whole; ci2++) {
-          ctx.lineTo(stars[chronoOrder[ci2]].x, stars[chronoOrder[ci2]].y)
-        }
-        if (whole < chronoOrder.length - 1) {
-          const fA = stars[chronoOrder[whole]]
-          const fB = stars[chronoOrder[whole + 1]]
+        const tailLength = 8
+        const hasActiveSegment = segmentProgress > 0 && whole < chronoOrder.length - 1
+        const lastTailSegment = whole + (hasActiveSegment ? 1 : 0)
+        const firstTailSegment = Math.max(1, lastTailSegment - tailLength + 1)
+        for (let segment = firstTailSegment; segment <= lastTailSegment; segment++) {
+          const from = stars[chronoOrder[segment - 1]]
+          const to = stars[chronoOrder[segment]]
+          const progress = segment === whole + 1 ? segmentProgress : 1
+          const age = lastTailSegment - segment
+          const freshness = 1 - age / (tailLength - 1)
+          const alpha = (0.025 + 0.425 * Math.pow(freshness, 1.5)) * fade
+          ctx.strokeStyle = 'rgba(' + P.edge + ',' + alpha.toFixed(3) + ')'
+          ctx.beginPath()
+          ctx.moveTo(from.x, from.y)
           ctx.lineTo(
-            fA.x + (fB.x - fA.x) * segmentProgress,
-            fA.y + (fB.y - fA.y) * segmentProgress,
+            from.x + (to.x - from.x) * progress,
+            from.y + (to.y - from.y) * progress,
           )
+          ctx.stroke()
         }
-        ctx.stroke()
         const runnerA = stars[chronoOrder[whole]]
         const runnerB = stars[chronoOrder[next]]
         const runnerX = runnerA.x + (runnerB.x - runnerA.x) * segmentProgress
@@ -1442,19 +1599,7 @@ export function MindOnFireHero() {
         ctx.beginPath()
         ctx.arc(runnerX, runnerY, 2.2, 0, 6.2832)
         ctx.fill()
-        ctx.globalCompositeOperation = 'source-over'
-        ctx.font = '600 10px ui-monospace, SF Mono, Menlo, monospace'
-        ctx.textAlign = 'left'
-        let lastYear = ''
-        for (let ci2 = 0; ci2 <= whole; ci2++) {
-          const yr = (POSTS[stars[chronoOrder[ci2]].post]?.d || '').slice(0, 4)
-          if (yr && yr !== lastYear) {
-            lastYear = yr
-            ctx.fillStyle = P.label + (0.8 * fade).toFixed(2) + ')'
-            ctx.fillText(yr, stars[chronoOrder[ci2]].x + 8, stars[chronoOrder[ci2]].y - 8)
-          }
-        }
-        ctx.textAlign = 'center'
+        ctx.restore()
       }
 
       if (running) requestFrame()
@@ -1513,11 +1658,13 @@ export function MindOnFireHero() {
       io = new IntersectionObserver(
         (entries) => {
           entries.forEach((en) => {
+            heroVisible = en.isIntersecting
             if (en.isIntersecting && !running) {
               running = true
               lastT = performance.now() / 1000
               requestFrame()
             } else if (!en.isIntersecting) {
+              cancelTour()
               running = false
             }
           })
@@ -1538,7 +1685,7 @@ export function MindOnFireHero() {
       ro?.disconnect()
       io?.disconnect()
       window.removeEventListener('resize', scheduleResize)
-      hero.removeEventListener('keydown', onKey)
+      window.removeEventListener('keydown', onKey)
       hero.removeEventListener('mousemove', onMove)
       hero.removeEventListener('mouseleave', onLeave)
       hero.removeEventListener('click', onClick)
@@ -1554,9 +1701,13 @@ export function MindOnFireHero() {
       ref={heroRef}
       className="mof-hero dark"
       tabIndex={0}
-      aria-label={`The corpus: ${POST_COUNT} essays as constellations. Focus and use arrow keys to browse, Enter to read.`}
+      aria-keyshortcuts="ArrowLeft ArrowRight Enter Escape T"
+      aria-label={`The corpus: ${POST_COUNT} essays as constellations. Focus and use arrow keys to browse, Enter to read, or T for the timeline tour.`}
     >
       <canvas ref={canvasRef} className="mof-sky" aria-hidden="true" />
+      <p ref={hintRef} className="mof-hint" aria-live="polite">
+        {INTERACTION_HINT}
+      </p>
       <nav className="mof-sr" aria-label="Recent essays">
         <ul>
           {POSTS.slice(0, 10).map((p) => (
@@ -1652,6 +1803,37 @@ export function MindOnFireHero() {
           <span className="mof-pp-read">Read essay →</span>
         </span>
       </a>
+
+      <style jsx>{`
+        .mof-hint {
+          display: none;
+        }
+        @media (min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+          .mof-hint {
+            position: absolute;
+            z-index: 3;
+            right: 24px;
+            bottom: 0;
+            left: 50%;
+            display: flex;
+            min-height: 34px;
+            align-items: center;
+            justify-content: flex-end;
+            margin: 0;
+            background: linear-gradient(90deg, transparent, #1a1a2e 12%);
+            color: rgba(148, 163, 184, 0.48);
+            font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            line-height: 1.4;
+            text-align: right;
+            text-transform: uppercase;
+            white-space: nowrap;
+            pointer-events: none;
+          }
+        }
+      `}</style>
 
     </section>
   )
