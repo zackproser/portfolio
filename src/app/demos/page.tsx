@@ -15,7 +15,7 @@ const firecrawlKBDemoHero = 'https://zackproser.b-cdn.net/images/firecrawl-hero.
 
 export const metadata: Metadata = createMetadata({
   title: "NLP, ML and AI interactive Demos",
-  description: "Learn the latest techniques through interactive demos"
+  description: "Learn the latest NLP, machine learning, and AI techniques through hands-on interactive demos covering embeddings, tokenization, RAG, and more."
 });
 
 // Featured voice demo (generic)

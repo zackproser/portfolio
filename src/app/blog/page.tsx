@@ -7,7 +7,7 @@ import { Blog } from '@/types/content'
 // Base metadata using createMetadata
 const baseMetadata = createMetadata({
   title: 'Zack Proser Blog - AI Engineering, RAG & Developer Tools',
-  description: 'Staff AI engineer - technical writing and development blog',
+  description: 'Technical writing from a staff AI engineer on AI engineering, RAG pipelines, vector databases, developer tools, and shipping production software.',
 })
 
 // Export final metadata including metadataBase
