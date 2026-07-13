@@ -400,7 +400,7 @@ export default function GranolaPillarPage() {
           <div className="post-measure">
             <div className="g-cta" id="cta-trial">
               <div className="g-cta-head">
-                <span className="left">§ 02 · Try it on next week&apos;s calendar</span>
+                <span className="left">§ 02 · Try it through a full quarter</span>
                 <span className="right">~5 min setup · cancel anytime</span>
               </div>
               <h3>Run Granola through a full quarter of real meetings.</h3>
@@ -877,7 +877,7 @@ export default function GranolaPillarPage() {
                 <div className="g-tier-label"><span>Basic</span></div>
                 <div className="g-tier-name">Basic</div>
                 <div className="g-tier-price">$0<span className="per">/ mo</span></div>
-                <p className="g-tier-sub">For trying it across a real quarter of meetings.</p>
+                <p className="g-tier-sub">The permanent free tier. Limited history, all the core features.</p>
                 <ul>
                   <li>AI meeting notes</li>
                   <li>Limited meeting history</li>
@@ -891,7 +891,7 @@ export default function GranolaPillarPage() {
                   rel="sponsored noopener"
                   target="_blank"
                 >
-                  Get 3 months free →
+                  Get started free →
                 </a>
               </div>
               <div className="g-tier featured">
@@ -1152,7 +1152,7 @@ export default function GranolaPillarPage() {
           <div className="post-measure">
             <div className="g-cta">
               <div className="g-cta-head">
-                <span className="left">§ 15 · Try it on next week&apos;s calendar</span>
+                <span className="left">§ 15 · Try it through a full quarter</span>
                 <span className="right">12 mo daily use · Zachary Proser</span>
               </div>
               <h3>Put Granola on your calendar for three months. Decide after the quarter.</h3>
