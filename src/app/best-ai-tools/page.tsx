@@ -426,7 +426,7 @@ export default function AITools2026Page() {
                     }`}
                   >
                     <Sparkles className="w-4 h-4" />
-                    Try Granola Free
+                    Get 3 Months Free
                   </a>
                   <Link
                     href="/blog/granola-ai-review"

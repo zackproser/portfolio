@@ -72,7 +72,7 @@ export function AffiliateButton({
       `}
     >
       <Icon className={size === 'large' ? 'h-5 w-5' : 'h-4 w-4'} />
-      Try {c.name} Free
+      {product === 'granola' ? 'Get 3 Months Free' : `Try ${c.name} Free`}
       <ArrowRight className={size === 'large' ? 'h-4 w-4' : 'h-3.5 w-3.5'} />
     </a>
   )
