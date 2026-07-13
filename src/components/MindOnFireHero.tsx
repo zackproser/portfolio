@@ -1023,7 +1023,6 @@ export function MindOnFireHero() {
     /* ---------- live queries ---------- */
     let query: {
       p: { x: number; y: number }; nn: number[]; t0: number; gen: number
-      label: string; labelX: number; labelY: number; labelW: number
     } | null = null
     let qIndex = 0
     let layoutGen = 0
@@ -1046,18 +1045,11 @@ export function MindOnFireHero() {
         })
         .sort((a, b) => a.d - b.d)
       const gen = layoutGen
-      const labelW = Math.min(285, item.q.length * 6.2 + 44)
-      const labelX = Math.min(Math.max(10, qp.x - labelW / 2), W - labelW - 10)
-      const labelY = qp.y < 96 ? qp.y + 18 : qp.y - 34
       query = {
         p: qp,
         nn: best.slice(0, 6).map((b) => b.i),
         t0: now,
         gen,
-        label: `SEARCH  “${item.q}”`,
-        labelX,
-        labelY,
-        labelW,
       }
       query.nn.forEach((idx, k) => {
         setTimeout(() => {
@@ -1338,36 +1330,6 @@ export function MindOnFireHero() {
           ctx.beginPath()
           ctx.arc(qp.x, qp.y, 3.4, 0, 6.2832)
           ctx.fill()
-
-          /* Give the retrieval vignette its missing semantic payload. The
-             dark pill keeps the query legible over links without hiding sky. */
-          const labelW = query.labelW
-          const labelH = 24
-          const lx = query.labelX
-          const ly = query.labelY
-          const rr = 6
-          ctx.globalCompositeOperation = 'source-over'
-          ctx.fillStyle = `rgba(9,10,22,${(0.82 * ea).toFixed(3)})`
-          ctx.strokeStyle = `rgba(${P.edge},${(0.38 * ea).toFixed(3)})`
-          ctx.lineWidth = 1
-          ctx.beginPath()
-          ctx.moveTo(lx + rr, ly)
-          ctx.lineTo(lx + labelW - rr, ly)
-          ctx.quadraticCurveTo(lx + labelW, ly, lx + labelW, ly + rr)
-          ctx.lineTo(lx + labelW, ly + labelH - rr)
-          ctx.quadraticCurveTo(lx + labelW, ly + labelH, lx + labelW - rr, ly + labelH)
-          ctx.lineTo(lx + rr, ly + labelH)
-          ctx.quadraticCurveTo(lx, ly + labelH, lx, ly + labelH - rr)
-          ctx.lineTo(lx, ly + rr)
-          ctx.quadraticCurveTo(lx, ly, lx + rr, ly)
-          ctx.closePath()
-          ctx.fill()
-          ctx.stroke()
-          ctx.font = '600 9px ui-monospace, SF Mono, Menlo, monospace'
-          ctx.textAlign = 'left'
-          ctx.fillStyle = `rgba(251,247,240,${(0.92 * labelA).toFixed(3)})`
-          ctx.fillText(query.label, lx + 9, ly + 15, labelW - 18)
-          ctx.textAlign = 'center'
         }
         if (qt > 5.4) query = null
       }
