@@ -1,0 +1,128 @@
+import { AffiliateLink } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import MeetingNotesPipeline from './MeetingNotesPipeline'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+export const campaign = 'granola-first-connector-agentic-systems'
+
+# Why Granola Is My First Connector for Agentic Systems
+
+At WorkOS, Granola is one of the first connectors I wire into any new agentic system I build. I can get off a call and immediately say, “@blog bot, draft that meeting into several different posts.” The raw meeting notes flow straight into the system. I do not copy a transcript into a prompt or write a summary for the agent first.
+
+The path is short:
+
+```text
+call → Granola notes and transcript → connector → agent → reviewable artifact
+```
+
+Among the inputs I can hand an agent, meeting notes are usually the highest-signal. A useful call contains the actual problem, the words people used to describe it, the decisions, the rejected options, the owners, and the next step. The agent starts with ground truth from the people doing the work instead of a prompt reconstructed from memory the next day.
+
+Granola gives me structured notes and the transcript as soon as the call ends. That makes the meeting record available at the moment it has the most value, while the work is moving and everyone still remembers the context.
+
+<MeetingNotesPipeline />
+
+## The connector turns a meeting into system input
+
+I think about Granola as the capture boundary. It handles the call and produces a durable meeting record. The connector's job is narrower: make that record available to the agent in a predictable shape.
+
+The transport can vary. The contract matters more. I want the agent to receive a meeting identifier, title, participants, notes, transcript, decisions, and owned action items. I also want a pointer back to the source so a reviewer can check the output against what was said.
+
+Here is the kind of internal handoff type I use when designing this flow. This is an application-level example, not a Granola API schema:
+
+```ts
+type MeetingArtifact = {
+  meetingId: string
+  title: string
+  endedAt: string
+  participants: Array<{ name: string; email?: string }>
+  notes: string
+  transcript: string
+  decisions: string[]
+  actionItems: Array<{
+    task: string
+    owner?: string
+    dueAt?: string
+  }>
+  sourceUrl: string
+}
+```
+
+That boundary keeps product-specific fetching out of the agent's reasoning loop. Downstream agents receive the same meeting artifact whether they are writing a post, opening a ticket, or preparing an email. If I change the connector, I do not have to rewrite every agent prompt and tool.
+
+This is the same separation-of-concerns lesson that pushed me toward [Vercel's eve agent framework](/blog/is-vercel-eve-worth-it-agent-framework-review): connectors acquire and normalize context; agents make bounded decisions with it; tools create artifacts.
+
+## My post-call event flow
+
+The flow I aim for has five stages:
+
+1. **The call ends.** Granola has the structured notes and transcript.
+2. **The connector reads the meeting record.** It maps the source into the internal `MeetingArtifact` contract.
+3. **A router chooses the job.** A command such as “@blog bot, draft that meeting into several different posts” supplies the destination and intent.
+4. **A focused agent creates an artifact.** The result might be a draft, a set of tickets, or a follow-up email.
+5. **A person reviews the result.** Publishing, ticket creation, and sending remain explicit actions.
+
+I prefer artifacts over chat answers because an artifact can sit in a queue, retain its source, collect comments, and wait for approval. I use the same approach in [the agent fleet that runs my business](/blog/the-agent-fleet), and I make the review step especially explicit when [Codex reviews diffs written by Claude](/blog/codex-reviews-claudes-diffs).
+
+The meeting ID should also become the idempotency key. Retries happen. A post-call job should be able to run twice without creating two tickets or sending two emails. Store the source meeting ID with every output, check for an existing artifact before creating another, and make retries safe by default.
+
+## One record can feed several focused agents
+
+I rarely want one general-purpose agent to do everything with a meeting. The source can be shared while each job stays narrow.
+
+### Draft posts
+
+The writing agent receives the notes, transcript, and a clear editorial task. It can propose several angles, identify direct technical claims that need checking, and produce drafts tied to the source meeting. The transcript preserves the specific language that made the conversation useful. The structured notes tell the agent which parts mattered.
+
+The output is a draft. I still review the framing and every technical claim before it goes anywhere. I wrote more about this artifact-first design in [why I build agents that open PRs](/blog/build-agents-that-open-prs).
+
+### Extract tickets and action items
+
+Meetings are full of small commitments that disappear when their owners return to a crowded queue. An extraction agent can turn the record into proposed tickets with an owner, requested outcome, due date when one was stated, and a source link.
+
+I keep “proposed” as part of the contract. The agent can parse a sentence confidently and still misunderstand whether it was a decision, a suggestion, or a joke. A human approves the tickets before they enter the team's active backlog.
+
+### Write the follow-up
+
+A follow-up agent can draft the short email people usually write from memory: what we agreed, who owns each item, and what happens next. Because the meeting record is the input, the draft can stay close to the actual conversation.
+
+Sending remains a separate, approved tool call. The agent writes; a person checks recipients, tone, and commitments; then the system sends.
+
+## Keep the notes and transcript separate
+
+Structured notes are the fast path. They give the agent a compact map of the meeting: decisions, themes, and next steps. The transcript is the evidence layer. It carries qualifiers, exact wording, and the surrounding exchange.
+
+Combining both into one undifferentiated block costs context and makes source checking harder. I pass them as separate fields and tell the agent when to use each one:
+
+- Start with notes for routing and drafting.
+- Read the relevant transcript section before asserting a technical detail or commitment.
+- Preserve uncertainty when the record is ambiguous.
+- Attach the source meeting to the resulting artifact.
+
+This also makes evaluations easier. You can inspect whether the agent found the right decision in the notes, whether it grounded the claim in the transcript, and whether the output preserved the named owner.
+
+## Why Granola is the first connector
+
+An agent with no fresh context waits for somebody to prompt it. Meetings generate fresh context every day. They contain customer language, internal decisions, open questions, and work that already has momentum behind it.
+
+Connecting that source early gives a new agentic system useful work immediately. A writing agent gets source material. An operations agent gets owned tasks. A follow-up agent gets the decision record. Each agent receives the same truth and produces a different reviewable artifact.
+
+Granola earns that first-connector position because I already use it every day: personal calls, every work meeting, and consulting calls. The capture habit exists before I build the next agent. Wiring the notes into the system turns an existing daily record into a dependable input stream.
+
+My broader [Granola review](/blog/granola-ai-review) covers the meeting app itself, and [Granola for engineers](/blog/granola-for-engineers) gets into design reviews, retrospectives, and planning calls. For an agent builder, the important part is the handoff: the call ends, the record exists, and the next system can start from it.
+
+## The meeting experience still matters
+
+I keep using the connector because I keep using Granola. The entire cognitive load of a meeting collapses to one button for me: start the meeting, open Granola, and know the details, agreements, and owners are being captured.
+
+I am partly hard of hearing. Even when I am paying full attention, I sometimes miss a phrase. I can query the live transcript during the meeting and quietly check what was just said instead of stopping the call to ask. If I zone out for a moment, the same path gets me back into the conversation.
+
+Afterward, one-click sharing keeps teammates, clients, and colleagues working from the same record. That human workflow is what makes the agent workflow dependable. A connector is valuable when the source behind it is used consistently.
+
+## The design rule I keep
+
+Treat the meeting record as source material, preserve the path back to it, and make every consequential output reviewable. The connector supplies current context. The agent turns it into a bounded artifact. A person decides what leaves the system.
+
+That is enough to turn a call into several useful paths without creating a new copy-and-paste job after every meeting.
+
+<p className="text-sm text-zinc-500 dark:text-zinc-400"><strong>Disclosure:</strong> I use Granola daily. If you sign up through <AffiliateLink product="granola" campaign={campaign}>zackproser.com/granola</AffiliateLink>, new users get their first 3 months free, and I may earn a referral fee.</p>
