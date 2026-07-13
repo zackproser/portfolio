@@ -1,0 +1,69 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src={rawMetadata.image} alt="A whiteboard covered in clustered sticky notes, mostly cream and burnt-orange" width={1200} height={630} />
+<figcaption>The clusters started showing up around meeting forty. By the hundredth I trusted them enough to write this.</figcaption>
+
+I run Applied AI at WorkOS. Most of my calendar is product review meetings of one shape or another — design reviews, customer-call read-outs, sprint planning, post-incident debriefs, feature prioritization. Three or four a week, every week. Over the last six quarters I have been in roughly a hundred of them, which is not a study and not a sample, but it is enough volume that the same shapes start showing up across the noise. This piece is what I have noticed.
+
+The patterns landed in two clusters: the things the good reviews shared, and the things the bad reviews shared. The bad cluster is sharper, which is its own data point — failure modes are more legible than success modes, because the failures cluster around the absence of specific habits. The good cluster takes longer to see, but it is the cluster worth copying.
+
+---
+
+## How I tracked them
+
+Not deliberately at first. I started running <Link href="/granola">Granola</Link> in every meeting about eighteen months ago, which meant that without doing anything additional I had a structured archive of every review I attended along with the full transcripts. The archive was the input; what made it a dataset was the weekly review pass I do on Sundays. Reading each summary back, lifting the committed items into the next week&apos;s prep, the shapes started repeating. After a quarter or two they were stable enough to name. After two quarters I trusted them enough to write down.
+
+---
+
+## What the good reviews share
+
+The good reviews open with a one-paragraph problem statement at the top of the doc. Not a one-pager. Not a deck. A single paragraph, written by the person owning the review, that someone outside the team could read and understand the stakes of in thirty seconds. When that paragraph existed, the meeting ended with a clear decision. When it didn&apos;t — when the doc opened with context, or with history, or with a slide deck — the meeting ran long and resolved nothing. The discipline of compressing the stakes into a paragraph forces the owner to know what they are asking for, which is the precondition for anyone else giving it to them.
+
+The good reviews also have a clearly marked "what would change my mind" section somewhere visible. The owner writes, in advance, what evidence or argument would shift their current recommendation. This is a costly thing to write. It is also the single highest-leverage section of any review document I have ever seen. Reviews with that section have real conversations: the questions get aimed at the stated criteria, the room argues about whether the criteria are the right ones, and the meeting produces a decision or a clearly-named open question. Reviews without that section have performative ones — questions designed to surface concerns the asker had already decided about, rather than questions designed to probe the proposal.
+
+The third thing the good reviews have is named owners on every open question. Not "the team will follow up." Not "we&apos;ll get back to you." A name, against a specific question, with a date. Granola is excellent at capturing these when they actually get said; when the meeting ends without them, the summary makes the gap visible. That visibility turns into its own intervention. After you read five Granola summaries in a row where the open-question section is blank, you start asking for the names before the meeting closes. Tooling doesn&apos;t fix the meeting. The visibility the tooling creates does.
+
+---
+
+## What the bad reviews share
+
+The anti-patterns are sharper, and they show up more often than the patterns. The most expensive one is the decision surfacing for the first time inside the meeting itself — no pre-read, no written context, no opportunity for anyone to think about the question before the room is asked to weigh in. These reviews are guaranteed to either rubber-stamp whatever the owner brought, because no one has had time to push back, or to spiral into context-establishing until time runs out. Either way the meeting was the wrong forum for the decision. The fix is upstream: write the doc, share it 24 hours ahead, name what you need.
+
+A close second is three people answering for the absent fourth. Someone necessary to the decision isn&apos;t in the room, and the rest of us proceed by reconstructing what we think the absent person would say. The decision either gets made and then quietly rolled back when the absent person sees the notes, or gets deferred — which means the meeting itself was a waste. The fix is again upstream, and it is uncomfortable: refuse to run the review without the person whose absence would have to be reconstructed.
+
+The third pattern is scope expansion. "While we&apos;re here, we should also talk about —" is one of the most expensive sentences in a product review, and once it has been said the meeting has a roughly 50/50 chance of forgetting what it came in to decide. The fix is to track those side topics as separate open threads rather than absorbing them into the original review&apos;s scope. Granola&apos;s output makes the divergence visible: when the summary surfaces decisions on topics that weren&apos;t in the agenda, that&apos;s the data point. I started flagging these the moment I see them in the summary, the same week.
+
+The last bad-review pattern is the "I&apos;ll send a longer note later" close. Almost always means no note. Track these in the meeting summary as commitments with owners and dates, the same way you would treat any other follow-up, and hold them accountable to landing. The longer-note-later is not the problem — it is a useful pattern when the meeting surfaced something the owner needs to think about. The problem is when nobody owns whether the note actually lands.
+
+---
+
+## How I prep differently now
+
+Two things, both small, both compounding. The first is a twenty-minute pre-read pass the night before. I read the doc, write down the two questions I&apos;m bringing into the room in plain text, and walk in with the questions on a sticky next to my keyboard. The point is not to anticipate the meeting. The point is that I have already done my thinking, so I can listen for the part of the conversation that affects my questions instead of doing the thinking in real-time while the room is talking.
+
+The second is that I keep the notetaker on and stay in listen mode. Granola handles the structural capture; I am free to engage with the substance. The cost of a momentary distraction — a Slack notification, a wandering thought — drops dramatically because I can ask Granola, mid-meeting, what was just said. That live-query is the rescue I didn&apos;t know I needed. The whole posture of the meeting changes when missing a sentence costs nothing.
+
+---
+
+## The meeting-to-action ratio
+
+The capture is the easy part. Granola does it cleanly. The hard part — the part that determines whether the meeting was worth anyone&apos;s time — is whether the actions actually land. I run a Friday cadence to close the loop, which takes twenty minutes and is, on its own, the most important twenty minutes of my week. I pull every committed item from the week&apos;s Granola summaries, cross-check against Linear and Slack to see what has actually moved, ping the owners on anything that hasn&apos;t, and carry the unresolved items into next week&apos;s prep doc. Reviews are the input; the Friday loop is the output. Both halves have to run for the meeting to have meant anything.
+
+---
+
+## What I&apos;d tell a less-experienced version of me
+
+Most product review meetings are about ten percent worse than they should be in ways that compound across a quarter into something much worse than that. The fix is not a new process. It is noticing the small failures — no written context, an absent owner, a "send a longer note later," a scope-expansion sentence — and surfacing them by name in the meeting itself, gently, while they are happening. The notetaker output makes the gaps visible. The Friday loop makes them costly to leave open. After a quarter, the meetings start to get better.
+
+A hundred meetings is enough to trust the patterns. It is not enough to fix them. Fixing them is the work in front of me now.
+
+---
+
+## Tools
+
+- <Link href="/granola">Granola</Link> — every review I attend runs through it. The full transcript is what makes the post-meeting analysis tractable. I have an affiliate relationship with the product; the recommendation predates it.

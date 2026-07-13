@@ -1,0 +1,18 @@
+{
+  "title": "What I learned from 100 product review meetings",
+  "author": "Zachary Proser",
+  "date": "2026-05-13",
+  "description": "Patterns across 100 product review meetings as Applied AI lead at WorkOS — what the good ones share, what the bad ones do wrong, and how I prep differently now.",
+  "image": "https://zackproser.b-cdn.net/images/100-product-review-meetings-hero.webp",
+  "slug": "/blog/100-product-review-meetings",
+  "keywords": [
+    "product review meetings",
+    "design review",
+    "engineering leadership",
+    "applied AI",
+    "WorkOS",
+    "meeting patterns"
+  ],
+  "tags": ["meetings", "leadership", "applied-ai", "product"],
+  "hiddenFromIndex": true
+}
