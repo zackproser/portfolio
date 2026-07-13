@@ -660,7 +660,7 @@ export function MindOnFireHero() {
     function stepFlames(dt: number, headA: number) {
       if (!ctx) return
       if (headA > 0.3 && logoReady && crownSrc.length) {
-        flameSpawnBudget += dt * (180 + surge * 180)
+        flameSpawnBudget = Math.min(flameSpawnBudget + dt * (180 + surge * 180), 50)
         const available = Math.max(0, 150 + Math.round(surge * 40) - flames.length)
         const want = Math.min(
           Math.floor(flameSpawnBudget),
