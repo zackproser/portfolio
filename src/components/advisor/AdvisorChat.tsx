@@ -1,17 +1,17 @@
 'use client'
 
 import Link from 'next/link'
-import { memo, useEffect, useMemo, useRef } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { useChat } from 'ai/react'
 import { track } from '@vercel/analytics'
 import {
   ArrowUpRight,
   CalendarDays,
+  Focus,
   Flame,
   Mic2,
   Send,
-  Sparkles,
   type LucideIcon,
 } from 'lucide-react'
 import { getAffiliateLink, type AffiliateProduct } from '@/lib/affiliate'
@@ -19,6 +19,8 @@ import {
   ADVISOR_POSTS_BY_SLUG,
   type AdvisorPostSlug,
 } from '@/lib/advisor-catalog'
+import type { AdvisorSignal } from './advisor-types'
+import styles from './AdvisorChat.module.css'
 
 const SUGGESTIONS = [
   'Which AI meeting notes app should I use?',
@@ -26,6 +28,13 @@ const SUGGESTIONS = [
   'Best voice dictation for coding?',
   'I need to turn websites into data for a RAG pipeline',
   'What does Zack actually use daily?',
+]
+
+const PLACEHOLDERS = [
+  'meeting notes without a call bot',
+  'dictation that works well for code',
+  'clean web data for a RAG pipeline',
+  'the tool you would choose for daily work',
 ]
 
 const PRODUCT_DATA: Record<
@@ -36,8 +45,7 @@ const PRODUCT_DATA: Record<
     cta: string
     description: string
     icon: LucideIcon
-    gradient: string
-    glow: string
+    accent: string
   }
 > = {
   granola: {
@@ -46,8 +54,7 @@ const PRODUCT_DATA: Record<
     cta: 'Get 3 Months Free',
     description: 'AI meeting notes with no bot joining the call.',
     icon: CalendarDays,
-    gradient: 'from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500',
-    glow: 'bg-teal-500/10 text-teal-700 dark:bg-teal-400/10 dark:text-teal-300',
+    accent: '#43d3bc',
   },
   wisprflow: {
     name: 'WisprFlow',
@@ -55,8 +62,7 @@ const PRODUCT_DATA: Record<
     cta: 'Try WisprFlow Free',
     description: 'Voice-to-text everywhere you type, including code and long-form writing.',
     icon: Mic2,
-    gradient: 'from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500',
-    glow: 'bg-purple-500/10 text-purple-700 dark:bg-purple-400/10 dark:text-purple-300',
+    accent: '#a78bfa',
   },
   firecrawl: {
     name: 'Firecrawl',
@@ -64,8 +70,7 @@ const PRODUCT_DATA: Record<
     cta: 'Try Firecrawl Free',
     description: 'Web crawling that returns clean, LLM-ready content for apps and agents.',
     icon: Flame,
-    gradient: 'from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500',
-    glow: 'bg-orange-500/10 text-orange-700 dark:bg-orange-400/10 dark:text-orange-300',
+    accent: '#fb923c',
   },
 }
 
@@ -129,23 +134,26 @@ function ToolCard({ product }: { product: AffiliateProduct }) {
   }, [product])
 
   return (
-    <aside className="my-3 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-700/60 dark:bg-zinc-900">
-      <div className={`h-1 bg-gradient-to-r ${data.gradient}`} />
-      <div className="p-4 sm:p-5">
-        <div className="flex items-start gap-3">
-          <div className={`rounded-xl p-2.5 ${data.glow}`}>
+    <aside
+      className={styles.toolCard}
+      style={{ '--tool-accent': data.accent } as React.CSSProperties}
+    >
+      <div className={styles.toolSweep} aria-hidden="true" />
+      <div className={styles.toolBody}>
+        <div className={styles.toolLead}>
+          <div className={styles.toolIcon}>
             <Icon className="h-5 w-5" aria-hidden="true" />
           </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+          <div className={styles.toolCopy}>
+            <div className={styles.toolTitleRow}>
+              <h3>
                 {data.name}
               </h3>
-              <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              <span className={styles.toolBenefit}>
                 {data.benefit}
               </span>
             </div>
-            <p className="mt-1 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+            <p className={styles.toolDescription}>
               {data.description}
             </p>
           </div>
@@ -155,7 +163,7 @@ function ToolCard({ product }: { product: AffiliateProduct }) {
           target="_blank"
           rel="noopener noreferrer sponsored"
           onClick={() => track('advisor_rec_click', { product })}
-          className={`mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition sm:w-auto ${data.gradient}`}
+          className={styles.toolCta}
         >
           {data.cta}
           <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
@@ -165,23 +173,24 @@ function ToolCard({ product }: { product: AffiliateProduct }) {
   )
 }
 
-function PostCard({ slug }: { slug: AdvisorPostSlug }) {
+function PostCard({ slug, entranceIndex }: { slug: AdvisorPostSlug; entranceIndex: number }) {
   const post = ADVISOR_POSTS_BY_SLUG[slug]
 
   return (
     <Link
       href={`/blog/${slug}`}
       onClick={() => track('advisor_post_click', { slug })}
-      className="group my-3 block rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:border-zinc-300 hover:shadow-md dark:border-zinc-700/60 dark:bg-zinc-900 dark:hover:border-zinc-600"
+      className={`group ${styles.postCard}`}
+      style={{ '--post-index': entranceIndex } as React.CSSProperties}
     >
-      <span className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+      <span className={styles.postLabel}>
         From Zack’s writing
         <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden="true" />
       </span>
-      <span className="block text-sm font-semibold leading-6 text-zinc-900 dark:text-zinc-100">
+      <span className={styles.postTitle}>
         {post.title}
       </span>
-      <span className="mt-1 block text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+      <span className={styles.postDescription}>
         {post.description}
       </span>
     </Link>
@@ -207,13 +216,13 @@ const AssistantMessage = memo(function AssistantMessage({
           return <ToolCard key={`tool-${segment.product}-${index}`} product={segment.product} />
         }
         if (segment.type === 'post') {
-          return <PostCard key={`post-${segment.slug}-${index}`} slug={segment.slug} />
+          return <PostCard key={`post-${segment.slug}-${index}`} slug={segment.slug} entranceIndex={index} />
         }
         if (!segment.value.trim()) return null
         return (
           <div
             key={`text-${index}`}
-            className="prose prose-sm max-w-none text-zinc-700 prose-p:my-2 prose-p:leading-7 prose-strong:text-zinc-900 prose-ul:my-2 dark:text-zinc-300 dark:prose-invert dark:prose-strong:text-zinc-100"
+            className={`prose prose-sm max-w-none prose-p:my-2 prose-p:leading-7 prose-ul:my-2 ${styles.assistantProse}`}
           >
             <ReactMarkdown
               components={{
@@ -231,19 +240,42 @@ const AssistantMessage = memo(function AssistantMessage({
 
 function TypingIndicator() {
   return (
-    <div className="flex items-center gap-1.5 py-2" role="status" aria-label="Advisor is writing">
+    <div className={styles.typing} role="status" aria-label="Advisor is writing">
       {[0, 1, 2].map((dot) => (
         <span
           key={dot}
-          className="h-1.5 w-1.5 animate-pulse rounded-full bg-zinc-400 motion-reduce:animate-none dark:bg-zinc-500"
-          style={{ animationDelay: `${dot * 140}ms` }}
+          style={{ '--dot': dot } as React.CSSProperties}
         />
       ))}
     </div>
   )
 }
 
-export default function AdvisorChat() {
+function CyclingPlaceholder({ hidden }: { hidden: boolean }) {
+  const [index, setIndex] = useState(0)
+
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (query.matches) return
+    const timer = window.setInterval(() => {
+      setIndex((current) => (current + 1) % PLACEHOLDERS.length)
+    }, 3200)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  if (hidden) return null
+  return (
+    <span key={index} className={styles.placeholder} aria-hidden="true">
+      {PLACEHOLDERS[index]}
+    </span>
+  )
+}
+
+export default function AdvisorChat({
+  onSignalChange,
+}: {
+  onSignalChange?: (signal: AdvisorSignal) => void
+}) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const shouldAutoScroll = useRef(true)
   const { messages, input, setInput, append, isLoading, error } = useChat({
@@ -260,6 +292,42 @@ export default function AdvisorChat() {
     return () => cancelAnimationFrame(frame)
   }, [messages, isLoading])
 
+  useEffect(() => {
+    if (!onSignalChange) return
+    if (messages.length === 0) {
+      onSignalChange({ phase: 'idle' })
+      return
+    }
+
+    let lastUserIndex = -1
+    for (let index = messages.length - 1; index >= 0; index--) {
+      if (messages[index].role === 'user') {
+        lastUserIndex = index
+        break
+      }
+    }
+
+    let recommended: AffiliateProduct | undefined
+    for (let index = messages.length - 1; index > lastUserIndex; index--) {
+      const message = messages[index]
+      if (message.role !== 'assistant') continue
+      const matches = [...message.content.matchAll(/\[\[tool:(granola|wisprflow|firecrawl)\]\]/g)]
+      const latest = matches[matches.length - 1]?.[1]
+      if (latest) {
+        recommended = latest as AffiliateProduct
+        break
+      }
+    }
+
+    if (recommended) {
+      onSignalChange({ phase: 'resolved', accent: PRODUCT_DATA[recommended].accent })
+    } else if (isLoading) {
+      onSignalChange({ phase: 'thinking' })
+    } else {
+      onSignalChange({ phase: 'listening' })
+    }
+  }, [isLoading, messages, onSignalChange])
+
   const updateScrollIntent = () => {
     const node = scrollRef.current
     if (!node) return
@@ -271,6 +339,7 @@ export default function AdvisorChat() {
     const trimmed = question.trim()
     if (!trimmed || isLoading) return
     shouldAutoScroll.current = true
+    onSignalChange?.({ phase: 'listening' })
     track('advisor_chat_question', { q: trimmed.slice(0, 100), via })
     void append({ role: 'user', content: trimmed }, { body: { via } })
     setInput('')
@@ -285,43 +354,45 @@ export default function AdvisorChat() {
 
   return (
     <section
-      className="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 shadow-xl shadow-zinc-900/5 dark:border-zinc-700/60 dark:bg-zinc-900/70 dark:shadow-black/20"
+      className={styles.shell}
       aria-label="AI tool advisor chat"
     >
-      <header className="flex items-center gap-3 border-b border-zinc-200 bg-white px-4 py-3.5 dark:border-zinc-700/60 dark:bg-zinc-900 sm:px-5">
-        <div className="rounded-xl bg-zinc-900 p-2 text-white dark:bg-zinc-100 dark:text-zinc-900">
-          <Sparkles className="h-4 w-4" aria-hidden="true" />
+      <header className={styles.chatHeader}>
+        <div className={styles.advisorMark}>
+          <Focus className="h-4 w-4" aria-hidden="true" />
         </div>
-        <div>
-          <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Tool Advisor</h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">Straight answers, with the tradeoffs included</p>
+        <div className={styles.headerCopy}>
+          <h2>Tool Advisor</h2>
+          <p>Straight answers, with the tradeoffs included</p>
         </div>
+        <span className={styles.headerSignal} aria-hidden="true"><i /><i /><i /></span>
       </header>
 
       <div
         ref={scrollRef}
         onScroll={updateScrollIntent}
-        className="h-[min(58vh,560px)] min-h-[400px] overflow-y-auto overscroll-contain px-3 py-5 sm:px-5"
+        className={styles.scroll}
         aria-live="polite"
       >
         {messages.length === 0 && (
-          <div className="mx-auto flex min-h-full max-w-xl flex-col justify-center py-4">
-            <div className="mb-5 text-center">
-              <p className="text-base font-medium text-zinc-900 dark:text-zinc-100">
+          <div className={styles.emptyState}>
+            <div className={styles.emptyCopy}>
+              <p className={styles.emptyTitle}>
                 Tell me what you are trying to get done.
               </p>
-              <p className="mt-1 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+              <p className={styles.emptyDescription}>
                 I may ask one or two questions before giving you a recommendation.
               </p>
             </div>
-            <div className="flex flex-col gap-2">
-              {SUGGESTIONS.map((suggestion) => (
+            <div className={styles.suggestions}>
+              {SUGGESTIONS.map((suggestion, index) => (
                 <button
                   key={suggestion}
                   type="button"
                   disabled={isLoading}
                   onClick={() => ask(suggestion, 'chip')}
-                  className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-left text-sm leading-5 text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700/60 dark:bg-zinc-800/70 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-800"
+                  className={styles.suggestion}
+                  style={{ '--chip-index': index } as React.CSSProperties}
                 >
                   {suggestion}
                 </button>
@@ -330,15 +401,15 @@ export default function AdvisorChat() {
           </div>
         )}
 
-        <div className="mx-auto max-w-2xl space-y-5">
+        <div className={styles.messages}>
           {messages.map((message, index) => {
             const streamingAssistant =
               isLoading && index === messages.length - 1 && message.role === 'assistant'
 
             if (message.role === 'user') {
               return (
-                <div key={message.id} className="flex justify-end pl-8 sm:pl-16">
-                  <div className="max-w-xl rounded-2xl rounded-br-md bg-zinc-900 px-4 py-3 text-sm leading-6 text-white dark:bg-zinc-100 dark:text-zinc-900">
+                <div key={message.id} className={`${styles.messageIn} ${styles.userRow}`}>
+                  <div className={styles.userBubble}>
                     {message.content}
                   </div>
                 </div>
@@ -346,9 +417,9 @@ export default function AdvisorChat() {
             }
 
             return (
-              <div key={message.id} className="flex items-start gap-2.5 pr-1 sm:gap-3 sm:pr-8">
-                <div className="mt-0.5 hidden rounded-lg border border-zinc-200 bg-white p-1.5 text-zinc-600 dark:border-zinc-700/60 dark:bg-zinc-800 dark:text-zinc-300 sm:block">
-                  <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+              <div key={message.id} className={`${styles.messageIn} ${styles.assistantRow}`}>
+                <div className={styles.assistantMark}>
+                  <Focus className="h-3.5 w-3.5" aria-hidden="true" />
                 </div>
                 <AssistantMessage content={message.content} isStreaming={streamingAssistant} />
               </div>
@@ -356,27 +427,28 @@ export default function AdvisorChat() {
           })}
 
           {isLoading && lastMessage?.role === 'user' && (
-            <div className="flex items-center gap-3 text-zinc-500 dark:text-zinc-400">
+            <div className={styles.typingRow}>
               <TypingIndicator />
             </div>
           )}
           {isLoading && lastMessage?.role === 'assistant' && (
-            <div className="pl-1 text-zinc-500 dark:text-zinc-400">
+            <div className={styles.typingRow}>
               <TypingIndicator />
             </div>
           )}
           {error && (
-            <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300">
+            <div role="alert" className={styles.error}>
               The advisor could not answer that one. Wait a moment and try again.
             </div>
           )}
         </div>
       </div>
 
-      <div className="border-t border-zinc-200 bg-white p-3 dark:border-zinc-700/60 dark:bg-zinc-900 sm:p-4">
-        <form onSubmit={submit} className="mx-auto max-w-2xl">
-          <div className="flex items-end gap-2 rounded-2xl border border-zinc-300 bg-white p-2 shadow-sm focus-within:border-zinc-500 focus-within:ring-2 focus-within:ring-zinc-200 dark:border-zinc-700 dark:bg-zinc-950 dark:focus-within:border-zinc-500 dark:focus-within:ring-zinc-800">
-            <textarea
+      <div className={styles.composerArea}>
+        <form onSubmit={submit} className={styles.form}>
+          <div className={styles.composer}>
+            <div className={styles.inputWrap}>
+              <textarea
               value={input}
               onChange={(event) => setInput(event.target.value)}
               onKeyDown={(event) => {
@@ -388,20 +460,22 @@ export default function AdvisorChat() {
               disabled={isLoading}
               rows={1}
               maxLength={2000}
-              placeholder={isLoading ? 'The advisor is writing…' : 'What do you need a tool to do?'}
+              placeholder={isLoading ? 'The advisor is writing…' : ''}
               aria-label="Your question"
-              className="max-h-32 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm leading-6 text-zinc-900 outline-none placeholder:text-zinc-400 disabled:cursor-not-allowed disabled:opacity-60 dark:text-zinc-100 dark:placeholder:text-zinc-500"
+              className={styles.textarea}
             />
+              <CyclingPlaceholder hidden={Boolean(input) || isLoading} />
+            </div>
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
               aria-label="Send question"
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-900 text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+              className={styles.sendButton}
             >
               <Send className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
-          <p className="mt-2.5 px-1 text-center text-[11px] leading-4 text-zinc-500 dark:text-zinc-500 sm:text-xs">
+          <p className={styles.disclosure}>
             Some recommendations use affiliate links. Granola signups through them give you 3 months free and support the site.
           </p>
         </form>
