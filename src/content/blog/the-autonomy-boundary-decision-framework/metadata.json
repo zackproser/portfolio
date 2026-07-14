@@ -1,0 +1,8 @@
+{
+  "title": "The Autonomy Boundary: A Decision Framework",
+  "author": "Zachary Proser",
+  "date": "2026-07-05",
+  "description": "A framework for deciding what an agent may do unattended, what it must ask permission for, and what it may never do — scored on two axes (reversibility and blast radius), with the asleep test as the tiebreaker and enforcement in code, not willpower.",
+  "image": "https://zackproser.b-cdn.net/images/autonomy-boundary-framework-hero.jpg",
+  "tags": ["AI", "Agents", "Automation", "Developer Tools", "Applied AI"]
+}
