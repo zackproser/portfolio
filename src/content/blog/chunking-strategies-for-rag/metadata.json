@@ -1,0 +1,8 @@
+{
+  "title": "A Practical Guide to Chunking Strategies for RAG",
+  "author": "Zachary Proser",
+  "date": "2026-06-19",
+  "description": "Fixed-size, semantic, and structural chunking for RAG — what each one does, the tradeoffs, real code, and how to pick the right one for your documents.",
+  "image": "https://zackproser.b-cdn.net/images/chunking-strategies-for-rag-hero.jpg",
+  "tags": ["ai", "rag", "chunking", "embeddings", "vector-databases", "llm", "python"]
+}
