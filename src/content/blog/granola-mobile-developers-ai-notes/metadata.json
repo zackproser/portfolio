@@ -1,9 +1,16 @@
 {
-  "title": "Granola for Mobile Developers: AI Meeting Notes for iOS and Android Teams",
+  "title": "Granola for Mobile Developers",
   "author": "Zachary Proser",
   "date": "2026-04-24",
-  "description": "Mobile developers move fast across sprint planning, App Store reviews, and crash triage calls. Granola keeps every decision documented so nothing falls through the cracks.",
+  "description": "Mobile developers move fast across sprint planning, App Store reviews, and crash triage. Granola keeps every decision documented so nothing falls through.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["granola", "mobile-development", "ios", "android", "meetings", "ai"],
+  "tags": [
+    "granola",
+    "mobile-development",
+    "ios",
+    "android",
+    "meetings",
+    "ai"
+  ],
   "hiddenFromIndex": true
 }

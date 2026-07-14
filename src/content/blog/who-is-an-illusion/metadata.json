@@ -2,8 +2,17 @@
   "title": "Who Is an Illusion. What Is the More Interesting Question.",
   "author": "Zachary Proser",
   "date": "2026-05-23",
-  "description": "Applying systems thinking to my internal experience.",
+  "description": "Applying systems thinking to my internal experience: why 'who' is an illusion, and what the more interesting question turns out to be for a neurodivergent mind.",
   "image": "https://zackproser.b-cdn.net/images/who-illusion-hero.webp",
   "type": "blog",
-  "tags": ["ai", "personal", "neurodivergent", "adhd", "autism", "systems-thinking", "identity", "cognitive-infrastructure"]
+  "tags": [
+    "ai",
+    "personal",
+    "neurodivergent",
+    "adhd",
+    "autism",
+    "systems-thinking",
+    "identity",
+    "cognitive-infrastructure"
+  ]
 }

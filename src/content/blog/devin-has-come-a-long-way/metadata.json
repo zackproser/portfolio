@@ -1,8 +1,16 @@
 {
-  "title": "Devin AI Has Come a Long Way",
+  "title": "Devin AI Has Come a Long Way Since Last Year",
   "author": "Zachary Proser",
   "date": "2026-05-24",
-  "description": "A year ago at WorkOS nobody could get a single Devin AI session working. We abandoned it. Now Devin AI is one of our most-used agents in Slack — shipping PRs, fixing bugs, running data queries. And I'm using Devin AI to write blog posts with pixel art and three.js animations.",
+  "description": "A year ago nobody at WorkOS could get a Devin session working; we abandoned it. Now it's one of our most-used Slack agents, shipping PRs and fixing bugs.",
   "image": "https://zackproser.b-cdn.net/images/devin-has-come-a-long-way-hero.webp",
-  "tags": ["ai", "devin-ai", "agents", "productivity", "workos", "agentic-coding", "slack"]
+  "tags": [
+    "ai",
+    "devin-ai",
+    "agents",
+    "productivity",
+    "workos",
+    "agentic-coding",
+    "slack"
+  ]
 }

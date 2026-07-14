@@ -1,9 +1,14 @@
 {
-  "title": "Granola for Life Coaches - AI Session Intelligence for Coaching Practice",
+  "title": "Granola for Life Coaches",
   "author": "Zachary Proser",
   "date": "2026-4-28",
-  "description": "How life coaches use Granola's AI to track client breakthroughs, document coaching conversations, and build comprehensive client progress records with automated session intelligence.",
+  "description": "How life coaches use Granola's AI to track client breakthroughs, document conversations, and build progress records with automated session intelligence.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["ai", "coaching", "wellness", "productivity"], 
+  "tags": [
+    "ai",
+    "coaching",
+    "wellness",
+    "productivity"
+  ],
   "hiddenFromIndex": true
 }
