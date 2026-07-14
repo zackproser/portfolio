@@ -1,0 +1,9 @@
+{
+  "title": "Durable Execution for AI Agents: Checkpointing, Step Retries, and Not Losing Completed Work",
+  "author": "Zachary Proser",
+  "date": "2026-06-19",
+  "description": "An agent that crashes 40 minutes into a job shouldn't start over from zero. Here's how durable execution, checkpointing, and step-level retries make long agent runs reliable, with real code.",
+  "image": "https://zackproser.b-cdn.net/images/durable-execution-for-ai-agents-hero.jpg",
+  "tags": ["AI", "Agents", "Reliability", "Workflows", "Durable Execution", "Engineering"],
+  "keywords": ["durable execution", "checkpointing", "agent reliability", "step retries", "workflow orchestration", "AI agents"]
+}
