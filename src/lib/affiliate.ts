@@ -7,7 +7,7 @@
 
 export type AffiliateProduct = 'wisprflow' | 'granola' | 'firecrawl'
 export type AffiliateMedium = 'blog' | 'demo' | 'homepage' | 'newsletter' | 'tools'
-export type AffiliatePlacement = 'sticky-cta' | 'inline-cta' | 'hero-card' | 'compact-card' | 'text-link' | 'dual-card' | 'concierge'
+export type AffiliatePlacement = 'sticky-cta' | 'inline-cta' | 'hero-card' | 'compact-card' | 'text-link' | 'dual-card' | 'concierge' | 'chat'
 
 const BASE_LINKS: Record<AffiliateProduct, string> = {
   wisprflow: 'https://ref.wisprflow.ai/zack-proser',
@@ -79,4 +79,3 @@ export function buildConciergeTerm(parts: {
     .filter(Boolean)
     .join('_')
 }
-

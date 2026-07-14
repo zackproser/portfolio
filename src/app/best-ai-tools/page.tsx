@@ -194,6 +194,20 @@ export default function AITools2026Page() {
         </div>
       </section>
 
+      <div className={`border-y ${isDark ? 'border-slate-800 bg-slate-900' : 'border-parchment-200 bg-white'}`}>
+        <div className="container mx-auto px-4 py-4 text-center md:px-6">
+          <Link
+            href="/advisor"
+            className={`inline-flex items-center gap-2 text-sm font-semibold ${
+              isDark ? 'text-amber-400 hover:text-amber-300' : 'text-burnt-400 hover:text-burnt-500'
+            }`}
+          >
+            Not sure which tool fits? Ask the advisor
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+      </div>
+
       {/* Quick Summary */}
       <section className={`py-12 ${isDark ? 'bg-slate-900' : 'bg-parchment-100'}`}>
         <div className="container mx-auto px-4 md:px-6">
