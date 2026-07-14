@@ -1,0 +1,68 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# I Built a Slack Bot That Writes My Blog Posts
+
+I send a Slack message — "write something about why most internal AI tools fail on the interface, not the model" — and a few minutes later a pull request shows up on my site with a finished post: 1,300 words in my voice, three images, an architecture diagram, links to my older writing, and an Open Graph card ready for social. I review it, maybe tweak a sentence, and merge.
+
+This is the bot I always wanted and kept not building. The reason I finally did is that the boring parts of publishing — generating images, making the OG card, running the checks, opening the PR — were the parts that stopped me from writing more often. So I handed those to a bot and kept the part I like.
+
+<Image src="https://zackproser.b-cdn.net/images/i-built-a-blog-bot-hero.png" alt="A pixel-art robot writing a blog post at a small desk" width={1376} height={768} />
+
+## What it actually does
+
+The bot lives in a Slack channel. I describe an idea, sometimes with a title and a few bullet points, sometimes just a sentence. From there it runs the whole pipeline on its own:
+
+- Reads my recent posts to match the depth and structure I usually write.
+- Drafts the post in MDX, in my voice, with real code where code helps.
+- Generates pixel-art images and a diagram, and uploads them to my CDN.
+- Cross-links to older posts where the topic overlaps.
+- Builds the OG image with the same script my site already uses.
+- Runs my publishing checks, then opens a pull request.
+
+The output is a normal PR against my site's repo. Nothing publishes without me. I get the review surface I already trust — a diff and a preview deploy — instead of a new dashboard to babysit.
+
+## The architecture
+
+The bot is built on Eve, a framework for backend agents that run on Vercel. Each request becomes a durable session, so a 90-second image-generation step can fail and retry without losing the draft that already succeeded.
+
+<Image src="https://zackproser.b-cdn.net/images/i-built-a-blog-bot-architecture.png" alt="Architecture: Slack message to agent to repository to pull request" width={1376} height={768} />
+
+The agent works inside a sandbox that clones my site, so it has the real codebase in front of it. That detail matters more than I expected. When the bot writes a post, it writes against my actual content directory, my actual components, and my actual build — not a guess about how my site is shaped. When it wants to link to a related post, it reads the posts that exist and links a real one, instead of inventing a URL that 404s.
+
+## Images were the hard part
+
+Text was the easy half. The half that kept this on my someday list was images. Every post on this site has a hero image, a couple of inline images, and an OG card, all served from my CDN. Producing those by hand is the tax I pay for publishing, and it's the tax that makes me publish less.
+
+So the bot generates them. It uses a pixel-art house style on my dark palette, makes the hero and the inline images, and pushes them to the CDN through the storage API. The OG card runs through the exact script my site already had — I didn't want a second OG system to drift out of sync with the first.
+
+<Image src="https://zackproser.b-cdn.net/images/i-built-a-blog-bot-before-after.png" alt="Before and after: a stuck writer, then a relaxed writer with a robot assembling the article" width={1376} height={768} />
+
+One lesson here lines up with something I wrote in [The Interface Matters Most](/blog/the-interface-matters-most): the model was rarely the bottleneck. Getting a good image out of a capable image model took one API call. Getting that image named correctly, uploaded to the right path, cached, and verified as a live URL before the post referenced it — that was where the real work lived, and where a sloppy version would have wasted my time with broken images in a PR.
+
+## Guardrails over good intentions
+
+My first version trusted the agent to "validate before opening a PR." That worked until it didn't. The fix was to stop asking nicely and make the checks part of the tools.
+
+Now the tool that opens the pull request runs my verification script itself and refuses to push if anything fails: missing images, a hero that doesn't return a 200, a banned phrase, a missing OG card. The agent can't talk its way past a red check, because the gate is code, not a sentence in a prompt. If you've ever shipped your own automation, you know the difference between "the prompt says to verify" and "the function returns an error" — only one of them holds up at 6pm on a Friday.
+
+The same instinct shows up in access: the bot only acts on messages from me, in the channel I control. An agent that can spend money and open pull requests should have a short, explicit list of who it listens to.
+
+## Was it worth it?
+
+I publish more now, which was the entire point. The cost of going from idea to draft dropped enough that ideas I would have dropped on the floor become posts. I still write plenty by hand — the bot is for the ideas that would otherwise evaporate, not a replacement for caring about the words.
+
+If you've thought about running more of your own publishing pipeline, the payoff is real, and you don't need an agent framework to start. A script that generates your images and opens a PR gets you most of the way. I wrote about why owning this stack is worth it in [Run your own tech blog](/blog/run-your-own-tech-blog) — the bot is the natural extension of that argument, once you decide the machine should do the parts you keep avoiding.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/interface-matters-hero.webp"
+  imageAlt="The Interface Matters Most"
+  eyebrow="Read this next"
+  title="The Interface Matters Most"
+  description="Why the interface, not the model, decides whether people actually use the AI tools you build."
+  href="/blog/the-interface-matters-most"
+/>

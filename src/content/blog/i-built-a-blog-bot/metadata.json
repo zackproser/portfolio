@@ -1,0 +1,8 @@
+{
+  "title": "I Built a Slack Bot That Writes My Blog Posts",
+  "author": "Zachary Proser",
+  "date": "2026-06-18",
+  "description": "I gave a Slack bot the keys to my blog. I send it a rough idea, it writes the post, generates the images, and opens a pull request against my site. Here's how it works and what I learned building it.",
+  "image": "https://zackproser.b-cdn.net/images/i-built-a-blog-bot-hero.png",
+  "tags": ["AI Engineering", "Developer Tools", "Automation", "Agents"]
+}
