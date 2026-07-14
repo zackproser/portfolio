@@ -1,0 +1,146 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# The Real Monthly Cost of an Autonomous Content Agent
+
+<Image src="https://zackproser.b-cdn.net/images/autonomous-agent-monthly-cost-hero.jpg" alt="Pixel art of a glowing utility meter on a dark server-room wall, the dial spinning, stacks of coins and a robot silhouette feeding tokens into a furnace" width={1200} height={675} />
+
+Everyone wants to know if the agent pays for itself. Nobody wants to add up the bill.
+
+So I did. This is a cost model, not my invoice. I built it from per-unit prices and the real shape of a pipeline I run (I run [a bot like this](/blog/how-my-ai-assistant-ships-blog-posts)), but I'm not publishing a screenshot of my card. Your spend will move with your model choice, your review depth, and how chatty your pipeline is. Take the structure, not the totals.
+
+At a post-a-day cadence the model lands somewhere around $40–145 a month. The API bill is not the decision. My review time is.
+
+## The assumptions, up front
+
+A cost post that hides its inputs isn't transparent, so here are mine, modeled as of June 2026. One flagship-length post:
+
+- **Draft length:** ~2,000 words (~6k tokens of finished prose).
+- **Drafting call:** ~20k input tokens (the fact pool, system prompt, style exemplars, source excerpts) + ~3k output, on a frontier model.
+- **Self-review:** 2 reviewer models, 2–3 cycles. Each cycle = each reviewer reads the full ~6k draft and writes a critique, then a revise call rereads the draft plus the notes and emits a patch.
+- **Images:** 1 hero + 4 inline, each a separate generation call.
+- **Research:** 1–3 URL scrapes through a paid scrape API.
+- **Unit prices (June 2026 ranges I'll stand behind):** text at roughly **$1–5 / 1M input tokens** and **$5–20 / 1M output**, depending on model tier; image generation at roughly **$0.10–$0.30 each** for these settings; scraping at roughly **$0.005–$0.05 per fetched page**, plus any plan minimum.
+
+Everything below falls out of those numbers. Change the assumptions and the totals change with them.
+
+## What's actually running
+
+A publishable post run has a dozen-plus steps. One model call is the cheap fantasy version. Here's the real shape, from mention to merged PR:
+
+<Image src="https://zackproser.b-cdn.net/images/autonomous-agent-monthly-cost-pipeline.jpg" alt="Pixel art flow diagram on dark background: a Slack mention flows left to right through boxes labeled Intake, Research, Draft, Self-review loop, Images, Validate, Open PR. The Self-review box is larger and glowing amber to show it dominates the run" width={1200} height={675} />
+
+A normal run looks like: Slack mention, source links, fact pool, MDX draft, two reviewer passes, image prompts, image uploads, lint and build, PR. The expensive-looking part isn't the PR. It's the rereads.
+
+Four stages spend real money:
+
+- **Intake and research.** Classify the request, pull any linked URLs, fetch transcripts or notes, assemble a fact pool. A handful of cheap calls plus a scrape API or two.
+- **Drafting.** The big-context generation step. This is the one everyone *thinks* is the whole cost.
+- **The self-review loop.** Critique the draft, apply fixes, re-critique. Often run twice, with two different reviewer models, for two or three passes. This is where the bill hides.
+- **Images.** A hero plus several inline images, each a separate generation call, each meaningfully more expensive than a text token.
+
+Validation and opening the PR are close to free in API terms. They're shell scripts and a couple of API calls. (At scale, CI minutes and failed-retry builds aren't quite zero, but they're noise next to the four stages above.) The money is in those four, and it doesn't split the way intuition says it does.
+
+## Where the money goes
+
+Run the assumptions through those prices and one finished, image-rich post looks like this:
+
+<Image src="https://zackproser.b-cdn.net/images/autonomous-agent-monthly-cost-breakdown.jpg" alt="Pixel art horizontal bar chart on dark background showing per-post cost split: Images the largest bar in amber, Self-review second, Drafting third, Intake and research smallest, with rough dollar labels" width={1200} height={675} />
+
+| Stage | Modeled inputs | Modeled cost |
+| --- | --- | --- |
+| Intake + research | A few cheap classify/route calls, 1–3 scrapes | ~$0.03–$0.15 |
+| Drafting | ~20k input + ~3k output, frontier model | ~$0.04–$0.16 |
+| Self-review loop | 2 reviewers × 2–3 cycles ≈ ~40–60k input + ~10–15k output | ~$0.10–$0.50 |
+| Images | 1 hero + 4 inline, per-image generation | ~$0.50–$1.50 |
+| Validate + PR | Scripts, git, a couple API calls | ~$0.00 |
+| **Total per post** | | **~$0.70–$2.30** |
+
+Two things jump out. First, in an image-rich setup like this one, **images cost more than the writing.** A frontier text model is astonishingly cheap per post now. A batch of five generated images is not. If you want visually dense posts, your image budget is your budget.
+
+Second, the one I didn't expect until I modeled the rereads: with two reviewers and a revise pass, **the review loop costs more than the initial draft call.**
+
+## The self-review tax
+
+The draft is one pass over the content. The self-review loop is several passes, and each one rereads the *entire* draft as input.
+
+Take that 2,000-word post. Each reviewer reads the whole ~6k-token draft before it writes a single note, and then a revise call rereads the draft *plus* the notes to emit a patch. Two reviewers across three revise cycles means the post gets reread close to a dozen times. The output tokens stay small, since a critique is shorter than an article. The *input* tokens stack up fast, because every pass pays to read the whole thing again.
+
+<Image src="https://zackproser.b-cdn.net/images/autonomous-agent-monthly-cost-review-loop.jpg" alt="Pixel art loop diagram on dark background: a draft document in the center, arrows cycling out to two reviewer robots and back, a small counter showing pass 1, pass 2, pass 3, each cycle adding glowing token coins to a growing pile" width={1200} height={675} />
+
+I keep the loop anyway. The whole reason I trust the output enough to put it under [my own byline](/blog/spark-bellows-quench) is that it's already survived a couple of honest, adversarial reads before I ever see it. Cutting the review loop to save thirty cents would be saving money on the one step that earns the trust. But you should *know* it's a real line item, because the instinct is to assume generation is the cost and review is free. It's the other way around more often than you'd guess.
+
+If you're optimizing, the review loop is where the easy savings live. Fewer passes. One reviewer instead of two. A cheaper reviewer model for early passes and the expensive one only on the final read. All reasonable knobs, and none of them are free. They trade dollars for confidence.
+
+## The monthly bill
+
+Per-post numbers are abstract. The monthly bill is what shows up on the card, and it's the number I care about before I let an agent run daily instead of as a toy.
+
+Say the agent ships a post a day, 30 a month. At ~$0.70–$2.30 each, that's the usage cost. On top of it sit a few genuinely fixed costs: the serverless platform the pipeline runs on, and the scrape/research API subscription.
+
+<Image src="https://zackproser.b-cdn.net/images/autonomous-agent-monthly-cost-monthly.jpg" alt="Pixel art stacked column chart on dark background labeled Monthly, showing layers: per-post usage spend at the bottom, then research API, then serverless compute, totaling a modest stack of coins beside a calendar" width={1200} height={675} />
+
+A modeled monthly total:
+
+| Line item | Type | Modeled monthly |
+| --- | --- | --- |
+| Per-post usage (30 × ~$0.70–$2.30) | usage — includes model + image calls | ~$21–69 |
+| Serverless / compute platform | fixed | ~$5–25 |
+| Research / scrape API | fixed | ~$15–50 |
+| **Total** | | **~$40–145 / month** |
+
+I'm deliberately not stacking a separate "model subscription" line on top, because the API usage is already counted per post. Pay-per-token usage and a flat subscription are two ways to buy the same thing, not two bills. Pick the cheaper for your volume and count it once.
+
+The $40 floor is 30 lean posts on minimal infrastructure; the $145 ceiling is image-rich posts on a richer stack. If you want to adapt this to your setup, copy that table and change four numbers first: posts per month, images per post, reviewer passes, and model tier. Everything else is rounding.
+
+If this had penciled out to $1,500 a month, I'd have throttled it to a few posts a week. At $40–145, the throttle is my judgment, not the API bill. That's the whole reason the cash question turns out to be the wrong one.
+
+## Does it beat my own time?
+
+Here's the comparison that decides it.
+
+A post like this one (researched, drafted, edited, illustrated, validated, shipped) is a multi-hour job done by hand. Call it three to five hours for something with original images and real structure, more if you're slow with the visual side. I've [compressed that timeline before](/blog/nine-posts-in-48-hours), and even compressed, the hands-on minutes add up.
+
+Now price your own hour. Put any reasonable number on it ($50, $100, $150) and the math stops being close.
+
+<Image src="https://zackproser.b-cdn.net/images/autonomous-agent-monthly-cost-vs-time.jpg" alt="Pixel art balance scale on dark background: left pan holds a small stack of coins with a dollar sign, right pan holds a large hourglass and a tall stack of coins labeled hours, the scale tipping heavily toward the time side" width={1200} height={675} />
+
+On the cash-only drafting cost, not counting my final read, the agent beats hand-building by roughly two orders of magnitude. A few dollars against a few hundred. The agent wins the raw arithmetic so lopsidedly that it stops being interesting.
+
+But the arithmetic is a trap if you stop there, because it assumes the two outputs are interchangeable. A cheap draft I can't publish is not cheap. That's the part the spreadsheet misses.
+
+## The asterisk on the math
+
+The agent doesn't replace the hours. It replaces *most* of them and leaves the ones that matter.
+
+I still read every draft. I still strike the [spark](/blog/spark-bellows-quench): the idea, the lived experience, the opinion that no model can have on my behalf. I still do the final edit and own the decision to publish. The agent collapses the mechanical middle: the assembling, the formatting, the first-pass illustrating, the validation grind. It hands me coals. I decide which ones are worth fanning.
+
+So the honest version of the comparison isn't "agent vs. my time." It's:
+
+- **My time, all of it.** Three to five hours per post, hand-built end to end.
+- **Agent spend plus the part of my time that's irreducible.** A few dollars, plus the thirty to sixty minutes of spark-and-judgment that were never automatable in the first place.
+
+That second row is the win. Not because it's cheaper, though it is, absurdly so. It's the win because it spends my scarcest input on the only part that needed me, and pays cash for everything that didn't. It lets me test more sparks without burning four hours hand-formatting each one to find out which were any good.
+
+The failure mode is forgetting the asterisk. Run the agent without that human read and you get volume, which is a faster way to publish things you'll have to apologize for. The cost model only works because the expensive human step is still in it. Cut that step to save time and you've optimized away the entire reason the output is worth shipping.
+
+## So is it worth it?
+
+If the question is "does the monthly bill beat my hourly rate," the answer is yes, by a wide and slightly ridiculous margin. Call it a hundred and change a month, and it buys back the mechanical hours of producing publishable work at a real cadence. There's no close call there.
+
+The harder question is whether the post is worth publishing, and that's not a cost question at all. It's the same question it's always been: is it true, is it useful, is it any good? The agent makes that question cheaper to ask and easy to ask far more often. It does not answer it for you. You still have to read it, cut it, and decide whether it carries your name.
+
+That's the part you can't buy for a hundred and change a month. The machinery around it, as it happens, you can. If you want the pipeline this model prices, start here:
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/hermes-ships-blog-posts-hero.webp"
+  imageAlt="Pixel art of an AI assistant shipping a blog post through a pipeline: writing MDX, generating images, opening a pull request"
+  eyebrow="Read this next"
+  title="How My AI Assistant Ships Blog Posts"
+  description="The pipeline this cost model prices: from a chat message to MDX, generated images, a CDN upload, and an opened pull request."
+  href="/blog/how-my-ai-assistant-ships-blog-posts"
+/>
