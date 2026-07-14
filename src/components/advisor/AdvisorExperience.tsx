@@ -37,7 +37,11 @@ export default function AdvisorExperience() {
   )
 
   return (
-    <div className={`${styles.page} ${playEntrance ? styles.play : ''}`} style={style}>
+    <div
+      className={`${styles.page} ${playEntrance ? styles.play : ''}`}
+      style={style}
+      data-phase={signal.phase}
+    >
       <ConvergenceField signal={signal} />
       <div className={styles.veil} aria-hidden="true" />
       <main className={styles.content}>

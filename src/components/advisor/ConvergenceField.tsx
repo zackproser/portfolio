@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import type { AdvisorSignal } from './advisor-types'
+import type { AdvisorPhase, AdvisorSignal } from './advisor-types'
 
 type Particle = {
   x: number
@@ -12,12 +12,12 @@ type Particle = {
   homeY: number
   seed: number
   lane: number
+  layer: number
   size: number
 }
 
 const TAU = Math.PI * 2
-const SIGNAL = 'rgba(132, 229, 255, 0.42)'
-const SIGNAL_SOFT = 'rgba(132, 229, 255, 0.17)'
+const CELL_SIZE = 76
 
 function hash(index: number, salt: number) {
   const value = Math.sin((index + 1) * 91.17 + salt * 317.31) * 43758.5453
@@ -33,11 +33,12 @@ function hexToRgb(hex: string) {
 export function ConvergenceField({ signal }: { signal: AdvisorSignal }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const signalRef = useRef(signal)
-  const redrawRef = useRef<(() => void) | null>(null)
+  const redrawRef = useRef<((previous: AdvisorPhase) => void) | null>(null)
 
   useEffect(() => {
+    const previous = signalRef.current.phase
     signalRef.current = signal
-    redrawRef.current?.()
+    redrawRef.current?.(previous)
   }, [signal])
 
   useEffect(() => {
@@ -48,39 +49,70 @@ export function ConvergenceField({ signal }: { signal: AdvisorSignal }) {
 
     const ctx = context
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const finePointerQuery = window.matchMedia('(pointer: fine)')
     let reduced = motionQuery.matches
+    let finePointer = finePointerQuery.matches
     let width = 0
     let height = 0
     let particles: Particle[] = []
+    let gridHeads = new Int32Array(0)
+    let gridNext = new Int32Array(0)
+    let gridColumns = 1
+    let gridRows = 1
     let visible = true
     let disposed = false
     let running = false
     let frameId = 0
     let resizeFrameId = 0
     let previousTime = 0
+    let phaseStarted = performance.now()
     let resolvedMix = signalRef.current.phase === 'resolved' ? 1 : 0
+    let focusX = 0
+    let focusY = 0
+    let pointerTargetX = -1000
+    let pointerTargetY = -1000
+    let pointerX = -1000
+    let pointerY = -1000
+    let pointerInside = false
     let glow: CanvasGradient | null = null
     let glowDirty = true
     let accentRgb = hexToRgb(signalRef.current.accent ?? '#6ae1ff')
-    let accentStroke = `rgba(${accentRgb}, 0.45)`
+
+    const locateFocus = () => {
+      const hostRect = host.getBoundingClientRect()
+      const card = host.querySelector<HTMLElement>('[data-recommendation-card]')
+      if (card) {
+        const rect = card.getBoundingClientRect()
+        focusX = rect.left - hostRect.left + rect.width * 0.55
+        focusY = rect.top - hostRect.top + rect.height * 0.5
+      } else {
+        focusX = width * 0.69
+        focusY = height * 0.57
+      }
+    }
 
     const buildParticles = () => {
-      const count = width < 640 ? 88 : Math.min(168, Math.round(width / 8.5))
+      const count = width < 640 ? Math.min(112, Math.round(width / 3.25)) : Math.min(238, Math.round(width / 5.2))
       particles = new Array<Particle>(count)
+      gridNext = new Int32Array(count)
+      gridColumns = Math.max(1, Math.ceil(width / CELL_SIZE))
+      gridRows = Math.max(1, Math.ceil(height / CELL_SIZE))
+      gridHeads = new Int32Array(gridColumns * gridRows)
       for (let index = 0; index < count; index++) {
         const x = hash(index, 1) * width
         const y = hash(index, 2) * height
-        const lane = index % 9
+        const layer = index % 3
         particles[index] = {
           x,
           y,
-          vx: (hash(index, 3) - 0.5) * 5,
-          vy: (hash(index, 4) - 0.5) * 4,
+          vx: (hash(index, 3) - 0.5) * 2,
+          vy: (hash(index, 4) - 0.5) * 2,
           homeX: hash(index, 5),
           homeY: hash(index, 6),
           seed: hash(index, 7) * TAU,
-          lane,
-          size: 0.65 + hash(index, 8) * 1.15,
+          lane: index % 11,
+          layer,
+          size: 0.85 + hash(index, 8) * 1.35 + layer * 0.18,
         }
       }
     }
@@ -88,12 +120,95 @@ export function ConvergenceField({ signal }: { signal: AdvisorSignal }) {
     const refreshGlow = () => {
       if (!glowDirty) return
       glowDirty = false
-      const centerX = width * 0.72
-      const centerY = height * 0.43
-      glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(160, width * 0.34))
-      glow.addColorStop(0, `rgba(${accentRgb}, 0.19)`)
-      glow.addColorStop(0.24, `rgba(${accentRgb}, 0.075)`)
+      glow = ctx.createRadialGradient(focusX, focusY, 0, focusX, focusY, Math.max(190, width * 0.4))
+      glow.addColorStop(0, `rgba(${accentRgb}, 0.25)`)
+      glow.addColorStop(0.18, `rgba(${accentRgb}, 0.105)`)
+      glow.addColorStop(0.55, `rgba(${accentRgb}, 0.025)`)
       glow.addColorStop(1, `rgba(${accentRgb}, 0)`)
+    }
+
+    const rebuildGrid = () => {
+      gridHeads.fill(-1)
+      for (let index = 0; index < particles.length; index++) {
+        const particle = particles[index]
+        const cellX = Math.max(0, Math.min(gridColumns - 1, Math.floor(particle.x / CELL_SIZE)))
+        const cellY = Math.max(0, Math.min(gridRows - 1, Math.floor(particle.y / CELL_SIZE)))
+        const cell = cellY * gridColumns + cellX
+        gridNext[index] = gridHeads[cell]
+        gridHeads[cell] = index
+      }
+    }
+
+    const drawLinks = (phase: AdvisorPhase, resolveBeat: number) => {
+      rebuildGrid()
+      const maxDistance = phase === 'thinking' ? 68 : phase === 'listening' ? 60 : 54
+      const maxDistanceSquared = maxDistance * maxDistance
+      ctx.lineWidth = phase === 'thinking' ? 0.75 : 0.6
+      ctx.strokeStyle = phase === 'resolved'
+        ? `rgba(${accentRgb}, ${0.09 + resolveBeat * 0.14})`
+        : `rgba(119, 218, 245, ${phase === 'thinking' ? 0.105 : 0.075})`
+      ctx.beginPath()
+      for (let index = 0; index < particles.length; index++) {
+        const particle = particles[index]
+        const cellX = Math.max(0, Math.min(gridColumns - 1, Math.floor(particle.x / CELL_SIZE)))
+        const cellY = Math.max(0, Math.min(gridRows - 1, Math.floor(particle.y / CELL_SIZE)))
+        let links = 0
+        for (let oy = -1; oy <= 1 && links < 2; oy++) {
+          const row = cellY + oy
+          if (row < 0 || row >= gridRows) continue
+          for (let ox = -1; ox <= 1 && links < 2; ox++) {
+            const column = cellX + ox
+            if (column < 0 || column >= gridColumns) continue
+            let otherIndex = gridHeads[row * gridColumns + column]
+            while (otherIndex >= 0 && links < 2) {
+              if (otherIndex > index) {
+                const other = particles[otherIndex]
+                const dx = other.x - particle.x
+                const dy = other.y - particle.y
+                const distanceSquared = dx * dx + dy * dy
+                if (distanceSquared < maxDistanceSquared) {
+                  ctx.moveTo(particle.x, particle.y)
+                  ctx.lineTo(other.x, other.y)
+                  links++
+                }
+              }
+              otherIndex = gridNext[otherIndex]
+            }
+          }
+        }
+      }
+      ctx.stroke()
+    }
+
+    const drawResolveEvent = (elapsed: number) => {
+      if (elapsed >= 1.15) return
+      const rush = Math.min(1, elapsed / 0.34)
+      const release = Math.max(0, Math.min(1, (elapsed - 0.34) / 0.72))
+      const pulse = 1 - Math.pow(1 - Math.min(1, elapsed / 0.78), 3)
+      const alpha = Math.sin(Math.min(1, elapsed / 1.08) * Math.PI)
+
+      ctx.save()
+      ctx.globalCompositeOperation = 'lighter'
+      ctx.strokeStyle = `rgba(${accentRgb}, ${0.78 * alpha})`
+      ctx.lineWidth = 1.4 + (1 - pulse) * 2.6
+      ctx.beginPath()
+      ctx.arc(focusX, focusY, 12 + pulse * Math.max(130, Math.min(width * 0.34, 300)), 0, TAU)
+      ctx.stroke()
+      ctx.strokeStyle = `rgba(238, 252, 255, ${0.38 * alpha})`
+      ctx.lineWidth = 0.8
+      ctx.beginPath()
+      ctx.arc(focusX, focusY, 7 + pulse * Math.max(80, Math.min(width * 0.23, 190)), 0, TAU)
+      ctx.stroke()
+      ctx.restore()
+
+      // The first third implodes, then an orbit becomes legible before settling.
+      if (rush < 1 || release < 0.9) {
+        ctx.strokeStyle = `rgba(${accentRgb}, ${0.5 * alpha})`
+        ctx.lineWidth = 1
+        ctx.beginPath()
+        ctx.ellipse(focusX, focusY, 42 + release * 18, 15 + release * 6, -0.18, 0, TAU)
+        ctx.stroke()
+      }
     }
 
     const draw = (timeMs: number, advance: boolean) => {
@@ -103,8 +218,15 @@ export function ConvergenceField({ signal }: { signal: AdvisorSignal }) {
       const dt = Math.min(0.034, Math.max(0.001, rawDelta))
       previousTime = time
       const phase = reduced ? 'resolved' : signalRef.current.phase
+      const phaseElapsed = reduced ? 2 : Math.max(0, (timeMs - phaseStarted) / 1000)
       const resolveTarget = phase === 'resolved' ? 1 : 0
-      resolvedMix += (resolveTarget - resolvedMix) * Math.min(1, dt * 2.4)
+      resolvedMix += (resolveTarget - resolvedMix) * Math.min(1, dt * 4.2)
+      const resolveBeat = phase === 'resolved' && phaseElapsed < 1.1
+        ? Math.sin((phaseElapsed / 1.1) * Math.PI)
+        : 0
+
+      pointerX += (pointerTargetX - pointerX) * Math.min(1, dt * 8)
+      pointerY += (pointerTargetY - pointerY) * Math.min(1, dt * 8)
 
       ctx.clearRect(0, 0, width, height)
       if (resolvedMix > 0.01) {
@@ -117,84 +239,106 @@ export function ConvergenceField({ signal }: { signal: AdvisorSignal }) {
         }
       }
 
-      ctx.lineCap = 'round'
-      ctx.lineWidth = 1
-      ctx.strokeStyle = SIGNAL_SOFT
-      ctx.beginPath()
+      const pointerRadius = 112
+      const pointerRadiusSquared = pointerRadius * pointerRadius
       for (let index = 0; index < particles.length; index++) {
         const particle = particles[index]
-        const laneY = height * (0.18 + particle.lane * 0.072)
-        const focusX = width * 0.72
-        const focusY = height * 0.43
+        const layerSpeed = 0.72 + particle.layer * 0.42
+        const laneY = height * (0.12 + particle.lane * 0.076)
         let targetX = particle.x
         let targetY = particle.y
         let pull = 0
         let flow = 0
 
         if (phase === 'idle') {
-          targetY = particle.homeY * height + Math.sin(time * 0.18 + particle.seed) * 18
-          pull = 0.035
-          flow = 2.5
+          targetY = particle.homeY * height + Math.sin(time * 0.42 + particle.seed) * (20 + particle.layer * 6)
+          pull = 0.055
+          flow = (4.4 + particle.layer * 2.1) * layerSpeed
         } else if (phase === 'listening') {
-          targetY = laneY + Math.sin(time * 0.32 + particle.seed) * 8
-          pull = 0.12
-          flow = 5
-        } else if (phase === 'thinking') {
-          targetY = laneY + Math.sin(time * 0.7 + particle.seed) * 4
+          targetX = width * (0.2 + particle.homeX * 0.63)
+          targetY = laneY + Math.sin(time * 0.85 + particle.seed) * (9 - particle.layer)
           pull = 0.2
-          flow = 24
+          flow = (8 + particle.layer * 4) * layerSpeed
+        } else if (phase === 'thinking') {
+          const current = (time * (0.16 + particle.layer * 0.065) + particle.homeX) % 1
+          targetX = width * (0.03 + current * 0.94)
+          targetY = laneY + Math.sin(time * (1.35 + particle.layer * 0.3) + particle.seed) * 5
+          pull = 0.38
+          flow = (31 + particle.layer * 17) * layerSpeed
         } else {
-          const progress = 0.08 + particle.homeX * 0.9
-          targetX = width * (0.06 + progress * 0.82)
-          targetY = laneY + (focusY - laneY) * Math.pow(progress, 1.7)
-          if (particle.lane === 4) targetY = focusY
-          if (particle.homeX > 0.91) {
-            targetX = focusX + (particle.homeX - 0.95) * width * 0.22
-            targetY = focusY + (particle.lane - 4) * 1.7
-          }
-          pull = 0.28
+          const rush = Math.min(1, phaseElapsed / 0.34)
+          const settle = Math.max(0, Math.min(1, (phaseElapsed - 0.34) / 0.72))
+          const angle = particle.seed + time * (0.5 + particle.layer * 0.12)
+          const orbitRadius = 34 + (index % 17) * 3.2
+          const settledX = width * (0.08 + particle.homeX * 0.82)
+          const settledY = laneY + (focusY - laneY) * Math.pow(particle.homeX, 1.65)
+          const orbitX = focusX + Math.cos(angle) * orbitRadius
+          const orbitY = focusY + Math.sin(angle) * orbitRadius * 0.36
+          targetX = orbitX + (settledX - orbitX) * settle
+          targetY = orbitY + (settledY - orbitY) * settle
+          pull = 0.34 + rush * 1.35
         }
 
         if (advance) {
           particle.vx += (targetX - particle.x) * pull * dt
           particle.vy += (targetY - particle.y) * pull * dt
           particle.vx += flow * dt
-          particle.vx *= Math.pow(0.91, dt * 60)
-          particle.vy *= Math.pow(0.88, dt * 60)
+
+          if (pointerInside && phase !== 'resolved') {
+            const dx = particle.x - pointerX
+            const dy = particle.y - pointerY
+            const distanceSquared = dx * dx + dy * dy
+            if (distanceSquared > 1 && distanceSquared < pointerRadiusSquared) {
+              const force = (1 - distanceSquared / pointerRadiusSquared) * 0.72
+              const inverseDistance = 1 / Math.sqrt(distanceSquared)
+              particle.vx += (dx * inverseDistance - dy * inverseDistance * 0.34) * force
+              particle.vy += (dy * inverseDistance + dx * inverseDistance * 0.34) * force
+            }
+          }
+
+          const damping = phase === 'thinking' ? 0.935 : phase === 'resolved' ? 0.89 : 0.92
+          particle.vx *= Math.pow(damping, dt * 60)
+          particle.vy *= Math.pow(damping - 0.025, dt * 60)
           particle.x += particle.vx * dt * 60
           particle.y += particle.vy * dt * 60
 
-          if (phase !== 'resolved' && particle.x > width + 16) particle.x = -16
-          if (particle.x < -24) particle.x = width + 16
-          if (particle.y < -20) particle.y = height + 12
-          if (particle.y > height + 20) particle.y = -12
+          if (phase !== 'resolved' && particle.x > width + 22) particle.x = -22
+          if (particle.x < -30) particle.x = width + 20
+          if (particle.y < -24) particle.y = height + 18
+          if (particle.y > height + 24) particle.y = -18
         }
-
-        const stroke = phase === 'thinking' ? 5.5 : 2.5 + particle.size
-        ctx.moveTo(particle.x - stroke, particle.y)
-        ctx.lineTo(particle.x + stroke, particle.y)
       }
-      ctx.stroke()
 
-      ctx.fillStyle = SIGNAL
-      ctx.beginPath()
-      for (let index = 0; index < particles.length; index += 4) {
+      drawLinks(phase, resolveBeat)
+
+      ctx.lineCap = 'round'
+      for (let index = 0; index < particles.length; index++) {
         const particle = particles[index]
-        ctx.moveTo(particle.x + particle.size, particle.y)
-        ctx.arc(particle.x, particle.y, particle.size, 0, TAU)
+        const velocity = Math.min(18, Math.hypot(particle.vx, particle.vy))
+        const trail = phase === 'thinking' ? 8 + velocity * 1.45 : phase === 'listening' ? 5 + velocity * 0.65 : 3 + velocity * 0.35
+        const speedScale = velocity > 0.01 ? trail / velocity : 0
+        const alpha = 0.26 + particle.layer * 0.1 + (phase === 'thinking' ? 0.16 : 0) + resolveBeat * 0.3
+        ctx.strokeStyle = phase === 'resolved'
+          ? `rgba(${accentRgb}, ${alpha})`
+          : `rgba(132, 229, 255, ${alpha})`
+        ctx.lineWidth = 0.7 + particle.size * 0.42
+        ctx.beginPath()
+        ctx.moveTo(particle.x, particle.y)
+        ctx.lineTo(particle.x - particle.vx * speedScale, particle.y - particle.vy * speedScale)
+        ctx.stroke()
+      }
+
+      ctx.fillStyle = phase === 'resolved' ? `rgba(${accentRgb}, 0.78)` : 'rgba(166, 238, 255, 0.7)'
+      ctx.beginPath()
+      for (let index = 0; index < particles.length; index++) {
+        const particle = particles[index]
+        const radius = particle.size * (phase === 'thinking' ? 1.08 : 1) + resolveBeat * 0.7
+        ctx.moveTo(particle.x + radius, particle.y)
+        ctx.arc(particle.x, particle.y, radius, 0, TAU)
       }
       ctx.fill()
 
-      if (resolvedMix > 0.02) {
-        ctx.globalAlpha = resolvedMix
-        ctx.strokeStyle = accentStroke
-        ctx.lineWidth = 1.25
-        ctx.beginPath()
-        ctx.moveTo(width * 0.72 - 16, height * 0.43)
-        ctx.lineTo(width * 0.72 + 16, height * 0.43)
-        ctx.stroke()
-        ctx.globalAlpha = 1
-      }
+      if (phase === 'resolved' && !reduced) drawResolveEvent(phaseElapsed)
     }
 
     const shouldRun = () => !reduced && visible && !document.hidden
@@ -230,16 +374,16 @@ export function ConvergenceField({ signal }: { signal: AdvisorSignal }) {
       canvas.style.width = `${width}px`
       canvas.style.height = `${height}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      locateFocus()
       glowDirty = true
       buildParticles()
       if (reduced) {
         resolvedMix = 1
         for (let index = 0; index < particles.length; index++) {
           const particle = particles[index]
-          const progress = 0.08 + particle.homeX * 0.9
-          const laneY = height * (0.18 + particle.lane * 0.072)
-          particle.x = width * (0.06 + progress * 0.82)
-          particle.y = laneY + (height * 0.43 - laneY) * Math.pow(progress, 1.7)
+          particle.x = width * (0.08 + particle.homeX * 0.82)
+          const laneY = height * (0.12 + particle.lane * 0.076)
+          particle.y = laneY + (focusY - laneY) * Math.pow(particle.homeX, 1.65)
         }
       }
       draw(performance.now(), false)
@@ -255,11 +399,25 @@ export function ConvergenceField({ signal }: { signal: AdvisorSignal }) {
       resize()
       syncLoop()
     }
+    const onFinePointerChange = (event: MediaQueryListEvent) => { finePointer = event.matches }
     const onVisibilityChange = () => syncLoop()
+    const onPointerMove = (event: PointerEvent) => {
+      if (!finePointer) return
+      const rect = host.getBoundingClientRect()
+      pointerTargetX = event.clientX - rect.left
+      pointerTargetY = event.clientY - rect.top
+      pointerInside = true
+    }
+    const onPointerLeave = () => {
+      pointerInside = false
+      pointerTargetX = -1000
+      pointerTargetY = -1000
+    }
 
-    redrawRef.current = () => {
+    redrawRef.current = (previous) => {
       accentRgb = hexToRgb(signalRef.current.accent ?? '#6ae1ff')
-      accentStroke = `rgba(${accentRgb}, 0.45)`
+      if (previous !== signalRef.current.phase) phaseStarted = performance.now()
+      locateFocus()
       glowDirty = true
       if (reduced) draw(performance.now(), false)
     }
@@ -274,7 +432,10 @@ export function ConvergenceField({ signal }: { signal: AdvisorSignal }) {
     const resizeObserver = new ResizeObserver(scheduleResize)
     resizeObserver.observe(host)
     document.addEventListener('visibilitychange', onVisibilityChange)
+    host.addEventListener('pointermove', onPointerMove, { passive: true })
+    host.addEventListener('pointerleave', onPointerLeave, { passive: true })
     motionQuery.addEventListener('change', onMotionChange)
+    finePointerQuery.addEventListener('change', onFinePointerChange)
     syncLoop()
 
     return () => {
@@ -285,7 +446,10 @@ export function ConvergenceField({ signal }: { signal: AdvisorSignal }) {
       observer.disconnect()
       resizeObserver.disconnect()
       document.removeEventListener('visibilitychange', onVisibilityChange)
+      host.removeEventListener('pointermove', onPointerMove)
+      host.removeEventListener('pointerleave', onPointerLeave)
       motionQuery.removeEventListener('change', onMotionChange)
+      finePointerQuery.removeEventListener('change', onFinePointerChange)
       redrawRef.current = null
     }
   }, [])

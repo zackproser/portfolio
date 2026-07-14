@@ -30,6 +30,8 @@ const SUGGESTIONS = [
   'What does Zack actually use daily?',
 ]
 
+const SUGGESTION_ACCENTS = ['#43d3bc', '#43d3bc', '#a78bfa', '#fb923c', '#6ae1ff']
+
 const PLACEHOLDERS = [
   'meeting notes without a call bot',
   'dictation that works well for code',
@@ -137,6 +139,7 @@ function ToolCard({ product }: { product: AffiliateProduct }) {
     <aside
       className={styles.toolCard}
       style={{ '--tool-accent': data.accent } as React.CSSProperties}
+      data-recommendation-card
     >
       <div className={styles.toolSweep} aria-hidden="true" />
       <div className={styles.toolBody}>
@@ -241,10 +244,15 @@ const AssistantMessage = memo(function AssistantMessage({
 function TypingIndicator() {
   return (
     <div className={styles.typing} role="status" aria-label="Advisor is writing">
-      {[0, 1, 2].map((dot) => (
+      {[0, 1, 2, 3, 4].map((dot) => (
         <span
           key={dot}
-          style={{ '--dot': dot } as React.CSSProperties}
+          style={{
+            '--dot': dot,
+            '--dot-rest': `${3 + dot * 10}px`,
+            '--dot-collapse': `${(2 - dot) * 10}px`,
+            '--dot-reduced': `${14 + dot * 4}px`,
+          } as React.CSSProperties}
         />
       ))}
     </div>
@@ -253,20 +261,39 @@ function TypingIndicator() {
 
 function CyclingPlaceholder({ hidden }: { hidden: boolean }) {
   const [index, setIndex] = useState(0)
+  const [previous, setPrevious] = useState<number | null>(null)
+  const indexRef = useRef(0)
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)')
     if (query.matches) return
+    let clearPrevious = 0
     const timer = window.setInterval(() => {
-      setIndex((current) => (current + 1) % PLACEHOLDERS.length)
+      const current = indexRef.current
+      const next = (current + 1) % PLACEHOLDERS.length
+      setPrevious(current)
+      setIndex(next)
+      indexRef.current = next
+      window.clearTimeout(clearPrevious)
+      clearPrevious = window.setTimeout(() => setPrevious(null), 520)
     }, 3200)
-    return () => window.clearInterval(timer)
+    return () => {
+      window.clearInterval(timer)
+      window.clearTimeout(clearPrevious)
+    }
   }, [])
 
   if (hidden) return null
   return (
-    <span key={index} className={styles.placeholder} aria-hidden="true">
-      {PLACEHOLDERS[index]}
+    <span className={styles.placeholderStage} aria-hidden="true">
+      {previous !== null && (
+        <span key={`old-${previous}`} className={`${styles.placeholder} ${styles.placeholderOut}`}>
+          {PLACEHOLDERS[previous]}
+        </span>
+      )}
+      <span key={index} className={styles.placeholder}>
+        {PLACEHOLDERS[index]}
+      </span>
     </span>
   )
 }
@@ -392,7 +419,10 @@ export default function AdvisorChat({
                   disabled={isLoading}
                   onClick={() => ask(suggestion, 'chip')}
                   className={styles.suggestion}
-                  style={{ '--chip-index': index } as React.CSSProperties}
+                  style={{
+                    '--chip-index': index,
+                    '--chip-accent': SUGGESTION_ACCENTS[index],
+                  } as React.CSSProperties}
                 >
                   {suggestion}
                 </button>
@@ -417,7 +447,7 @@ export default function AdvisorChat({
             }
 
             return (
-              <div key={message.id} className={`${styles.messageIn} ${styles.assistantRow}`}>
+              <div key={message.id} className={`${styles.messageIn} ${styles.assistantMessageIn} ${styles.assistantRow}`}>
                 <div className={styles.assistantMark}>
                   <Focus className="h-3.5 w-3.5" aria-hidden="true" />
                 </div>
@@ -470,7 +500,7 @@ export default function AdvisorChat({
               type="submit"
               disabled={isLoading || !input.trim()}
               aria-label="Send question"
-              className={styles.sendButton}
+              className={`${styles.sendButton} ${input.trim() ? styles.sendCharged : ''}`}
             >
               <Send className="h-4 w-4" aria-hidden="true" />
             </button>
