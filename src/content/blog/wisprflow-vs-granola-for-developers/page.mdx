@@ -1,0 +1,112 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import Link from 'next/link'
+import rawMetadata from './metadata.json'
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import ReadNextCard from '@/components/ReadNextCard'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = "wisprflow-vs-granola-for-developers"
+
+# WisprFlow vs Granola: Which One If You Talk More Than You Type
+
+People keep asking me to compare WisprFlow and Granola, and the question is a little broken, because they don't compete. One turns your voice into text you'd otherwise type. The other turns meetings you'd otherwise forget into notes. They sit on opposite ends of the same workday.
+
+There's a real question hiding inside the broken one, though. If you're a developer who talks more than they type, and after a couple of years of this I am, which one changes your day first? Which one is for the other half of it? And if you can only stomach adding one tool to your stack this quarter, which?
+
+I use both daily. I <Link href="/blog/wisprflow-review">dictate code at 179 WPM</Link> with WisprFlow and I let Granola sit in on every meeting I take. Here's the honest split.
+
+<Image src="https://zackproser.b-cdn.net/images/wisprflow-vs-granola-for-developers-hero.jpg" alt="Pixel art split scene: on the left a developer speaks into a microphone and a stream of code flows out of their mouth onto a screen; on the right the same developer sits in a meeting while a small glowing recorder quietly captures the conversation into a notes panel" width={1200} height={675} />
+
+## The one distinction that settles most of the argument
+
+WisprFlow is **active**. You point it at a text field, you talk, text appears. You are the input. Nothing happens unless you trigger it and speak with intent.
+
+Granola is **passive**. It listens to a meeting that was going to happen anyway and hands you a structured summary afterward. You don't change your behavior. The conversation is the input; you stop losing it.
+
+Almost every "which should I pick" question dissolves once you hold that distinction in your head. If your problem is *"I produce a wall of text every day and my hands are the bottleneck,"* that's WisprFlow. If your problem is *"I sit in meetings and the decisions evaporate by the time I'm back at my editor,"* that's Granola. They're not ranked against each other. They're aimed at different leaks.
+
+<Image src="https://zackproser.b-cdn.net/images/wisprflow-vs-granola-for-developers-active-passive.jpg" alt="Pixel art diagram with two labeled columns: left column 'Active — WisprFlow' showing a mouth icon with an arrow pointing into a text cursor; right column 'Passive — Granola' showing an ear icon with an arrow pointing into a document, a dotted line separating the two halves" width={1200} height={675} />
+
+## Side by side
+
+| | WisprFlow | Granola |
+|---|---|---|
+| **What it does** | Voice-to-text dictation, anywhere there's a cursor | AI meeting notes from calls and in-person conversations |
+| **Mode** | Active — you trigger it and speak | Passive — it captures meetings in the background |
+| **You're replacing** | Typing | Manual note-taking and forgetting |
+| **Where it lives** | Every text field: editor, terminal, Slack, browser, PR description | Your calendar and meetings |
+| **Best for the dev who** | Writes a lot of prose, comments, messages, prompts | Sits in design reviews, standups, incident calls |
+| **Output you touch** | Immediate text, as you go | A structured summary, after the meeting |
+| **Platforms** | Mac, Android | Mac, with mobile catching up |
+| **Learning curve** | Add custom vocabulary, build the habit of talking | Almost none. Install and let it run |
+
+The table is the easy part. What matters is how each one feels once it's wired into a real engineering week.
+
+## WisprFlow: the one that changes your day first
+
+If you genuinely talk more than you type, WisprFlow is the bigger swing. It's the tool that rewires the actual mechanics of how you produce text all day.
+
+Typists underrate this: the keyboard is a governor on your thinking, not just a slow input device. You compress what you were going to say down to what you're willing to type. Speaking removes the tax. I dictate PR descriptions that are complete because saying the third caveat out loud costs me nothing, where typing it would have gotten cut. My Slack messages are less clipped. My commit bodies explain the *why*.
+
+And it's fast. I dictate at 179 WPM with accuracy I trust. A 1,000-word first draft is under ten minutes of talking, then I edit. The keyboard stays for code itself, the syntax and symbols and precise edits, but everything *around* the code goes through my voice now: comments, docs, prompts to the agent, the message asking someone to review.
+
+<Image src="https://zackproser.b-cdn.net/images/wisprflow-vs-granola-for-developers-dictation.jpg" alt="Pixel art of a developer at a desk speaking, with a glowing waveform turning into lines of a pull request description, code comments, and a Slack message appearing across three floating panels" width={1200} height={675} />
+
+The setup that matters: install it, set an activation shortcut you can hit without thinking, and spend ten minutes adding custom vocabulary. That last step is the one people skip and then complain about. If you write code, your transcript is full of `kubectl`, `Postgres`, `idempotent`, your service names, your teammates' names. Teach it those once and accuracy jumps. I wrote the full walkthrough in <Link href="/blog/wisprflow-review">my WisprFlow review</Link>, and the <Link href="/blog/wisprflow-claude-code-setup-guide">Claude Code pairing</Link> is where it compounds. Talking to an agent is a fundamentally different speed than typing at one.
+
+The honest downside: it's a habit, not a magic trick. For the first week you'll reach for the keyboard out of muscle memory and forget the tool is there. Stick it out. Around day five something flips, and typing a paragraph starts to feel like the slow, weird option.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+If you want to try the real thing, <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> has a free tier that's enough to feel whether voice-first writing clicks for you. It clicks for most developers within a day or two.
+
+## Granola: the one that fixes the leak you forgot you had
+
+Granola solves a problem you've probably stopped noticing because you've adapted to it. Meeting content evaporates.
+
+You sit in a design review. Three real decisions get made, one of them reverses something from last week, and somebody volunteers you for a follow-up. Then the call ends, you context-switch back to the bug you were chasing, and by 4pm half of it is gone. The fix everyone reaches for is splitting your attention, half-listening while you scribble notes, which makes you worse at both.
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> runs in the background, captures the meeting audio, and produces a structured summary with the decisions and action items pulled out. You stay fully in the conversation. No split attention, no laptop-typing while someone's talking. Afterward you get a clean record you can search.
+
+For engineers specifically, the value lands in a few recurring meetings:
+
+- **Design reviews** where the *reasoning* behind a decision matters more than the decision, and you'll want it in three months when someone asks "why did we do it this way?"
+- **Incident retrospectives**, where the timeline and the contributing factors need to be accurate, not reconstructed from memory three days later.
+- **Planning and standups**, so the thing you got volunteered for doesn't quietly fall off.
+
+I went deeper on the engineering angle in <Link href="/blog/best-voice-to-text-for-developers">my tested voice-tools roundup</Link>, but the short version: Granola is the lowest-effort tool in my stack. There's almost no learning curve. You install it, connect your calendar, and then you mostly forget it exists until you need the notes, which is exactly the right amount of presence for a tool like this.
+
+The honest downside: it does nothing for the solo half of your day. If you're a heads-down developer in maybe one meeting a week, Granola is a nice-to-have, not a needle-mover. Its value scales directly with how many meetings own your calendar.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+<Image src="https://zackproser.b-cdn.net/images/wisprflow-vs-granola-for-developers-meeting.jpg" alt="Pixel art of an engineering design review around a table, with a small unobtrusive glowing capture device on the table and, off to the side, a notes panel filling in with bullet points labeled 'decisions' and 'action items'" width={1200} height={675} />
+
+## So which one, if you can only pick one?
+
+Be honest about the shape of your week.
+
+**Pick WisprFlow if you produce a lot of text.** Documentation, PR descriptions, Slack, prompts, design docs, code review comments. If you're an IC who lives in the editor and a chat app, WisprFlow changes the physical mechanics of your day starting on day one. For a developer who talks more than they type, this is the obvious first move. It rewards that preference instead of fighting it.
+
+**Pick Granola if meetings own your calendar.** Staff engineers, tech leads, EMs, anyone in five-plus meetings a day where the content matters and currently leaks. Granola buys back the attention you're spending on note-taking and stops the slow erosion of context between calls.
+
+**The tiebreaker for most ICs is WisprFlow.** It touches more of your day, it compounds with the AI agents you're already talking to, and the payoff is immediate. Granola's payoff is real, but it's proportional to your meeting load, which, if you talk more than you type at a *keyboard*, may not be where your hours actually go.
+
+## You'll probably end up with both
+
+Here's the part nobody likes in a versus post: the correct long-term answer is both, because they cover the two biggest sources of friction in knowledge work and they don't overlap.
+
+Voice in. Meetings out. WisprFlow turns everything you'd type into something you say. Granola turns everything said *to* you in a meeting into something you keep. Together you get a workday where you rarely touch the keyboard for prose and you never lose meeting context. I wrote up how the two fit together in <Link href="/blog/2026-ai-engineer-setup">my 2026 AI engineer setup</Link>. They're two of the three tools that quietly run my whole workflow now.
+
+But "get both eventually" isn't an answer to "which one *this quarter*." So: if you talk more than you type, start with WisprFlow. Add Granola the first week a forgotten decision costs you real time. You'll know exactly when that is.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/wisprflow.webp"
+  imageAlt="Pixel art of a developer dictating code, with a words-per-minute counter reading 179"
+  eyebrow="Read this next"
+  title="WisprFlow Review: I Write Code at 179 WPM"
+  description="The full walkthrough on dictating code, docs, and Slack at 179 WPM: setup, custom vocabulary, and why it's the first voice tool that worked for me as a developer."
+  href="/blog/wisprflow-review"
+/>
