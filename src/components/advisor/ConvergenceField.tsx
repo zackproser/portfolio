@@ -80,7 +80,8 @@ export function ConvergenceField({ signal }: { signal: AdvisorSignal }) {
 
     const locateFocus = () => {
       const hostRect = host.getBoundingClientRect()
-      const card = host.querySelector<HTMLElement>('[data-recommendation-card]')
+      const cards = host.querySelectorAll<HTMLElement>('[data-recommendation-card]')
+      const card = cards.length > 0 ? cards[cards.length - 1] : null
       if (card) {
         const rect = card.getBoundingClientRect()
         focusX = rect.left - hostRect.left + rect.width * 0.55
