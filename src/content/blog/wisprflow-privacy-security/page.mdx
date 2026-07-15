@@ -1,0 +1,80 @@
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+
+The question comes up in every discussion about voice coding tools: is it safe? Specifically — is WisprFlow safe?
+
+I'm going to give you the straightforward answer. This is what I found when I read their privacy policy, tested their data handling, and used their tool in security-sensitive contexts.
+
+## What WisprFlow Sends to Their Servers
+
+WisprFlow processes your audio on their servers when you use their cloud transcription. The audio gets sent to WisprFlow's infrastructure, is transcribed, and the text is returned to your device.
+
+That's the baseline. The privacy implications depend on what you're dictating.
+
+**Code** — If you're dictating application code, you're sending snippets of your codebase to a third party. Whether that's acceptable depends on your organization's data handling policies, the sensitivity of the code, and your threat model.
+
+**Meeting notes** — You're sending potentially sensitive business information, names, project details. This is higher stakes.
+
+**Personal information** — Dictating passwords, credentials, or PII is a bad idea regardless of which tool you use.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## What Stays Local
+
+WisprFlow offers local processing options. When local mode is enabled, transcription runs entirely on your machine. No audio leaves your device.
+
+Local mode uses a downloaded language model. The quality is slightly lower than cloud transcription, and it requires more CPU resources. But for sensitive code or confidential meetings, this is the option you want.
+
+I use local mode when I'm working on code for clients under NDA. The performance difference is negligible on modern hardware.
+
+## Data Retention
+
+According to WisprFlow's policy, audio is not stored after transcription completes. The transcribed text may be retained to improve the service unless you opt out.
+
+Check their current policy for the exact retention terms — these change, and I don't want to give you outdated information by citing specific timeframes here.
+
+## Enterprise and Team Features
+
+WisprFlow offers enterprise plans with stronger privacy guarantees:
+
+- SOC 2 compliance on enterprise tier
+- Data processing agreements available
+- No data used for model training on enterprise accounts
+- Dedicated support channels
+
+If you're evaluating WisprFlow for a team, the enterprise tier is worth the cost for the contractual protections alone.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## My Security Setup
+
+Here's what I run in practice:
+
+**For open source work** — Cloud mode. The convenience is worth it for non-sensitive code.
+
+**For client work** — Local mode. I enable it at the start of any session involving proprietary code.
+
+**For meetings** — Local mode when the content is sensitive. Cloud mode for routine calls.
+
+This isn't because I think WisprFlow is unsafe. It's because defense in depth is a good practice, and I prefer having the option to keep everything local when I want to.
+
+## Alternatives If You Need Stronger Privacy
+
+If WisprFlow's privacy model doesn't meet your requirements, here are your options:
+
+**Self-hosted Whisper** — Run OpenAI's Whisper model on your own infrastructure. No data leaves your network. The tradeoff is setup complexity and higher resource usage.
+
+**MacWhisper** — A macOS app that runs Whisper locally. Good option if you want a GUI and local-only transcription.
+
+**Dragon NaturallySpeaking** — Professional-grade local voice recognition. Expensive and Windows-focused, but the privacy story is straightforward.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## The Bottom Line
+
+Is WisprFlow safe? For most users, yes. The tool processes audio through their servers, which is standard for cloud transcription. They offer local processing for users who need stronger guarantees, and enterprise plans with proper compliance frameworks.
+
+The question isn't whether WisprFlow is safe in absolute terms — it's whether it's safe for your specific use case. If you're working with highly sensitive IP, enable local mode. If you're building a product where user privacy is paramount, evaluate the enterprise tier or consider self-hosted alternatives.
+
+For my use — coding, documentation, meeting notes with non-confidential content — WisprFlow's privacy model is acceptable. Local mode covers the cases where it wouldn't be.
+
+<InlineAffiliateCTA product="wisprflow" />
