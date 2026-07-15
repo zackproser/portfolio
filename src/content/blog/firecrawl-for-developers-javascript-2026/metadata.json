@@ -1,0 +1,15 @@
+{
+  "title": "Firecrawl for Developers: Scraping JavaScript Sites That Break Other Tools",
+  "author": "Zachary Proser",
+  "date": "2026-05-20",
+  "description": "Traditional screen scrapers choke on React, Vue, and Angular apps. Firecrawl renders JavaScript before it scrapes. Here's how I use it in my development workflow.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "tags": [
+    "firecrawl",
+    "web scraping",
+    "javascript",
+    "developers",
+    "ai"
+  ],
+  "hiddenFromIndex": true
+}
