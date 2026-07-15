@@ -22,6 +22,7 @@ import {
   Shield
 } from 'lucide-react'
 import HeroPortrait from '@/components/HeroPortrait'
+import { AskAdvisorCTA } from '@/components/advisor/AskAdvisorCTA'
 
 // Hero portrait image URL (same as homepage)
 const HERO_PORTRAIT_URL = 'https://zackproser.b-cdn.net/images/zack-sketch.webp'
@@ -193,6 +194,12 @@ export default function AITools2026Page() {
           </div>
         </div>
       </section>
+
+      <div className={`border-y ${isDark ? 'border-slate-800 bg-slate-900' : 'border-parchment-200 bg-white'}`}>
+        <div className="container mx-auto max-w-4xl px-4 py-6 md:px-6">
+          <AskAdvisorCTA from="best-ai-tools" variant="card" isDark={isDark} />
+        </div>
+      </div>
 
       {/* Quick Summary */}
       <section className={`py-12 ${isDark ? 'bg-slate-900' : 'bg-parchment-100'}`}>

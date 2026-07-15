@@ -1,0 +1,96 @@
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-meeting-notes-hard-of-hearing';
+
+# AI Meeting Notes When You're Hard of Hearing: My Working Setup
+
+I'm partly hard of hearing, and meetings are where that costs me the most. Crosstalk, quiet speakers, bad laptop microphones, and compressed call audio can turn one sentence into a guessing exercise. This happens even when I'm paying full attention.
+
+I use Granola in every work meeting and consulting call. The workflow reduces the cognitive load of capturing a meeting to one button: I start the meeting in Granola, then I listen. If I miss a phrase, I can quietly recheck the live transcript while the conversation continues. After the call, I have the decisions, details, and owners in one place.
+
+That mid-meeting recheck is the part that matters most to me. It catches the miss without making me stop the room and ask someone to repeat a sentence I may have understood correctly.
+
+## How I use a live transcript to recheck what I misheard
+
+When I lose a sentence, I usually still have enough context to know that something important was said. Maybe a date changed. Maybe someone assigned an action item. Maybe a quiet speaker gave the one constraint that changes the whole project.
+
+My old options were to interrupt, guess, or hope the detail came up again. Now I use this short loop:
+
+1. I notice that I missed a word, number, name, or decision.
+2. I open the current transcript in Granola.
+3. I check the last exchange while the meeting keeps moving.
+4. If the transcript resolves it, I return to the conversation. If it does not, I ask.
+
+This is useful even on a good hearing day. Full attention cannot fix overlapping voices or a microphone that clips the beginning of a sentence. The transcript gives me a second path to the information.
+
+I also avoid the social calculation that comes with every request to repeat something: Was that important enough to stop everyone? Did I actually mishear it? Has someone already moved to the next point? Quietly checking the transcript removes that calculation when the text is clear.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## How AI meeting notes help me catch what I missed afterward
+
+The live recheck handles the immediate gap. The captured record handles everything I do not realize I missed.
+
+After a call, I review the notes for three things:
+
+- What did we agree to?
+- Who owns each follow-up?
+- Which names, dates, requirements, or constraints will matter later?
+
+I no longer have to reconstruct those details from memory. That matters because a plausible memory can still be wrong. A clean record lets me check the source before I send a follow-up or start the work.
+
+I use the same record as input to the AI systems I build at WorkOS. Granola is one of the first connectors I wire into a new agentic system. I can finish a call and ask a blog bot to draft several posts from that meeting. The path is call to notes to agent, with no copy-paste step in the middle.
+
+For a closer look at the product and the rest of my daily workflow, read my [Granola review](/granola).
+
+## Sharing meeting notes without rebuilding the conversation from memory
+
+Sometimes another person needs the context: a teammate who missed the call, a client confirming the plan, or a colleague taking over an action item. Granola gives me a one-click way to share the notes or transcript.
+
+The practical benefit is accuracy. I can share what was captured instead of writing a summary from memory and wondering whether I dropped the detail that the other person needed. Everyone can refer to the same decisions and owners.
+
+Accurate records matter in professions where a missed phrase carries extra weight. The workflows differ, but [court reporters handling intake and scope calls](/blog/granola-for-court-reporters) and [doctors trying to stay present in conversations](/blog/granola-for-doctors) face a related problem: listening and documenting compete for attention.
+
+## My meeting notes app setup as a hard-of-hearing professional
+
+My setup is intentionally small:
+
+1. Before the conversation starts, I open Granola and start the meeting.
+2. During the meeting, I listen and contribute instead of trying to type a parallel record.
+3. When I mishear something, I check the live transcript.
+4. After the meeting, I review decisions and ownership while the conversation is fresh.
+5. I share the notes or pass them into the system that needs them next.
+
+The habit matters more than elaborate configuration. If I forget to start capture, the safety net is gone. Opening Granola at the start of every meeting makes the rest of the workflow dependable.
+
+## Where this setup stops helping
+
+Granola is a working aid in my setup. I do not treat it as a formal accommodation, an accessibility certification, or a replacement for the support another deaf or hard-of-hearing person needs.
+
+Transcripts can also be wrong. Crosstalk, quiet talkers, names, and poor audio can cause trouble for software too. If exact wording carries legal, medical, financial, or personal consequences, I verify it. If the live transcript does not settle what I heard, I ask the speaker to repeat it.
+
+My experience is one person's experience. Some people need live captions, CART, an interpreter, an assistive listening system, or another accommodation. My setup works for me because it adds a quick second reference during the meeting and a reviewable record afterward.
+
+## FAQ
+
+### Can I use an AI transcript when I mishear something in a meeting?
+
+Yes. In my workflow, I check Granola's current transcript when I miss a phrase, number, or name. It lets me recheck the exchange without interrupting. I still ask for clarification when the transcript is uncertain.
+
+### Does this help if I was paying full attention?
+
+Yes. Hearing loss is not an attention problem. Crosstalk, low voices, room acoustics, and bad call audio can hide words even when I am focused on the speaker. The transcript gives me another reference.
+
+### Is Granola a replacement for captions, CART, or an interpreter?
+
+I would not use it that way. I use Granola for meeting capture, mid-meeting rechecks, and review afterward. The right accessibility support depends on the person and the setting.
+
+### What should I review after the meeting?
+
+I check decisions, action items, owners, dates, and any detail I was unsure about during the call. I do this while the conversation is still fresh, then share the record with anyone who needs it.
+
+If you want to try the same setup, <AffiliateLink product="granola" campaign={campaign}>new users get their first three months free</AffiliateLink>.

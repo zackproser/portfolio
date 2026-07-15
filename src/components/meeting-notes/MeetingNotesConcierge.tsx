@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { track } from '@vercel/analytics'
 import { ArrowRight, Check } from 'lucide-react'
 import { getAffiliateLink, buildConciergeTerm } from '@/lib/affiliate'
+import { AskAdvisorCTA } from '@/components/advisor/AskAdvisorCTA'
 
 type Role =
   | 'sales'
@@ -265,6 +266,11 @@ export function MeetingNotesConcierge({ campaign, defaultRole, headline }: Conci
           Disclosure: Granola is an affiliate partnership. I only recommend it where it actually fits — see other answers above.
         </div>
       </aside>
+      <AskAdvisorCTA
+        from="concierge"
+        variant="compact"
+        className="mnc-advisor-cta"
+      />
     </section>
   )
 }
