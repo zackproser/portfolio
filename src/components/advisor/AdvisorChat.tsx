@@ -32,8 +32,8 @@ import type { AdvisorSignal } from './advisor-types'
 import styles from './AdvisorChat.module.css'
 
 const SUGGESTIONS = [
-  'Which AI meeting notes app should I use?',
   'I want meeting notes but no bot joining my calls',
+  'Which AI meeting notes app should I use?',
   'Best voice dictation for coding?',
   'I need to turn websites into data for a RAG pipeline',
   'What do you actually use daily?',
