@@ -392,8 +392,12 @@ function CyclingPlaceholder({ hidden }: { hidden: boolean }) {
 
 export default function AdvisorChat({
   onSignalChange,
+  surface = 'advisor',
+  autoFocus = true,
 }: {
   onSignalChange?: (signal: AdvisorSignal) => void
+  surface?: string
+  autoFocus?: boolean
 }) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -484,9 +488,10 @@ export default function AdvisorChat({
   }, [messages.length])
 
   useEffect(() => {
+    if (!autoFocus) return
     const desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)')
     if (desktopPointer.matches) inputRef.current?.focus({ preventScroll: true })
-  }, [])
+  }, [autoFocus])
 
   useEffect(() => {
     if (!shouldAutoScroll.current || !scrollRef.current) return
@@ -555,16 +560,18 @@ export default function AdvisorChat({
     }
     shouldAutoScroll.current = true
     onSignalChange?.({ phase: 'listening' })
-    if (turn === 1) track('advisor_session_start', { sessionId, via })
+    const attributedVia = `${surface}-${via}`.slice(0, 40)
+    if (turn === 1) track('advisor_session_start', { sessionId, via, surface })
     track('advisor_chat_question', {
       q: trimmed.slice(0, 100),
       via,
+      surface,
       sessionId,
       turn,
     })
     void append(
       { role: 'user', content: trimmed },
-      { body: { sessionId, turn, via } },
+      { body: { sessionId, turn, via: attributedVia } },
     )
     setInput('')
   }

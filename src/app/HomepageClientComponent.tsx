@@ -6,6 +6,7 @@ import { track } from '@vercel/analytics'
 import { EditorialCard } from '@/components/EditorialCard'
 import { SectionHead } from '@/components/SectionHead'
 import { MindOnFireHero } from '@/components/MindOnFireHero'
+import HomepageAdvisorSection from '@/components/advisor/HomepageAdvisorSection'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import { speakingEngagements } from './speaking/speaking-data'
 import type { Content } from '@/types/content'
@@ -758,6 +759,7 @@ export default function HomepageClientComponent({
       <main className="flex-1">
         <EditorialHero />
         <StatRow />
+        <HomepageAdvisorSection />
         <FeaturedWorkshops />
 
         <FeaturedSpeaking />

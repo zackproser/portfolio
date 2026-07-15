@@ -17,7 +17,8 @@ export function generateOgUrl({
   slug?: string | null | undefined;  // Updated to allow null or undefined
 } = {}): string {
   // Create a bare URL with properly encoded components
-  const baseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zackproser.com';
+  const baseUrl = `${siteUrl.replace(/\/$/, '')}/api/og`;
   
   // IMPORTANT: Log all incoming parameters to diagnose issues
   ogLogger.debug('--------------- GENERATING OG URL ---------------');
@@ -171,4 +172,4 @@ export function generateOgUrl({
   ogLogger.debug('-------------------------------------------');
   
   return url;
-} 
+}
