@@ -1,9 +1,22 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-This tutorial contains everything you need to build production-ready Retrieval Augmented Generation (RAG) pipelines on your own data. 
+<div className="my-6 rounded-md border border-orange-300 dark:border-amber-400/60 bg-orange-50/70 dark:bg-amber-400/[0.06] p-5">
+  <div className="font-mono text-[10.5px] font-semibold tracking-[0.14em] uppercase text-orange-600 dark:text-amber-300 mb-2">
+    Updated for 2026 · Originally published 2025-01-05
+  </div>
+  <p className="m-0 text-[15px] leading-relaxed text-zinc-800 dark:text-zinc-200">
+    <strong>What changed:</strong> hybrid retrieval (dense + BM25) is now the default, a Cohere reranker
+    has been added before the LLM step, model defaults are updated (Claude Sonnet 4.6 with{' '}
+    <code>text-embedding-3-large</code>), and the pipeline now ships with <strong>Phase 4: Evaluation</strong>{' '}
+    — Ragas + LLM-as-judge wired into the same repo so regressions fail loud instead of disappearing into a
+    Slack thread three weeks later.
+  </p>
+</div>
 
-Whether you're working with a corporate knowledge base, personal blog, or ticketing system, you'll learn how to create an AI-powered chat interface that provides accurate answers with citations.
+This tutorial contains everything you need to build production-ready Retrieval Augmented Generation (RAG) pipelines on your own data.
+
+Whether you're working with a corporate knowledge base, personal blog, or ticketing system, you'll learn how to create an AI-powered chat interface that provides accurate answers with citations — and an eval loop you can defend in a code review.
 
 ## Complete Example Code
 
@@ -361,9 +374,132 @@ export async function queryPineconeVectorStore(
 }
 ```
 
-The Pinecone service performs high-speed similarity search across millions of vectors. It returns the closest matches along with their metadata, which includes the original text and source. 
+The Pinecone service performs high-speed similarity search across millions of vectors. It returns the closest matches along with their metadata, which includes the original text and source.
 
 The `topK` parameter limits results to the 5 most relevant matches, while `minScore` ensures we only get meaningful matches above a 0.7 similarity threshold.
+
+### Step 1.5: Hybrid retrieval (dense + BM25)
+
+Pure dense vector search wins on semantic match. It loses on rare strings — model numbers, error codes, exact API names — which embedding models smear into a vague neighborhood. Hybrid retrieval pulls candidates two ways and merges them: dense vectors for meaning, BM25 keyword search for literal matches.
+
+```typescript
+// services/hybridRetrieval.ts
+import { Pinecone } from '@pinecone-database/pinecone';
+import { BM25 } from './bm25';
+
+interface HybridResult {
+  id: string;
+  text: string;
+  source: string;
+  denseScore: number;
+  sparseScore: number;
+  combined: number;
+}
+
+export async function hybridRetrieve(
+  query: string,
+  queryEmbedding: number[],
+  bm25Index: BM25,
+  alpha: number = 0.5,
+  topK: number = 20,
+): Promise<HybridResult[]> {
+  const pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY! });
+  const index = pinecone.index(process.env.PINECONE_INDEX_NAME!);
+
+  // 1. Dense retrieval — semantic neighborhood
+  const dense = await index.query({
+    vector: queryEmbedding,
+    topK,
+    includeMetadata: true,
+  });
+
+  // 2. Sparse retrieval — exact-token signal via BM25
+  const sparse = bm25Index.search(query, topK);
+
+  // 3. Merge with weighted sum. Tune alpha on your eval set, not by feel.
+  const merged = new Map<string, HybridResult>();
+  for (const m of dense.matches ?? []) {
+    merged.set(m.id, {
+      id: m.id,
+      text: m.metadata?.text as string ?? '',
+      source: m.metadata?.source as string ?? '',
+      denseScore: m.score ?? 0,
+      sparseScore: 0,
+      combined: alpha * (m.score ?? 0),
+    });
+  }
+  for (const s of sparse) {
+    const existing = merged.get(s.id);
+    if (existing) {
+      existing.sparseScore = s.score;
+      existing.combined += (1 - alpha) * s.score;
+    } else {
+      merged.set(s.id, {
+        id: s.id,
+        text: s.text,
+        source: s.source,
+        denseScore: 0,
+        sparseScore: s.score,
+        combined: (1 - alpha) * s.score,
+      });
+    }
+  }
+
+  return Array.from(merged.values()).sort((a, b) => b.combined - a.combined).slice(0, topK);
+}
+```
+
+Three notes from production:
+
+1. **Score normalization matters.** Pinecone returns cosine similarity in `[0, 1]`; BM25 returns unbounded relevance scores. Normalize sparse scores into `[0, 1]` (divide by the max in the result set) before the weighted sum, or you'll have one signal swamping the other.
+2. **Pinecone supports sparse-dense queries natively** if your index is configured for it. The TypeScript above is the portable version that works with any vector DB. Use the native path when you can.
+3. **Alpha is a hyperparameter, not a vibe.** Sweep it on your eval set (Phase 4). For most knowledge bases, somewhere in `[0.4, 0.7]` wins. Documentation-heavy corpora trend higher (more dense weight); error-message search trends lower.
+
+### Step 1.6: Reranking with Cohere
+
+Hybrid retrieval gives you the top-20 candidates. The LLM only needs the top 3 to 5. The cheapest way to lift answer quality is to rerank those 20 down to 5 with a cross-encoder before they ever hit the prompt.
+
+```typescript
+// services/rerank.ts
+import { CohereClient } from 'cohere-ai';
+
+const cohere = new CohereClient({ token: process.env.COHERE_API_KEY! });
+
+export async function rerank(
+  query: string,
+  candidates: { id: string; text: string }[],
+  topN: number = 5,
+) {
+  const response = await cohere.rerank({
+    model: 'rerank-english-v3.0',
+    query,
+    documents: candidates.map(c => c.text),
+    topN,
+  });
+
+  return response.results.map(r => ({
+    ...candidates[r.index],
+    relevanceScore: r.relevanceScore,
+  }));
+}
+```
+
+Why a reranker is worth the latency:
+
+- A bi-encoder (your embedding model) scores query and document independently, then takes the dot product. Fast, but the comparison is shallow.
+- A cross-encoder reranker scores `(query, document)` jointly. Slower per pair, but dramatically better at the top of the list — exactly where it counts.
+- Cohere Rerank v3 typically lifts faithfulness by 10-20 points on real corpora. Voyage Rerank-2 and BAAI's bge-reranker-v2-m3 are credible alternatives if you don't want the Cohere dependency.
+
+Expected end-to-end latency budget for the retrieval stage:
+
+| Step | Latency | Notes |
+|------|---------|-------|
+| Embed query | 50-150ms | OpenAI `text-embedding-3-large` |
+| Hybrid retrieve top-20 | 30-80ms | Pinecone serverless |
+| Rerank to top-5 | 100-250ms | Cohere Rerank v3 |
+| **Total** | **~200-500ms** | Well within most chat UX budgets |
+
+You'll prove this is worth the latency in **Phase 4**, not by feel.
 
 ### Step 2. Create the chat API 
 
@@ -532,9 +668,237 @@ The UI leverages the Vercel AI SDK's `useChat` hook to manage the chat state and
 
 In an e-commerce application, this UI might be used to answer questions about products, or to provide recommendations based on a user's purchase history, or the context in their queries.
 
-## Phase 3: Deployment 
+## Phase 3: Deployment
 
-Coming soon! This section is still under construction. Check back shortly.
+Coming soon! This section is still under construction. Check back shortly. The short version: deploy to Vercel, point your env vars at production Pinecone and OpenAI keys, and run the eval harness from **Phase 4** as a deploy gate.
+
+## Phase 4: Evaluation
+
+You can ship a RAG pipeline that demos beautifully and quietly regresses in production. Most do. The chunker drifts when you ingest a new doc type. The model swap from last Tuesday lifts faithfulness on FAQs and tanks it on troubleshooting articles. Nobody notices until a customer escalates.
+
+The fix is the same fix every other engineering discipline figured out: **measure, then change, then re-measure.** Evals are unit tests for retrieval and grounding.
+
+### Why eval first, then ship
+
+Three signals tell you a RAG pipeline is working:
+
+- **Faithfulness** — does the answer only make claims supported by the retrieved context? (Hallucination detector)
+- **Answer relevance** — does the answer actually address the question, or talk past it?
+- **Recoverability** (a.k.a. context recall) — when the right answer exists in your corpus, does retrieval find it?
+
+You need all three. A pipeline can be highly faithful and useless (it correctly says "I don't know" because retrieval missed). It can be highly relevant and dangerous (it answers fluently from the LLM's pre-training because retrieval came back empty). It can have great recall and bad faithfulness (right docs retrieved, wrong claim synthesized).
+
+Once these three numbers exist as a CI signal, every change to your pipeline — new chunking strategy, model swap, reranker tweak, prompt edit — has a defensible answer to "is this better?"
+
+### Step 1: Build a small golden dataset
+
+You don't need a thousand examples. Start with **20-50 questions** on your actual corpus. Hand-label the expected answer or, for retrieval-only metrics, the chunk IDs that should be retrieved.
+
+```typescript
+// evals/golden.ts
+export interface GoldenExample {
+  id: string;
+  question: string;
+  expectedAnswer: string;            // For end-to-end metrics
+  expectedChunkIds: string[];        // For retrieval recall
+  notes?: string;                    // Why this question matters
+}
+
+export const GOLDEN: GoldenExample[] = [
+  {
+    id: 'sso-001',
+    question: 'How do I enable SSO for a new tenant?',
+    expectedAnswer: 'Navigate to Admin → Auth → SSO; provide your IdP metadata URL or upload the XML; assign the SSO provisioning role to the admin user; verify with a test login.',
+    expectedChunkIds: ['playbook/sso-provisioning#steps', 'playbook/sso-provisioning#verification'],
+  },
+  // ... 20-50 more
+];
+```
+
+Two heuristics for picking questions:
+
+1. **Mine real user queries.** Pull last week's chat logs (or beta tester logs). The questions people actually ask are weirder and shorter than the ones you'd write from scratch.
+2. **Cover failure modes, not just happy paths.** Include questions where the answer is "the corpus doesn't say" — these test whether your pipeline can resist the urge to confabulate.
+
+### Step 2: Wire up Ragas
+
+[Ragas](https://docs.ragas.io/) is the de facto Python eval framework for RAG. It computes faithfulness, answer relevance, context precision, and context recall using an LLM judge. You can run it from a notebook or as a script that your TypeScript pipeline shells out to.
+
+```python
+# evals/run_ragas.py
+import json
+import os
+from datasets import Dataset
+from ragas import evaluate
+from ragas.metrics import faithfulness, answer_relevancy, context_precision, context_recall
+
+with open(os.environ["EVAL_RESULTS"]) as f:
+    runs = json.load(f)
+
+# Each `run` is { question, answer, contexts: [str], ground_truth: str }
+ds = Dataset.from_list(runs)
+
+result = evaluate(
+    ds,
+    metrics=[faithfulness, answer_relevancy, context_precision, context_recall],
+)
+
+print(json.dumps(result, indent=2))
+
+# Fail the run if any metric drops below the floor.
+floors = {
+    "faithfulness": 0.85,
+    "answer_relevancy": 0.80,
+    "context_precision": 0.70,
+    "context_recall": 0.75,
+}
+for metric, floor in floors.items():
+    if result[metric] < floor:
+        raise SystemExit(f"FAIL: {metric}={result[metric]:.3f} below floor {floor}")
+```
+
+The TypeScript companion runs your pipeline against the golden set and writes the JSON Ragas expects:
+
+```typescript
+// evals/run.ts
+import { GOLDEN } from './golden';
+import { ragQuery } from '../services/rag';
+import { writeFileSync } from 'node:fs';
+
+async function main() {
+  const runs = [];
+  for (const ex of GOLDEN) {
+    const { answer, contexts } = await ragQuery(ex.question);
+    runs.push({
+      question: ex.question,
+      answer,
+      contexts: contexts.map(c => c.text),
+      ground_truth: ex.expectedAnswer,
+    });
+  }
+  writeFileSync(process.env.EVAL_RESULTS!, JSON.stringify(runs, null, 2));
+}
+
+main().catch(e => { console.error(e); process.exit(1); });
+```
+
+A single command runs end-to-end:
+
+```bash
+EVAL_RESULTS=./evals/last-run.json pnpm tsx evals/run.ts \
+  && python evals/run_ragas.py
+```
+
+### Step 3: LLM-as-judge for the qualitative tail
+
+Ragas covers the metrics you can compute mechanically. For the qualitative tail — "is the tone right for our docs?", "does the answer cite the canonical source when one exists?" — write a small custom judge. Claude Sonnet 4.6 is a credible judge for English-language eval; the cost is negligible at 50 examples.
+
+```typescript
+// evals/llm_judge.ts
+import Anthropic from '@anthropic-ai/sdk';
+
+const client = new Anthropic();
+
+export interface JudgeRubric {
+  question: string;
+  answer: string;
+  expectedAnswer: string;
+  contexts: string[];
+}
+
+export async function judge({ question, answer, expectedAnswer, contexts }: JudgeRubric) {
+  const message = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 512,
+    system:
+      "You are a strict evaluator for a customer-facing knowledge base. Score the answer on a 1-5 rubric for: cites_canonical_source, tone_fits_docs, no_unsupported_claims. Return JSON only.",
+    messages: [
+      {
+        role: 'user',
+        content: `Question: ${question}
+Expected answer (gold): ${expectedAnswer}
+Retrieved context:
+${contexts.map((c, i) => `[${i + 1}] ${c}`).join('\n\n')}
+
+Generated answer: ${answer}
+
+Return JSON: { "cites_canonical_source": int, "tone_fits_docs": int, "no_unsupported_claims": int, "rationale": string }`,
+      },
+    ],
+  });
+
+  const text = message.content[0].type === 'text' ? message.content[0].text : '';
+  return JSON.parse(text);
+}
+```
+
+### Step 4: Run it in CI
+
+The point of an eval harness is that it runs without you. Drop this into `.github/workflows/eval.yml`:
+
+```yaml
+name: RAG eval
+on:
+  pull_request:
+    paths:
+      - 'src/services/**'
+      - 'src/prompts/**'
+      - 'evals/**'
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pnpm install
+      - run: pip install -r evals/requirements.txt
+      - env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          EVAL_RESULTS: ./evals/last-run.json
+        run: |
+          pnpm tsx evals/run.ts
+          python evals/run_ragas.py
+```
+
+Three things this gives you:
+
+1. **A failing CI step is now the failure mode**, not a customer escalation.
+2. **PR diffs include eval deltas.** Reviewers see "answer_relevancy dropped 4 points" right next to the prompt change.
+3. **You can A/B retrieval strategies.** Run with and without the reranker. Run with `alpha=0.5` and `alpha=0.7`. The eval set picks the winner.
+
+### Cost and cadence
+
+A 50-example golden run costs roughly:
+
+- ~$0.02 in embeddings (50 queries × 1.5KB each, `text-embedding-3-large`)
+- ~$0.05 in retrieval (Pinecone serverless billing is in dollars per million, you'll never see it)
+- ~$0.50 in LLM generation (Claude Sonnet 4.6, 50 grounded answers)
+- ~$0.30 in Ragas judging + ~$0.20 in your custom LLM judge
+- ~**$1.00 per run.**
+
+Run on every PR that touches retrieval or prompts. Run nightly on `main` against a frozen corpus snapshot, so you can spot drift even when nobody's pushing code. Keep the last 30 runs in a JSON file and chart the metrics in a 10-line dashboard — three lines on a chart is more useful than a paragraph in a Slack message.
+
+### What "good enough" looks like
+
+There's no universal floor, only the floor your product needs. As a starting point on a generic knowledge-base RAG:
+
+| Metric | Don't ship below | Aim for |
+|--------|-----------------:|--------:|
+| Faithfulness | 0.80 | 0.90 |
+| Answer relevance | 0.75 | 0.85 |
+| Context precision | 0.65 | 0.80 |
+| Context recall | 0.70 | 0.85 |
+
+If your domain is medical, legal, or financial, raise the faithfulness floor and add a "refuses to answer when uncertain" check. If it's developer docs, raise context precision (engineers tolerate "no answer" but not "wrong code").
+
+The harness is the deliverable. The numbers will move with your data.
 
 ## Troubleshooting Matrix
 

@@ -1,8 +1,9 @@
 {
   "author": "Zachary Proser",
-  "date": "2025-01-05",
-  "title": "Tutorial: Build a RAG pipeline with LangChain, OpenAI and Pinecone",
-  "description": "Step by step tutorial: how to build a production-ready RAG pipeline.",
+  "date": "2026-04-30",
+  "originalPublishedDate": "2025-01-05",
+  "title": "The RAG pipeline I'd actually let near production. With evals.",
+  "description": "Production RAG end-to-end: chunking, embeddings, hybrid retrieval, reranking, and an eval loop you can defend in a code review. Updated for 2026.",
   "image": "https://zackproser.b-cdn.net/images/rag-chatbot.webp",
   "commerce": {
     "isPaid": true,
@@ -10,96 +11,107 @@
     "teamPrice": 450,
     "previewLength": 450,
     "previewElements": 32,
-    "paywallHeader": "Master RAG Development: The Complete Package",
-    "paywallBody": "After 2 years building and fixing RAG at Pinecone, I refined this complete pipeline. See your data transform in Jupyter, deploy with Next.js and Vercel AI SDK, ship to production in 3 hours. Includes direct support from me — ask questions and I’ll help you implement. This is the fundamental AI engineering skill everyone's hiring for.",
-    "buttonText": "3 Hours to Production RAG - The Pipeline I Refined at Pinecone",
-    "miniPaywallTitle": "Master RAG pipeline creation",
-    "miniPaywallDescription": "Includes a Jupyter Notebook, a Next.js example site, and a step-by-step tutorial.",
+    "paywallHeader": "RAG that survives a real eval.",
+    "paywallBody": "I led the first production RAG reference architecture at Pinecone, then spent two more years fixing the parts that broke under real traffic. This is the pipeline I'd build today: chunking with metadata, hybrid retrieval, a reranker, and an eval harness you can show your team. Notebook + Next.js app + tutorial + direct email support. Updated for 2026.",
+    "buttonText": "Get the production RAG pipeline — $149",
+    "miniPaywallTitle": "The production RAG pipeline",
+    "miniPaywallDescription": "Notebook, Next.js app, eval harness, and a tutorial that won't insult your time.",
     "paywallImage": "https://zackproser.b-cdn.net/images/rag-tutorial-elements.webp",
-    "paywallImageAlt": "The complete RAG development package: Tutorial, Jupyter Notebook, and Example Site",
+    "paywallImageAlt": "The complete RAG package: tutorial, Jupyter notebook, and Next.js example app",
     "profileImage": "https://zackproser.b-cdn.net/images/rag-chatbot-profile.webp"
   },
   "landing": {
     "layout": "simple",
     "salesVideoUrl": "",
-    "heroTitle": "The Production RAG Pipeline Refined at Pinecone",
-    "subtitle": "LangChain + Next.js + Pinecone = Zero Hallucinations in 3 Hours",
-    "problemSolved": "Need a chatbot that knows your business data inside and out?",
-    "benefitStatement": "The complete pipeline experienced engineers actually need - not toy examples, not PhD theory. Real data processing, production deployment, zero hallucinations.",
+    "heroTitle": "The RAG pipeline I'd actually let near production.",
+    "subtitle": "Chunking, hybrid retrieval, a reranker, and an eval harness — Next.js + Pinecone, refined at Pinecone and still shipping.",
+    "problemSolved": "You got handed an LLM and a deadline. The team needs grounded answers, citations, and a way to prove it actually works.",
+    "benefitStatement": "End-to-end production RAG with the parts most tutorials skip: a reranker step, an eval loop with faithfulness and recoverability scores, and the failure modes I learned the hard way at Pinecone.",
     "features": [
       {
-        "title": "See Your Data Pipeline (Not a Black Box)",
-        "description": "The Jupyter notebook shows you exactly what LangChain does to your documents. Watch chunks form, see embeddings created, understand Pinecone indexing. When things break, you know why."
+        "title": "See your data pipeline, not a black box",
+        "description": "The notebook walks every transformation: chunking strategies and the trade-offs, embedding choice (text-embedding-3-large vs voyage-3), and what Pinecone is actually doing under the hood. When retrieval gets weird in production, you'll know which knob to turn."
       },
       {
-        "title": "Production App That Actually Ships",
-        "description": "Real Next.js with Vercel AI SDK. Not a Streamlit demo. Streaming responses, citation tracking, error handling. The same patterns from the reference architecture I built at Pinecone."
+        "title": "Hybrid retrieval + a reranker by default",
+        "description": "Dense vector search is the floor, not the ceiling. The pipeline ships with hybrid retrieval (dense + BM25) and a Cohere reranker pass — the single biggest upgrade for grounding quality, and the part most tutorials never get to."
       },
       {
-        "title": "Complete Pipeline (Both Sides Connected)",
-        "description": "Other tutorials show fragments - notebooks that never ship or apps with no data understanding. This gives you both, properly connected. From someone who wrote the book 'Vector Databases in Production.'"
+        "title": "An eval harness you can defend in code review",
+        "description": "Faithfulness, recoverability, answer relevance — measured per change, on your data. Ragas + LLM-as-judge wired into the same repo. The failure mode of a missed regression is now a failing CI step, not a Slack thread three weeks later."
+      },
+      {
+        "title": "Next.js app that streams, cites, and handles failure",
+        "description": "Vercel AI SDK with streaming responses, inline citations, and the error paths you actually need: timeouts, empty retrievals, partial context, rate limits. The same patterns from the reference architecture I built at Pinecone, updated for the 2026 stack."
       }
     ],
     "whatsIncluded": [
       {
-        "title": "Interactive Jupyter Notebook",
-        "description": "The data science half of RAG that most engineer-focused guides skip. This notebook teaches rigorous data prep: loading and cleaning sources, chunking strategies (with trade-offs), embedding creation, and Pinecone indexing — all step-by-step so you understand exactly what happens to your data and why it matters at query time.",
+        "title": "Jupyter notebook (chunking → embeddings → indexing)",
+        "description": "The data-side of RAG that most tutorials hand-wave through. Loading and cleaning real sources, chunking strategies with the trade-offs spelled out, embedding model selection, and Pinecone indexing — annotated, runnable, and small enough to actually finish.",
         "image": "https://zackproser.b-cdn.net/images/rag-pipeline-jupyter.webp",
-        "imageAlt": "Jupyter Notebook interface showing data processing and vector database creation"
+        "imageAlt": "Jupyter notebook showing chunking, embeddings, and vector database indexing"
       },
       {
-        "title": "Production-Ready Next.js Application",
-        "description": "Full source code for a modern web application built with the Vercel AI SDK. Features streaming responses, citation support, related content suggestions, and a beautiful chat interface. Deploy it to Vercel with one click or run it locally for development.",
+        "title": "Next.js app (streaming, citations, error paths)",
+        "description": "Full source for a Vercel AI SDK app: streaming responses, inline citations, related content, and the error paths you'll actually hit — timeouts, empty retrievals, partial context, rate limits. One-click Vercel deploy or run it locally.",
         "image": "https://zackproser.b-cdn.net/images/rag-pipeline-hero.webp",
         "imageAlt": "Next.js chat application with streaming responses and citations"
       },
       {
-        "title": "Comprehensive Step-by-Step Tutorial",
-        "description": "Detailed written guide that explains every concept, from RAG fundamentals to advanced implementation patterns. Learn not just how to build it, but why each piece works and how to customize it for your specific use case. Perfect for developers who want to truly understand the technology.",
+        "title": "Eval harness (faithfulness, recoverability, relevance)",
+        "description": "Ragas + LLM-as-judge wired into the same repo, with a tiny CI script you can drop into any project. Run it on every prompt or pipeline change. Now you can prove your changes didn't quietly regress.",
         "image": "https://zackproser.b-cdn.net/images/rag-pipeline-tutorial.webp",
-        "imageAlt": "RAG pipeline architecture diagram showing the complete system flow"
+        "imageAlt": "Eval harness output showing faithfulness, recoverability, and answer relevance metrics"
       },
       {
-        "title": "Direct Email Support",
-        "description": "Ask me your questions as you build. I’ll review issues, point you to the right patterns, and help you get to a working, production-ready RAG pipeline.",
+        "title": "Step-by-step tutorial (the why, not just the how)",
+        "description": "The written guide that explains every decision: which embedding model and why, when chunking by semantic boundary beats fixed-size, when a reranker pays for itself, what to measure first. Customize it to your stack with confidence."
+      },
+      {
+        "title": "Direct email support",
+        "description": "Ask me your questions as you build. I'll review issues, point you to the right pattern, and help you get to a pipeline you can put behind a real users.",
         "image": "https://zackproser.b-cdn.net/images/support-email.webp",
         "imageAlt": "Email support illustration"
       }
     ],
     "experiencedEngineersSection": {
-      "title": "For Experienced Engineers, By an Experienced Engineer",
-      "content": "Every RAG tutorial fails you the same way:\n- Toy examples with 5 documents that don't scale\n- PhD theory about transformers you don't need  \n- 40-hour courses when you have deadlines\n\nYou're already an engineer. You just need the patterns and working code.\n\nThis is what I built after 13 years at Cloudflare, Gruntwork, and Pinecone. Not on the AI hype train - just engineering that works."
+      "title": "For senior engineers who got handed an LLM and a deadline.",
+      "content": "Every RAG tutorial fails the same way:\n- Toy examples with five documents that don't survive contact with real data\n- Transformer theory you didn't ask for\n- 40-hour courses when you have a sprint\n\nYou're already an engineer. You need the patterns, the working code, and a way to know when the pipeline is regressing.\n\nThis is what I'd build today after fifteen years shipping at Cloudflare, Gruntwork, Pinecone, and now WorkOS. Updated for 2026 — current models, hybrid retrieval, a reranker, and an eval loop."
     },
-    "credibilityBanner": "Built by Zack Proser | First production reference architecture at Pinecone | Author: 'Vector Databases in Production for Busy Engineers'",
+    "credibilityBanner": "Built by Zack Proser · First production RAG reference architecture at Pinecone · Applied AI at WorkOS · Author of 'Vector Databases in Production for Busy Engineers'",
     "contentSections": [
       {
         "title": "Getting Started",
         "subsections": [
-          "Complete Example Code",
-          "Try It Yourself",
+          "What changed in the 2026 update",
+          "Complete example code",
+          "Try the live demo",
           "What skills will I learn?",
-          "System Architecture"
+          "System architecture"
         ]
       },
       {
-        "title": "Phase 1: Data Processing",
+        "title": "Phase 1: Data processing",
         "subsections": [
           "Load and configure the data processing notebook",
           "Clone the data source",
           "Install dependencies",
-          "Loading blog posts into memory",
+          "Loading documents into memory",
           "Creating a Pinecone index",
           "Creating a vectorstore with LangChain",
-          "Understanding Document Chunking"
+          "Chunking strategies and trade-offs"
         ]
       },
       {
-        "title": "Phase 2: Application Development",
+        "title": "Phase 2: Application development",
         "subsections": [
           "Create the supporting services",
           "The context service",
           "The embeddings service",
           "The Pinecone service",
+          "Hybrid retrieval (dense + BM25)",
+          "Reranking with Cohere",
           "Create the chat API",
           "Create the user interface"
         ]
@@ -107,9 +119,21 @@
       {
         "title": "Phase 3: Deployment",
         "subsections": [
-          "Additional Resources"
+          "Streaming, citations, and the failure modes that matter",
+          "Deploy to Vercel"
+        ]
+      },
+      {
+        "title": "Phase 4: Evaluation",
+        "subsections": [
+          "Why eval first, then ship",
+          "Build a small golden dataset",
+          "Faithfulness, recoverability, answer relevance",
+          "Ragas wired into your repo",
+          "LLM-as-judge for the qualitative tail",
+          "An eval that runs in CI"
         ]
       }
     ]
   }
-} 
+}
