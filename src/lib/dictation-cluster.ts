@@ -29,32 +29,39 @@ interface ArchetypeRule {
   displayName: string
 }
 
-// Anchored substring -> interaction archetype. Order matters: products whose
-// names contain broad category words must be checked before those categories.
+// Short names that are ordinary English words ("grain", "rev", "jamie") only
+// count when adjacent to a "vs" — otherwise "fine-grained" or "rev-share" in a
+// slug/title would misidentify the competitor.
+function vsAnchored(name: string): RegExp {
+  return new RegExp(`\\bvs\\.?[-\\s]+${name}\\b|\\b${name}[-\\s]+vs\\b`)
+}
+
+// Anchored word matches -> interaction archetype. Order matters: products
+// whose names contain broad category words come before those categories.
 const ARCHETYPE_RULES: ArchetypeRule[] = [
-  { pattern: /github[-\s]+copilot/, archetype: 'ai-completion', displayName: 'GitHub Copilot' },
+  { pattern: /\bgithub[-\s]+copilot\b/, archetype: 'ai-completion', displayName: 'GitHub Copilot' },
 
-  { pattern: /apple(?:'s)?[-\s]+voice[-\s]+memos?/, archetype: 'recorder', displayName: 'Apple Voice Memos' },
-  { pattern: /samsung[-\s]+voice[-\s]+recorder/, archetype: 'recorder', displayName: 'Samsung Voice Recorder' },
-  { pattern: /google[-\s]+recorder/, archetype: 'recorder', displayName: 'Google Recorder' },
-  { pattern: /transcribe[-\s]*me/, archetype: 'recorder', displayName: 'TranscribeMe' },
-  { pattern: /speech[-\s]*notes/, archetype: 'recorder', displayName: 'Speechnotes' },
-  { pattern: /speechify/, archetype: 'recorder', displayName: 'Speechify' },
-  { pattern: /rev(?:\.ai|[-\s]+ai|[-\s]+mobile)?\b/, archetype: 'recorder', displayName: 'Rev' },
-  { pattern: /voice[-\s]+memos?/, archetype: 'recorder', displayName: 'Voice Memos' },
+  { pattern: /\bapple(?:'s)?[-\s]+voice[-\s]+memos?\b/, archetype: 'recorder', displayName: 'Apple Voice Memos' },
+  { pattern: /\bsamsung[-\s]+voice[-\s]+recorder\b/, archetype: 'recorder', displayName: 'Samsung Voice Recorder' },
+  { pattern: /\bgoogle[-\s]+recorder\b/, archetype: 'recorder', displayName: 'Google Recorder' },
+  { pattern: /\btranscribe[-\s]*me\b/, archetype: 'recorder', displayName: 'TranscribeMe' },
+  { pattern: /\bspeech[-\s]*notes\b/, archetype: 'recorder', displayName: 'Speechnotes' },
+  { pattern: /\bspeechify\b/, archetype: 'recorder', displayName: 'Speechify' },
+  { pattern: vsAnchored('rev(?:\\.ai|[-\\s]+ai|[-\\s]+mobile)?'), archetype: 'recorder', displayName: 'Rev' },
+  { pattern: /\bvoice[-\s]+memos?\b/, archetype: 'recorder', displayName: 'Voice Memos' },
 
-  { pattern: /google[-\s]+voice[-\s]+typing/, archetype: 'system-dictation', displayName: 'Google Voice Typing' },
-  { pattern: /microsoft[-\s]+dictate/, archetype: 'system-dictation', displayName: 'Microsoft Dictate' },
-  { pattern: /apple[-\s]+dictation/, archetype: 'system-dictation', displayName: 'Apple Dictation' },
-  { pattern: /mac(?:os)?(?:[-\s]+built[-\s]+in)?[-\s]+dictation/, archetype: 'system-dictation', displayName: 'Mac Dictation' },
-  { pattern: /dragon(?:[-\s]+naturally[-\s]*speaking)?/, archetype: 'system-dictation', displayName: 'Dragon' },
+  { pattern: /\bgoogle[-\s]+voice[-\s]+typing\b/, archetype: 'system-dictation', displayName: 'Google Voice Typing' },
+  { pattern: /\bmicrosoft[-\s]+dictate\b/, archetype: 'system-dictation', displayName: 'Microsoft Dictate' },
+  { pattern: /\bapple[-\s]+dictation\b/, archetype: 'system-dictation', displayName: 'Apple Dictation' },
+  { pattern: /\bmac(?:os)?(?:[-\s]+built[-\s]+in)?[-\s]+dictation\b/, archetype: 'system-dictation', displayName: 'Mac Dictation' },
+  { pattern: /\bdragon(?:[-\s]+naturally[-\s]*speaking)?\b/, archetype: 'system-dictation', displayName: 'Dragon' },
 
-  { pattern: /fireflies(?:\.ai)?/, archetype: 'meeting-bot', displayName: 'Fireflies' },
-  { pattern: /otter(?:\.ai)?/, archetype: 'meeting-bot', displayName: 'Otter.ai' },
-  { pattern: /avoma/, archetype: 'meeting-bot', displayName: 'Avoma' },
-  { pattern: /grain/, archetype: 'meeting-bot', displayName: 'Grain' },
-  { pattern: /jamie(?:[-\s]+ai)?/, archetype: 'meeting-bot', displayName: 'Jamie' },
-  { pattern: /notta/, archetype: 'meeting-bot', displayName: 'Notta' },
+  { pattern: /\bfireflies(?:\.ai)?\b/, archetype: 'meeting-bot', displayName: 'Fireflies' },
+  { pattern: /\botter(?:\.ai)?\b/, archetype: 'meeting-bot', displayName: 'Otter.ai' },
+  { pattern: /\bavoma\b/, archetype: 'meeting-bot', displayName: 'Avoma' },
+  { pattern: vsAnchored('grain'), archetype: 'meeting-bot', displayName: 'Grain' },
+  { pattern: vsAnchored('jamie(?:[-\\s]+ai)?'), archetype: 'meeting-bot', displayName: 'Jamie' },
+  { pattern: /\bnotta\b/, archetype: 'meeting-bot', displayName: 'Notta' },
 ]
 
 function lower(s: string | undefined): string {
@@ -75,15 +82,22 @@ export function isDictationClusterPost(
   if (!slug) return false
   if (SLUG_KEYWORDS.some(keyword => slug.includes(keyword))) return true
 
-  const tagSet = tags.map(lower)
-  return tagSet.some(tag => TAG_KEYWORDS.some(keyword => tag.includes(keyword)))
+  // Whole-word tag matching: "Voice AI" counts, "Invoicing" does not.
+  return tags.some(tag =>
+    lower(tag)
+      .split(/[^a-z0-9]+/)
+      .some(word => TAG_KEYWORDS.includes(word)),
+  )
 }
 
 function titleCompetitor(title?: string): string | null {
   if (!title) return null
   const match = title.match(/\bwispr\s*flow\s+vs\.?\s+(.+?)(?=\s*[:?]|\s+[—–-]\s+|\s+which\b|\s+comparison\b|$)/i)
   if (!match?.[1]) return null
-  return match[1].replace(/\s+20\d{2}\b.*$/, '').trim()
+  return match[1]
+    .replace(/\s+20\d{2}\b.*$/, '')
+    .replace(/\s+(?:in|for|on|the)$/i, '')
+    .trim()
 }
 
 function slugCompetitor(slugLike: string): string | null {
