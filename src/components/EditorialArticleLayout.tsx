@@ -12,7 +12,9 @@ import StickyAffiliateCTA from '@/components/StickyAffiliateCTA'
 import { EditorialNewsletter } from '@/components/EditorialNewsletter'
 import { MeetingNotesConcierge } from '@/components/meeting-notes/MeetingNotesConcierge'
 import { MeetingNotesClusterRail } from '@/components/meeting-notes/MeetingNotesClusterRail'
+import { DictationShowdown } from '@/components/dictation/DictationShowdown'
 import { isMeetingNotesClusterPost, inferConciergeRole, inferRailPersona } from '@/lib/meeting-notes-cluster'
+import { isDictationClusterPost, inferCompetitorArchetype } from '@/lib/dictation-cluster'
 import type { ExtendedMetadata, Content } from '@/types'
 
 const VOICE_AFFILIATE_SLUGS = [
@@ -99,6 +101,11 @@ export function EditorialArticleLayout({
   const publishedLabel = formatPublished(metadata?.date)
   const tags = metadata?.tags || []
   const category = tags[0] || 'Applied AI'
+  const clusterSlug = safeSlug || baseSlug
+  const clusterOptions = { hiddenFromIndex: !!metadata?.hiddenFromIndex }
+  const isMeetingNotesPost = isMeetingNotesClusterPost(clusterSlug, tags, clusterOptions)
+  const isDictationPost = !isMeetingNotesPost && isDictationClusterPost(clusterSlug, tags, clusterOptions)
+  const dictationCompetitor = inferCompetitorArchetype(clusterSlug, safeTitle)
 
   const contentPathSegment = metadata?.type === 'video' ? 'videos' : metadata?.type === 'course' ? 'learn/courses' : metadata?.type === 'demo' ? 'demos' : 'blog'
   const pathname = usePathname()
@@ -353,21 +360,28 @@ export function EditorialArticleLayout({
           )}
 
           <div className="post-body" ref={articleRef}>
-            {isMeetingNotesClusterPost(safeSlug || baseSlug, tags, { hiddenFromIndex: !!metadata?.hiddenFromIndex }) && (
+            {isMeetingNotesPost && (
               <div ref={conciergeRef} className="mn-concierge-slot">
                 <MeetingNotesConcierge
                   campaign={baseSlug || safeSlug}
-                  defaultRole={inferConciergeRole(safeSlug || baseSlug, safeTitle)}
+                  defaultRole={inferConciergeRole(clusterSlug, safeTitle)}
                 />
               </div>
+            )}
+            {isDictationPost && (
+              <DictationShowdown
+                campaign={baseSlug || safeSlug}
+                archetype={dictationCompetitor.archetype}
+                competitorName={dictationCompetitor.competitorName}
+              />
             )}
             {children}
           </div>
 
-          {isMeetingNotesClusterPost(safeSlug || baseSlug, tags, { hiddenFromIndex: !!metadata?.hiddenFromIndex }) && (
+          {isMeetingNotesPost && (
             <MeetingNotesClusterRail
               campaign={baseSlug || safeSlug}
-              persona={inferRailPersona(safeSlug || baseSlug, safeTitle)}
+              persona={inferRailPersona(clusterSlug, safeTitle)}
               currentSlug={baseSlug || safeSlug}
             />
           )}
