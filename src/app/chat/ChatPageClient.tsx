@@ -12,6 +12,7 @@ import { LoadingAnimation } from '@/components/LoadingAnimation';
 import { ContentCard } from '@/components/ContentCard';
 import { BlogWithSlug } from '@/types';
 import { sendGTMEvent } from '@next/third-parties/google';
+import { AskAdvisorCTA } from '@/components/advisor/AskAdvisorCTA';
 
 // Feature bullet component to reduce duplication
 const FeatureBullet = ({ text, strong }: { text: string, strong: string }) => (
@@ -278,6 +279,12 @@ export default function ChatPageClient() {
         {messages.length > 0 && (
           <RagTutorialAd />
         )}
+
+        <AskAdvisorCTA
+          from="chat-page"
+          variant="compact"
+          className="my-8"
+        />
       </div>
     </Container>
   );
