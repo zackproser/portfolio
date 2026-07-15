@@ -1,0 +1,118 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-transcribe-teams-meetings-without-bot';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Transcribe Microsoft Teams meetings without a bot" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Microsoft Teams transcription without an external meeting bot</figcaption>
+
+You want a record of a Teams meeting. You do not want an outside notetaker waiting in the lobby or appearing beside your coworkers and clients.
+
+Teams recording, transcription, Copilot, and external bots can all be controlled by company policy. Device capture runs on your computer without a Teams integration.
+
+## Quick Answer
+
+**<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink>** captures Microsoft Teams audio on your device. No bot joins, no Teams admin installation is required, and you receive a transcript, summary, and action items after the meeting.
+
+Granola works on Mac and Windows. It has a free plan, and new users get their first three months free through this affiliate link.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Why Teams Meeting Bots Are Awkward
+
+External notetakers join Teams as meeting assistants. That makes them visible to the organizer and participants. They may wait in the lobby, and the organizer can deny entry.
+
+Microsoft also gives IT administrators controls for managing or blocking external meeting bots. In a company tenant, your preferred bot may never reach the call.
+
+Copilot depends on licensing, organizer choices, and meeting policies. Some during-meeting Copilot modes use temporary speech-to-text data. A saved transcript and post-meeting Copilot use require transcription to be on. Teams notifies participants when recording or transcription starts, and an organization can require explicit agreement.
+
+## How Device Capture Works With Teams
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola notes captured from a Microsoft Teams meeting" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+Granola captures the audio playing through your device. It does not request access to the Teams meeting or tenant.
+
+**What Teams shows:** Your normal attendee account
+
+**What you get:** A transcript, summary, and action items after the call
+
+### The Process
+
+1. Sync Granola with your calendar
+2. Join the Teams meeting normally
+3. Start Granola on Mac or Windows
+4. Granola captures the meeting audio on-device
+5. Read the transcript and organized notes afterward
+
+There is no Teams app for an administrator to approve and no external participant for the organizer to admit.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Comparing Teams Transcription Approaches
+
+| Feature | Teams recording, transcription, or Copilot | External bot | Device capture with Granola |
+|---------|--------------------------------------------|--------------|-----------------------------|
+| Appears as a participant | No | Yes | No |
+| Participant notice | Yes when recording or transcription runs | Bot is visible | No Teams notice |
+| Controlled by Teams admin policy | Yes | Can be blocked | No Teams integration required |
+| Transcript and summary | Depends on setup and licenses | Yes | Yes |
+| Action items after the call | Depends on setup and licenses | Usually | Yes |
+
+## Teams Use Cases Where This Matters
+
+### Cross-Company Client Calls
+
+The client's tenant controls the meeting. Your external bot may be blocked or held in the lobby. Device capture avoids that dependency.
+
+### Consulting Engagements
+
+Consultants move between client tenants with different policies. Granola gives you one note-taking workflow across those calls.
+
+### Sales Meetings
+
+An outside assistant can trigger a security question from the buyer. With device capture, the attendee list contains the people involved in the deal.
+
+### Internal Planning
+
+You can create your own summary and action list without asking IT to enable a Teams app or change a transcription policy.
+
+## What About Consent?
+
+Granola still records audio. You are responsible for the recording and consent laws in every relevant jurisdiction.
+
+**One-party consent jurisdictions:** One participant can generally consent to recording.
+
+**Two-party or all-party consent jurisdictions:** Every participant generally must consent.
+
+Invisible operation changes what Teams displays. It does not change the law or your employer's policies. Tell participants when required and read this [guide to call recording and legal compliance](/blog/granola-call-recording-legal-compliance).
+
+## The Honest Caveat
+
+Granola does not provide live captions. If live text during the Teams meeting is your priority, Otter is the honest answer.
+
+Granola serves the different need of creating private notes after the meeting without adding a bot.
+
+## Getting Started
+
+Granola works on Mac, Windows, iOS, and Android. For a Teams meeting on your computer, run the desktop app alongside Teams.
+
+The free plan is available to start. New users can get their first three months free through the affiliate link.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Related guides
+
+- [How to transcribe Zoom meetings without a bot](/blog/how-to-transcribe-zoom-meetings-without-bot)
+- [How to transcribe Google Meet without a bot](/blog/how-to-transcribe-google-meet-without-bot)
+- [How to transcribe client calls without a bot](/blog/how-to-transcribe-client-calls-without-bot)
+- [How to transcribe in-person meetings](/blog/how-to-transcribe-in-person-meetings)
+- [How to transcribe meetings without a bot](/blog/how-to-transcribe-meetings-without-bot)
+- [Granola vs Otter](/blog/granola-vs-otter)

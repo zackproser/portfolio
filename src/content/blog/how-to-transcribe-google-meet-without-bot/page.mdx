@@ -1,0 +1,118 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-transcribe-google-meet-without-bot';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Transcribe Google Meet without a bot joining" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Google Meet notes without adding a bot to the participant grid</figcaption>
+
+You want notes from a Google Meet call. You do not want a transcription bot taking up a tile or prompting a client to ask who else is listening.
+
+Meet's Gemini note-taking feature tells participants when notes are being taken. A device-capture app gives you another option.
+
+## Quick Answer
+
+**<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink>** captures Google Meet audio on your device. It does not join the call, and it produces a transcript, summary, and action items afterward.
+
+It works on Mac and Windows for online meetings. The free plan lets you start without paying, and new users get their first three months free through this link.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Why Google Meet Bots Are Awkward
+
+Third-party note bots join Meet as participants. Depending on the meeting's access settings, the host may need to admit the bot. Once inside, it can appear in the participant list or grid like another attendee.
+
+Gemini's “take notes for me” feature stays inside Meet, but it still changes the visible meeting state. Meet informs participants that notes are being taken and displays a pencil indicator. Host controls and Workspace admin settings can determine who can start it.
+
+Companion mode can make the participant view harder to read in hybrid meetings. People may join from both a room system and a laptop, and a separate bot adds another identity to sort out.
+
+## How Device Capture Works With Google Meet
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola transcript and summary from Google Meet" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+Granola listens through your device. Google Meet does not receive a request from an automated participant.
+
+**What Meet shows:** Your normal participant presence
+
+**What you get:** A transcript, summary, and action items after the meeting
+
+### The Process
+
+1. Connect Granola to your calendar
+2. Join the Google Meet call normally
+3. Start Granola on your Mac or Windows device
+4. Granola captures the conversation on-device
+5. Review the transcript and organized notes after the call
+
+Calendar sync helps Granola detect the scheduled meeting. There is no bot to admit and no extra tile in the grid.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Comparing Google Meet Transcription Approaches
+
+| Feature | Gemini notes | Bot notetaker | Device capture with Granola |
+|---------|--------------|---------------|-----------------------------|
+| Appears as a participant | No | Yes | No |
+| Visible note-taking indicator | Yes | Bot is visible | No platform indicator |
+| Depends on Workspace or host settings | Yes | May require admission | No Meet integration required |
+| Transcript and summary | With an eligible setup | Yes | Yes |
+| Action items after the call | With an eligible setup | Usually | Yes |
+
+## Google Meet Use Cases Where This Matters
+
+### External Client Meetings
+
+Guests already deal with organization boundaries and admission settings. Device capture avoids adding another participant request.
+
+### Hybrid Workshops
+
+Companion mode helps people in a room use chat, polls, and other Meet controls from a laptop. Granola can capture from your active audio device without adding another meeting identity.
+
+### Research Interviews
+
+You can pay attention to the interview while Granola prepares a transcript for later review. Discuss consent before recording when required.
+
+### Internal Team Calls
+
+You can keep your own organized notes when Gemini features are unavailable under your Workspace plan or admin settings.
+
+## What About Consent?
+
+Granola still records audio. You are responsible for the recording and consent laws that apply where each participant is located.
+
+**One-party consent jurisdictions:** One participant can generally consent to recording.
+
+**Two-party or all-party consent jurisdictions:** Every participant generally must consent.
+
+Invisible operation changes the interface and conversation flow. It does not change your legal duties. Tell participants when required, follow your organization's policy, and review this [guide to call recording and legal compliance](/blog/granola-call-recording-legal-compliance).
+
+## The Honest Caveat
+
+Granola does not provide live captions. Otter is the honest answer when you need words on screen during the call or a live transcript shared with attendees.
+
+Granola is designed for notes you review after the meeting.
+
+## Getting Started
+
+Granola works on Mac, Windows, iOS, and Android. Use the desktop app for a Google Meet call running on your computer.
+
+You can start with the free plan. New users get their first three months free through the affiliate link.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Related guides
+
+- [How to transcribe Zoom meetings without a bot](/blog/how-to-transcribe-zoom-meetings-without-bot)
+- [How to transcribe Teams meetings without a bot](/blog/how-to-transcribe-teams-meetings-without-bot)
+- [How to transcribe client calls without a bot](/blog/how-to-transcribe-client-calls-without-bot)
+- [How to transcribe in-person meetings](/blog/how-to-transcribe-in-person-meetings)
+- [How to transcribe meetings without a bot](/blog/how-to-transcribe-meetings-without-bot)
+- [Granola vs Otter](/blog/granola-vs-otter)

@@ -1,0 +1,125 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-transcribe-zoom-meetings-without-bot';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Transcribe Zoom meetings without a bot joining" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Zoom transcription without an extra participant in the call</figcaption>
+
+You want a transcript of your Zoom call. You do not want a notetaker bot sitting in the participant list while your client asks who invited it.
+
+Zoom's own AI features are controlled by host and account settings. Third-party notetakers usually join as participants. Device capture avoids both issues.
+
+## Quick Answer
+
+**<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink>** captures Zoom audio on your device. No bot joins the meeting, and you receive a transcript, summary, and action items after the call.
+
+It works on Mac and Windows. You can start on the free plan, and new users get their first three months free through this link.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Why Zoom Meeting Bots Are Awkward
+
+Bot-based notetakers enter the Zoom meeting like another attendee. Their name appears in the participant list, and the host may need to admit them from the waiting room.
+
+That creates a predictable interruption:
+
+1. The bot asks to join
+2. The host decides whether to admit it
+3. Someone asks what it records
+4. The call starts with a privacy discussion
+
+Zoom AI Companion has a different setup, but the host controls whether the relevant AI features can run. Account settings can also limit access. Participants may need to ask the host to enable them, and Zoom tells attendees when AI Companion is active.
+
+Zoom's native cloud recording is visible by design. Zoom displays recording notices to participants, and the meeting interface shows a recording indicator or banner while cloud recording is active.
+
+## How Device Capture Works With Zoom
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola notes from a Zoom meeting" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+Granola captures the meeting audio through your device instead of entering Zoom as a participant.
+
+**What Zoom shows:** You and the real attendees
+
+**What you get:** A transcript, summary, and action items after the call
+
+### The Process
+
+1. Sync Granola with your calendar
+2. Join the Zoom meeting normally
+3. Start Granola on your Mac or Windows device
+4. Granola captures the audio on-device
+5. Review the transcript, summary, and action items after the meeting
+
+Your Zoom host does not need to admit a bot or enable a third-party participant.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Comparing Zoom Transcription Approaches
+
+| Feature | Zoom cloud recording or AI features | Bot notetaker | Device capture with Granola |
+|---------|--------------------------------------|---------------|-----------------------------|
+| Appears as a participant | No | Yes | No |
+| Depends on host or account settings | Yes | Often | No |
+| Shows a recording or AI notice | Yes | Bot is visible | No platform notice |
+| Transcript and summary | Available with eligible setup | Yes | Yes |
+| Action items after the call | Available with eligible setup | Usually | Yes |
+
+## Zoom Use Cases Where This Matters
+
+### Client Calls
+
+Keep the opening focused on the client's goals. There is no bot name to explain or waiting-room request to approve.
+
+### Sales Calls
+
+Prospects can see every participant. A bot adds another question before discovery begins. Device capture keeps the participant list limited to the people on the call.
+
+### Interviews
+
+The interviewer can stay engaged instead of typing. The transcript gives you a record to review after the candidate leaves.
+
+### Sensitive Internal Meetings
+
+Account settings may restrict Zoom recording or AI features. Granola runs on your device without a Zoom admin integration.
+
+## What About Consent?
+
+Granola still records audio. You are responsible for the recording and consent laws that apply where you and the other participants are located.
+
+**One-party consent jurisdictions:** One participant can generally consent to recording.
+
+**Two-party or all-party consent jurisdictions:** Every participant generally must consent.
+
+Invisible operation changes the meeting experience. It does not change the legal requirements. Tell participants when required, follow company policy, and read this [guide to call recording and legal compliance](/blog/granola-call-recording-legal-compliance).
+
+## The Honest Caveat
+
+Granola does not provide live captions. If you need real-time transcription that everyone can follow during the Zoom call, Otter is the honest answer.
+
+Granola fits people who want private notes after the meeting and no bot in the participant list.
+
+## Getting Started
+
+Granola works on Mac, Windows, iOS, and Android. The desktop app is the relevant option for Zoom calls on your computer.
+
+Start on the free plan. New users can get the first three months free through the affiliate link.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Related guides
+
+- [How to transcribe Google Meet without a bot](/blog/how-to-transcribe-google-meet-without-bot)
+- [How to transcribe Teams meetings without a bot](/blog/how-to-transcribe-teams-meetings-without-bot)
+- [How to transcribe client calls without a bot](/blog/how-to-transcribe-client-calls-without-bot)
+- [How to transcribe in-person meetings](/blog/how-to-transcribe-in-person-meetings)
+- [How to transcribe meetings without a bot](/blog/how-to-transcribe-meetings-without-bot)
+- [Granola vs Otter](/blog/granola-vs-otter)
