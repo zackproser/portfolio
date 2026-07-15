@@ -1,0 +1,56 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+When you're building web scraping into your workflow, you face a choice between different approaches. Firecrawl and Playwright are two popular options, but they serve different use cases and the choice matters for your project.
+
+Let me break down what each tool does well and where the tradeoffs are.
+
+## Firecrawl: Managed Web Scraping
+
+Firecrawl is a managed service that handles the scraping infrastructure for you. You give it a URL, it crawls the page (and optionally related pages), and returns clean, structured data.
+
+The main advantage is simplicity. Firecrawl handles:
+- Headless browser management
+- Rate limiting and politeness
+- JavaScript rendering
+- Error handling and retries
+
+You focus on what to do with the data, not how to scrape it reliably. For teams that need web data without building scraping infrastructure, this is the appeal.
+
+The pricing is based on credits, and the free tier is usable for development and small projects. Production use scales with your needs.
+
+## Playwright: Programmatic Control
+
+Playwright is a browser automation library. You write code that controls a real browser — clicking, typing, waiting for elements, extracting content.
+
+Playwright gives you complete control but requires more code. For a simple scrape, you might write 50 lines of Playwright code versus calling a Firecrawl API endpoint.
+
+The control pays off when you need:
+- Complex interaction flows (login, multi-step forms, infinite scroll)
+- Custom extraction logic
+- Integration with your existing test suite
+- Debugging visibility into what's happening during a scrape
+
+## When to Use Which
+
+**Use Firecrawl when:**
+- You need reliable web data without building scraping infrastructure
+- You're scraping static or JavaScript-rendered pages at scale
+- Your team doesn't have time to maintain scraping code
+- You want a simple API with good documentation
+
+**Use Playwright when:**
+- Your scraping requires complex interactions
+- You need full control over the browser environment
+- You're already running automated tests and want to reuse browser sessions
+- You're scraping authenticated pages with session handling
+
+## The Honest Take
+
+For most teams, Firecrawl is the pragmatic choice. Web scraping has a lot of edge cases — JavaScript rendering, CAPTCHAs, rate limiting, IP blocking — and a managed service handles all of that for you.
+
+Playwright makes sense when you need the control or when you're already in the Microsoft/Playwright ecosystem for testing. The code-first approach is powerful but requires more investment.
+
+If you're evaluating this choice for a new project, start with Firecrawl. You can always move to Playwright if you hit its limits. The reverse is usually not true — once you've built scraping infrastructure with Playwright, you're maintaining it.
