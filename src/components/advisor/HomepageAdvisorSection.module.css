@@ -1,0 +1,158 @@
+.section {
+  padding-block: 3.5rem 4rem;
+}
+
+.plate {
+  position: relative;
+  margin: 0;
+  border: 1px solid rgba(43, 57, 86, 0.94);
+  border-radius: 4px;
+  background:
+    linear-gradient(rgba(107, 135, 181, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(107, 135, 181, 0.055) 1px, transparent 1px),
+    #080d20;
+  background-size: 32px 32px;
+  box-shadow:
+    0 1px 0 rgba(230, 126, 34, 0.75),
+    0 28px 60px -34px rgba(9, 15, 38, 0.72);
+  padding: 14px;
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 1px 3px 12px;
+  color: #8493b2;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.caption span:last-child {
+  color: #68d7ed;
+}
+
+.chatFrame {
+  height: 540px;
+  overflow: hidden;
+  border-radius: 26px;
+}
+
+.placeholder {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(132, 160, 214, 0.2);
+  border-radius: 26px;
+  background: rgba(10, 16, 41, 0.9);
+}
+
+.placeholderHeader {
+  display: flex;
+  height: 58px;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(132, 160, 214, 0.16);
+  padding: 13px 16px;
+}
+
+.placeholderHeader span {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(106, 225, 255, 0.17);
+  border-radius: 12px;
+  background: rgba(106, 225, 255, 0.06);
+}
+
+.placeholderHeader i,
+.placeholderBody span,
+.placeholderComposer {
+  background: rgba(126, 153, 207, 0.12);
+}
+
+.placeholderHeader i {
+  width: 150px;
+  height: 9px;
+  border-radius: 99px;
+}
+
+.placeholderBody {
+  display: flex;
+  width: min(100% - 32px, 590px);
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  margin-inline: auto;
+}
+
+.placeholderBody span {
+  height: 46px;
+  border: 1px solid rgba(126, 153, 207, 0.08);
+  border-radius: 13px;
+}
+
+.placeholderComposer {
+  height: 52px;
+  flex: none;
+  margin: 14px;
+  border-radius: 16px;
+}
+
+.fullLink {
+  display: block;
+  width: fit-content;
+  margin: 16px 0 0 auto;
+  color: #b95f1f;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.fullLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.fullLink:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid #e67e22;
+  outline-offset: 4px;
+}
+
+:global(.dark) .fullLink {
+  color: #f39c12;
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding-block: 2.5rem 3rem;
+  }
+
+  .plate {
+    margin-inline: -4px;
+    padding: 8px;
+  }
+
+  .caption {
+    padding: 3px 3px 10px;
+    font-size: 9px;
+  }
+
+  .caption span:last-child {
+    display: none;
+  }
+
+  .chatFrame {
+    height: 500px;
+  }
+}

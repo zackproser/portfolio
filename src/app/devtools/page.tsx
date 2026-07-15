@@ -7,6 +7,7 @@ import { NaturalLanguageSearch } from "@/components/natural-language-search"
 import { createMetadata } from '@/utils/createMetadata'
 import { getToolsDataQualitySummary } from '@/lib/tool-service'
 import DevToolsWrapper from './devtools-wrapper'
+import { AskAdvisorCTA } from '@/components/advisor/AskAdvisorCTA'
 
 // Use dynamic rendering to fetch fresh data from database
 export const dynamic = 'force-dynamic'
@@ -30,6 +31,11 @@ export default async function DevToolsPage() {
     <ToolsProvider>
       <DevToolsWrapper dataQuality={dataQuality}>
         <NaturalLanguageSearch />
+        <AskAdvisorCTA
+          from="devtools"
+          variant="compact"
+          className="mx-auto mt-6 max-w-3xl"
+        />
         <div className="mt-12">
           <SearchFilters />
         </div>
