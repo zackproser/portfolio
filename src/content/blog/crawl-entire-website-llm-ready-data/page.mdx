@@ -1,0 +1,171 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+import EmbeddedDemo from '@/components/EmbeddedDemo';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+# How to Crawl an Entire Website into LLM-Ready Data
+
+<Image src="https://zackproser.b-cdn.net/images/fc-crawl-hero.webp" alt="Pixel art of a glowing spider-crawler weaving across a vast dark web of interconnected page nodes branching from a single bright seed URL, threads lighting up as it moves" width={1200} height={1200} />
+
+Scraping one page is a solved problem. You hand a URL to something, you get content back, you move on. I've spent years building and running commercial scraping infrastructure, and I can tell you that the demo is always the single page — because the single page is where it looks easy. The job that actually pays the bills is the other one: take this entire documentation portal, this whole knowledge base, this publication's ten-year archive, and turn all of it into clean text I can feed a model. That's where the floor drops out from under you.
+
+The reason it drops out is that a site is not a page, it's a graph, and you don't get handed the graph. You get handed one node and a promise that the rest are reachable if you're clever enough. Somewhere in there are pages rendered entirely by JavaScript, three URLs that resolve to the same article, a pagination scheme that loops back on itself, and a `/tag/` section with forty thousand near-empty pages that will happily eat your entire budget while you sleep. The part that breaks at 2am is never the fetching. It's everything around the fetching.
+
+These days I do this with <AffiliateLink product="firecrawl" campaign="crawl-entire-website">Firecrawl</AffiliateLink>, and the shape of the work is the same as it always was — discover what exists, decide what you want, fetch it, strip it down to text — but the parts I used to maintain by hand are now an API call. I want to walk through how I actually run that, the real endpoints and the real config, including the one setting that matters more than all the others combined.
+
+## See the map before you commit to anything
+
+Every bad crawl I've ever run started the same way: I assumed I knew the site's structure and I was wrong. You cannot fetch what you can't enumerate, and on a real site you cannot enumerate by guessing URL patterns or by scraping the homepage and following links by hand. Sitemaps lie or don't exist. Link-following misses anything behind a search box. So the first move is always discovery, and Firecrawl's `/map` endpoint does it — it merges the site's sitemap with its own link discovery and hands back a flat list of URLs.
+
+```bash
+curl -X POST https://api.firecrawl.dev/v1/map \
+  -H "Authorization: Bearer fc-YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "url": "https://docs.example.com" }'
+```
+
+It comes back in a single response — no polling, no job:
+
+```json
+{
+  "success": true,
+  "links": [
+    "https://docs.example.com/",
+    "https://docs.example.com/getting-started",
+    "https://docs.example.com/api/authentication",
+    "https://docs.example.com/api/rate-limits",
+    "https://docs.example.com/guides/webhooks"
+  ]
+}
+```
+
+This call is cheap and fast, and it quietly reframes the entire job. The moment you can see the URL structure, you stop guessing about scale and start making decisions. You learn that the docs site you were about to crawl has 400 URLs, that 280 of them live under `/blog/` and `/changelog/` and you don't want any of those, and that the 120 you actually care about sit under `/api/` and `/guides/`. That single observation drives your crawl config and, more to the point, your bill. I never skip the map. Skipping the map is how you find out after the fact that you paid to scrape a marketing site's entire press-release archive.
+
+<InlineAffiliateCTA product="firecrawl" campaign="crawl-entire-website" />
+
+<Image src="https://zackproser.b-cdn.net/images/fc-crawl-map.webp" alt="Pixel art of a site map being discovered as a glowing tree: a bright seed URL node at the top, links fanning down into rows of page nodes lighting up one after another" width={1200} height={1200} />
+
+## Crawling is where you draw the boundaries
+
+With the map in front of me I know what I want, and the crawl is where I say so. The `/crawl` endpoint starts at a URL, follows links, and fetches pages — but the whole game is constraining it. Left unconstrained, a crawler is an animal that will walk off the edge of your budget. You fence it in with anchored path regexes, a depth cap, and a hard page limit.
+
+```bash
+curl -X POST https://api.firecrawl.dev/v1/crawl \
+  -H "Authorization: Bearer fc-YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://docs.example.com",
+    "includePaths": ["^/docs/.*$", "^/api/.*$"],
+    "excludePaths": ["^/blog/.*$", "^/changelog/.*$"],
+    "maxDepth": 2,
+    "limit": 100,
+    "scrapeOptions": {
+      "formats": ["markdown", "links"],
+      "onlyMainContent": true
+    }
+  }'
+```
+
+The `includePaths` and `excludePaths` regexes are your primary scope control, and they're where the money is — include the docs and API trees, exclude the blog and the noisy changelog, and you stop paying for pages you'd throw away anyway. `maxDepth` caps how many link-hops from the seed the crawler is allowed to wander; a depth of 2 covers most documentation trees without spelunking into the long tail. And `limit` is the part I treat as a smoke detector rather than a feature — it's a hard ceiling on pages fetched, the thing that saves you when your regex was subtly wrong and the crawler found ten times more links than you expected. `formats` decides what each page returns: `markdown` is the payload for an LLM corpus, and I keep `links` on when I want to run my own graph analysis over what the crawl found.
+
+Crawls run asynchronously, which is the right design for something that might take a while. The initial request hands you a job ID and returns:
+
+```json
+{ "success": true, "id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890" }
+```
+
+Then you poll the status endpoint until it's done. Here's the loop I reach for in JavaScript:
+
+```javascript
+async function crawlSite(url) {
+  const headers = {
+    Authorization: `Bearer ${process.env.FIRECRAWL_API_KEY}`,
+    'Content-Type': 'application/json',
+  };
+
+  const start = await fetch('https://api.firecrawl.dev/v1/crawl', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      url,
+      includePaths: ['^/docs/.*$', '^/api/.*$'],
+      maxDepth: 2,
+      limit: 100,
+      scrapeOptions: { formats: ['markdown', 'links'], onlyMainContent: true },
+    }),
+  }).then((r) => r.json());
+
+  // Poll until the job finishes
+  while (true) {
+    const status = await fetch(
+      `https://api.firecrawl.dev/v1/crawl/${start.id}`,
+      { headers }
+    ).then((r) => r.json());
+
+    if (status.status === 'completed') return status.data;
+    if (status.status === 'failed') throw new Error('Crawl failed');
+
+    await new Promise((res) => setTimeout(res, 2000));
+  }
+}
+```
+
+What comes back in `data` is an array with one entry per page, each carrying its markdown and its metadata. That array is your corpus. If you'd rather watch this happen than read about it, I built a demo that runs each stage live in the browser — map a domain, scope the crawl, and read the markdown that falls out the other end.
+
+<EmbeddedDemo slug="firecrawl-site-crawler" title="Crawl a site into LLM-ready data" />
+
+## The setting that decides whether your corpus is any good
+
+If I could keep only one option on the crawl, it would be `onlyMainContent`, and it's not close. This is the hidden cliff I mentioned — the gap between "I fetched the page" and "I have clean text." Web pages are built for people, which means every one of them ships a navigation bar, a footer, a cookie banner, a sidebar, an ad slot, and a "related articles" widget, all sitting in the HTML right next to the three paragraphs you actually wanted. Fetching is trivial. Getting clean text out of that mess is the part that used to cost me whole afternoons of writing brittle DOM selectors that broke the next time someone shipped a redesign.
+
+<Image src="https://zackproser.b-cdn.net/images/fc-crawl-clean.webp" alt="Pixel art split view: a cluttered web page full of nav bars, ads, and a footer on the left dissolving into a clean stack of glowing markdown lines on the right" width={1200} height={1200} />
+
+Set `onlyMainContent: true` and Firecrawl strips the chrome and hands you the article body as markdown. The payoff lands downstream, and it's larger than it looks. A chunk that's half navigation links retrieves badly and wastes context window when it lands in a prompt — you're paying tokens to feed a model your footer. Clean markdown chunks cleanly. I went deep on the retrieval side of this in <Link href="/blog/firecrawl-for-rag-pipelines">using Firecrawl for RAG pipelines</Link>, and the one-line version is that extraction quality sets the ceiling on everything that happens after it. You cannot retrieve your way out of a dirty corpus.
+
+<InlineAffiliateCTA product="firecrawl" campaign="crawl-entire-website" />
+
+## From a finished crawl to a queryable corpus
+
+A completed crawl leaves you with a list of pages, each with clean markdown and a source URL, and that shape maps almost directly onto a vector store ingestion job. Split, embed, store:
+
+```javascript
+import { OpenAIEmbeddings } from '@langchain/openai';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+
+const splitter = new RecursiveCharacterTextSplitter({
+  chunkSize: 512,
+  chunkOverlap: 50,
+});
+
+async function ingest(pages, vectorStore) {
+  for (const page of pages) {
+    const chunks = await splitter.splitText(page.markdown);
+    await vectorStore.addDocuments(
+      chunks.map((text) => ({
+        pageContent: text,
+        metadata: { source: page.metadata.sourceURL, title: page.metadata.title },
+      }))
+    );
+  }
+}
+```
+
+Carrying the source URL onto every chunk is the detail I'd fight to keep — it buys you citations at query time and a key for incremental re-crawls down the road, so you can re-fetch only what changed instead of rebuilding the whole index. For technical docs, 512-token chunks with a 50-token overlap is a sane default; for long-form articles I push that to 1024 so I'm not slicing through the middle of an argument. The <Link href="/demos/firecrawl-knowledge-base">knowledge base demo</Link> takes a crawl all the way through chunking, embedding, and querying if you want to see the back half running.
+
+## When crawling is the wrong tool
+
+I crawl an entire site when I genuinely need the whole thing — a docs portal standing behind a support bot, a competitor's full product catalog, an archive feeding a research agent. I do not crawl when I need five known pages; in that case I scrape those five URLs directly and skip every bit of the crawl machinery, because there's no graph to discover. And when I want specific fields — prices, specs, author names — rather than full-page text, a crawl is the wrong shape entirely. The extract endpoint is built for that, and I wrote up the approach in <Link href="/blog/extract-structured-data-websites">extracting structured data from websites</Link>.
+
+The honest constraint on all of this is cost. Crawls bill per page and a large site adds up fast, so the discipline that keeps me out of trouble is the same three habits every time: map first so I know the real size of the job before I commit to it, get aggressive with `includePaths` and `excludePaths` because excluding the sections you don't need is the cheapest optimization that exists, and set a `limit` I actually trust as a backstop against a crawl that finds more than I bargained for. None of that is glamorous. All of it is the difference between a clean corpus and a surprising invoice.
+
+This is, in the end, why I stopped maintaining my own browser fleet for work like this — the value was never in the fetching, it was in everything around it, and that's the part I'd rather rent. If you're still weighing a managed API against rolling your own automation, I laid out the full case in <Link href="/blog/best-web-scraping-api-2026">the 2026 scraping API comparison</Link>. I also write more broadly about where this is all heading in <Link href="/blog/web-scraping-for-ai-2026">web scraping for AI in 2026</Link>, monitoring sites for changes in <Link href="/blog/monitor-website-changes-firecrawl">change monitoring with Firecrawl</Link>, and why this tool earned a spot in my Applied AI work in <Link href="/blog/why-i-use-firecrawl-applied-ai">why I use Firecrawl on the Applied AI team</Link>.
+
+## Try it
+
+Firecrawl's free tier comes with 500 credits, which is plenty to map a domain and crawl a real section of it end to end. Map a docs site, read the URL list, then crawl the part you care about and look at the markdown that comes back — that loop is the whole job in miniature. Grab a key and <AffiliateLink product="firecrawl" campaign="crawl-entire-website">start crawling on the free tier</AffiliateLink>, or step through every stage first in <Link href="/demos/firecrawl-site-crawler">the interactive crawl demo</Link>.
+
+<InlineAffiliateCTA product="firecrawl" campaign="crawl-entire-website" />

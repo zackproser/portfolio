@@ -1,0 +1,109 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src="https://zackproser.b-cdn.net/images/fc-why-hero.webp" alt="Pixel art of a tangled chaotic mess of pipes, a headless browser, proxy boxes and snapped selector wires on the left, and a single clean glowing conduit carrying a stream of clean text into a bright AI core orb on the right" width={1200} height={1200} />
+<figcaption>The plumbing between a URL and clean text is where most AI features quietly break. This is the tool I stopped maintaining that plumbing for.</figcaption>
+
+I work on the Applied AI team at WorkOS, where my job is to ship AI features that hold up in production rather than impress in a demo. A surprising share of those features depend on reading the web — competitor pages, documentation, public records, our own content. On nearly every one of them, the same tool ends up doing the reading: <AffiliateLink product="firecrawl" campaign="why-i-use-firecrawl">Firecrawl</AffiliateLink>.
+
+I didn't arrive there by reading a benchmark. I arrived there because the alternatives kept costing me time I would rather spend elsewhere. I built and maintained commercial scraping infrastructure for years before this, so I have opinions about what the work actually involves, and most of those opinions are about how much of it stays invisible until it breaks.
+
+## The cliff nobody budgets for
+
+Every AI project that touches web data has the same hidden cliff. The interesting work — the retrieval, the agent logic, the model prompting — assumes you already have clean text in hand. Getting clean text from a real, modern, JavaScript-rendered, occasionally bot-defended web page is the part nobody budgets for, and it is the part that pages you at 2 a.m.
+
+My first few scraping setups were the obvious stack: a headless browser, some CSS selectors, a proxy when things got blocked. Each one worked in the demo and then slowly fell apart. A site would redesign and my selectors would snap. A page would start lazy-loading content below the fold and my fetch would return an empty shell. Cloudflare's bot protection would notice my traffic and the whole job would start failing *silently* — not erroring, just returning challenge pages that my parser dutifully turned into garbage.
+
+The silent failure was the one that bothered me most. A loud crash you catch in CI. A scraper that returns plausible-looking-but-wrong text feeds bad data into a model, and you find out three weeks later when someone asks why the summaries are off.
+
+<Image src="https://zackproser.b-cdn.net/images/fc-why-plumbing.webp" alt="Pixel art of old web-scraping plumbing drawn as a leaking tangle — a headless browser, a rotating proxy, hand-written selectors, retry glue — being replaced by one single clean glowing pipe with a small API badge" width={1200} height={1200} />
+
+What Firecrawl actually replaced, when it went into my projects, was a whole junk drawer of moving parts: a headless Chrome or Playwright instance for rendering JavaScript-heavy pages, a rotating proxy service to avoid getting blocked (plus the billing relationship that came with it), a pile of per-site selectors and cleanup logic that broke on every redesign, and the retry-backoff-rate-limit glue I wrote once, got wrong, and rewrote. All of it collapsed into one call.
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: process.env.FIRECRAWL_API_KEY })
+
+const page = await app.scrapeUrl('https://example.com/blog/post', {
+  formats: ['markdown'],
+  onlyMainContent: true,
+})
+
+console.log(page.markdown) // clean text, nav and footer gone
+```
+
+That `onlyMainContent: true` flag does the thing I used to write a hundred lines of selector logic for — it strips the nav, the cookie banner, the footer, the sidebar of related links, and hands back the article. When the source site redesigns, the flag keeps working, because it is not pinned to the site's markup. The whole category of problem moved behind one API call.
+
+## The example that sold me
+
+The project that actually convinced me is a publishing bot our team built — an AI system that lives in Slack and drafts blog posts from PRs, meeting notes, and web research. One of its features: you paste a competitor's URL with "clone this," and the bot scrapes the source page while a model rewrites every sentence into an original draft for review.
+
+<Image src="https://zackproser.b-cdn.net/images/fc-why-blogbot.webp" alt="Pixel art of an AI agent bot inside a glowing pipeline reading a web page on one side and emitting a clean document draft on the other, a chat panel glowing nearby" width={1200} height={1200} />
+
+That feature is Firecrawl underneath, running inside a Cloudflare Workflow, called mid-pipeline by an agent that cannot stop to debug a selector. The agent doesn't get to say "the page layout changed, please hold." It needs clean Markdown back, every time, or the whole step fails and a human has to babysit it. Firecrawl is the part of that pipeline I never think about, which is exactly the property I want from plumbing.
+
+If you want to see the shape of that workflow without reading my code, the demos run the same primitives in the browser: you can <Link href="/demos/firecrawl-site-crawler">crawl an entire site</Link>, <Link href="/demos/firecrawl-change-tracker">monitor pages for changes</Link>, or build a <Link href="/demos/firecrawl-knowledge-base">knowledge base from a documentation site</Link>.
+
+<InlineAffiliateCTA product="firecrawl" campaign="why-i-use-firecrawl" />
+
+## What held up once it was live
+
+Plenty of scraping tools demo well. What decided it for me was the way three properties behaved after the feature was live and getting real traffic.
+
+The first is that it handles JavaScript without me running a browser. Most pages worth scraping today render their content with JavaScript, so a raw HTTP fetch sees an empty `<div id="root">` and nothing else. The old answer was to run a headless browser, which means you now own a browser fleet — memory leaks, zombie processes, version upgrades that break things, and a job queue to keep it all moving. Firecrawl renders the page on its side and returns the result. The infrastructure still exists; it is just not mine to babysit. I got into that tradeoff at more length in <Link href="/blog/best-web-scraping-api-2026">my comparison of scraping approaches for AI developers</Link>.
+
+The second is the one I underrated until I used it: schema extraction means my code stops breaking on redesigns. Instead of writing `div.price > span.amount` and praying the site never touches its markup, I pass a JSON schema and a short prompt, and a model fills it in from the page.
+
+```javascript
+const result = await app.scrapeUrl('https://example.com/pricing', {
+  formats: ['json'],
+  jsonOptions: {
+    prompt: 'Extract each plan name and its monthly price in USD.',
+    schema: {
+      type: 'object',
+      properties: {
+        plans: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              monthlyPriceUsd: { type: 'number' },
+            },
+          },
+        },
+      },
+    },
+  },
+})
+```
+
+When the site moves the price from a `<span>` into a `<div>` next quarter, this keeps working, because it is extracting *meaning* rather than matching a CSS path. That's the difference between a scraper I check on weekly and one I forget exists. I dug into the structured-extraction workflow in <Link href="/blog/extract-structured-data-websites">extracting structured data from websites</Link>.
+
+The third is that the output is genuinely LLM-ready — clean Markdown, structure intact, the chrome gone. That matters more than it sounds. Feeding a model raw HTML, or text with the nav and footer still glued on, wastes tokens and dilutes whatever you are trying to retrieve or summarize. Markdown with the headings preserved chunks cleanly for a vector store and reads well in a prompt. When the input layer is clean, the rest of the <Link href="/blog/firecrawl-for-rag-pipelines">RAG pipeline</Link> gets simpler, because you aren't writing defensive cleanup code between the scrape and the embedding step.
+
+## Where I wouldn't reach for it
+
+The honest version of any recommendation includes the cases where it's the wrong call, and there are a few.
+
+When I need to scrape behind a login with complex, stateful session handling — multi-step auth, CSRF tokens, flows that depend on prior clicks — I reach for a self-hosted browser automation setup where I control the session end to end. The same goes for anything that needs fine-grained control over browser config, custom headers tied to a specific auth scheme, or behavior that depends on interacting with the page across several steps. Owning the browser is the right answer there.
+
+For a single static HTML site with a stable structure, a managed API is overkill; Beautiful Soup or Cheerio over a plain fetch is faster and free. And if scraping were my core product rather than plumbing for an AI feature, I'd think hard about owning the stack, the way I did when I ran one. That calculus is the whole subject of <Link href="/blog/firecrawl-vs-crawl4ai">Firecrawl vs Crawl4AI</Link>, where the open-source, self-hosted path makes real sense for some teams.
+
+The line I draw is simple. When web data is the input to a feature, I want it to be a function call. When web data *is* the feature, I want to own it.
+
+## The real reason it stuck
+
+Firecrawl moved web scraping from "a system I maintain" to "a function I call." On an applied AI team, the scarce resource is attention, and the worst place to spend it is on the fragile layer between a URL and clean text. Every hour I'm not chasing a snapped selector or a silently-failing proxy is an hour on the part of the product that actually matters.
+
+If you want the broader argument for why this category exists now, I made it in <Link href="/blog/web-scraping-for-ai-2026">web scraping for AI in 2026</Link>. If you want to go deeper on the two workflows I lean on most, I wrote up <Link href="/blog/crawl-entire-website-llm-ready-data">crawling an entire website into LLM-ready data</Link> and <Link href="/blog/monitor-website-changes-firecrawl">monitoring websites for changes</Link>.
+
+The fastest way to decide whether it fits your work is to point it at a page you already know is annoying — a JavaScript-heavy app, a site with aggressive bot protection, a layout you've fought with before — and see what comes back. <AffiliateLink product="firecrawl" campaign="why-i-use-firecrawl">Firecrawl's free tier</AffiliateLink> includes 500 credits, enough to run a real target URL through it and read the Markdown yourself. That's the test that convinced me, and it took about five minutes.
+
+<InlineAffiliateCTA product="firecrawl" campaign="why-i-use-firecrawl" />

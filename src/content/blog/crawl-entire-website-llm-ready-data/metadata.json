@@ -1,0 +1,28 @@
+{
+  "title": "How to Crawl an Entire Website into LLM-Ready Data",
+  "author": "Zachary Proser",
+  "date": "2026-06-05",
+  "description": "Scraping one page is easy. Turning a whole site into a clean corpus means handling pagination, JS rendering, dedup, and knowing which URLs exist. Here is how to map and crawl a domain into LLM-ready markdown with Firecrawl.",
+  "image": "https://zackproser.b-cdn.net/images/fc-crawl-hero.webp",
+  "type": "blog",
+  "slug": "/blog/crawl-entire-website-llm-ready-data",
+  "keywords": [
+    "crawl entire website",
+    "web crawler for llm",
+    "website to markdown",
+    "firecrawl crawl",
+    "llm-ready data",
+    "rag corpus",
+    "site mapping api",
+    "crawl website to markdown",
+    "discover all urls on a domain",
+    "onlyMainContent",
+    "includePaths excludePaths"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}
