@@ -1,0 +1,81 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-javascript-rendering';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Firecrawl JavaScript rendering pipeline" width={800} height={450} />
+</AffiliateLink>
+
+When traditional HTTP scrapers request a page, they get back the server's initial HTML response — which for modern web applications is often just an empty shell. The actual content gets filled in by JavaScript running in the browser. This is the fundamental mismatch at the heart of web scraping.
+
+Firecrawl's rendering pipeline bridges this gap. When you submit a URL, Firecrawl uses a real browser environment to load the page, execute the JavaScript, wait for dynamic content to settle, and then extract the rendered result.
+
+## How the Rendering Pipeline Works
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> doesn't just hand off to a headless browser and hope for the best. The rendering process is structured:
+
+1. **Initial load** — The browser navigates to the URL and begins downloading HTML, CSS, and JavaScript assets
+2. **JavaScript execution** — Framework code (React, Vue, Next.js) runs and begins building or updating the DOM
+3. **Network idle detection** — Firecrawl waits for outstanding network requests to complete before attempting extraction
+4. **Content extraction** — The rendered HTML is processed to strip navigation, ads, and boilerplate, leaving clean content
+5. **Output formatting** — The content is converted to markdown or structured JSON depending on your needs
+
+This is substantially different from just pointing a headless browser at a URL and `innerText`-ing the body.
+
+## Common JavaScript Rendering Patterns
+
+**Single-page applications (SPAs)** — Routes handled entirely client-side. The server returns the same HTML for `/about`, `/pricing`, and `/contact`. Firecrawl navigates to each URL and waits for the framework to render the correct view.
+
+**Infinite scroll** — Content loads as the user scrolls. Firecrawl's crawl mode can be configured to trigger scroll events and continue paginating through results.
+
+**Client-side hydration** — Some frameworks server-render an initial HTML snapshot, then "hydrate" it with JavaScript that attaches event handlers and potentially modifies content. Firecrawl captures the post-hydration state.
+
+**Dynamic imports** — Modern frameworks split JavaScript into chunks loaded on demand. Firecrawl's network idle detection waits for these chunks to download and execute before extracting.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## What Firecrawl Extracts vs. What You Get with Raw Playwright
+
+If you've run Playwright or Puppeteer yourself, you know the gap between "browser loaded the page" and "content is actually ready" can be significant. Raw browser automation gives you the full DOM — which means navigation, ads, cookie banners, and JavaScript-rendered clutter alongside your actual content.
+
+Firecrawl processes the rendered output through a content extraction step. The result is stripped of:
+
+- Navigation menus and footers
+- Cookie consent banners
+- Ad iframes and widgets
+- JavaScript UI scaffolding
+
+What remains is the actual page content, converted to clean markdown.
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+const result = await app.scrapeUrl('https://example-spa.com')
+
+// result.markdown contains the rendered, extracted content
+// No nav, no ads, no boilerplate — just the actual page content
+console.log(result.markdown)
+```
+
+## Why Not Just Run Your Own Headless Browsers?
+
+You can. If you need to interact with pages — fill forms, click through auth flows, take screenshots — a raw Playwright setup gives you more control.
+
+The tradeoff is operational complexity. Browser instances are memory-hungry and crash-prone. You need worker pools, health checks, and restart logic. At scale, zombie processes and memory leaks become a constant maintenance burden.
+
+Firecrawl offloads that infrastructure. The rendering pipeline runs on Firecrawl's infrastructure, and you receive clean extracted content via API.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+**Related:**
+- <Link href="/blog/how-to-scrape-javascript-sites">How to scrape JavaScript-heavy websites</Link>
+- <Link href="/blog/best-web-scraping-api-2026">Best web scraping API in 2026</Link>
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
