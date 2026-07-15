@@ -45,7 +45,8 @@ function CalculatorField({
           value={value}
           onChange={(event) => {
             const next = Number(event.target.value)
-            onChange(Number.isFinite(next) ? next : 0)
+            const clamped = Number.isFinite(next) ? Math.max(min, Math.min(max, next)) : min
+            onChange(clamped)
           }}
           className="min-w-0 flex-1 bg-transparent px-4 py-3 text-base font-semibold tabular-nums text-zinc-950 outline-none dark:text-white"
         />

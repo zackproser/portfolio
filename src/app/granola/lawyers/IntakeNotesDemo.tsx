@@ -64,13 +64,13 @@ export default function IntakeNotesDemo() {
       </div>
 
       <div className="min-h-[430px] p-5 sm:p-8">
-        {view === 'consult' && (
-          <div
-            role="tabpanel"
-            id="intake-panel-consult"
-            aria-labelledby="intake-tab-consult"
-            className="mx-auto max-w-3xl"
-          >
+        <div
+          role="tabpanel"
+          id="intake-panel-consult"
+          aria-labelledby="intake-tab-consult"
+          hidden={view !== 'consult'}
+          className="mx-auto max-w-3xl"
+        >
             <div className="mb-6 flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700 dark:text-teal-300">
@@ -107,18 +107,17 @@ export default function IntakeNotesDemo() {
               onClick={() => setView('record')}
               className="mt-6 inline-flex items-center gap-2 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-teal-600"
             >
-              View the intake record <span aria-hidden="true">→</span>
-            </button>
-          </div>
-        )}
+            View the intake record <span aria-hidden="true">→</span>
+          </button>
+        </div>
 
-        {view === 'record' && (
-          <div
-            role="tabpanel"
-            id="intake-panel-record"
-            aria-labelledby="intake-tab-record"
-            className="mx-auto max-w-3xl"
-          >
+        <div
+          role="tabpanel"
+          id="intake-panel-record"
+          aria-labelledby="intake-tab-record"
+          hidden={view !== 'record'}
+          className="mx-auto max-w-3xl"
+        >
             <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700 dark:text-teal-300">
@@ -144,18 +143,17 @@ export default function IntakeNotesDemo() {
                 <li>Request the signed agreement, invoice, and delivery correspondence from the client.</li>
                 <li>Review delivery, renewal, and notice terms.</li>
                 <li>Confirm the next client call before August 1.</li>
-              </ul>
-            </div>
+            </ul>
           </div>
-        )}
+        </div>
 
-        {view === 'recheck' && (
-          <div
-            role="tabpanel"
-            id="intake-panel-recheck"
-            aria-labelledby="intake-tab-recheck"
-            className="mx-auto max-w-3xl"
-          >
+        <div
+          role="tabpanel"
+          id="intake-panel-recheck"
+          aria-labelledby="intake-tab-recheck"
+          hidden={view !== 'recheck'}
+          className="mx-auto max-w-3xl"
+        >
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700 dark:text-teal-300">
               Illustrative live transcript query
             </p>
@@ -177,10 +175,9 @@ export default function IntakeNotesDemo() {
             </div>
 
             <p className="mt-8 rounded-xl bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-900 ring-1 ring-inset ring-amber-200 dark:bg-amber-950/20 dark:text-amber-200 dark:ring-amber-900">
-              Fictional example. Generated notes and answers depend on the meeting audio and your note template; verify dates, amounts, names, and legal facts before relying on them.
-            </p>
-          </div>
-        )}
+            Fictional example. Generated notes and answers depend on the meeting audio and your note template; verify dates, amounts, names, and legal facts before relying on them.
+          </p>
+        </div>
       </div>
     </div>
   )
