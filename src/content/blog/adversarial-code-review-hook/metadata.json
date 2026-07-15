@@ -1,0 +1,8 @@
+{
+  "title": "Codex Reviews Every Diff Claude Writes",
+  "author": "Zachary Proser",
+  "date": "2026-06-24",
+  "description": "I run a hook that sends every substantial diff Claude writes to Codex for an adversarial review before it ever reaches me. Cross-model review beats self-review because the second model doesn't share the first one's blind spots. Here's the flow, the hook, and a real catch.",
+  "image": "https://zackproser.b-cdn.net/images/adversarial-code-review-hook-hero.jpg",
+  "tags": ["AI", "Agents", "AI Engineering", "Developer Tools", "Code Review"]
+}

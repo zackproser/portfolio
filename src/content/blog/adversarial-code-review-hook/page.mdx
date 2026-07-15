@@ -1,0 +1,182 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ReadNextCard from '@/components/ReadNextCard'
+import Mermaid from '@/components/Mermaid'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+# Codex Reviews Every Diff Claude Writes
+
+<Image src="https://zackproser.b-cdn.net/images/adversarial-code-review-hook-hero.jpg" alt="Pixel art of two robots at a shared workbench: a blue robot labeled Claude holding a freshly written diff, an orange robot labeled Codex inspecting it with a magnifying glass and circling a flaw in red, a gate between them marked REVIEW" width={1200} height={675} />
+
+The model that wrote the code is the worst possible judge of it. It's reasoning from the same assumptions that produced the bug, so it reads its own diff and sees what it meant to write, not what it wrote.
+
+So I stopped asking the author to grade itself. Claude writes the code. Before that diff reaches me, a hook hands it to Codex — a different model family — for an adversarial review. Codex doesn't know what Claude intended. It only sees the diff, and it goes looking for what's wrong with it. The rule is that the model producing the patch can't be the model that clears it.
+
+This is the same instinct I apply to prose, where [two cold readers from different model families grade a draft before I see it](/blog/how-my-blog-bot-reviews-its-own-writing). This post is the code version: the hook, why cross-model review beats self-review, and a real bug it caught that the author had shipped clean.
+
+## Self-review is the author re-reading their own intent
+
+Ask a model to review the code it just wrote and you get a predictable answer: it looks fine. Usually the code only looks fine from inside the assumption that produced it. The model re-derives the diff from the same context that produced it, lands on the same conclusion, and reports back that everything checks out.
+
+A bug isn't usually a typo. It's a wrong assumption made confidently. The author held that assumption while writing the code and still holds it while reviewing the code, so the review can't see past it. You can't proofread your way out of believing the wrong thing. The error is invisible from the inside because the whole approach is built on top of it.
+
+<Image src="https://zackproser.b-cdn.net/images/adversarial-code-review-hook-blindspot.jpg" alt="Pixel art of a robot reading its own code, eyes following a brightly lit happy path while a shadowed abort path with a leaking crack goes completely unnoticed beside it" width={1200} height={675} />
+
+That's the case for a reviewer who isn't the author, and it's why cross-*model* matters specifically. A second Claude session shares Claude's training, its priors, the shapes it reaches for. It's a fresh context window, but it's not a fresh perspective. A different family — Codex sitting in for GPT — brings different priors. It's suspicious of different things. When it reads the diff, it isn't reconstructing the author's plan, because it never had the plan. It's looking at code a stranger wrote, asking what breaks.
+
+## The flow
+
+The hook sits between Claude finishing a change and that change reaching me. It's gated on size — a one-line copy fix doesn't need a tribunal — and only substantial diffs get routed to the reviewer.
+
+<Mermaid chart={`
+flowchart TD
+  A["Claude writes diff"] --> B{"substantial?"}
+  B -->|"no"| H["my review"]
+  B -->|"yes"| C["send to Codex"]
+  C --> D["findings + severity"]
+  D --> E{"blocking?"}
+  E -->|"yes"| F["Claude fixes"]
+  F --> D
+  E -->|"no"| G["diff + notes to me"]
+`} />
+
+The revision loop is the point: a blocking finding goes back to Claude, Claude fixes it, and the diff runs the review again. By the time anything reaches me, it has already survived a reviewer that doesn't share the author's blind spots. What lands in front of me is the diff *plus* the review notes, so I'm reading a conversation between two models, not a raw dump from one.
+
+"Substantial" is the knob that keeps this cheap. I gate on changed lines and on the kind of file — anything touching control flow, error handling, async lifecycles, or money gets reviewed; a README tweak doesn't. The exact threshold is tuning, not doctrine.
+
+## The hook
+
+The mechanism is boring on purpose. After Claude produces a change, it stages the candidate patch and a script collects that diff, checks whether it clears the substantiality bar, and if so sends it to Codex with a deliberately adversarial instruction. The prompt does the real work here: I tell the reviewer it did *not* write this code and its job is to find what's wrong, not to admire it.
+
+This is the shape, not a paste of my private hook — the real one has auth, logging, and more tuning. The control flow is the part worth copying:
+
+```bash
+#!/usr/bin/env bash
+# review-diff.sh — route a substantial diff to the cross-model reviewer
+set -euo pipefail
+
+DIFF="$(git diff --cached)"
+# Count real changed lines, not the +++/--- headers. awk always exits 0,
+# so an empty diff won't trip `set -e`.
+LINES="$(printf '%s\n' "$DIFF" | awk '/^[+-][^+-]/ { n++ } END { print n + 0 }')"
+
+# Trivial changes skip the review.
+if [ "$LINES" -lt 20 ]; then
+  echo "diff below threshold ($LINES lines) — skipping cross-model review"
+  exit 0
+fi
+
+# Pipe the diff over stdin so a big patch doesn't blow the arg limit.
+# Swap `review-cli` for your reviewer of choice — the point is a DIFFERENT
+# model family from the one that wrote the code.
+printf '%s' "$DIFF" | review-cli --model gpt-codex --stdin \
+  --system "You did NOT write this diff. A different model did. \
+Find what is wrong with it: broken error handling, race conditions, \
+orphaned async work, off-by-one, security, resource leaks. \
+Do not restate what it does. A finding is only 'blocking' if you \
+can name how it breaks. Return ONLY a JSON object of the shape \
+{\"findings\":[{\"severity\":\"blocking|warning|nit\",\"file\":\"...\", \
+\"line\":0,\"finding\":\"...\",\"fix\":\"...\"}]}."
+```
+
+The reviewer returns structured findings so the orchestrator can act on them without a human in the loop for the easy cases:
+
+```json
+{
+  "findings": [
+    {
+      "severity": "blocking",
+      "file": "src/publish.ts",
+      "line": 42,
+      "finding": "abort after startPublish() leaves the record in 'pending' with no cleanup",
+      "fix": "register a finalizer before the side effect; make abort idempotent"
+    }
+  ]
+}
+```
+
+A `blocking` finding bounces back to Claude with the note attached; Claude addresses it and the diff runs the review again. `warning` and `nit` ride along to me as annotations. The same gate as the bash hook, wired into the agent loop instead of a git hook — and one more reviewable artifact in the family of [the PR I open instead of a chat reply](/blog/build-agents-that-open-prs), something that has to clear a check before it earns my attention.
+
+```ts
+// illustrative orchestrator control flow; auth, transport, and logging elided
+const MAX_ROUNDS = 3
+
+async function reviewUntilClean(diff: string, round = 1) {
+  // parse + validate the reviewer's JSON against a schema before trusting it
+  const review = ReviewResult.parse(await runCrossModelReview(diff))
+  const blocking = review.findings.filter((f) => f.severity === 'blocking')
+
+  if (blocking.length === 0) {
+    // clean enough — surface the diff plus the notes to me
+    return { status: 'ready', annotations: review.findings }
+  }
+  if (round >= MAX_ROUNDS) {
+    // stop looping; escalate to me with the unresolved findings
+    return { status: 'escalated', blocking }
+  }
+
+  // hand the findings back to the author and try again
+  const revised = await claude.revise({ diff, findings: blocking })
+  return reviewUntilClean(revised.diff, round + 1)
+}
+```
+
+## Make the reviewer adversarial, not polite
+
+The default failure of an LLM reviewer is sycophancy. Hand a model a diff and ask "is this good?" and it will find reasons to say yes, because agreement is the path of least resistance in its training. A reviewer that wants to approve you is worse than no reviewer, because it launders a bad diff with a clean bill of health.
+
+<Image src="https://zackproser.b-cdn.net/images/adversarial-code-review-hook-sycophant.jpg" alt="Pixel art split scene: a smiling POLITE robot rubber-stamping code APPROVED without looking, next to a stern ADVERSARIAL robot circling three flaws with a red pen and a clipboard of findings" width={1200} height={675} />
+
+Three things keep the reviewer hostile in the way you want:
+
+- **Tell it it didn't write the code.** The single most effective line in the prompt is "you did NOT write this diff." It severs the reviewer from any imagined ownership and gives it permission to be unimpressed. A reviewer that thinks it might have authored the code hedges; one that knows a stranger did goes hunting.
+- **Ask for findings, not a verdict.** "Is this correct?" invites yes/no, and the model picks yes. "List what is wrong, with severity" forces it to produce a list, and a model asked to produce a list of problems will work to fill it. The framing changes what's easy to answer.
+- **Name the failure classes.** Pointing the reviewer at error handling, async lifecycles, race conditions, and resource leaks aims its attention at the places bugs actually hide, instead of letting it drift to style nits it can comment on without thinking.
+
+The trap on the other side is a reviewer so adversarial it drowns you in false positives. The severity field is the release valve: only `blocking` bounces the diff back to the author automatically. Warnings and nits ride along as annotations I can ignore. Calibrating what counts as `blocking` is most of the tuning, and I'd rather it err toward flagging — a false positive costs me ten seconds, a false negative costs me the abort path.
+
+## What it catches that self-review misses
+
+<Image src="https://zackproser.b-cdn.net/images/adversarial-code-review-hook-catches.jpg" alt="Pixel art of a robot inspector with a magnifying glass finding four bugs hiding in code: an orphaned async task, a swallowed error in a catch block, an unchecked array access, and an unclosed file handle" width={1200} height={675} />
+
+After running this for a while, the catches cluster. They're nearly all in the same neighborhood: the paths the author didn't consider load-bearing.
+
+- **Orphaned async work.** Aborts, timeouts, and early returns that unwind some state but not all of it — an `AbortSignal` listener that stops awaiting but never rolls back the row it already wrote.
+- **Error handling that swallows.** A `catch` that logs and continues where it should stop, or returns `{ ok: true }` on failure so the caller never learns anything broke.
+- **Assumed invariants.** "This array is never empty," "this field is always set," "this only runs once." True in the author's head, an unchecked `arr[0]` in the code.
+- **Resource lifecycle.** A file handle or DB connection opened on one branch and only closed on another. Fine until the branch that skips the close gets taken.
+
+None of these are exotic. They're the ordinary bugs that survive self-review precisely because they sit where the author wasn't looking. A reviewer with different priors treats every one of them as the first place to look. It's the same reason I keep an [infrastructure agent that can debug my production agent](/blog/my-ai-agent-has-a-mechanic-agent): a second perspective on the same system, by design, because the system can't see its own assumptions.
+
+## What it costs, and where it doesn't help
+
+The tradeoff is plain: one more model call and some latency for every diff that clears the gate. Two limits worth stating outright.
+
+It costs a model call per substantial diff, which is why the size gate matters — review the diffs where a missed bug is expensive, skip the ones where it isn't. And it adds a round-trip of latency before a change reaches me. For an agent working unattended, latency is cheap; the agent isn't waiting on a coffee break. For a human in a tight inner loop, you'd tune the threshold up.
+
+It also doesn't replace tests or my own read. A second model is suspicious in *different* places, not in *all* places. Two models can still share a wrong assumption — rarer, but it happens, especially on domain logic neither has real context for. The review catches a specific, common, expensive class of bug early. It removes one dumb failure mode; it doesn't remove all of them. I still read the diff. I just read a better one.
+
+The thing I'd defend is the principle, not my exact threshold or prompt: don't let the author be the only judge, and make the second judge a different family so it doesn't inherit the first one's blind spots. Self-review is the author re-reading their own intent. Cross-model review is the first time anyone reads the code as a stranger would. That stranger is the one who finds the abort path.
+
+## Steal the pattern
+
+If you want this in your own agent loop, the recipe is small:
+
+1. **Gate on substance.** Route only diffs that clear a size or risk threshold; skip typos and README edits.
+2. **Send the diff to a different model family.** Not a fresh session of the same model — a different family, so it doesn't inherit the author's priors.
+3. **Make the prompt adversarial.** Tell it it didn't write the code; ask for findings with severity, not a verdict.
+4. **Require evidence for `blocking`.** A blocking finding has to name the file, line, and the concrete way it breaks — that's your false-positive filter.
+5. **Cap the rounds, then escalate.** Loop the author against the reviewer a few times; if it can't clear the findings, hand it to a human with the notes attached.
+
+Start by dropping the adversarial prompt and JSON schema above into whatever pre-merge or agent loop you already run, and tune the threshold first. That's the whole thing. The model that wrote the code isn't the one that should clear it. If this gate only ever saves me from one stuck `pending` row in production, it has already paid for itself.
+
+<ReadNextCard
+  image="https://zackproser.b-cdn.net/images/blog-bot-self-review-hero.jpg"
+  imageAlt="Pixel art of a blog draft being graded by two cold readers before the author sees it"
+  eyebrow="Read this next"
+  title="How My Blog Bot Reviews Its Own Writing Before I Read It"
+  description="The prose version of this idea: two cold readers from different model families score every draft against a rubric and force a revision loop before it reaches me."
+  href="/blog/how-my-blog-bot-reviews-its-own-writing"
+/>
