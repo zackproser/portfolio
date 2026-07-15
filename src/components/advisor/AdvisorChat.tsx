@@ -86,9 +86,7 @@ const MARKER_PATTERN = /\[\[(tool|post):([a-z0-9-]+)\]\]/g
 function parseMessage(content: string, isStreaming: boolean): ParsedSegment[] {
   // A marker can arrive over several stream chunks. Hide its unfinished tail
   // so readers never see protocol text flash in the message.
-  const safeContent = isStreaming
-    ? content.replace(/\[\[[^\]\n]*$/, '')
-    : content
+  const safeContent = content.replace(/\[\[[^\]\n]*$/, '')
   const segments: ParsedSegment[] = []
   let cursor = 0
 
