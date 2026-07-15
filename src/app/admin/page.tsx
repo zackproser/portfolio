@@ -1,5 +1,6 @@
 "use client"
 
+import type { Metadata } from 'next'
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { 
@@ -7,6 +8,13 @@ import {
   Wrench, 
   Tags
 } from "lucide-react"
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 export default function AdminDashboard() {
   const adminModules = [
