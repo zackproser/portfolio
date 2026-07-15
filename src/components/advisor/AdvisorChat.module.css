@@ -1,4 +1,8 @@
 .shell {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
   overflow: hidden;
   border: 1px solid rgba(132, 160, 214, 0.2);
   border-radius: 26px;
@@ -10,7 +14,8 @@
 
 .chatHeader {
   display: flex;
-  min-height: 68px;
+  min-height: 58px;
+  flex: none;
   align-items: center;
   gap: 12px;
   border-bottom: 1px solid rgba(132, 160, 214, 0.16);
@@ -51,8 +56,8 @@
 .headerSignal i:nth-child(3) { width: 4px; background: #76ddf4; box-shadow: 0 0 8px #76ddf4; }
 
 .scroll {
-  height: min(58vh, 560px);
-  min-height: 430px;
+  min-height: 0;
+  flex: 1;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 20px 12px;
@@ -142,6 +147,16 @@
 .assistantProse li { color: #c2cce2 !important; }
 .assistantProse strong { color: #f3f6ff !important; font-weight: 600; }
 .assistantProse ul ::marker { color: #6ed9ef; }
+.affiliateTextLink {
+  color: var(--text-link-accent) !important;
+  font-weight: 600;
+  text-decoration: underline !important;
+  text-decoration-color: color-mix(in srgb, var(--text-link-accent) 72%, transparent) !important;
+  text-decoration-thickness: 1.5px !important;
+  text-underline-offset: 3px;
+}
+.affiliateTextLink:hover { color: color-mix(in srgb, var(--text-link-accent) 72%, white) !important; }
+.affiliateTextLink:focus-visible { border-radius: 2px; outline: 2px solid var(--text-link-accent); outline-offset: 2px; }
 
 .toolCard {
   --tool-accent: #6ae1ff;
@@ -265,7 +280,7 @@
 
 .error { border: 1px solid rgba(251, 113, 133, 0.35); border-radius: 12px; background: rgba(76, 5, 25, 0.38); padding: 11px 13px; color: #fda4af; font-size: 12px; }
 
-.composerArea { border-top: 1px solid rgba(132, 160, 214, 0.16); background: rgba(8, 14, 35, 0.94); padding: 12px; }
+.composerArea { flex: none; border-top: 1px solid rgba(132, 160, 214, 0.16); background: rgba(8, 14, 35, 0.94); padding: 10px 12px; }
 .form { width: min(100%, 680px); margin-inline: auto; }
 .composer {
   display: flex;
@@ -340,7 +355,7 @@
 @media (min-width: 640px) {
   .chatHeader { padding-inline: 20px; }
   .headerSignal { display: flex; }
-  .scroll { min-height: 440px; padding: 24px 20px; }
+  .scroll { min-height: 0; padding: 20px; }
   .assistantRow { gap: 12px; padding-right: 30px; }
   .assistantMark { display: flex; }
   .userRow { padding-left: 64px; }

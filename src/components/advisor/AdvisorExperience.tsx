@@ -51,9 +51,6 @@ export default function AdvisorExperience() {
             AI tool advisor
           </p>
           <h1>Bring the need. Leave with one clear answer.</h1>
-          <p className={styles.lede}>
-            The advisor asks a question or two, then gives you an honest recommendation and the posts that back it up.
-          </p>
           <p className={styles.status} aria-live="polite">
             <span className={styles.statusMark} aria-hidden="true" />
             {PHASE_COPY[signal.phase]}

@@ -2,7 +2,8 @@
   --advisor-accent: #6ae1ff;
   position: relative;
   isolation: isolate;
-  min-height: calc(100svh - 64px);
+  height: calc(100dvh - 64px);
+  min-height: 0;
   overflow: hidden;
   background:
     radial-gradient(circle at 72% 18%, color-mix(in srgb, var(--advisor-accent) 14%, transparent), transparent 31rem),
@@ -47,14 +48,19 @@
 .content {
   position: relative;
   z-index: 1;
+  display: flex;
+  height: 100%;
+  min-height: 0;
   width: min(100% - 24px, 960px);
+  flex-direction: column;
   margin-inline: auto;
-  padding: 52px 0 72px;
+  padding: 10px 0;
 }
 
 .cover {
   width: min(100%, 760px);
-  margin: 0 auto 28px;
+  flex: none;
+  margin: 0 auto 8px;
   text-align: center;
 }
 
@@ -63,7 +69,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin: 0 0 16px;
+  margin: 0 0 4px;
   color: #8bdff2;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10px;
@@ -85,19 +91,10 @@
   margin: 0;
   color: #f5f7ff;
   font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(2.35rem, 8.5vw, 4.4rem);
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
   font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 0.98;
-  text-wrap: balance;
-}
-
-.lede {
-  max-width: 570px;
-  margin: 18px auto 0;
-  color: #aab7d6;
-  font-size: clamp(0.94rem, 2vw, 1.08rem);
-  line-height: 1.65;
   text-wrap: balance;
 }
 
@@ -106,7 +103,7 @@
   min-height: 18px;
   align-items: center;
   gap: 8px;
-  margin: 18px 0 0;
+  margin: 5px 0 0;
   color: #7383a8;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10px;
@@ -125,6 +122,8 @@
 
 .chatWrap {
   position: relative;
+  min-height: 0;
+  flex: 1;
   border-radius: 26px;
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.38), 0 0 60px color-mix(in srgb, var(--advisor-accent) 5%, transparent);
   transition: box-shadow 600ms ease;
@@ -150,8 +149,8 @@
 }
 
 @media (min-width: 640px) {
-  .content { width: min(100% - 48px, 960px); padding-top: 72px; padding-bottom: 96px; }
-  .cover { margin-bottom: 38px; }
+  .content { width: min(100% - 48px, 960px); padding-block: 14px; }
+  .cover { margin-bottom: 10px; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -159,7 +158,6 @@
   .play .eyebrow { animation: advisor-cover-in 450ms ease both; }
   .play .eyebrow span { animation: advisor-rule-draw 700ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both; }
   .play .cover h1 { animation: advisor-headline-in 900ms cubic-bezier(0.16, 1, 0.3, 1) 70ms both; }
-  .play .lede { animation: advisor-cover-in 650ms cubic-bezier(0.22, 1, 0.36, 1) 190ms both; }
   .play .status { animation: advisor-cover-in 500ms ease 300ms both; }
   .play .statusMark { animation: advisor-rule-draw 650ms cubic-bezier(0.22, 1, 0.36, 1) 420ms both; }
   .play .chatWrap { animation: advisor-cover-in 750ms cubic-bezier(0.22, 1, 0.36, 1) 260ms both; }

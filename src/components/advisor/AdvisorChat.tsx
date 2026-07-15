@@ -1,7 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { memo, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  cloneElement,
+  isValidElement,
+  memo,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
 import ReactMarkdown from 'react-markdown'
 import { useChat } from 'ai/react'
 import { track } from '@vercel/analytics'
@@ -27,7 +36,7 @@ const SUGGESTIONS = [
   'I want meeting notes but no bot joining my calls',
   'Best voice dictation for coding?',
   'I need to turn websites into data for a RAG pipeline',
-  'What does Zack actually use daily?',
+  'What do you actually use daily?',
 ]
 
 const SUGGESTION_ACCENTS = ['#43d3bc', '#43d3bc', '#a78bfa', '#fb923c', '#6ae1ff']
@@ -82,6 +91,78 @@ type ParsedSegment =
   | { type: 'post'; slug: AdvisorPostSlug }
 
 const MARKER_PATTERN = /\[\[(tool|post):([a-z0-9-]+)\]\]/g
+const AFFILIATE_NAME_PATTERN = /\b(Granola|Wispr\s?Flow|Firecrawl)\b/gi
+const SESSION_ID_PATTERN = /^[a-zA-Z0-9_-]+$/
+const SESSION_ID_STORAGE_KEY = 'advisorSessionId'
+const SESSION_TURN_STORAGE_KEY = 'advisorSessionTurn'
+const INPUT_FOCUS_STORAGE_KEY = 'advisorInputFocusSessionId'
+
+function affiliateProductForName(name: string): AffiliateProduct {
+  const normalized = name.toLowerCase().replace(/\s/g, '')
+  if (normalized === 'wisprflow') return 'wisprflow'
+  if (normalized === 'firecrawl') return 'firecrawl'
+  return 'granola'
+}
+
+function linkifyAffiliateNames(
+  node: ReactNode,
+  linkedProducts: Set<AffiliateProduct>,
+): ReactNode {
+  if (typeof node === 'string') {
+    const parts: ReactNode[] = []
+    let cursor = 0
+
+    for (const match of node.matchAll(AFFILIATE_NAME_PATTERN)) {
+      const index = match.index ?? 0
+      const product = affiliateProductForName(match[0])
+      if (index > cursor) parts.push(node.slice(cursor, index))
+
+      if (linkedProducts.has(product)) {
+        parts.push(match[0])
+      } else {
+        linkedProducts.add(product)
+        const href = getAffiliateLink({
+          product,
+          campaign: 'advisor-chat',
+          medium: 'tools',
+          placement: 'text-link',
+        })
+        parts.push(
+          <a
+            key={`${product}-${index}`}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            onClick={() => track('advisor_text_link_click', { product })}
+            className={styles.affiliateTextLink}
+            style={{ '--text-link-accent': PRODUCT_DATA[product].accent } as React.CSSProperties}
+          >
+            {match[0]}
+          </a>,
+        )
+      }
+      cursor = index + match[0].length
+    }
+
+    if (cursor === 0) return node
+    if (cursor < node.length) parts.push(node.slice(cursor))
+    return parts
+  }
+
+  if (Array.isArray(node)) {
+    return node.map((child) => linkifyAffiliateNames(child, linkedProducts))
+  }
+
+  if (isValidElement<{ children?: ReactNode }>(node) && node.props.children) {
+    return cloneElement(
+      node,
+      undefined,
+      linkifyAffiliateNames(node.props.children, linkedProducts),
+    )
+  }
+
+  return node
+}
 
 function parseMessage(content: string, isStreaming: boolean): ParsedSegment[] {
   // A marker can arrive over several stream chunks. Hide its unfinished tail
@@ -175,7 +256,14 @@ function ToolCard({ product }: { product: AffiliateProduct }) {
 }
 
 function PostCard({ slug, entranceIndex }: { slug: AdvisorPostSlug; entranceIndex: number }) {
+  const impressionTracked = useRef(false)
   const post = ADVISOR_POSTS_BY_SLUG[slug]
+
+  useEffect(() => {
+    if (impressionTracked.current) return
+    impressionTracked.current = true
+    track('advisor_post_impression', { slug })
+  }, [slug])
 
   return (
     <Link
@@ -185,7 +273,7 @@ function PostCard({ slug, entranceIndex }: { slug: AdvisorPostSlug; entranceInde
       style={{ '--post-index': entranceIndex } as React.CSSProperties}
     >
       <span className={styles.postLabel}>
-        From Zack’s writing
+        From my writing
         <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden="true" />
       </span>
       <span className={styles.postTitle}>
@@ -228,6 +316,12 @@ const AssistantMessage = memo(function AssistantMessage({
             <ReactMarkdown
               components={{
                 a: ({ children }) => <span>{children}</span>,
+                // Fresh Set per invocation keeps render pure — a shared Set
+                // breaks under StrictMode double-invocation (anchor rendered
+                // on the discarded pass, plain text on the committed one).
+                // Dedupe is per paragraph: first mention of each product links.
+                p: ({ children }) => <p>{linkifyAffiliateNames(children, new Set<AffiliateProduct>())}</p>,
+                li: ({ children }) => <li>{linkifyAffiliateNames(children, new Set<AffiliateProduct>())}</li>,
               }}
             >
               {segment.value}
@@ -302,10 +396,97 @@ export default function AdvisorChat({
   onSignalChange?: (signal: AdvisorSignal) => void
 }) {
   const scrollRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const shouldAutoScroll = useRef(true)
+  const sessionIdRef = useRef('')
+  const turnRef = useRef(0)
+  const activeTurnRef = useRef(0)
+  const suggestionImpressionTracked = useRef(false)
+  const inputFocusTracked = useRef(false)
+
+  const ensureSession = () => {
+    if (sessionIdRef.current) return sessionIdRef.current
+
+    let sessionId = ''
+    let storedTurn = 0
+    try {
+      const storedSessionId = sessionStorage.getItem(SESSION_ID_STORAGE_KEY) ?? ''
+      const parsedTurn = Number(sessionStorage.getItem(SESSION_TURN_STORAGE_KEY) ?? '0')
+      if (
+        SESSION_ID_PATTERN.test(storedSessionId) &&
+        Number.isInteger(parsedTurn) &&
+        parsedTurn >= 0 &&
+        parsedTurn < 100
+      ) {
+        sessionId = storedSessionId
+        storedTurn = parsedTurn
+      }
+    } catch {
+      // The in-memory session still works when storage is unavailable.
+    }
+
+    if (!sessionId) sessionId = crypto.randomUUID()
+    sessionIdRef.current = sessionId
+    turnRef.current = storedTurn
+
+    try {
+      sessionStorage.setItem(SESSION_ID_STORAGE_KEY, sessionId)
+      sessionStorage.setItem(SESSION_TURN_STORAGE_KEY, String(storedTurn))
+    } catch {
+      // The in-memory session still works when storage is unavailable.
+    }
+
+    return sessionId
+  }
+
   const { messages, input, setInput, append, isLoading, error } = useChat({
     api: '/api/advisor-chat',
+    onFinish: (message) => {
+      const sessionId = ensureSession()
+      const turn = activeTurnRef.current
+      const segments = parseMessage(message.content, false)
+      const tools = [...new Set(
+        segments
+          .filter((segment): segment is Extract<ParsedSegment, { type: 'tool' }> => segment.type === 'tool')
+          .map((segment) => segment.product),
+      )].join(',')
+      const posts = [...new Set(
+        segments
+          .filter((segment): segment is Extract<ParsedSegment, { type: 'post' }> => segment.type === 'post')
+          .map((segment) => segment.slug),
+      )].join(',')
+
+      track('advisor_reply_complete', {
+        sessionId,
+        turn,
+        tools,
+        posts,
+        chars: message.content.length,
+      })
+      if (!tools) track('advisor_clarify_shown', { sessionId, turn })
+    },
+    onError: (chatError) => {
+      track('advisor_error', {
+        sessionId: ensureSession(),
+        message: chatError.message.slice(0, 120),
+      })
+    },
   })
+
+  useEffect(() => {
+    ensureSession()
+  }, [])
+
+  useEffect(() => {
+    if (messages.length > 0 || suggestionImpressionTracked.current) return
+    suggestionImpressionTracked.current = true
+    track('advisor_suggestion_impression')
+  }, [messages.length])
+
+  useEffect(() => {
+    const desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)')
+    if (desktopPointer.matches) inputRef.current?.focus({ preventScroll: true })
+  }, [])
 
   useEffect(() => {
     if (!shouldAutoScroll.current || !scrollRef.current) return
@@ -363,11 +544,45 @@ export default function AdvisorChat({
   const ask = (question: string, via: 'typed' | 'chip') => {
     const trimmed = question.trim()
     if (!trimmed || isLoading) return
+    const sessionId = ensureSession()
+    const turn = turnRef.current + 1
+    turnRef.current = turn
+    activeTurnRef.current = turn
+    try {
+      sessionStorage.setItem(SESSION_TURN_STORAGE_KEY, String(turn))
+    } catch {
+      // The in-memory turn counter still works when storage is unavailable.
+    }
     shouldAutoScroll.current = true
     onSignalChange?.({ phase: 'listening' })
-    track('advisor_chat_question', { q: trimmed.slice(0, 100), via })
-    void append({ role: 'user', content: trimmed }, { body: { via } })
+    if (turn === 1) track('advisor_session_start', { sessionId, via })
+    track('advisor_chat_question', {
+      q: trimmed.slice(0, 100),
+      via,
+      sessionId,
+      turn,
+    })
+    void append(
+      { role: 'user', content: trimmed },
+      { body: { sessionId, turn, via } },
+    )
     setInput('')
+  }
+
+  const trackInputFocus = () => {
+    if (inputFocusTracked.current) return
+    const sessionId = ensureSession()
+    try {
+      if (sessionStorage.getItem(INPUT_FOCUS_STORAGE_KEY) === sessionId) {
+        inputFocusTracked.current = true
+        return
+      }
+      sessionStorage.setItem(INPUT_FOCUS_STORAGE_KEY, sessionId)
+    } catch {
+      // The ref still prevents duplicate events for this mount.
+    }
+    inputFocusTracked.current = true
+    track('advisor_input_focus', { sessionId })
   }
 
   const submit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -477,21 +692,23 @@ export default function AdvisorChat({
           <div className={styles.composer}>
             <div className={styles.inputWrap}>
               <textarea
-              value={input}
-              onChange={(event) => setInput(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' && !event.shiftKey) {
-                  event.preventDefault()
-                  ask(input, 'typed')
-                }
-              }}
-              disabled={isLoading}
-              rows={1}
-              maxLength={2000}
-              placeholder={isLoading ? 'The advisor is writing…' : ''}
-              aria-label="Your question"
-              className={styles.textarea}
-            />
+                ref={inputRef}
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                onFocus={trackInputFocus}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault()
+                    ask(input, 'typed')
+                  }
+                }}
+                disabled={isLoading}
+                rows={1}
+                maxLength={2000}
+                placeholder={isLoading ? 'The advisor is writing…' : ''}
+                aria-label="Your question"
+                className={styles.textarea}
+              />
               <CyclingPlaceholder hidden={Boolean(input) || isLoading} />
             </div>
             <button
@@ -504,7 +721,7 @@ export default function AdvisorChat({
             </button>
           </div>
           <p className={styles.disclosure}>
-            Some recommendations use affiliate links. Granola signups through them give you 3 months free and support the site.
+            Some recommendations use affiliate links. Granola signups through them give you 3 months free and support the site. Conversations are saved to improve recommendations — please skip anything confidential.
           </p>
         </form>
       </div>

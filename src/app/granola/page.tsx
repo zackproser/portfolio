@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import { getAffiliateLink } from '@/lib/affiliate'
 import { GranolaCaptureForm } from './GranolaCaptureForm'
+import { AskAdvisorCTA } from '@/components/advisor/AskAdvisorCTA'
 import {
   JumpBarScrollSpy,
   ReadingProgress,
@@ -369,6 +370,12 @@ export default function GranolaPillarPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="gx-container">
+          <div className="post-measure" style={{ marginTop: 28, marginBottom: 28 }}>
+            <AskAdvisorCTA from="granola-pillar" variant="card" />
           </div>
         </div>
 

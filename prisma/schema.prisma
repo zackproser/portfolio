@@ -384,3 +384,19 @@ model GhxChatLog {
 
   @@map("ghx_chat_logs")
 }
+
+model AdvisorChatLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  sessionId String?  @map("session_id")
+  turn      Int      @default(1)
+  question  String
+  answer    String
+  via       String?
+  tools     String?
+  posts     String?
+
+  @@index([sessionId])
+  @@index([createdAt])
+  @@map("advisor_chat_logs")
+}
