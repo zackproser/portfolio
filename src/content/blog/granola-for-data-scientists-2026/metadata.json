@@ -1,0 +1,10 @@
+{
+  "title": "Granola for Data Scientists: Meeting Notes That Keep Up With Technical Discussions",
+  "author": "Zachary Proser",
+  "date": "2026-04-25",
+  "description": "Data scientists lose hours every week to poorly documented meetings. Granola captures model reviews, experiment postmortems, and stakeholder alignment calls with technical precision.",
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "imageAlt": "Granola AI meeting notes interface showing a data science model review transcript with technical terms accurately captured",
+  "tags": ["ai", "data-science", "machine-learning", "meetings", "productivity", "granola"],
+  "hiddenFromIndex": true
+}

@@ -1,0 +1,11 @@
+{
+  "title": "WisprFlow for EMTs and Paramedics: Faster PCR Documentation in the Field",
+  "author": "Zachary Proser",
+  "date": "2026-04-25",
+  "description": "EMTs and paramedics use WisprFlow to dictate patient care reports, handoff notes, and incident documentation at 179 WPM — cutting PCR time so they can get back in service faster.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "imageAlt": "WisprFlow voice AI interface helping a paramedic dictate a patient care report on their phone",
+  "tags": ["voice-ai", "ems", "paramedic", "emt", "documentation", "patient-care-report"],
+  "hiddenFromIndex": true,
+  "product": "wisprflow"
+}
