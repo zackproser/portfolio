@@ -25,6 +25,24 @@ interface ClusterPost {
 // Curated subset — the cluster has 100+ posts; these are the ones worth surfacing.
 const CLUSTER: ClusterPost[] = [
   {
+    slug: '/blog/how-to-transcribe-meetings-without-bot',
+    title: 'How to Transcribe Meetings Without a Bot',
+    hint: 'The no-bot meeting notes guide',
+    personas: ['general', 'sales', 'consultant', 'executive', 'founder'],
+  },
+  {
+    slug: '/blog/best-ai-meeting-notes-2026',
+    title: 'Best AI Meeting Notes in 2026',
+    hint: 'The current field, tested and compared',
+    personas: ['general', 'sales', 'consultant', 'executive', 'engineer', 'product', 'founder'],
+  },
+  {
+    slug: '/blog/how-to-record-meetings-2026',
+    title: 'How to Record Meetings in 2026',
+    hint: 'Practical options with and without a bot',
+    personas: ['general', 'sales', 'consultant', 'executive', 'founder'],
+  },
+  {
     slug: '/blog/granola-ai-review',
     title: 'Granola AI Review: The App I Use Every Meeting',
     hint: 'My honest long-form review',
@@ -86,16 +104,32 @@ const CLUSTER: ClusterPost[] = [
   },
 ]
 
-function pickFor(persona: Persona, max = 4, currentSlug?: string): ClusterPost[] {
-  // Show persona-specific first, fill with general posts up to `max`.
+const EVIDENCE_LEADERS = [
+  '/blog/how-to-transcribe-meetings-without-bot',
+  '/blog/best-ai-meeting-notes-2026',
+  '/blog/how-to-record-meetings-2026',
+  '/blog/granola-ai-review',
+]
+
+function normalizeSlug(slug = ''): string {
+  const clean = slug.split('?')[0].split('#')[0].replace(/\/$/, '')
+  if (!clean) return ''
+  return clean.startsWith('/blog/') ? clean : `/blog/${clean.replace(/^\//, '')}`
+}
+
+export function pickFor(persona: Persona, max = 5, currentSlug?: string): ClusterPost[] {
+  const current = normalizeSlug(currentSlug)
+  const leaders = EVIDENCE_LEADERS
+    .map(slug => CLUSTER.find(p => p.slug === slug))
+    .filter((p): p is ClusterPost => Boolean(p))
   const exact = CLUSTER.filter(p => p.personas.includes(persona) && persona !== 'general')
   const general = CLUSTER.filter(p => p.personas.includes('general'))
   const seen = new Set<string>()
   const out: ClusterPost[] = []
-  for (const p of [...exact, ...general]) {
+  for (const p of [...leaders, ...exact, ...general]) {
     if (out.length >= max) break
     if (seen.has(p.slug)) continue
-    if (currentSlug && p.slug.includes(currentSlug)) continue
+    if (current && normalizeSlug(p.slug) === current) continue
     seen.add(p.slug)
     out.push(p)
   }
@@ -112,7 +146,7 @@ interface RailProps {
 }
 
 export function MeetingNotesClusterRail({ persona = 'general', campaign, heading, currentSlug }: RailProps) {
-  const posts = pickFor(persona, 4, currentSlug)
+  const posts = pickFor(persona, 5, currentSlug)
   const personaLabel: Record<Persona, string> = {
     sales: 'sales people',
     consultant: 'consultants',
@@ -145,7 +179,7 @@ export function MeetingNotesClusterRail({ persona = 'general', campaign, heading
             <a
               href={p.slug}
               className="mnr-link"
-              onClick={() => track('cluster_rail_click', { campaign, slug: p.slug, persona })}
+              onClick={() => track('cluster_rail_click', { campaign, slug: p.slug, persona, position: i + 1 })}
             >
               <span className="mnr-num">{String(i + 1).padStart(2, '0')}</span>
               <span className="mnr-body">

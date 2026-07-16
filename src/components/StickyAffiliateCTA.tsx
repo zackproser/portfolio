@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Mic, Calendar, Flame, ArrowRight } from 'lucide-react'
 import { track } from '@vercel/analytics'
@@ -45,8 +45,11 @@ export default function StickyAffiliateCTA({
   showAfterScroll = 800,
   className = ''
 }: StickyAffiliateCTAProps) {
+  const isGranolaCampaign = /granola|meeting-notes?|record-meetings|meeting-transcription|meeting-assistant/i.test(campaign)
+  const resolvedProduct = product === 'both' && isGranolaCampaign ? 'granola' : product
   const [isVisible, setIsVisible] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
+  const hasTrackedImpression = useRef(false)
 
   const getLink = (p: AffiliateProduct) => getAffiliateLink({
     product: p,
@@ -57,7 +60,7 @@ export default function StickyAffiliateCTA({
 
   useEffect(() => {
     // Check if already dismissed this session
-    const dismissed = sessionStorage.getItem('stickyCtaDismissed')
+    const dismissed = sessionStorage.getItem(`stickyCtaDismissed:${resolvedProduct}`)
     if (dismissed) {
       setIsDismissed(true)
       return
@@ -69,24 +72,35 @@ export default function StickyAffiliateCTA({
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [showAfterScroll])
+  }, [resolvedProduct, showAfterScroll])
+
+  useEffect(() => {
+    if (!isVisible || isDismissed || hasTrackedImpression.current) return
+    hasTrackedImpression.current = true
+    track('sticky_cta_impression', {
+      product: resolvedProduct,
+      products: resolvedProduct === 'both' ? 'wisprflow,granola' : resolvedProduct,
+      campaign,
+    })
+  }, [campaign, isDismissed, isVisible, resolvedProduct])
 
   const handleDismiss = () => {
     setIsDismissed(true)
-    sessionStorage.setItem('stickyCtaDismissed', 'true')
-    track('sticky_cta_dismissed', { product })
+    sessionStorage.setItem(`stickyCtaDismissed:${resolvedProduct}`, 'true')
+    track('sticky_cta_dismissed', { product: resolvedProduct, campaign })
   }
 
   const handleClick = (clickedProduct: 'wisprflow' | 'granola') => {
-    track('sticky_cta_click', { product: clickedProduct })
+    track('sticky_cta_click', { product: clickedProduct, campaign })
   }
 
   if (isDismissed) return null
 
-  const products = product === 'both' 
+  const products = resolvedProduct === 'both'
     ? ['wisprflow', 'granola'] as const
-    : [product] as const
+    : [resolvedProduct] as const
 
   return (
     <AnimatePresence>
@@ -104,19 +118,19 @@ export default function StickyAffiliateCTA({
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-teal-500" />
               
               <div className="p-4 sm:p-5">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center justify-between gap-2 sm:gap-4">
                   {/* Left: CTA Text */}
-                  <div className="flex-shrink-0">
+                  <div className="hidden flex-shrink-0 sm:block">
                     <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                      Ready to go voice-first?
+                      {resolvedProduct === 'granola' ? 'Granola — 3 months free' : 'Ready to go voice-first?'}
                     </p>
                     <p className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:block">
-                      The tools I use every day
+                      {resolvedProduct === 'granola' ? 'Free plan available' : 'The tools I use every day'}
                     </p>
                   </div>
 
                   {/* Middle: Product buttons */}
-                  <div className="flex items-center gap-2 flex-1 justify-center">
+                  <div className="flex flex-1 flex-col items-stretch justify-center gap-2 sm:flex-row sm:items-center">
                     {products.map((p) => {
                       const data = PRODUCT_DATA[p]
                       const Icon = data.icon
@@ -128,7 +142,7 @@ export default function StickyAffiliateCTA({
                           rel="noopener noreferrer"
                           onClick={() => handleClick(p)}
                           className={`
-                            group flex items-center gap-2 rounded-xl px-4 py-2.5
+                            group flex items-center justify-center gap-2 rounded-xl px-2.5 sm:px-4 py-2.5
                             bg-gradient-to-r ${data.gradient} ${data.hoverGradient}
                             text-white text-sm font-semibold shadow-md
                             hover:shadow-lg transition-all duration-200
@@ -136,8 +150,9 @@ export default function StickyAffiliateCTA({
                           `}
                         >
                           <Icon className="h-4 w-4 !text-white" />
-                          <span className="hidden sm:inline !text-white">{data.name}</span>
-                          <span className="sm:hidden !text-white">{data.name.slice(0, 1)}</span>
+                          <span className="!text-white">
+                            {p === 'granola' ? 'Granola — 3 months free' : 'WisprFlow — try free'}
+                          </span>
                           <ArrowRight className="h-3.5 w-3.5 opacity-70 group-hover:translate-x-0.5 transition-transform !text-white" />
                         </a>
                       )
