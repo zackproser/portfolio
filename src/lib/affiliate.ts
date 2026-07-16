@@ -45,9 +45,9 @@ interface AffiliateParams {
  *   campaign: 'granola-for-engineers',
  *   medium: 'blog',
  *   placement: 'concierge',
- *   term: 'engineer_sensitive_mac'
+ *   term: 'engineer_sensitive_none'
  * })
- * // Returns: https://go.granola.ai/zack-proser?utm_source=zackproser&utm_medium=blog&utm_campaign=granola-for-engineers&utm_content=concierge&utm_term=engineer_sensitive_mac
+ * // Returns: https://go.granola.ai/zack-proser?utm_source=zackproser&utm_medium=blog&utm_campaign=granola-for-engineers&utm_content=concierge&utm_term=engineer_sensitive_none
  */
 export function getAffiliateLink(params: AffiliateParams): string {
   const { product, campaign, medium, placement, term } = params
@@ -71,9 +71,9 @@ export function getAffiliateLink(params: AffiliateParams): string {
 export function buildConciergeTerm(parts: {
   role?: string | null
   shape?: string | null
-  stack?: string | null
+  requirement?: string | null
 }): string {
-  return [parts.role, parts.shape, parts.stack]
+  return [parts.role, parts.shape, parts.requirement]
     .filter((p): p is string => Boolean(p))
     .map(p => p.replace(/[^a-z0-9-]/gi, '').toLowerCase())
     .filter(Boolean)

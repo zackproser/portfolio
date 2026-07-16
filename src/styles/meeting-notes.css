@@ -202,6 +202,12 @@
   padding-left: 12px;
   font-style: italic;
 }
+.mn-concierge .mnc-free-plan {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--mn-ink-dim);
+}
 .mn-concierge .mnc-fine {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 10px;
@@ -215,6 +221,13 @@
 .mn-concierge .mnc-advisor-cta { grid-column: 2; }
 
 @media (max-width: 880px) {
+  .mn-concierge .mnc-head { order: 1; }
+  .mn-concierge .mnc-grid { display: contents; }
+  .mn-concierge .mnc-q:nth-child(1) { order: 2; }
+  .mn-concierge .mnc-result { order: 3; position: static; }
+  .mn-concierge .mnc-q:nth-child(2) { order: 4; }
+  .mn-concierge .mnc-q:nth-child(3) { order: 5; }
+  .mn-concierge .mnc-advisor-cta { order: 6; }
   .mn-concierge .mnc-advisor-cta { grid-column: 1; }
 }
 

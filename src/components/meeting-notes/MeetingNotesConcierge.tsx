@@ -20,7 +20,7 @@ type Role =
   | 'other'
 
 type MeetingShape = 'client' | 'internal' | 'sensitive' | 'interview' | 'live'
-type Stack = 'mac' | 'windows' | 'zoom' | 'meet' | 'inperson'
+type Requirement = 'captions' | 'crm' | 'none'
 
 const ROLES: { id: Role; label: string }[] = [
   { id: 'sales', label: 'Sales' },
@@ -44,26 +44,24 @@ const SHAPES: { id: MeetingShape; label: string; hint: string }[] = [
   { id: 'live', label: 'Live captions', hint: 'Real-time transcript during the call' },
 ]
 
-const STACKS: { id: Stack; label: string }[] = [
-  { id: 'mac', label: 'Mac' },
-  { id: 'windows', label: 'Windows' },
-  { id: 'zoom', label: 'Zoom-heavy' },
-  { id: 'meet', label: 'Google Meet' },
-  { id: 'inperson', label: 'In-person / hybrid' },
+const REQUIREMENTS: { id: Requirement; label: string }[] = [
+  { id: 'captions', label: 'Live captions during the call' },
+  { id: 'crm', label: 'Auto-sync to Salesforce / HubSpot' },
+  { id: 'none', label: 'Neither' },
 ]
 
-type Pick = 'granola' | 'otter' | 'fireflies' | 'fathom'
+type Pick = 'granola' | 'otter' | 'fireflies'
 
 const PICKS: Record<Pick, { name: string; product: 'granola' | null; tagline: string; reasonByShape: Partial<Record<MeetingShape, string>> }> = {
   granola: {
     name: 'Granola',
     product: 'granola',
-    tagline: 'Invisible. No bot. Mac.',
+    tagline: 'No bot joins the call.',
     reasonByShape: {
       client: 'Client calls hinge on candor. The moment a bot announces itself, the real conversation goes away.',
       sensitive: 'For HR, legal, or anything sensitive: a recording bot is a non-starter. Granola captures audio locally — nobody else on the call knows.',
       interview: 'You want to be present, not typing. Granola gets out of the way and you read the notes after.',
-      internal: 'Even internal — once you stop seeing "[Bot] is recording," meetings get faster.',
+      internal: 'Once no "[Bot] is recording" banner interrupts, internal meetings get faster. Zack uses Granola daily for team syncs.',
       live: 'No live captions in Granola today. If that is the deal-breaker, Otter is the honest answer.',
     },
   },
@@ -73,7 +71,6 @@ const PICKS: Record<Pick, { name: string; product: 'granola' | null; tagline: st
     tagline: 'Best for shared transcripts + live captions.',
     reasonByShape: {
       live: 'Live captions during the call is what Otter does best. Bot-based, but you wanted the bot.',
-      internal: 'Internal team meetings where everyone is fine being recorded — Otter is the team-transcript option.',
     },
   },
   fireflies: {
@@ -85,42 +82,27 @@ const PICKS: Record<Pick, { name: string; product: 'granola' | null; tagline: st
       internal: 'Same answer for internal sales reviews — CRM sync is the differentiator.',
     },
   },
-  fathom: {
-    name: 'Fathom',
-    product: null,
-    tagline: 'Free, Zoom-first.',
-    reasonByShape: {
-      internal: 'Free tier is solid if you live in Zoom and the bot does not change anything for you.',
-    },
-  },
 }
 
-function recommend(role: Role, shape: MeetingShape | null, stack: Stack | null): Pick {
-  // Shape is the strongest signal.
-  if (shape === 'sensitive') return 'granola'
-  if (shape === 'live') return 'otter'
-  if (shape === 'interview') return 'granola'
-  if (shape === 'client') {
-    // Sales people who care about CRM → Fireflies; everyone else → Granola.
-    if (role === 'sales' && stack !== 'mac') return 'fireflies'
-    return 'granola'
-  }
-  if (shape === 'internal') {
-    if (role === 'sales') return 'fireflies'
-    if (stack === 'zoom') return 'fathom'
-    return 'otter'
-  }
-  // No shape selected yet — fall back to role.
-  if (
-    role === 'consultant' ||
-    role === 'executive' ||
-    role === 'therapist' ||
-    role === 'photographer' ||
-    role === 'researcher' ||
-    role === 'founder'
-  ) return 'granola'
-  if (role === 'sales') return 'fireflies'
+export function recommend(_role: Role, shape: MeetingShape | null, requirement: Requirement | null): Pick {
+  // Selecting the live-captions meeting shape is itself a stated hard requirement.
+  if (shape === 'live' || requirement === 'captions') return 'otter'
+  if (requirement === 'crm') return 'fireflies'
   return 'granola'
+}
+
+const REASON_BY_ROLE: Record<Role, string> = {
+  sales: 'Granola keeps the call focused on the buyer while it drafts the notes in the background.',
+  consultant: 'Granola captures the details while you stay focused on the client and the decisions in the room.',
+  executive: 'Granola gives you a useful record without adding another participant to the meeting.',
+  engineer: 'Granola turns team syncs and technical discussions into notes without a bot joining the call.',
+  product: 'Granola lets you follow the discussion while it captures decisions, questions, and follow-ups.',
+  recruiter: 'Granola lets you stay present with the candidate while it drafts the interview notes.',
+  therapist: 'Granola stays out of the conversation, which matters when trust and attention shape the session.',
+  photographer: 'Granola captures client details and creative decisions while you keep the conversation natural.',
+  researcher: 'Granola lets you listen closely while it drafts a record you can review after the session.',
+  founder: 'Granola handles the notes across customer calls and team syncs without sending a bot into the room.',
+  other: 'Granola drafts useful meeting notes without adding a bot participant to the call.',
 }
 
 interface ConciergeProps {
@@ -133,12 +115,12 @@ interface ConciergeProps {
 export function MeetingNotesConcierge({ campaign, defaultRole, headline }: ConciergeProps) {
   const [role, setRole] = useState<Role>(defaultRole ?? 'consultant')
   const [shape, setShape] = useState<MeetingShape | null>(null)
-  const [stack, setStack] = useState<Stack | null>(null)
+  const [requirement, setRequirement] = useState<Requirement | null>(null)
 
-  const pickKey = useMemo(() => recommend(role, shape, stack), [role, shape, stack])
+  const pickKey = useMemo(() => recommend(role, shape, requirement), [role, shape, requirement])
   const pick = PICKS[pickKey]
 
-  const term = buildConciergeTerm({ role, shape, stack })
+  const term = buildConciergeTerm({ role, shape, requirement })
   const link = pick.product
     ? getAffiliateLink({
         product: pick.product,
@@ -149,23 +131,24 @@ export function MeetingNotesConcierge({ campaign, defaultRole, headline }: Conci
       })
     : null
 
-  const reason =
-    (shape && pick.reasonByShape[shape]) ||
-    pick.reasonByShape.client ||
-    pick.tagline
+  const reason = pickKey === 'otter'
+    ? 'You need live captions during the call. Otter provides them; Granola does not today.'
+    : pickKey === 'fireflies'
+      ? 'Your organization requires meeting data to sync automatically to Salesforce or HubSpot. Fireflies is built for that workflow.'
+      : (shape && pick.reasonByShape[shape]) || REASON_BY_ROLE[role]
 
   function handleClick() {
     track('concierge_cta_click', {
       product: pickKey,
       role,
       shape: shape ?? '',
-      stack: stack ?? '',
+      requirement: requirement ?? '',
       campaign,
       term,
     })
   }
 
-  function handleAnswer<T extends string>(setter: (v: T) => void, value: T, key: 'role' | 'shape' | 'stack') {
+  function handleAnswer<T extends string>(setter: (v: T) => void, value: T, key: 'role' | 'shape' | 'requirement') {
     setter(value)
     track('concierge_answer', { key, value, campaign })
   }
@@ -220,18 +203,18 @@ export function MeetingNotesConcierge({ campaign, defaultRole, headline }: Conci
         </div>
 
         <div className="mnc-q">
-          <div className="mnc-qlabel"><span className="mnc-num">03</span> Where do you mostly meet?</div>
-          <div className="mnc-pills" role="radiogroup" aria-label="Stack">
-            {STACKS.map(s => (
+          <div className="mnc-qlabel"><span className="mnc-num">03</span> Any hard requirements?</div>
+          <div className="mnc-pills" role="radiogroup" aria-label="Hard requirements">
+            {REQUIREMENTS.map(r => (
               <button
-                key={s.id}
+                key={r.id}
                 type="button"
                 role="radio"
-                aria-checked={stack === s.id}
-                className={`mnc-pill${stack === s.id ? ' is-on' : ''}`}
-                onClick={() => handleAnswer(setStack, s.id, 'stack')}
+                aria-checked={requirement === r.id}
+                className={`mnc-pill${requirement === r.id ? ' is-on' : ''}`}
+                onClick={() => handleAnswer(setRequirement, r.id, 'requirement')}
               >
-                {s.label}
+                {r.label}
               </button>
             ))}
           </div>
@@ -255,12 +238,15 @@ export function MeetingNotesConcierge({ campaign, defaultRole, headline }: Conci
             rel="noopener noreferrer sponsored"
             onClick={handleClick}
           >
-            Get your first 3 months free <ArrowRight size={16} aria-hidden />
+            Get 3 months free <ArrowRight size={16} aria-hidden />
           </a>
         ) : (
           <div className="mnc-cta-note">
             That is the honest answer for your case. I do not run an affiliate link for {pick.name} — search the name and pick the legit signup page.
           </div>
+        )}
+        {link && (
+          <div className="mnc-free-plan">Free plan available; new users get their first 3 months free through my link.</div>
         )}
         <div className="mnc-fine">
           Disclosure: Granola is an affiliate partnership. I only recommend it where it actually fits — see other answers above.
