@@ -16,10 +16,31 @@ function extractExcerpt(mdxPath, fallback) {
   try {
     const lines = fs.readFileSync(mdxPath, 'utf8').split('\n')
     let buf = []
+    let inImportBlock = false
+    let inFence = false
     for (const line of lines) {
       const s = line.trim()
       if (!s) {
         if (buf.join(' ').length > 100) break
+        continue
+      }
+      // Fenced code blocks: skip their contents entirely so code that
+      // looks like an import/export can't confuse the block tracking.
+      if (/^```/.test(s)) {
+        inFence = !inFence
+        if (buf.length > 0) break
+        continue
+      }
+      if (inFence) continue
+      // Multi-line import blocks: `import {` … `} from '…'`. The
+      // continuation lines don't start with `import`, so track the
+      // block explicitly or its member list leaks into the excerpt.
+      if (inImportBlock) {
+        if (/\bfrom\s+['"]/.test(s)) inImportBlock = false
+        continue
+      }
+      if (/^(import|export)\b/.test(s) && !/\bfrom\s+['"]/.test(s) && /[({[]\s*$/.test(s)) {
+        inImportBlock = true
         continue
       }
       if (/^(import|export|#|<|@|!\[|\{|-|\*|\||```|>)/.test(s)) {

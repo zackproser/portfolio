@@ -138,6 +138,8 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     landing,
     hiddenFromIndex,
     hideNewsletter,
+    blogStyle,
+    blueprint,
     ...rest
   } = params
 
@@ -299,7 +301,9 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     ...(commerce && { commerce }),
     ...(landing && { landing }),
     ...(typeof hiddenFromIndex !== 'undefined' && { hiddenFromIndex }),
-    ...(typeof hideNewsletter !== 'undefined' && { hideNewsletter })
+    ...(typeof hideNewsletter !== 'undefined' && { hideNewsletter }),
+    ...(blogStyle && { blogStyle }),
+    ...(blueprint && { blueprint })
   };
 
   // Log the created metadata for debugging

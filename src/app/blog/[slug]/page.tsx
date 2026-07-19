@@ -9,6 +9,7 @@ import {
 } from '@/lib/content-handlers'
 import { notFound } from 'next/navigation'
 import { EditorialArticleLayout } from '@/components/EditorialArticleLayout'
+import { BlueprintArticleLayout } from '@/components/blueprint'
 import React from 'react'
 import { CheckCircle } from 'lucide-react'
 import { metadataLogger as logger } from '@/utils/logger'
@@ -88,7 +89,23 @@ export default async function Page({ params }: PageProps) {
     isSubscribed = await isEmailSubscribed(session?.user?.email || null);
   }
   
-  logger.info(`Rendering page for slug: ${slug}, Paid: ${!!content?.commerce?.isPaid}, Purchased: ${hasPurchased}`);
+  logger.info(`Rendering page for slug: ${slug}, Paid: ${!!content?.commerce?.isPaid}, Purchased: ${hasPurchased}`)
+
+  // Blueprint Deep Dive posts opt into an entirely different layout via
+  // `"blogStyle": "blueprint"` in metadata.json. These posts must be
+  // fully free content — any commerce gating (paywall or email capture)
+  // falls back to the editorial layout so those flows stay intact.
+  if (
+    content?.blogStyle === 'blueprint' &&
+    !content?.commerce?.isPaid &&
+    !content?.commerce?.requiresEmail
+  ) {
+    return (
+      <BlueprintArticleLayout metadata={content}>
+        {React.createElement(MdxContent)}
+      </BlueprintArticleLayout>
+    )
+  };
 
   // Always use ArticleLayout for consistency, even for purchased content.
   // Per-post opt-out via `hideNewsletter: true` in metadata (used for the

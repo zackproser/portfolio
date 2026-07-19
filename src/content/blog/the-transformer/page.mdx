@@ -1,0 +1,432 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import {
+  BpSection,
+  BpAnchor,
+  BpNote,
+  BpFigure,
+  BpEquation,
+  BpFrac,
+  BpQA,
+  BpReferences,
+  AttentionDemo,
+  TemperatureDemo,
+  PositionalEncodingDemo,
+} from '@/components/blueprint'
+
+export const metadata = createMetadata(rawMetadata)
+
+<BpAnchor id="s0" num="00" label="Abstract" />
+
+In 2017, eight researchers at Google published a paper whose central claim sounded like a provocation: you can throw away recurrence entirely — the thing every serious sequence model had been built on for two decades — and replace it with nothing but attention. The paper was called *Attention Is All You Need*, and the title turned out to be an understatement. Nine years later, the architecture it introduced is effectively the only one that matters. Language, code, images, audio, protein folding — all of it now runs through the same machine.
+
+<BpNote>Vaswani et al., *Attention Is All You Need*, NeurIPS 2017. Eight authors; roughly 200k citations and counting.</BpNote>
+
+What makes that strange is how small the machine is. Strip away the training infrastructure and the trillion tokens of data, and the transformer is about a page of math. Three learned projections, a dot product, a softmax, a two-layer neural network, and a normalization trick — stacked in a loop. That's the entire circuit inside GPT-5, Claude, and Gemini.
+
+This drawing takes the machine apart piece by piece. By the bottom of the page you will know what a token actually is, why attention is just three matrix multiplications, what the 96 layers of a large model are doing all day, and what the single knob called temperature actually trades away. No hand-waving. Every part gets a schematic.
+
+<BpSection id="s1" num="01" label="The sequence problem" sheet="SHEET 1 OF 8" title="The problem with reading one word at a time" />
+
+Before 2017, sequence models were recurrent. An RNN reads a sentence the way you read a ticker tape: one token per clock tick, compressing everything seen so far into a single fixed-size hidden state. That design has two fatal flaws. First, memory: by token 500, whatever happened at token 3 has been squeezed through 497 lossy updates. Second, and worse for hardware: it's *sequential*. You cannot compute step 500 before step 499. GPUs, whose entire value is doing thousands of things at once, sit mostly idle.
+
+The transformer arrived through machine translation, where both flaws were easy to see. Sutskever, Vinyals, and Le's 2014 sequence-to-sequence system used one recurrent network to compress a source sentence and another to unfold a translation. Reversing the source sentence helped shorten some dependency paths, but the encoder still had to squeeze the whole source through its final state. Bahdanau, Cho, and Bengio then let the decoder consult all encoder states through a learned alignment mechanism. Luong, Pham, and Manning refined that family of attention functions in 2015. Attention began as a relief valve attached to recurrence.
+
+<BpNote>Sutskever et al. introduced neural sequence-to-sequence learning in 2014; Bahdanau et al. and Luong et al. developed the attention lineage that followed.</BpNote>
+
+*Attention Is All You Need* made a subtraction claim. The useful alignment mechanism could carry the whole architecture; recurrent and convolutional sequence processing could leave. The published transformer still had an encoder for reading the source and a decoder for producing the target. Its novelty was the route between and within those stacks: every position could exchange information through attention without waiting for a recurrent clock.
+
+<BpQA q="Why was translation the proving ground?">
+Translation forces a model to connect words that may land far apart and in a different order. A French adjective might need information from an English noun several positions away, so the weakness of one compressed memory becomes visible quickly. Translation also provides paired source and target sentences at scale, giving the alignment mechanism a clear training signal.
+</BpQA>
+
+<BpFigure caption="FIG. 1 — SERIAL RECURRENCE VS. ALL-PAIRS ATTENTION. EVERY TOKEN ATTENDS TO EVERY OTHER, SIMULTANEOUSLY.">
+  <svg viewBox="0 0 900 240">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={30} y={80} width={70} height={44}></rect>
+      <rect x={140} y={80} width={70} height={44}></rect>
+      <rect x={250} y={80} width={70} height={44}></rect>
+      <rect x={360} y={80} width={70} height={44}></rect>
+      <path d="M100 102 h40 M210 102 h40 M320 102 h40"></path>
+      <path d="M138 102 l-8 -4 v8 z M248 102 l-8 -4 v8 z M358 102 l-8 -4 v8 z" fill="currentColor"></path>
+    </g>
+    <g className="bp-svg-t" fill="currentColor">
+      <text x={47} y={106}>h₁</text>
+      <text x={157} y={106}>h₂</text>
+      <text x={267} y={106}>h₃</text>
+      <text x={377} y={106}>h₄</text>
+      <text x={30} y={155}>t=1</text>
+      <text x={140} y={155}>t=2</text>
+      <text x={250} y={155}>t=3</text>
+      <text x={360} y={155}>t=4</text>
+      <text x={30} y={40} className="bp-svg-t12">RECURRENT — 4 CLOCK TICKS</text>
+      <text x={530} y={40} className="bp-svg-t12">ATTENTION — 1 CLOCK TICK</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <circle cx={560} cy={90} r={14}></circle>
+      <circle cx={650} cy={90} r={14}></circle>
+      <circle cx={740} cy={90} r={14}></circle>
+      <circle cx={830} cy={90} r={14}></circle>
+      <circle cx={560} cy={190} r={14}></circle>
+      <circle cx={650} cy={190} r={14}></circle>
+      <circle cx={740} cy={190} r={14}></circle>
+      <circle cx={830} cy={190} r={14}></circle>
+    </g>
+    <g stroke="currentColor" strokeWidth={0.7} opacity={0.55} strokeDasharray="3 3" className="bp-dash-slow">
+      <path d="M560 104 L560 176 M560 104 L650 176 M560 104 L740 176 M560 104 L830 176" fill="none"></path>
+      <path d="M650 104 L560 176 M650 104 L650 176 M650 104 L740 176 M650 104 L830 176" fill="none"></path>
+      <path d="M740 104 L560 176 M740 104 L650 176 M740 104 L740 176 M740 104 L830 176" fill="none"></path>
+      <path d="M830 104 L560 176 M830 104 L650 176 M830 104 L740 176 M830 104 L830 176" fill="none"></path>
+    </g>
+    <g className="bp-svg-t" fill="currentColor">
+      <text x={554} y={94}>x₁</text>
+      <text x={644} y={94}>x₂</text>
+      <text x={734} y={94}>x₃</text>
+      <text x={824} y={94}>x₄</text>
+      <text x={554} y={194}>z₁</text>
+      <text x={644} y={194}>z₂</text>
+      <text x={734} y={194}>z₃</text>
+      <text x={824} y={194}>z₄</text>
+    </g>
+    <g stroke="currentColor" strokeWidth={1} fill="none">
+      <path d="M30 210 h400 M30 204 v12 M430 204 v12"></path>
+    </g>
+    <text x={180} y={232} className="bp-svg-t10" fill="currentColor">O(n) sequential steps</text>
+    <path d="M530 210 h370 M530 204 v12 M900 204 v12" stroke="currentColor" strokeWidth={1} fill="none"></path>
+    <text x={660} y={232} className="bp-svg-t10" fill="currentColor">O(1) sequential steps</text>
+  </svg>
+</BpFigure>
+
+The transformer's move is to delete the ticker tape. Every token gets to look directly at every other token, in parallel, in a single matrix multiplication.
+
+<BpNote>Fine print: GPT-style decoders add a causal mask — each position sees only what came before it. The all-at-once parallelism pays off in training and prompt processing; generating new text is still one token per pass (see § 07).</BpNote>
+
+The cost is quadratic — n tokens means n² pairwise interactions — but quadratic work that a GPU can do all at once beats linear work it has to do one step at a time. That single trade, *more math for less waiting*, is why transformers won.
+
+That comparison needs a hardware footnote. Attention performs O(n²) pairwise score work and stores an n-by-n pattern during ordinary training, so very long sequences become expensive fast. Recurrence performs only O(n) state updates, yet those updates form a dependency chain. For the sentence lengths common in early translation work, dense matrix multiplication kept the GPU busier and shortened the path between any two positions from as many as n steps to one attention hop.
+
+Training and generation expose different sides of this design. During next-token training, the entire known sequence is available. A triangular causal mask hides future positions, so the model can compute a prediction at every position in parallel without seeing the answer to its right. During generation, the next token genuinely does not exist yet. The model must append one token, then repeat, which restores a serial outer loop even though each pass uses parallel matrix operations inside.
+
+<BpSection id="s2" num="02" label="Tokens & embeddings" sheet="SHEET 2 OF 8" title="Tokens: the machine's atoms" />
+
+A transformer never sees words. It sees **tokens** — chunks from a fixed vocabulary of 50,000–200,000 pieces, learned by greedily merging the most frequent character pairs in the training data (byte-pair encoding). Common words survive as single tokens; rare ones get shattered. `the` is one token. `transformer` might be `transform` + `er`. This is why models are weirdly bad at counting letters: they can't see them.
+
+<BpNote>Ask a model to spell &quot;strawberry&quot; backwards and you're asking it to dissect atoms it has never seen split.</BpNote>
+
+Each token ID then indexes into an **embedding table** — a giant learned matrix with one row per vocabulary entry. Out comes a vector of maybe 512 to 12,288 numbers (the model's *width*, d<sub>model</sub>). Nothing about these numbers is hand-designed; training nudges them until geometry encodes meaning. Directions in this space become semantic: famously, *king − man + woman* lands near *queen*. From here on, the entire model is just operations on lists of these vectors.
+
+Tokenization fixes the model's vocabulary before training begins. A frequent fragment earns its own row in the table; an uncommon name may consume several positions and several rounds of computation. Two strings that look almost identical to a person can split differently because capitalization, whitespace, or a leading byte changes the merge path. Token count therefore affects latency, context use, and price as well as spelling behavior.
+
+<BpQA q="Does one token equal one word?">
+Sometimes, for a common word in a familiar language. A rare surname, emoji, code identifier, or word from a less represented language may become several tokens. The model processes those pieces and can combine them later, but each piece occupies one context position.
+</BpQA>
+
+<BpFigure caption="FIG. 2 — THE TOKENIZATION PIPELINE: TEXT → SUBWORDS → INTEGER IDs → LEARNED VECTORS.">
+  <svg viewBox="0 0 900 200">
+    <g className="bp-svg-t13" fill="currentColor">
+      <text x={30} y={60}>&quot;attention&quot;</text>
+      <text x={250} y={46}>att</text>
+      <text x={250} y={80}>ention</text>
+      <text x={440} y={46}>21129</text>
+      <text x={440} y={80}>32924</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1}>
+      <rect x={240} y={30} width={76} height={24}></rect>
+      <rect x={240} y={64} width={76} height={24}></rect>
+      <rect x={430} y={30} width={76} height={24}></rect>
+      <rect x={430} y={64} width={76} height={24}></rect>
+      <path d="M160 56 h70 M326 42 h94 M326 76 h94 M516 42 h94 M516 76 h94" strokeDasharray="4 4" className="bp-dash"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M238 56 l-8 -4 v8 z M428 42 l-8 -4 v8 z M428 76 l-8 -4 v8 z M618 42 l-8 -4 v8 z M618 76 l-8 -4 v8 z"></path>
+    </g>
+    <g>
+      <rect x={620} y={32} width={10} height={20} fill="currentColor" opacity={0.9}></rect>
+      <rect x={634} y={36} width={10} height={16} fill="currentColor" opacity={0.5}></rect>
+      <rect x={648} y={30} width={10} height={22} fill="currentColor" opacity={0.7}></rect>
+      <rect x={662} y={40} width={10} height={12} fill="currentColor" opacity={0.35}></rect>
+      <rect x={676} y={34} width={10} height={18} fill="currentColor" opacity={0.8}></rect>
+      <rect x={620} y={66} width={10} height={20} fill="currentColor" opacity={0.4}></rect>
+      <rect x={634} y={62} width={10} height={24} fill="currentColor" opacity={0.85}></rect>
+      <rect x={648} y={70} width={10} height={16} fill="currentColor" opacity={0.6}></rect>
+      <rect x={662} y={64} width={10} height={22} fill="currentColor" opacity={0.9}></rect>
+      <rect x={676} y={72} width={10} height={14} fill="currentColor" opacity={0.3}></rect>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor" opacity={0.8}>
+      <text x={30} y={120}>TEXT</text>
+      <text x={240} y={120}>SUBWORD TOKENS</text>
+      <text x={430} y={120}>VOCAB IDs</text>
+      <text x={620} y={120}>EMBEDDINGS ∈ ℝᵈ</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1}>
+      <path d="M620 140 h180 M620 134 v12 M800 134 v12"></path>
+    </g>
+    <text x={640} y={162} className="bp-svg-t10" fill="currentColor">d_model = 512 … 12288</text>
+  </svg>
+</BpFigure>
+
+<BpSection id="s3" num="03" label="Attention" sheet="SHEET 3 OF 8" title="Attention: the whole trick" />
+
+Here is the part worth slowing down for. Attention answers one question for every token: *which other tokens should influence my meaning, and by how much?* The mechanism is a soft dictionary lookup. Each token emits three vectors, produced by three learned projection matrices: a **query** (what am I looking for?), a **key** (what do I contain?), and a **value** (what do I contribute if selected?).
+
+To update token *i*, take its query and dot it against every token's key. High dot product means &quot;relevant.&quot; Divide by √d<sub>k</sub> so the numbers don't blow up as vectors get wide, softmax the scores into weights that sum to 1, and use those weights to blend everyone's value vectors into a new representation of token *i*. That's it. That is the mechanism the trillion-dollar industry runs on:
+
+Queries and keys decide routing; values carry payload. Imagine looking up a library book. Your request is the query, catalog entries are keys, and the pages returned are values. A close catalog match should route the pages to you, yet you do not want the catalog text itself as the answer. Learned projections let the model separate those roles even though all three start from the same residual-stream vector.
+
+<BpEquation tag="EQ. 3.1">
+  Attention(Q, K, V) = softmax<span style={{ fontSize: 28 }}>(</span>
+  <BpFrac
+    top={<>QK<sup style={{ fontSize: 14 }}>⊤</sup></>}
+    bottom={<>√<span style={{ borderTop: '1px solid currentColor' }}>d<sub style={{ fontSize: 13 }}>k</sub></span></>}
+  />
+  <span style={{ fontSize: 28 }}>)</span> V
+</BpEquation>
+
+<BpNote>√d_k: with d_k=64 and unit-variance components, dot products have std ≈ √64 = 8. Unscaled, softmax saturates and gradients die.</BpNote>
+
+<BpFigure caption="FIG. 3 — SCALED DOT-PRODUCT ATTENTION. THREE PROJECTIONS, ONE DOT PRODUCT, ONE SOFTMAX, ONE BLEND.">
+  <svg viewBox="0 0 940 300">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={20} y={110} width={90} height={80}></rect>
+      <rect x={200} y={30} width={110} height={46}></rect>
+      <rect x={200} y={127} width={110} height={46}></rect>
+      <rect x={200} y={224} width={110} height={46}></rect>
+      <rect x={400} y={30} width={60} height={46}></rect>
+      <rect x={400} y={127} width={60} height={46}></rect>
+      <rect x={400} y={224} width={60} height={46}></rect>
+      <rect x={560} y={78} width={120} height={50}></rect>
+      <rect x={560} y={170} width={120} height={50}></rect>
+      <rect x={770} y={120} width={90} height={60}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M110 150 h30 v-97 h58 M110 150 h88 M110 150 h30 v97 h58"></path>
+      <path d="M310 53 h88 M310 150 h88 M310 247 h88"></path>
+      <path d="M460 53 h60 v50 h38 M460 150 h60 v-30 h38"></path>
+      <path d="M620 128 v40"></path>
+      <path d="M460 247 h250 v-100 h58"></path>
+      <path d="M680 195 h60 v-48 h28"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M198 53 l-8 -4 v8 z M198 150 l-8 -4 v8 z M198 247 l-8 -4 v8 z M398 53 l-8 -4 v8 z M398 150 l-8 -4 v8 z M398 247 l-8 -4 v8 z M558 103 l-8 -4 v8 z M558 190 l-8 -4 v8 z M620 166 l-4 -8 h8 z M768 147 l-8 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t" fill="currentColor">
+      <text x={41} y={154} className="bp-svg-t12">X</text>
+      <text x={30} y={208} className="bp-svg-t10">n × d</text>
+      <text x={222} y={57} className="bp-svg-t12">W_Q</text>
+      <text x={222} y={154} className="bp-svg-t12">W_K</text>
+      <text x={222} y={251} className="bp-svg-t12">W_V</text>
+      <text x={422} y={57} className="bp-svg-t12">Q</text>
+      <text x={422} y={154} className="bp-svg-t12">K</text>
+      <text x={422} y={251} className="bp-svg-t12">V</text>
+      <text x={574} y={107} className="bp-svg-t12">QK⊤/√d_k</text>
+      <text x={586} y={199} className="bp-svg-t12">softmax</text>
+      <text x={786} y={154} className="bp-svg-t12">out</text>
+      <text x={700} y={230} className="bp-svg-t10">weights · V</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1}>
+      <path d="M400 8 h60 M400 2 v12 M460 2 v12"></path>
+    </g>
+    <text x={470} y={14} className="bp-svg-t10" fill="currentColor">n × d_k</text>
+  </svg>
+</BpFigure>
+
+Abstract until you watch it work. Below is the canonical sentence from the Transformer's release. The pronoun *&quot;it&quot;* is ambiguous — it could be the animal or the street. Hover any token to see where its attention goes. Hover *it*: trained models learn, from nothing but text statistics, that tired things are animals, not streets. The weights below are hand-drawn to match the published visualizations.
+
+<BpQA q="So attention is the model choosing one earlier word?">
+Usually it blends several positions. One head might put 60% of its weight on *animal*, 25% on *tired*, and spread the rest across punctuation and nearby words. The weighted value vectors become one update, and later layers can revise that mixture again.
+</BpQA>
+
+<AttentionDemo />
+
+<BpSection id="s4" num="04" label="Multi-head" sheet="SHEET 4 OF 8" title="Many heads, many questions" />
+
+One attention pattern per layer is too few. &quot;Which noun does this pronoun bind to?&quot; and &quot;what verb governs me?&quot; are different questions with different answers. So the transformer runs attention several times in parallel — 8 to 128 **heads** — each with its own small W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>, each free to learn its own notion of relevance. Their outputs are concatenated and mixed back down with one more matrix.
+
+This is nearly free: each head works in d<sub>model</sub>/h dimensions, so the total compute matches single-head attention. When researchers dissect trained models they find heads with legible jobs — previous-token heads, syntax heads, *induction heads* that scan for &quot;the last time this pattern appeared, what came next?&quot; Induction heads are the leading candidate explanation for in-context learning.
+
+<BpNote>See Anthropic's &quot;In-context Learning and Induction Heads&quot; (2022) for the dissection work.</BpNote>
+
+The job labels are descriptions of observed behavior, not slots assigned by an engineer. Training can distribute one behavior across several heads, reuse a head for different patterns, or leave a head with no clean human story. A head also works inside a layer: an early head may copy local punctuation while a later head routes a representation already enriched by dozens of earlier operations. Reading one attention map never reveals the whole computation.
+
+<BpFigure caption="FIG. 5 — MULTI-HEAD ATTENTION: h INDEPENDENT RELEVANCE FUNCTIONS, CONCATENATED, REMIXED.">
+  <svg viewBox="0 0 900 210">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={20} y={80} width={80} height={50}></rect>
+      <rect x={240} y={14} width={140} height={34}></rect>
+      <rect x={240} y={60} width={140} height={34}></rect>
+      <rect x={240} y={106} width={140} height={34}></rect>
+      <rect x={240} y={162} width={140} height={34}></rect>
+      <rect x={520} y={80} width={110} height={50}></rect>
+      <rect x={740} y={80} width={90} height={50}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M100 105 h60 v-74 h78 M100 105 h60 v-28 h78 M100 105 h60 v18 h78 M100 105 h60 v74 h78"></path>
+      <path d="M380 31 h80 v49 h58 M380 77 h80 v10 h58 M380 123 h80 v-10 h58 M380 179 h80 v-49 h58"></path>
+      <path d="M630 105 h108"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M738 105 l-8 -4 v8 z M518 105 l-8 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={40} y={109}>X</text>
+      <text x={254} y={36}>head 1 · syntax</text>
+      <text x={254} y={82}>head 2 · prev tok</text>
+      <text x={254} y={128}>head 3 · corefer.</text>
+      <text x={254} y={184}>head h · induction</text>
+      <text x={540} y={109}>concat</text>
+      <text x={762} y={109}>W_O</text>
+    </g>
+    <text x={248} y={156} className="bp-svg-t12" fill="currentColor" opacity={0.5}>⋮</text>
+  </svg>
+</BpFigure>
+
+<BpSection id="s5" num="05" label="Positional encoding" sheet="SHEET 5 OF 8" title="Positional encoding: telling a bag of words about order" />
+
+There's a bug in everything above. Attention is a sum over all positions — it treats the input as a *bag* of tokens. Reorder &quot;dog bites man&quot; into &quot;man bites dog&quot; and attention produces the same output vectors, just reordered: the mechanism cannot tell which order the words came in. The fix: stamp each token with a vector encoding its position before the first layer. The original paper used interleaved sine and cosine waves at geometrically spaced frequencies — fast oscillations in the early dimensions, glacial ones in the late dimensions, giving every position a unique barcode:
+
+<BpEquation tag="EQ. 5.1">
+  PE<sub style={{ fontSize: 13 }}>(pos, 2i)</sub> = sin(pos / 10000<sup style={{ fontSize: 13 }}>2i/d</sup>) &nbsp;&nbsp;·&nbsp;&nbsp; PE<sub style={{ fontSize: 13 }}>(pos, 2i+1)</sub> = cos(pos / 10000<sup style={{ fontSize: 13 }}>2i/d</sup>)
+</BpEquation>
+
+<PositionalEncodingDemo />
+
+Why sinusoids instead of the raw integer position? Because for any fixed offset k, PE(pos+k) is a *linear function* of PE(pos) — the same trigonometric identity that makes clock arithmetic work — so &quot;three tokens back&quot; becomes something a learned matrix can express. Modern models mostly use a descendant called RoPE, which rotates the query and key vectors by position instead of adding to them, but the idea is identical: order enters the model as geometry.
+
+Position methods also define how a model behaves near and beyond its trained context length. Learned absolute position tables have a fixed set of rows. Sinusoids can be evaluated at new positions, although availability does not guarantee useful extrapolation. RoPE makes attention scores depend naturally on relative displacement, but extending its range still requires training choices or frequency adjustments. A large advertised context window is an empirical capability, not a consequence of having enough position numbers.
+
+<BpSection id="s6" num="06" label="The block" sheet="SHEET 6 OF 8" title="The block: assembling the circuit" />
+
+Attention alone can't compute much — it only mixes information *between* positions. So each block pairs it with a **feed-forward network**: two plain linear layers with a nonlinearity between them, applied to every token independently, usually 4× wider than the model itself. If attention is the routing layer, the FFN is the processing plant — it holds roughly two-thirds of the parameters, and interpretability work suggests much of the model's factual knowledge lives here, as key-value memories.
+
+<BpEquation tag="EQ. 6.1">FFN(x) = W₂ · GELU(W₁x + b₁) + b₂</BpEquation>
+
+Two pieces of plumbing hold the tower together. **Residual connections**: every sub-layer's output is *added* to its input rather than replacing it, so the block computes a correction, not a rewrite — and gradients get a clean highway from layer 96 back to layer 1. **Layer normalization** re-centers each vector before every sub-layer so activations can't drift off to infinity across dozens of layers. Neither is glamorous; without both, deep transformers simply don't train.
+
+The residual stream explains how specialized operations cooperate. Each attention or feed-forward sublayer reads the current vector and writes an update into the same shared width. Information can persist when a sublayer writes almost nothing, and several sublayers can accumulate compatible features without handing a bespoke data structure from one to the next. Interpretability researchers can often trace a behavior as a sequence of reads and writes along this stream.
+
+<BpFigure caption="FIG. 7 — ONE TRANSFORMER BLOCK (PRE-NORM, DECODER-ONLY). READ BOTTOM TO TOP. STACK N DEEP.">
+  <svg viewBox="0 0 900 340">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={330} y={252} width={200} height={40}></rect>
+      <rect x={330} y={168} width={200} height={40}></rect>
+      <circle cx={430} cy={140} r={12}></circle>
+      <rect x={330} y={58} width={200} height={40}></rect>
+      <circle cx={430} cy={30} r={12}></circle>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash-fast">
+      <path d="M430 330 v-38 M430 252 v-44 M430 168 v-16 M430 128 v-30 M430 58 v-16"></path>
+      <path d="M430 310 h180 v-170 h-168 M430 128 h180 v-98 h-168"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={352} y={277}>LN → MULTI-HEAD ATTN</text>
+      <text x={352} y={193}>LN → FFN (4× WIDE)</text>
+      <text x={425} y={145} className="bp-svg-t13">+</text>
+      <text x={425} y={35} className="bp-svg-t13">+</text>
+      <text x={352} y={83}>TO NEXT BLOCK →</text>
+      <text x={446} y={326} className="bp-svg-t10">x (from below)</text>
+      <text x={620} y={224} className="bp-svg-t10">residual</text>
+      <text x={620} y={84} className="bp-svg-t10">residual</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1}>
+      <path d="M680 292 v-262 M672 292 h16 M672 30 h16"></path>
+    </g>
+    <text x={700} y={165} className="bp-svg-t12" fill="currentColor">× N layers</text>
+    <text x={700} y={185} className="bp-svg-t10" fill="currentColor" opacity={0.7}>N = 12 … 120+</text>
+    <circle cx={430} cy={310} r={3} fill="var(--bp-accent)" className="bp-pulse"></circle>
+  </svg>
+</BpFigure>
+
+That's the entire architecture. A GPT-class model is: embedding table → N copies of this block → one final projection back to vocabulary size. Each layer reads the residual stream, adds its two cents, and passes it up. By the top, &quot;it&quot; doesn't mean a pronoun anymore — it means *the tired animal, subject of the next clause*.
+
+The original translation transformer used both encoder and decoder stacks. GPT took the decoder side, kept causal self-attention, and trained it on one plain objective: predict the next token across large unlabeled text. GPT-1 showed in 2018 that generative pretraining could be adapted to varied language tasks. GPT-2 enlarged the model and dataset in 2019; GPT-3 enlarged them again in 2020 and demonstrated that examples written directly in the prompt could steer behavior without a gradient update.
+
+<BpNote>Radford et al., GPT-1 (2018) and GPT-2 (2019); Brown et al., GPT-3 (2020). The decoder-only line turned the transformer into a general text continuation engine.</BpNote>
+
+<BpSection id="s7" num="07" label="Sampling & temperature" sheet="SHEET 7 OF 8" title="Sampling: the temperature knob" />
+
+The final layer outputs one raw score (*logit*) per vocabulary entry. A softmax turns those into a probability distribution, and generation is just sampling from it, appending the winner, and running the whole stack again — one forward pass per token. The knob everyone actually touches is **temperature** T, which divides the logits before the softmax. Low T sharpens the distribution toward the single best guess; high T flattens it toward chaos. Drag it:
+
+<BpQA q="So the model just guesses the next word?">
+It estimates the next **token**, then repeats. The word *unbelievable* might require several predictions, while punctuation can be its own prediction. Calling it a guess is fair if we remember how much computation shapes the distribution: every layer has already mixed the entire visible context before those probabilities appear.
+</BpQA>
+
+<TemperatureDemo />
+
+This is also where the model's honest epistemology lives: it never outputs a word, only a distribution over words. Sampling *is* the function — and a fluent draw from that distribution can land on unsupported content under any decoding policy, greedy included. That failure is what gets called hallucination. Every trick you've heard of (top-k, top-p, beam search) is just a different policy for picking from this same bar chart.
+
+Greedy decoding always selects the highest-probability token. Top-k first discards everything outside the k highest scores; top-p keeps the smallest set whose cumulative probability crosses p. These policies control the candidate set and its randomness. They do not check a database, verify a citation, or turn probability into truth. Reliability needs evidence, tools, constrained output, or checking elsewhere in the system.
+
+The KV cache avoids repeating most work inside that serial loop. Keys and values for previous positions stay fixed at a given layer, so generation stores them and computes only the new position's projections. The new query still compares with all cached keys, which means per-token attention work and cache reads grow with context length. For a batch of long conversations, cache memory can limit serving capacity before parameter memory does.
+
+<BpNote>Inference optimization in one line: cache each token's K and V so old tokens are never recomputed. That's the KV cache — and why long contexts eat GPU memory.</BpNote>
+
+Sampling settings also interact with the prompt. A low temperature can make repeated runs stable while preserving a confidently wrong continuation. A high temperature can expose several plausible phrasings without adding knowledge. If an application needs one exact enum or JSON shape, constrain the output grammar. If it needs a current fact, supply a current source. Temperature solves neither contract.
+
+<BpSection id="s8" num="08" label="Scale" sheet="SHEET 8 OF 8" title="Scale: the same drawing, enlarged" />
+
+Here is the uncomfortable secret of the last nine years: almost nothing in this drawing has changed since 2017. GPT-4 is the same circuit as the original transformer, with bigger matrices, more layers, and vastly more data. Parameters grow roughly as 12·N·d², and the field discovered that loss falls as a smooth, boringly reliable power law in compute. Capability was purchased, order of magnitude by order of magnitude.
+
+Kaplan and collaborators quantified that thread in 2020: over the regimes they measured, language-model loss followed power-law relationships with model size, dataset size, and compute. The curves gave teams a planning instrument. Run smaller experiments, fit the trend, and estimate what a much larger training run might buy before spending the full budget.
+
+Hoffmann and collaborators revisited the allocation in 2022 with Chinchilla. Their result was operational: many large models had too many parameters for the number of training tokens they received. Under a fixed compute budget, a smaller model trained on substantially more data could win. Scale therefore has at least three coupled dials — parameters, training tokens, and compute — and the best allocation depends on the budget and target.
+
+<BpQA q="Does making a model bigger always make it better?">
+Average training loss tends to improve predictably when size, data, and compute are scaled together, within the ranges measured. A particular capability or benchmark can move unevenly, and poor data can waste an enormous run. Chinchilla's lesson was that parameter count alone is a weak description of how much useful training a model received.
+</BpQA>
+
+<BpFigure caption="FIG. 9 — MORE THAN FOUR ORDERS OF MAGNITUDE, ONE ARCHITECTURE. THE DRAWING NEVER CHANGED; THE PAPER SIZE DID.">
+  <svg viewBox="0 0 900 300">
+    <g stroke="currentColor" strokeWidth={0.5} opacity={0.4} fill="none">
+      <path d="M80 250 H860 M80 250 V20"></path>
+      <path d="M80 192 H860 M80 134 H860 M80 76 H860" strokeDasharray="2 4"></path>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor" opacity={0.8}>
+      <text x={24} y={254}>10⁷</text>
+      <text x={24} y={196}>10⁹</text>
+      <text x={24} y={138}>10¹¹</text>
+      <text x={24} y={80}>10¹³</text>
+      <text x={96} y={272}>2017</text>
+      <text x={216} y={272}>2018</text>
+      <text x={336} y={272}>2019</text>
+      <text x={456} y={272}>2020</text>
+      <text x={576} y={272}>2022</text>
+      <text x={716} y={272}>2023+</text>
+    </g>
+    <path d="M110 227 L230 206 L350 187 L470 127 L590 113 L730 98" fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" opacity={0.7}></path>
+    <g fill="var(--bp-accent)">
+      <circle cx={110} cy={227} r={4} className="bp-pulse"></circle>
+      <circle cx={230} cy={206} r={4} className="bp-pulse" style={{ animationDelay: '.2s' }}></circle>
+      <circle cx={350} cy={187} r={4} className="bp-pulse" style={{ animationDelay: '.4s' }}></circle>
+      <circle cx={470} cy={127} r={4} className="bp-pulse" style={{ animationDelay: '.6s' }}></circle>
+      <circle cx={590} cy={113} r={4} className="bp-pulse" style={{ animationDelay: '.8s' }}></circle>
+      <circle cx={730} cy={98} r={4} className="bp-pulse" style={{ animationDelay: '1s' }}></circle>
+    </g>
+    <g className="bp-svg-t" fill="currentColor">
+      <text x={122} y={222}>Transformer · 65M</text>
+      <text x={242} y={201}>BERT · 340M</text>
+      <text x={362} y={182}>GPT-2 · 1.5B</text>
+      <text x={482} y={122}>GPT-3 · 175B</text>
+      <text x={602} y={108}>PaLM · 540B</text>
+      <text x={742} y={93}>GPT-4 · ~1.8T*</text>
+    </g>
+    <text x={680} y={290} className="bp-svg-t9" fill="currentColor" opacity={0.6}>* estimated — never confirmed by OpenAI</text>
+    <text x={90} y={36} className="bp-svg-t" fill="currentColor">PARAMETERS (LOG SCALE)</text>
+  </svg>
+</BpFigure>
+
+The refinements since — RoPE, RMSNorm, SwiGLU, grouped-query attention, mixture-of-experts — are real engineering, but they are pencil revisions in the margins of this sheet, not new sheets. If you understand the drawing above, you understand the machine that is currently rewriting the economics of knowledge work. It fits on one page. It always did.
+
+<BpReferences
+  drawingCode="TDD-001"
+  items={[
+    { label: 'Sutskever, Vinyals, and Le, "Sequence to Sequence Learning with Neural Networks", NeurIPS 2014', href: 'https://arxiv.org/abs/1409.3215' },
+    { label: 'Bahdanau, Cho, and Bengio, "Neural Machine Translation by Jointly Learning to Align and Translate", ICLR 2015', href: 'https://arxiv.org/abs/1409.0473' },
+    { label: 'Luong, Pham, and Manning, "Effective Approaches to Attention-based Neural Machine Translation", EMNLP 2015', href: 'https://arxiv.org/abs/1508.04025' },
+    { label: 'Vaswani et al., "Attention Is All You Need", NeurIPS 2017', href: 'https://arxiv.org/abs/1706.03762' },
+    { label: 'Radford et al., "Improving Language Understanding by Generative Pre-Training", OpenAI 2018', href: 'https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf' },
+    { label: 'Radford et al., "Language Models are Unsupervised Multitask Learners", OpenAI 2019', href: 'https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf' },
+    { label: 'Brown et al., "Language Models are Few-Shot Learners", NeurIPS 2020', href: 'https://arxiv.org/abs/2005.14165' },
+    { label: 'Kaplan et al., "Scaling Laws for Neural Language Models", 2020', href: 'https://arxiv.org/abs/2001.08361' },
+    { label: 'Hoffmann et al., "Training Compute-Optimal Large Language Models", NeurIPS 2022', href: 'https://arxiv.org/abs/2203.15556' },
+  ]}
+/>

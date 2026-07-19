@@ -1,0 +1,33 @@
+{
+  "title": "The Workshop",
+  "author": "Zachary Proser",
+  "date": "2026-07-19",
+  "description": "A complete working drawing for an AI training workshop: how to design, build, deliver, and follow through on an AI workshop for engineers or corporate AI training that works.",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-workshop-hero.webp",
+  "tags": [
+    "AI",
+    "AI Training",
+    "Workshops",
+    "Engineering Enablement",
+    "Corporate Training"
+  ],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "005",
+    "subject": "AI ENABLEMENT",
+    "readTime": "15 MIN",
+    "eyebrow": "Training design · Complete working drawing",
+    "subtitle": "A useful workshop leaves the room with working capability, durable artifacts, and a clear next move.",
+    "rfiSuggestions": [
+      "What does a workshop engagement cost?",
+      "How do you handle a room with mixed skill levels?",
+      "What artifacts does my team keep?"
+    ],
+    "nextDrawing": {
+      "number": "006",
+      "title": "The Vector Database",
+      "subject": "VECTOR SEARCH",
+      "status": "planned"
+    }
+  }
+}

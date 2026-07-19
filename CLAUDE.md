@@ -19,7 +19,7 @@ Before writing any copy, check: does any sentence start with "This isn't", "not 
 
 Any of these in a draft = rewrite the sentence.
 
-**Buzzwords:** game-changer, unlock (metaphorical), level up, deep dive, seamless/seamlessly, robust (as generic praise), leverage (overused verb), streamline, empower/empowering, cutting-edge, bleeding-edge, pain points, north star, move the needle, paradigm shift, transformative, revolutionary/revolutionize, groundbreaking, unprecedented, holistic, ecosystem (buzzword), landscape (metaphor), synergy, actionable insights, thought leadership, guardrails (non-literal)
+**Buzzwords:** game-changer, unlock (metaphorical), level up, deep dive (exception: "Blueprint Deep Dive" is the proper name of the drawing-style post series and may appear as a brand label; generic prose use stays banned), seamless/seamlessly, robust (as generic praise), leverage (overused verb), streamline, empower/empowering, cutting-edge, bleeding-edge, pain points, north star, move the needle, paradigm shift, transformative, revolutionary/revolutionize, groundbreaking, unprecedented, holistic, ecosystem (buzzword), landscape (metaphor), synergy, actionable insights, thought leadership, guardrails (non-literal)
 
 **AI-era tells:** "harness the power of", "at the intersection of", "in the age of AI", delve/delve into (strong LLM tell), "co-pilot" (generic)
 

@@ -1,0 +1,33 @@
+{
+  "title": "The Embedding Space",
+  "author": "Zachary Proser",
+  "date": "2026-07-18",
+  "description": "From the distributional hypothesis and word2vec to contextual sentence encoders: how embeddings are trained, compared, indexed with HNSW, migrated, and evaluated in production.",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-embedding-space-hero.webp",
+  "tags": [
+    "AI",
+    "Embeddings",
+    "Vector Search",
+    "Semantic Search",
+    "RAG"
+  ],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "002",
+    "subject": "EMBEDDINGS",
+    "readTime": "15 MIN",
+    "eyebrow": "Semantic geometry · Complete working drawing",
+    "subtitle": "Applied AI runs on a map where meaning has direction, distance, and neighborhoods. Here is how that map is built and searched.",
+    "rfiSuggestions": [
+      "When should I use cosine similarity instead of dot product?",
+      "How do I choose an embedding model and lock its version?",
+      "Why did my nearest-neighbor search miss the obvious result?"
+    ],
+    "nextDrawing": {
+      "number": "004",
+      "title": "The Tokenizer",
+      "subject": "TOKENIZATION",
+      "status": "in-production"
+    }
+  }
+}

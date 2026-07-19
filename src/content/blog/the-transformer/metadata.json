@@ -1,0 +1,33 @@
+{
+  "title": "The Transformer",
+  "author": "Zachary Proser",
+  "date": "2026-07-18",
+  "description": "How seq2seq attention became the transformer, how decoder-only models generate, and how tokens, attention heads, position, residual blocks, sampling, KV caching, and scaling fit together.",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-transformer-hero.webp",
+  "tags": [
+    "AI",
+    "Transformers",
+    "Attention",
+    "Deep Learning",
+    "LLMs"
+  ],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "001",
+    "subject": "ATTENTION",
+    "readTime": "15 MIN",
+    "eyebrow": "Neural architecture · Complete working drawing",
+    "subtitle": "Every frontier model — GPT, Claude, Gemini, Llama — is this one circuit, photocopied. Here is the full schematic.",
+    "rfiSuggestions": [
+      "Why divide by √d_k and not d_k?",
+      "Where does a model store facts?",
+      "Explain the KV cache like I'm on-call for it"
+    ],
+    "nextDrawing": {
+      "number": "004",
+      "title": "The Tokenizer",
+      "subject": "TOKENIZATION",
+      "status": "in-production"
+    }
+  }
+}

@@ -161,6 +161,8 @@ function _processContentMetadata(contentType: string, directorySlug: string, raw
     ...(processedMetadata.tags && { tags: processedMetadata.tags }),
     ...(typeof processedMetadata.hiddenFromIndex !== 'undefined' && { hiddenFromIndex: processedMetadata.hiddenFromIndex }),
     ...(typeof processedMetadata.hideNewsletter !== 'undefined' && { hideNewsletter: processedMetadata.hideNewsletter }),
+    ...(processedMetadata.blogStyle && { blogStyle: processedMetadata.blogStyle }),
+    ...(processedMetadata.blueprint && { blueprint: processedMetadata.blueprint }),
     ...(typeof processedMetadata.durSec !== 'undefined' && { durSec: processedMetadata.durSec }),
     ...(typeof processedMetadata.views !== 'undefined' && { views: processedMetadata.views })
   };
