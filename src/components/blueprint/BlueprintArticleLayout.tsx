@@ -392,16 +392,16 @@ export function BlueprintArticleLayout({
 
       {!chatOpen && (
         <button ref={rfiTabRef} type="button" className="bp-rfi-tab" onClick={() => setChatOpen(true)}>
-          ✦ RFI — ASK THE DRAWING
+          ✦ ASK A QUESTION OF THIS BLUEPRINT
         </button>
       )}
 
       {chatOpen && (
-        <aside className="bp-drawer" role="dialog" aria-label="RFI — ask the drawing">
+        <aside className="bp-drawer" role="dialog" aria-label="Ask a question of this blueprint">
           <div className="bp-drawer-head">
             <div className="bp-drawer-title">
-              <div className="bp-drawer-title-main">RFI — REQUEST FOR INFORMATION</div>
-              <div className="bp-drawer-title-sub">SCOPED TO {drawingCode} · EVERY QUESTION FILED</div>
+              <div className="bp-drawer-title-main">ASK A QUESTION OF THIS BLUEPRINT</div>
+              <div className="bp-drawer-title-sub">RFI DESK · SCOPED TO {drawingCode} · EVERY QUESTION FILED</div>
             </div>
             <button
               type="button"
