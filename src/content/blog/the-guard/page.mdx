@@ -1,0 +1,288 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import {
+  BpSection,
+  BpAnchor,
+  BpNote,
+  BpFigure,
+  BpEquation,
+  BpQA,
+  BpReferences,
+  BpDetachablePlate,
+  TrustBoundaryDemo,
+} from '@/components/blueprint'
+
+export const metadata = createMetadata(rawMetadata)
+
+<BpAnchor id="s0" num="00" label="Abstract" />
+
+A tool-using language model can read an email, reason over a calendar, and ask an API to create an event. That route joins three different kinds of authority: the user’s instruction, an external party’s data, and the application’s credentials. Prompt injection becomes a security failure when data from the second category can steer authority from the third.
+
+This drawing treats the agent as a confused deputy. The model receives trusted and untrusted text through one context and proposes actions under credentials it does not own. Source labels, delimiters, instruction hierarchy, and injection detectors can change model behavior. None of them creates a dependable privilege boundary. Authorization, resource scope, recipient scope, approval, and tool-side validation must remain outside the model.
+
+The durable route is **hostile document → model context → privileged tool call**. Each sheet follows that route and marks the component that can affect it. The interactive uses abstract prepared cases and a fixed 64-row outcome table; it contains no model call and renders no attack text. The final test contract reports task success, attack success, and blocked legitimate actions together, because refusal alone is neither a useful agent nor adequate evidence of security.
+
+<BpSection id="s1" num="01" label="Confused deputy" sheet="SHEET 1 OF 8" title="The model proposes work with somebody else’s authority" />
+
+A **confused deputy** has legitimate authority and can be induced to use it for the wrong principal or purpose. A calendar agent fits the pattern. The application holds OAuth credentials. The user supplies a task. The model interprets text and chooses a tool call. An email author may control some of the text the model reads, while holding no calendar permission. If that email can cause a calendar mutation, the application has let data borrow the user’s authority.
+
+The security question starts with principals and effects, not with whether the text looks suspicious. Who requested the action? Which credential executes it? Which object, recipient, date range, or dollar amount falls inside the grant? Where is that grant checked? A fluent explanation from the model answers none of those questions. The model can help form a proposal, but the proposal must arrive at an enforcement point as untrusted input.
+
+Start the threat model from the effect and work backward. List every tool operation that can disclose, mutate, send, delete, purchase, execute, or administer. Identify the credential used for each operation and the data sources visible on the route to it. A read-only summarizer with access to one folder has a different ceiling from an assistant holding inbox-wide read access and permission to send mail. Model quality changes probability; reachable authority changes maximum impact.
+
+This distinction also separates prompt injection from a broad model-safety discussion. Content-policy evasion concerns outputs a model is expected to avoid. Application compromise concerns data, permissions, and side effects in the surrounding system. The same model behavior may appear in both, yet the application-security case has a concrete authority path: a principal, a credential, a privileged operation, and an external effect.
+
+<BpFigure caption="FIG. 1 — A CONFUSED DEPUTY HOLDS THE USER’S CREDENTIAL, READS TEXT CONTROLLED BY ANOTHER PRINCIPAL, AND PROPOSES A PRIVILEGED EFFECT. AUTHORITY MUST BE CHECKED AFTER THE PROPOSAL.">
+  <svg viewBox="0 0 920 350">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={38} y={70} width={196} height={82}></rect><rect x={362} y={70} width={196} height={82}></rect><rect x={686} y={70} width={196} height={82}></rect>
+      <rect x={362} y={230} width={196} height={72}></rect>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={75} y={105}>USER PRINCIPAL</text><text x={72} y={128}>TASK + CONSENT</text>
+      <text x={415} y={105}>LLM DEPUTY</text><text x={399} y={128}>ACTION PROPOSAL</text>
+      <text x={724} y={105}>TOOL ADAPTER</text><text x={718} y={128}>USER CREDENTIAL</text>
+      <text x={395} y={260}>EXTERNAL SOURCE</text><text x={397} y={282}>UNTRUSTED DATA</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.2} strokeDasharray="6 5" className="bp-dash">
+      <path d="M234 111 H360 M558 111 H684 M460 230 V154"></path>
+    </g>
+    <g fill="currentColor"><path d="M358 111 l-8 -4 v8 z M682 111 l-8 -4 v8 z M460 156 l-4 8 h8 z"></path></g>
+    <text x={595} y={94} className="bp-svg-t10" fill="currentColor">PROPOSAL ≠ GRANT</text>
+  </svg>
+</BpFigure>
+
+<BpNote>“The model decided” is not an authorization record. Record the principal, task, permitted action, resource scope, recipient or destination, expiry, and approval state in data the model cannot rewrite.</BpNote>
+
+<BpQA q="Is the model the attacker?">
+Usually no. The useful threat model treats the model as a deputy operating on attacker-influenced data. The application created the dangerous composition by joining untrusted context to credentials and tools without a sufficiently strong authorization check.
+</BpQA>
+
+<BpSection id="s2" num="02" label="Trust boundary" sheet="SHEET 2 OF 8" title="Trusted instructions and untrusted data share a context, not authority" />
+
+The user task has a principal and an intended purpose. Retrieved email, web pages, files, calendar descriptions, support tickets, and tool results have separate producers. Some may be honest, compromised, stale, or deliberately hostile. Context assembly often serializes all of them into tokens for one model invocation. A label can describe their provenance, but serialization does not confer trust.
+
+Treat every model input and output as typed data in the application even if the model sees only text. A source record should carry producer, retrieval path, timestamp, integrity evidence, sensitivity, and a trust class. The context assembler should select the minimum records needed for the task, preserve labels through transformations, and keep secrets or unrelated objects out. These controls reduce exposure and make traces explainable. They do not guarantee that the model will obey the labels.
+
+Provenance must survive derived data. A search result may point to an email; a summary may combine several emails; a tool result may quote a document fetched from another service. Record the lineage instead of relabeling the final string as trusted because an internal component produced it. Internal transport changes custody, not authorship. When lineage is missing, policy should treat the item at the least-trusted plausible class.
+
+The enforceable boundary sits where a proposed action becomes an allowed action. A policy service can compare the proposal with a structured grant created from authenticated user intent. The tool adapter can validate schema, resource scope, recipient, rate, and expiry. A human can approve a concrete high-impact action. The external service can enforce its own access controls. Each check operates on structured fields and denies by default.
+
+<BpFigure caption="FIG. 2 — TRUST LABELS TRAVEL WITH DATA THROUGH CONTEXT ASSEMBLY. A SEPARATE POLICY AND AUTHORIZATION PATH BINDS THE USER PRINCIPAL TO A CONCRETE TOOL OPERATION.">
+  <svg viewBox="0 0 920 380">
+    <g fill="none" stroke="currentColor" strokeWidth={1.1}>
+      <rect x={34} y={54} width={180} height={62}></rect><rect x={34} y={142} width={180} height={62}></rect><rect x={34} y={230} width={180} height={62}></rect>
+      <rect x={302} y={112} width={176} height={102}></rect><rect x={552} y={112} width={148} height={102}></rect><rect x={760} y={112} width={126} height={102}></rect>
+      <rect x={552} y={278} width={334} height={56}></rect>
+    </g>
+    <g className="bp-svg-t11" fill="currentColor">
+      <text x={64} y={82}>USER TASK</text><text x={64} y={101}>AUTHENTICATED</text>
+      <text x={64} y={170}>EMAIL / FILE</text><text x={64} y={189}>UNTRUSTED</text>
+      <text x={64} y={258}>TOOL RESULT</text><text x={64} y={277}>UNTRUSTED</text>
+      <text x={330} y={151}>CONTEXT</text><text x={330} y={173}>ASSEMBLER</text><text x={330} y={195}>+ PROVENANCE</text>
+      <text x={592} y={151}>MODEL</text><text x={579} y={173}>PROPOSAL</text><text x={582} y={195}>UNTRUSTED</text>
+      <text x={784} y={151}>TOOL</text><text x={779} y={173}>EFFECT</text>
+      <text x={580} y={311}>POLICY · GRANT · APPROVAL · SCOPE</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.2} strokeDasharray="6 5" className="bp-dash">
+      <path d="M214 85 H266 V145 H300 M214 173 H300 M214 261 H266 V181 H300 M478 163 H550 M700 163 H758 M626 216 V276 M823 278 V216"></path>
+    </g>
+    <path d="M726 42 V344" fill="none" stroke="var(--bp-accent)" strokeWidth={2}></path>
+    <text x={736} y={44} className="bp-svg-t10" fill="currentColor">PRIVILEGE BOUNDARY</text>
+  </svg>
+</BpFigure>
+
+Prompt text cannot create a dependable privilege boundary. A system message can request correct behavior; it cannot hold a credential, prove user intent, or atomically deny an out-of-scope API call. The whole architecture turns on keeping that distinction intact.
+
+<BpSection id="s3" num="03" label="Attack surface" sheet="SHEET 3 OF 8" title="Hostile data becomes dangerous across three hops" />
+
+**Direct prompt injection** enters through a channel where the user can address the model. The security impact depends on the caller’s identity and the application’s granted capabilities. A hostile authenticated user may attempt to exceed their own resource scope; an anonymous caller may try to reach tools intended for an operator. Ordinary API authorization still applies.
+
+**Indirect prompt injection** arrives inside data the agent retrieves: a message, document, website, issue, calendar entry, or tool response. Greshake and coauthors named and demonstrated this remote route in arXiv 2302.12173, first submitted February 23, 2023 and revised May 5, 2023. Their durable observation is the blurred instruction/data distinction in LLM-integrated applications. The defensive consequence is to inventory every source that can enter context and every effect reachable afterward.
+
+The hero route has three hops. First, an attacker influences a document or record likely to be retrieved. Second, the application selects and serializes it into model context beside trusted task material. Third, the model emits a tool proposal that the application accepts under a privileged credential. Breaking any hop can stop a prepared case. Only the third hop controls authority directly.
+
+An attack tree makes the dependencies reviewable. The root event is an unauthorized or unintended privileged effect. One branch asks how controllable data reaches the context. A second asks how it changes the proposal. A third asks which missing or broad grant lets the proposal execute. A fourth asks how the external system or downstream renderer turns it into impact. Teams can then assign controls and evidence to branches without assuming that one detector covers the tree.
+
+<BpFigure caption="FIG. 3 — HERO ROUTE: HOSTILE DOCUMENT → MODEL CONTEXT → PRIVILEGED TOOL CALL. THE FIRST TWO HOPS MOVE INFORMATION; THE LAST HOP SPENDS AUTHORITY.">
+  <svg viewBox="0 0 920 410">
+    <g fill="none" stroke="currentColor" strokeWidth={1.3}>
+      <rect x={40} y={92} width={224} height={154}></rect><rect x={350} y={92} width={220} height={154}></rect><rect x={656} y={92} width={224} height={154}></rect>
+      <rect x={350} y={304} width={530} height={62}></rect>
+    </g>
+    <g className="bp-svg-t13" fill="currentColor"><text x={75} y={130}>HOSTILE DOCUMENT</text><text x={393} y={130}>MODEL CONTEXT</text><text x={692} y={130}>PRIVILEGED CALL</text></g>
+    <g className="bp-svg-t11" fill="currentColor">
+      <text x={74} y={171}>ATTACKER-INFLUENCED</text><text x={74} y={194}>EMAIL · FILE · PAGE</text><text x={74} y={217}>NO USER AUTHORITY</text>
+      <text x={386} y={171}>TASK + RETRIEVED DATA</text><text x={386} y={194}>ONE TOKEN STREAM</text><text x={386} y={217}>PROPOSAL FORMED</text>
+      <text x={690} y={171}>CALENDAR · EMAIL</text><text x={690} y={194}>FILES · PAYMENTS · CODE</text><text x={690} y={217}>EXTERNAL EFFECT</text>
+      <text x={385} y={342}>AUTHORIZATION SERVICE · PRINCIPAL + TASK + ACTION + SCOPE + EXPIRY</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.4} strokeDasharray="7 5" className="bp-dash"><path d="M264 169 H348 M570 169 H654 M764 246 V302"></path></g>
+    <g fill="currentColor"><path d="M346 169 l-9 -4 v8 z M652 169 l-9 -4 v8 z M764 300 l-4 -9 h8 z"></path></g>
+    <text x={278} y={151} className="bp-svg-t10" fill="currentColor">RETRIEVAL</text><text x={587} y={151} className="bp-svg-t10" fill="currentColor">PROPOSAL</text>
+  </svg>
+</BpFigure>
+
+The 2025 OWASP Top 10 for LLM Applications lists prompt injection as LLM01 and excessive agency as LLM06. Those dated names help a review connect model influence to permission design. The permanent model here avoids depending on list numbers: untrusted sources enter a deputy, and an enforcement point decides whether the deputy may create an effect.
+
+<BpNote>Attack classes belong in review artifacts. Working payloads do not. Record source type, attacker goal class, reachable operation, expected state change, and security oracle without keeping reusable exploit text in the post or demo.</BpNote>
+
+<BpQA q="Does retrieval-augmented generation cause indirect prompt injection?">
+Retrieval supplies one path for attacker-influenced data to enter context. Email reads, browsers, file tools, and API responses create the same class of path. The [RAG Pipeline drawing](/blog/the-rag-pipeline) explains selection and grounding; a security review adds source control, provenance, and the authority reachable after retrieval.
+</BpQA>
+
+<BpSection id="s4" num="04" label="Prompt controls" sheet="SHEET 4 OF 8" title="Prompt-level defenses change behavior without enforcing privilege" />
+
+Instruction hierarchy gives developer and user messages a declared order. Delimiters mark where a document begins and ends. Source labels tell the model which text came from an email or web page. Repeated warnings describe prohibited behavior. Detection models or classifiers can score a context for injection-like features. These measures may reduce attack success on a fixed evaluation and are worth testing as mitigations.
+
+Their weakness is structural. The same probabilistic component interprets the trusted rule and the untrusted text. A delimiter is another token pattern. A label is another token pattern. A warning is another token pattern. The model may generalize well across known cases and fail on a changed source, language, encoding, task composition, model revision, or adaptive attempt. A policy expressed only in prompt text has no independent mechanism that prevents a forbidden API call.
+
+Input filtering has a second trade. Aggressive filters can remove legitimate instructions quoted in an email, block documents about security, damage code or structured data, and lower task utility. Weak filters miss unfamiliar forms. Output classifiers face the same false-positive and false-negative problem, and they operate too late if a tool side effect already occurred.
+
+Model separation schemes can still be valuable. A planner that never sees untrusted content can hold the task record while a reader model extracts bounded fields from documents. A mediator can expose only those fields to the planner. This reduces shared context and can make policy simpler. The reader’s extraction remains untrusted, and any component allowed to convert it into a privileged action still needs external authorization. Architectural isolation earns a bounded claim, not immunity.
+
+<BpEquation tag="EQ. 4.1">
+  dependable privilege boundary = independently enforced identity + authorization + scoped capability + validated effect
+</BpEquation>
+
+Use prompt controls where they have evidence: source-aware context formatting, task focus, suspicious-input detection, and safer proposal formation. Call their residual risk plainly: model compliance can fail. They should lower the number of dangerous proposals reaching the policy layer, which helps availability and review load. The policy layer still evaluates every proposal as untrusted.
+
+<BpQA q="Can a system prompt stop prompt injection?">
+It can reduce success for tested attack classes and improve ordinary behavior. It cannot provide a dependable privilege boundary because the model still interprets both the rule and attacker-influenced data. A privileged action needs authorization and enforcement outside the model.
+</BpQA>
+
+<BpSection id="s5" num="05" label="Architecture" sheet="SHEET 5 OF 8" title="Defense in depth assigns each control a specific job" />
+
+**Source labeling and provenance** attach producer, retrieval path, time, integrity evidence, and trust class to every item. Preserve these fields outside the prompt and into audit traces. This helps context selection, policy decisions, incident review, and model behavior. Residual risk: labels may be wrong at ingestion, stripped by a transformation, or ignored by the model.
+
+**Context assembly** minimizes what the model can see. Fetch by authenticated tenant, constrain date and object scope, exclude secrets the task does not require, isolate sources where practical, and cap recursion through tool results. Residual risk: any included source may still influence the proposal, and omitted context may reduce task success.
+
+**Policy checks and injection detection** inspect the proposed action and available provenance. Deterministic rules can reject forbidden operation classes; statistical detectors can send suspicious cases to a slower path. Residual risk: detectors miss adaptive inputs and may block legitimate work. A policy check that asks the same model for a second opinion remains model-dependent.
+
+**Capability and permission scoping** grants the smallest operation, resource set, recipient set, value, duration, and rate needed. Separate read, draft, send, delete, execute, and administer. Bind a grant to authenticated principal and task. Residual risk: a permitted operation can still be abused inside its scope, and an overly broad task record recreates excessive agency.
+
+**Human approval** gates irreversible, outbound, high-value, or unusual actions. Show the exact recipient, resource, diff, amount, and provenance rather than a model-written reassurance. Residual risk: fatigue, deception, rushed review, and ambiguous summaries. Approval should create a narrow, expiring grant rather than release the agent generally.
+
+**Tool execution controls** validate schema and authorization again at the adapter, enforce allowlists and rate limits, use idempotency keys, sandbox code, restrict network destinations, and keep service credentials narrower than the model’s catalog. Residual risk: implementation bugs and valid-but-harmful operations within granted scope.
+
+**Output handling** treats model output as untrusted before HTML rendering, SQL construction, shell use, template expansion, or other interpreters. Prefer typed APIs, escaping, parameterization, and inert rendering. Residual risk: semantically harmful but syntactically valid content can pass.
+
+Bind the layers with evidence. The source inventory gives every item an identifier. The context trace records which identifiers were selected and transformed. The proposal records structured arguments. The policy decision records the matching grant or denial reason. The adapter records the exact operation submitted and the external system’s response. A security reviewer should be able to follow one event across all five records without relying on a prose transcript generated by the model.
+
+<TrustBoundaryDemo fig={4} />
+
+The prepared email/calendar cases show why all three measures matter. Task success measures utility. Attack success measures whether the attacker’s target state occurs. Blocked legitimate actions expose security controls that achieve low attack success by refusing useful work. The truth table is explanatory, not measured model performance.
+
+<BpDetachablePlate
+  drawingCode="TDD-012"
+  assetId="bp-012-threat-model"
+  name="Agent Threat-Model Pack"
+  format="A1 trust-boundary diagram + worksheets · PDF"
+  contents={[
+    'Data/source inventory with provenance and residual-risk fields',
+    'Tool-permission matrix and defense-to-boundary review',
+    'Attack-tree worksheet and red-team test-case template',
+    'Evidence log for attack success, task utility, and blocked actions',
+  ]}
+  fileUrl="https://zackproser.b-cdn.net/plates/bp-012-threat-model.pdf"
+/>
+
+<BpSection id="s6" num="06" label="Defense map" sheet="SHEET 6 OF 8" title="Every defense owns one boundary and leaves another exposed" />
+
+A defense review should name the boundary each control can change. Source provenance affects source-to-context decisions. Context minimization affects what reaches the model. Prompt structure and detectors affect proposal formation. Policy and authorization affect whether a proposal receives a grant. Tool adapters affect whether the granted call matches schema and scope. Output handling affects downstream interpretation. Claims that span more than the enforcing component deserve scrutiny.
+
+<BpFigure caption="FIG. 5 — DEFENSE-TO-BOUNDARY MAP. EACH ROW NAMES ITS ENFORCEMENT POINT AND RESIDUAL RISK; ONLY AUTHORIZATION AND TOOL ENFORCEMENT DIRECTLY CONTROL PRIVILEGED EFFECTS.">
+  <svg viewBox="0 0 920 470">
+    <g fill="none" stroke="currentColor" strokeWidth={1}>
+      <rect x={34} y={48} width={852} height={374}></rect>
+      <path d="M250 48 V422 M560 48 V422 M34 94 H886 M34 141 H886 M34 188 H886 M34 235 H886 M34 282 H886 M34 329 H886 M34 376 H886"></path>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor">
+      <text x={50} y={77}>DEFENSE</text><text x={270} y={77}>BOUNDARY AFFECTED</text><text x={580} y={77}>RESIDUAL RISK</text>
+      <text x={50} y={124}>SOURCE LABELS</text><text x={270} y={124}>SOURCE → INGEST</text><text x={580} y={124}>WRONG / LOST / IGNORED LABEL</text>
+      <text x={50} y={171}>CONTEXT MINIMUM</text><text x={270} y={171}>INGEST → CONTEXT</text><text x={580} y={171}>INCLUDED DATA STILL INFLUENCES</text>
+      <text x={50} y={218}>DETECTOR</text><text x={270} y={218}>CONTEXT → PROPOSAL</text><text x={580} y={218}>FALSE NEGATIVE / POSITIVE</text>
+      <text x={50} y={265}>AUTHORIZATION</text><text x={270} y={265}>PROPOSAL → GRANT</text><text x={580} y={265}>ABUSE INSIDE GRANTED SCOPE</text>
+      <text x={50} y={312}>HUMAN APPROVAL</text><text x={270} y={312}>PROPOSAL → GRANT</text><text x={580} y={312}>FATIGUE / DECEPTIVE SUMMARY</text>
+      <text x={50} y={359}>TOOL VALIDATION</text><text x={270} y={359}>GRANT → EFFECT</text><text x={580} y={359}>ADAPTER BUG / BROAD CREDENTIAL</text>
+      <text x={50} y={406}>OUTPUT HANDLING</text><text x={270} y={406}>OUTPUT → INTERPRETER</text><text x={580} y={406}>VALID BUT HARMFUL CONTENT</text>
+    </g>
+    <rect x={252} y={238} width={632} height={91} fill="var(--bp-accent)" opacity={0.1}></rect>
+  </svg>
+</BpFigure>
+
+The map prevents category errors. Provenance can support an authorization decision, but it cannot enforce a calendar scope by itself. A sandbox can constrain code execution, but it cannot decide whether sending a particular email was authorized. Human approval can grant one send, but it does not sanitize the returned HTML. Defense in depth works through composition, with each layer making a bounded claim.
+
+Residual risk belongs on the diagram because “enabled” says little. Record the failure mode, impact, owner, monitoring signal, and next test date. Product features and named standards change quickly; date them in review notes. The trust-boundary route remains useful when a model, agent framework, detector, or tool protocol changes.
+
+Permission matrices should separate discovery from use. A model may know that a send-mail tool exists without holding a send capability. It may draft a structured request that waits for approval. After approval, the executor receives a one-action token limited to a recipient and draft hash, then discards it. This pattern narrows the interval and content of authority while preserving planning utility. Long-lived broad credentials erase that separation.
+
+<BpSection id="s7" num="07" label="Testing" sheet="SHEET 7 OF 8" title="Security results need utility, attack, and refusal measures" />
+
+AgentDojo provides a useful evaluation shape: run legitimate tasks in stateful tool environments, pair user goals with attacker goals, and inspect environment state with deterministic utility and security functions. Version 3 of arXiv 2406.13352, dated November 24, 2024, contains 97 user tasks and 629 security test cases across workspace, Slack, travel, and banking environments. The paper reports three distinct measures: benign utility, utility under attack, and targeted attack success rate.
+
+Its dated results also show why a single headline misleads. In the November 24, 2024 paper version, current agents solved fewer than 66% of tasks without attack; attacks against the best-performing agents succeeded in fewer than 25% of cases; one evaluated detector reduced attack success to 8%. These figures describe that paper’s agents, defenses, attacks, tasks, and revisions. They are not durable security properties.
+
+NIST’s “Technical Blog: Strengthening AI Agent Hijacking Evaluations,” published January 17, 2025 and updated December 19, 2025, demonstrates evaluation drift directly. In its stated Claude 3.5 Sonnet setup, a strongest baseline attack measured 11% success while a newly developed adaptive attack measured 81%. Across a selected five-task collection, repeated attempts raised average measured success from 57% on one attempt to 80% over 25 attempts. Those numbers belong to NIST’s dated setup; the lasting lesson is to test adaptive variants, task-level impact, and retries.
+
+<BpEquation tag="EQ. 7.1">
+  release evidence = task success + attack success + blocked-legitimate-action rate + impact by action class
+</BpEquation>
+
+Build cases from the deployed threat model. For each source-to-tool route, define an authenticated user task, an abstract hostile-source class, capabilities available, allowed state change, forbidden state change, and deterministic oracles over the resulting environment. Run a benign baseline, the hostile case, defense ablations, repeated attempts where attackers can retry, and adaptive variations produced in a controlled red-team process. Keep reusable payloads out of general documentation and production logs.
+
+Measure by impact tier as well as aggregate rate. One unauthorized draft and one irreversible transfer should not contribute identical release evidence. Keep a denominator for every action class, record confidence intervals when sampling, and retain failed legitimate cases for review. A zero attack-success estimate from a small suite is an observation bounded by that suite, not proof of absence. Define retest triggers for model, prompt, retrieval, permission, tool, and policy changes.
+
+<BpFigure caption="FIG. 6 — RELEASE EVIDENCE PLOTS TASK UTILITY AGAINST ATTACK SUCCESS AND RECORDS BLOCKED LEGITIMATE ACTIONS. DATE EVERY POINT WITH THE COMPLETE SYSTEM AND HARNESS REVISION.">
+  <svg viewBox="0 0 920 360">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}><path d="M112 42 V292 H820"></path><path d="M112 112 H820 M112 202 H820" strokeDasharray="5 5"></path></g>
+    <g className="bp-svg-t11" fill="currentColor"><text x={380} y={333}>TASK SUCCESS →</text><text x={28} y={180} transform="rotate(-90 28 180)">ATTACK SUCCESS →</text></g>
+    <g fill="var(--bp-accent)"><circle cx={292} cy={102} r={9}></circle><circle cx={532} cy={168} r={9}></circle><circle cx={716} cy={256} r={9}></circle></g>
+    <g className="bp-svg-t10" fill="currentColor"><text x={310} y={96}>PROMPT CONTROL ONLY</text><text x={550} y={162}>SCOPED CAPABILITY</text><text x={642} y={246}>EXTERNAL AUTHORIZATION</text><text x={590} y={66}>POINT LABEL: DATE · SYSTEM · HARNESS</text></g>
+    <g fill="none" stroke="currentColor"><circle cx={716} cy={256} r={24}></circle></g>
+    <text x={667} y={286} className="bp-svg-t10" fill="currentColor">RING = BLOCKED LEGITIMATE RATE</text>
+  </svg>
+</BpFigure>
+
+<BpQA q="What can I test before shipping an agent?">
+Test every untrusted-source-to-tool route with state-based oracles. Report benign task success, task success under attack, targeted attack success, blocked legitimate actions, repeated attempts, and action impact. Date the harness, model, prompts, tools, permissions, and cases so a later run can explain drift.
+</BpQA>
+
+<BpSection id="s8" num="08" label="Fixed boundary" sheet="SHEET 8 OF 8" title="Authorization stays outside the model" />
+
+The boundary that must not move is the conversion from model proposal to privileged effect. The model may plan, summarize, classify, choose among safe candidates, and request a capability. It should not mint its own authority, widen a grant, approve its own high-impact action, or bypass the adapter that enforces scope. Treat every model-produced tool name and argument as hostile until validated against authenticated intent.
+
+A practical authorization record binds **principal + task + operation + resource + recipient or destination + limits + expiry + approval**. The policy service creates or validates that record. The adapter checks it at execution time. External systems receive narrower credentials where possible. Logs connect the source records and model proposal to the decision and resulting state change. Revocation and rollback exist independently of the conversation transcript.
+
+Failure should land in a safe, observable state. A denied action returns a structured reason without revealing hidden policy or credentials. A timed-out approval expires. A retried mutation uses an idempotency key. A partial workflow records which reversible steps completed and which privileged step did not. Operators can revoke the grant and inspect the trace without asking the model to remember what happened.
+
+The [Autonomy Boundary](/blog/the-autonomy-boundary) offers an operator rule for the same action line: reversible, internal work can run farther; irreversible or outbound work stops for a human. The security architecture makes that line enforceable with scoped permissions, hard disqualifications, approval records, and tool checks. A human gate should protect the concrete action, not merely approve a general session.
+
+<BpFigure caption="FIG. 7 — THE IMMOVABLE LINE: THE MODEL MAY PROPOSE. AN EXTERNAL AUTHORIZATION SERVICE GRANTS OR DENIES. THE TOOL ADAPTER ENFORCES THE GRANT AGAINST THE REQUESTED EFFECT.">
+  <svg viewBox="0 0 920 330">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={46} y={92} width={202} height={112}></rect><rect x={359} y={92} width={202} height={112}></rect><rect x={672} y={92} width={202} height={112}></rect>
+    </g>
+    <g className="bp-svg-t13" fill="currentColor"><text x={91} y={132}>MODEL</text><text x={405} y={132}>AUTHORIZATION</text><text x={720} y={132}>TOOL ADAPTER</text></g>
+    <g className="bp-svg-t11" fill="currentColor"><text x={79} y={165}>UNTRUSTED PROPOSAL</text><text x={392} y={165}>STRUCTURED GRANT</text><text x={717} y={165}>VALIDATED EFFECT</text><text x={385} y={188}>DENY BY DEFAULT</text></g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.5} strokeDasharray="7 5" className="bp-dash"><path d="M248 148 H357 M561 148 H670"></path></g>
+    <g fill="currentColor"><path d="M355 148 l-9 -4 v8 z M668 148 l-9 -4 v8 z"></path></g>
+    <path d="M304 42 V270 M616 42 V270" fill="none" stroke="var(--bp-accent)" strokeWidth={2}></path>
+    <g className="bp-svg-t10" fill="currentColor"><text x={263} y={291}>PROPOSAL BOUNDARY</text><text x={574} y={291}>EFFECT BOUNDARY</text></g>
+  </svg>
+</BpFigure>
+
+“Secure” can mean the system enforces declared permissions, contains effects, preserves evidence, and meets dated attack and utility thresholds for specified routes. It cannot mean prompt injection has been solved, that the model will always separate instructions from data, or that future adaptive attacks will match today’s suite. Prompt text cannot create a dependable privilege boundary.
+
+The defensible claim is narrower and more useful: hostile data may reach the model, yet it receives no authority merely by appearing in context. Every privileged effect requires a grant tied to the user and task, enforced outside the model, measured against both attack success and legitimate utility, and retested as the system changes.
+
+<BpReferences
+  drawingCode="TDD-012"
+  items={[
+    { label: 'OWASP Foundation, “OWASP Top 10 for Large Language Model Applications,” project page (accessed July 19, 2026)', href: 'https://owasp.org/www-project-top-10-for-large-language-model-applications/' },
+    { label: 'OWASP Foundation, “OWASP Top 10 for LLM Applications v2.0,” 2025 edition', href: 'https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-v2025.pdf' },
+    { label: 'NIST CAISI, “Technical Blog: Strengthening AI Agent Hijacking Evaluations,” January 17, 2025; updated December 19, 2025', href: 'https://www.nist.gov/news-events/news/2025/01/technical-blog-strengthening-ai-agent-hijacking-evaluations' },
+    { label: 'Debenedetti et al., “AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents,” arXiv:2406.13352v3, November 24, 2024', href: 'https://arxiv.org/abs/2406.13352' },
+    { label: 'Greshake et al., “Not what you’ve signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection,” arXiv:2302.12173v2, May 5, 2023', href: 'https://arxiv.org/abs/2302.12173' },
+  ]}
+/>

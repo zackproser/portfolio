@@ -1,0 +1,33 @@
+{
+  "title": "The Guard",
+  "author": "Zachary Proser",
+  "date": "2026-07-19",
+  "description": "A trust-boundary threat model for prompt injection in tool-using agents, with capability scoping, external authorization, and testable security metrics.",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-guard-hero.webp",
+  "tags": [
+    "AI",
+    "Agent Security",
+    "Prompt Injection",
+    "Threat Modeling",
+    "Application Security"
+  ],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "012",
+    "subject": "AGENT SECURITY",
+    "readTime": "15 MIN",
+    "eyebrow": "Trust boundary · Permission matrix · Complete working drawing",
+    "subtitle": "A hostile document becomes dangerous when model context can spend authority that the document never had.",
+    "rfiSuggestions": [
+      "Can a system prompt stop prompt injection?",
+      "Where should the trust boundary sit in a tool-using agent?",
+      "What can I actually test before shipping an agent?"
+    ],
+    "nextDrawing": {
+      "number": "013",
+      "title": "The Diffusion Model",
+      "subject": "GENERATIVE VISION",
+      "status": "planned"
+    }
+  }
+}

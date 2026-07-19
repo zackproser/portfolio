@@ -38,6 +38,36 @@ ${VOICE_RULES}`
 }
 
 export const RFI_CONFIGS: Record<string, RfiConfig> = {
+  'tdd-012': {
+    drawingCode: 'TDD-012',
+    title: 'The Guard',
+    path: '/blog/the-guard',
+    drawingSummary: `§01 Confused deputy — a tool-using model proposes actions under application credentials while reading text controlled by other principals. Security review starts with principal, credential, operation, scope, and external effect. The model proposal is untrusted and is not an authorization record.
+§02 Trust boundary — authenticated user instructions and external data share model context but never authority. Preserve source provenance and minimize context. The enforceable boundary sits where an external policy service binds a principal and task to a structured, expiring action grant checked by the tool adapter. Prompt text cannot create a dependable privilege boundary.
+§03 Attack surface — direct injection enters through a user-to-model channel; indirect injection arrives in retrieved messages, documents, pages, records, or tool results. The complete route is hostile document → model context → privileged tool call. The first two hops move information; the last spends authority.
+§04 Prompt controls — instruction hierarchy, delimiters, source labels, warnings, and detectors can reduce attack success for tested cases. They remain model-interpreted mitigations with false positives, false negatives, and adaptive failure modes. They do not independently deny an API call.
+§05 Architecture — source labeling preserves producer and retrieval evidence; context assembly limits exposure; policy checks reject forbidden proposals; capability scoping limits operation, resource, recipient, value, rate, and duration; human approval creates a narrow grant for high-impact actions; tool adapters validate again; output handling prevents downstream interpretation. Every control has stated residual risk.
+§06 Defense map — provenance affects source-to-context decisions, model controls affect proposal formation, authorization affects proposal-to-grant, tool validation affects grant-to-effect, and output handling affects renderers. Only authorization and tool enforcement directly control privileged effects. Residual risk needs an owner, evidence signal, and retest date.
+§07 Testing — report benign task success, utility under attack, targeted attack success, blocked legitimate actions, impact by action class, adaptive variations, and repeated attempts. AgentDojo v3 (November 24, 2024) supplied 97 tasks and 629 cases; its figures are dated results, not durable guarantees. NIST's January 17, 2025 report, updated December 19, 2025, shows adaptive attacks and retries can change measured success sharply.
+§08 Fixed boundary — the model may propose but cannot mint authority, widen scope, or approve its own privileged effect. Authorization outside the model binds principal + task + operation + resource + recipient/destination + limits + expiry + approval. “Secure” means specified enforcement and dated evidence, never that prompt injection has been solved.`,
+    terms: [
+      ['CONFUSED DEPUTY', 'A component with legitimate authority that can be induced to use it for the wrong principal or purpose.'],
+      ['TRUST BOUNDARY', 'An enforcement crossing where identity, integrity, or authority assumptions change and are checked.'],
+      ['DIRECT PROMPT INJECTION', 'Attacker-influenced instructions supplied through a channel that addresses the model directly.'],
+      ['INDIRECT PROMPT INJECTION', 'Attacker-influenced instructions carried inside retrieved data such as a message, document, page, record, or tool result.'],
+      ['PROVENANCE', 'Structured record of a datum’s producer, retrieval path, time, integrity evidence, and trust class.'],
+      ['CAPABILITY SCOPING', 'Restricting authority by operation, resource, recipient or destination, value, rate, duration, and principal.'],
+      ['AUTHORIZATION', 'Decision that binds an authenticated principal and task to a concrete permitted action.'],
+      ['HUMAN-IN-THE-LOOP', 'Required person approval for a concrete privileged action before an external effect occurs.'],
+      ['POLICY CHECK', 'Independent evaluation of a proposed action against structured rules and the available grant.'],
+      ['TOOL ADAPTER', 'Code that validates schema and authorization before translating a model proposal into an external API operation.'],
+      ['RESIDUAL RISK', 'Failure mode and impact that remain after a named control is operating.'],
+      ['ATTACK SUCCESS RATE', 'Fraction of evaluated cases in which the attacker’s specified target state occurs.'],
+      ['TASK SUCCESS', 'Fraction of evaluated cases in which the legitimate user goal is completed according to a declared oracle.'],
+      ['BLOCKED LEGITIMATE ACTION', 'Authorized useful work prevented by a security control, recorded as a utility cost.'],
+      ['OUTPUT HANDLING', 'Escaping, parameterization, typed interfaces, and inert rendering applied before model output reaches another interpreter.'],
+    ],
+  },
   'tdd-001': {
     drawingCode: 'TDD-001',
     title: 'The Transformer',

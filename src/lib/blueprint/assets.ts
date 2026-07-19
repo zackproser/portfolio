@@ -23,4 +23,9 @@ export const ASSET_REGISTRY: Record<string, BlueprintAsset> = {
     drawingCode: 'TDD-011',
     fileUrl: 'https://zackproser.b-cdn.net/plates/bp-011-capacity-workbook.pdf',
   },
+  'bp-012-threat-model': {
+    name: 'Agent Threat-Model Pack',
+    drawingCode: 'TDD-012',
+    fileUrl: 'https://zackproser.b-cdn.net/plates/bp-012-threat-model.pdf',
+  },
 }
