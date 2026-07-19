@@ -31,8 +31,19 @@ function rateLimited(ip: string): boolean {
   }
   globalCount++
   if (globalCount > GLOBAL_LIMIT) return true
-  // Bound the map: a scan across many IPs must not grow memory forever.
-  if (hits.size > MAX_TRACKED_IPS) hits.clear()
+  // Bound the map without wiping live counters: drop expired windows
+  // first; only if everything is live, drop the oldest entries. A
+  // clear-all here would let rotating IPs reset everyone's quota.
+  if (hits.size > MAX_TRACKED_IPS) {
+    for (const [key, entry] of hits) {
+      if (now - entry.windowStart > WINDOW_MS) hits.delete(key)
+    }
+    while (hits.size > MAX_TRACKED_IPS) {
+      const oldest = hits.keys().next().value
+      if (oldest === undefined) break
+      hits.delete(oldest)
+    }
+  }
   const entry = hits.get(ip)
   if (!entry || now - entry.windowStart > WINDOW_MS) {
     hits.set(ip, { count: 1, windowStart: now })
@@ -43,10 +54,14 @@ function rateLimited(ip: string): boolean {
 }
 
 export async function POST(req: Request) {
-  // Rightmost x-forwarded-for entry: the hop appended by the platform's
-  // own proxy. The leftmost entries are client-supplied and spoofable.
-  const forwarded = (req.headers.get('x-forwarded-for') ?? 'unknown').split(',')
-  const ip = forwarded[forwarded.length - 1].trim()
+  // Client IP: x-real-ip is set by Vercel's edge and not client-
+  // controllable; the leftmost x-forwarded-for entry is the platform-
+  // sanitized client address (matches ghx-chat). The RIGHTMOST hop is
+  // Vercel's own shared proxy — keying on it collapses every reader
+  // into one rate-limit bucket.
+  const ip =
+    req.headers.get('x-real-ip')?.trim() ||
+    (req.headers.get('x-forwarded-for') ?? 'unknown').split(',')[0].trim()
   if (rateLimited(ip)) {
     return new Response('Slow down a little — try again in a bit.', { status: 429 })
   }
