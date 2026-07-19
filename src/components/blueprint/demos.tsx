@@ -51,7 +51,8 @@ export function AttentionDemo() {
       }
       footer={
         <>
-          FIG. 4 — ONE ATTENTION HEAD&apos;S WEIGHTS, ROW ⟨{hovTok}⟩. WEIGHTS SUM TO 1.00 ACROSS THE SENTENCE.
+          FIG. 4 — ILLUSTRATIVE WEIGHTS FOR ONE ATTENTION HEAD, ROW ⟨{hovTok}⟩, HAND-DRAWN TO MATCH
+          PUBLISHED VISUALIZATIONS. WEIGHTS SUM TO 1.00.
         </>
       }
     >

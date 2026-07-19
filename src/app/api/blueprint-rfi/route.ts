@@ -13,11 +13,14 @@ import { RFI_CONFIGS, buildRfiSystemPrompt } from '@/lib/blueprint/rfi-configs'
 export const maxDuration = 30
 
 const hits = new Map<string, { count: number; windowStart: number }>()
-const LIMIT = 120
+const LIMIT = 60
 const WINDOW_MS = 60 * 60 * 1000
+const MAX_TRACKED_IPS = 5000
 
 function rateLimited(ip: string): boolean {
   const now = Date.now()
+  // Bound the map: a scan across many IPs must not grow memory forever.
+  if (hits.size > MAX_TRACKED_IPS) hits.clear()
   const entry = hits.get(ip)
   if (!entry || now - entry.windowStart > WINDOW_MS) {
     hits.set(ip, { count: 1, windowStart: now })
@@ -33,32 +36,54 @@ export async function POST(req: Request) {
     return new Response('Slow down a little — try again in a bit.', { status: 429 })
   }
 
-  let body: { drawingId?: string; messages?: Array<{ role: string; content: string }>; via?: string }
+  if (!process.env.OPENAI_API_KEY) {
+    // Fail before streamText: a lazy stream would otherwise surface a
+    // provider error as an empty 200 body.
+    return new Response('RFI desk is offline right now.', { status: 503 })
+  }
+
+  let body: unknown
   try {
     body = await req.json()
   } catch {
     return new Response('Bad request', { status: 400 })
   }
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return new Response('Bad request', { status: 400 })
+  }
+  const { drawingId, messages } = body as { drawingId?: unknown; messages?: unknown }
 
-  const cfg = body.drawingId ? RFI_CONFIGS[body.drawingId] : undefined
+  const cfg =
+    typeof drawingId === 'string' && Object.hasOwn(RFI_CONFIGS, drawingId)
+      ? RFI_CONFIGS[drawingId]
+      : undefined
   if (!cfg) {
     return new Response('Unknown drawing', { status: 404 })
   }
 
-  const { messages } = body
   if (!Array.isArray(messages) || messages.length === 0 || messages.length > 24) {
     return new Response('Bad request', { status: 400 })
   }
-  const MAX_CONTENT_LENGTH = 2000
+  // User questions are capped tightly; assistant history gets headroom
+  // because our own streamed answers (maxTokens: 700) routinely exceed
+  // 2,000 characters and come back as context on the next turn.
+  const MAX_USER_LENGTH = 2000
+  const MAX_ASSISTANT_LENGTH = 8000
   for (const m of messages) {
     if (
       !m ||
+      typeof m !== 'object' ||
       (m.role !== 'user' && m.role !== 'assistant') ||
       typeof m.content !== 'string' ||
-      m.content.length > MAX_CONTENT_LENGTH
+      m.content.length > (m.role === 'user' ? MAX_USER_LENGTH : MAX_ASSISTANT_LENGTH)
     ) {
       return new Response('Bad request', { status: 400 })
     }
+  }
+  // The endpoint answers reader questions; it is not a continuation
+  // proxy for arbitrary assistant prefills.
+  if (messages[messages.length - 1].role !== 'user') {
+    return new Response('Bad request', { status: 400 })
   }
 
   const lastUser = [...messages].reverse().find((m) => m.role === 'user')

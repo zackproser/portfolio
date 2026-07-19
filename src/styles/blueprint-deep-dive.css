@@ -108,9 +108,10 @@
 
 .bp-theme-toggle {
   position: fixed;
-  /* Below the sticky site header (≈57px tall, z-50) */
+  /* Below the sticky site header (≈57px tall, z-50) — and below its
+     z-index too, so the open mobile nav menu paints over this */
   top: 72px; right: 16px;
-  z-index: 60;
+  z-index: 40;
   background: var(--bp-panel);
   border: 1px solid var(--bp-panel-border);
   color: var(--bp-fg);
@@ -472,6 +473,28 @@
 }
 .bp-slider-label input[type='range'] { accent-color: var(--bp-accent); width: 200px; }
 
+/* Wide interactive bodies scroll inside their panel on small screens */
+.bp-scroll-x { overflow-x: auto; }
+
+/* Cosine demo: plane + ranked list side by side, stacked on phones */
+.bp-cosine-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(180px, 1fr);
+  gap: 24px;
+}
+@media (max-width: 700px) {
+  .bp-cosine-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Keyboard focus stays visible even where UA outlines were reset */
+.bp button:focus-visible,
+.bp input:focus-visible,
+.bp a:focus-visible,
+.bp [role='button']:focus-visible {
+  outline: 2px solid var(--bp-accent);
+  outline-offset: 2px;
+}
+
 /* SVG text helpers (JetBrains Mono line-art labels) */
 .bp-svg-t { font: 11px var(--bp-mono); }
 .bp-svg-t9 { font: 9px var(--bp-mono); }
@@ -676,7 +699,7 @@
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 70;
+  z-index: 40;
   writing-mode: vertical-rl;
   white-space: nowrap;
   max-height: 90vh;
@@ -953,6 +976,49 @@
   .bp-titleblock-grid { grid-template-columns: repeat(3, 1fr); }
   .bp-titleblock-cell:nth-child(3) { border-right: none; }
 }
+/* ---------- print ---------- */
+
+@media print {
+  .bp,
+  .bp.bp-dark {
+    /* Force the light-print token set regardless of the on-screen theme */
+    --bp-paper: #ffffff;
+    --bp-grid: transparent;
+    --bp-grid-major: transparent;
+    --bp-line: #2b5e8f;
+    --bp-line-soft: rgba(43, 94, 143, 0.4);
+    --bp-panel: #ffffff;
+    --bp-panel-border: #a9c6de;
+    --bp-vellum: #ffffff;
+    --bp-glow: none;
+    --bp-fg: #1f2d3d;
+    --bp-fg-muted: #4d6b85;
+    --bp-fg-subtle: #7189a1;
+    --bp-accent: #b84a00;
+    --bp-accent-soft: rgba(230, 126, 34, 0.1);
+    --bp-link: #b84a00;
+    --bp-link-hover: #b84a00;
+    --bp-shadow-md: none;
+    --bp-shadow-lg: none;
+    background-image: none;
+  }
+  .bp * { animation: none !important; }
+  .bp-theme-toggle,
+  .bp-progress-track,
+  .bp-rail,
+  .bp-rfi-tab,
+  .bp-drawer,
+  .bp-rfi-desk {
+    display: none !important;
+  }
+  .bp-article {
+    grid-template-columns: minmax(0, 1fr) 0;
+    column-gap: 0;
+    box-shadow: none;
+  }
+  .bp-note { display: none; }
+}
+
 @media (max-width: 560px) {
   .bp-drawer { width: 100vw; }
   .bp-titleblock-grid { grid-template-columns: repeat(2, 1fr); }

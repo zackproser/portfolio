@@ -80,17 +80,21 @@ export function RetrievalScoreDemo() {
       }
       footer="FIG. 5 — α=0 IS KEYWORD-ONLY; α=1 IS DENSE-ONLY. COMPONENT SCORES ARE FIXED, NORMALIZED TEACHING VALUES."
     >
-      <div style={{ fontFamily: 'var(--bp-mono)', fontSize: 11, color: 'var(--bp-fg-muted)', marginBottom: 8 }}>
-        RANK · PASSAGE · HYBRID [DENSE / KEYWORD]
-      </div>
-      {ranked.map((passage, index) => (
-        <div key={passage.title} style={{ display: 'grid', gridTemplateColumns: '34px minmax(180px, 1fr) 88px 120px', gap: 8, alignItems: 'center', borderTop: '1px solid var(--bp-line-soft)', padding: '10px 0', fontFamily: 'var(--bp-mono)', fontSize: 12 }}>
-          <span style={{ color: index === 0 ? 'var(--bp-accent)' : 'var(--bp-fg-muted)' }}>{String(index + 1).padStart(2, '0')}</span>
-          <span>{passage.title}</span>
-          <span style={{ color: index === 0 ? 'var(--bp-accent)' : 'var(--bp-fg)' }}>{passage.score.toFixed(3)}</span>
-          <span style={{ color: 'var(--bp-fg-muted)' }}>[{passage.dense.toFixed(2)} / {passage.keyword.toFixed(2)}]</span>
+      <div className="bp-scroll-x">
+        <div style={{ minWidth: 470 }}>
+          <div style={{ fontFamily: 'var(--bp-mono)', fontSize: 11, color: 'var(--bp-fg-muted)', marginBottom: 8 }}>
+            RANK · PASSAGE · HYBRID [DENSE / KEYWORD]
+          </div>
+          {ranked.map((passage, index) => (
+            <div key={passage.title} style={{ display: 'grid', gridTemplateColumns: '34px minmax(180px, 1fr) 88px 120px', gap: 8, alignItems: 'center', borderTop: '1px solid var(--bp-line-soft)', padding: '10px 0', fontFamily: 'var(--bp-mono)', fontSize: 12 }}>
+              <span style={{ color: index === 0 ? 'var(--bp-accent)' : 'var(--bp-fg-muted)' }}>{String(index + 1).padStart(2, '0')}</span>
+              <span>{passage.title}</span>
+              <span style={{ color: index === 0 ? 'var(--bp-accent)' : 'var(--bp-fg)' }}>{passage.score.toFixed(3)}</span>
+              <span style={{ color: 'var(--bp-fg-muted)' }}>[{passage.dense.toFixed(2)} / {passage.keyword.toFixed(2)}]</span>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
     </BpInteractive>
   )
 }

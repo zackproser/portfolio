@@ -92,10 +92,14 @@ export default async function Page({ params }: PageProps) {
   logger.info(`Rendering page for slug: ${slug}, Paid: ${!!content?.commerce?.isPaid}, Purchased: ${hasPurchased}`)
 
   // Blueprint Deep Dive posts opt into an entirely different layout via
-  // `"blogStyle": "blueprint"` in metadata.json. These posts are free
-  // content — paid posts keep the editorial layout so the paywall path
-  // stays intact.
-  if (content?.blogStyle === 'blueprint' && !content?.commerce?.isPaid) {
+  // `"blogStyle": "blueprint"` in metadata.json. These posts must be
+  // fully free content — any commerce gating (paywall or email capture)
+  // falls back to the editorial layout so those flows stay intact.
+  if (
+    content?.blogStyle === 'blueprint' &&
+    !content?.commerce?.isPaid &&
+    !content?.commerce?.requiresEmail
+  ) {
     return (
       <BlueprintArticleLayout metadata={content}>
         {React.createElement(MdxContent)}

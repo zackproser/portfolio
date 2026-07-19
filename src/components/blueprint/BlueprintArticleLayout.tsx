@@ -87,6 +87,9 @@ export function BlueprintArticleLayout({
   const [log, setLog] = useState<LogEntry[]>([])
   const chatBodyRef = useRef<HTMLDivElement | null>(null)
   const rootRef = useRef<HTMLDivElement | null>(null)
+  const drawerInputRef = useRef<HTMLInputElement | null>(null)
+  const rfiTabRef = useRef<HTMLButtonElement | null>(null)
+  const drawerWasOpen = useRef(false)
   const logKey = `bp-rfi-${drawingId}`
 
   // Build the INDEX OF SHEETS from the rendered MDX and track scroll.
@@ -116,14 +119,58 @@ export function BlueprintArticleLayout({
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Restore the RFI log from this device.
+  // Restore the RFI log from this device. Anything that isn't a
+  // well-formed entry array (older versions, corruption) is dropped.
   useEffect(() => {
     try {
-      setLog(JSON.parse(localStorage.getItem(logKey) || '[]'))
+      const parsed = JSON.parse(localStorage.getItem(logKey) || '[]')
+      if (Array.isArray(parsed)) {
+        setLog(
+          parsed
+            .filter(
+              (e): e is LogEntry =>
+                !!e &&
+                typeof e === 'object' &&
+                typeof e.q === 'string' &&
+                typeof e.a === 'string' &&
+                typeof e.t === 'number',
+            )
+            .slice(-200),
+        )
+      }
     } catch {
-      // ignore corrupted log
+      // blocked or corrupted storage — start with an empty log
     }
   }, [logKey])
+
+  // Persist outside any state updater: React re-throws updater
+  // exceptions during render, where a blocked-storage SecurityError
+  // would take down the whole article.
+  useEffect(() => {
+    if (log.length === 0) return
+    try {
+      localStorage.setItem(logKey, JSON.stringify(log))
+    } catch {
+      // storage unavailable — the in-memory log still works
+    }
+  }, [log, logKey])
+
+  // Drawer focus + Escape handling: move focus in on open, restore to
+  // the tab on close, and let Escape close the drawer.
+  useEffect(() => {
+    if (chatOpen) {
+      drawerWasOpen.current = true
+      drawerInputRef.current?.focus()
+      const onKey = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') setChatOpen(false)
+      }
+      window.addEventListener('keydown', onKey)
+      return () => window.removeEventListener('keydown', onKey)
+    }
+    if (drawerWasOpen.current) {
+      rfiTabRef.current?.focus()
+    }
+  }, [chatOpen])
 
   const scrollChat = useCallback(() => {
     setTimeout(() => {
@@ -146,6 +193,7 @@ export function BlueprintArticleLayout({
       scrollChat()
 
       let answer = ''
+      let ok = false
       try {
         const res = await fetch('/api/blueprint-rfi', {
           method: 'POST',
@@ -180,6 +228,8 @@ export function BlueprintArticleLayout({
             next[next.length - 1] = { role: 'assistant', text: answer }
             return next
           })
+        } else {
+          ok = true
         }
       } catch {
         answer = 'That one didn’t go through — give it a few seconds and try again.'
@@ -193,18 +243,15 @@ export function BlueprintArticleLayout({
         scrollChat()
       }
 
-      try {
+      // Only completed answers go in the drawing log — a transport
+      // error is not an RFI on record. Persistence happens in the
+      // effect above, keeping this updater pure.
+      if (ok) {
         const entry: LogEntry = { q, a: answer, via, t: Date.now() }
-        setLog((prev) => {
-          const next = [...prev, entry].slice(-200)
-          localStorage.setItem(logKey, JSON.stringify(next))
-          return next
-        })
-      } catch {
-        // localStorage unavailable — the chat still works
+        setLog((prev) => [...prev, entry].slice(-200))
       }
     },
-    [busy, drawingId, logKey, msgs, scrollChat],
+    [busy, drawingId, msgs, scrollChat],
   )
 
   const titleblockCells: Array<[string, string, boolean?]> = [
@@ -283,9 +330,10 @@ export function BlueprintArticleLayout({
                 value={inlineQ}
                 onChange={(e) => setInlineQ(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') send(inlineQ, 'rfi-desk')
+                  if (e.key === 'Enter' && !e.nativeEvent.isComposing) send(inlineQ, 'rfi-desk')
                 }}
                 placeholder={'“why is this designed this way?” · anything at all'}
+                aria-label="File an RFI — ask a question about this drawing"
               />
               <button type="button" className="bp-rfi-file" onClick={() => send(inlineQ, 'rfi-desk')}>
                 FILE RFI →
@@ -321,13 +369,13 @@ export function BlueprintArticleLayout({
       </article>
 
       {!chatOpen && (
-        <button type="button" className="bp-rfi-tab" onClick={() => setChatOpen(true)}>
+        <button ref={rfiTabRef} type="button" className="bp-rfi-tab" onClick={() => setChatOpen(true)}>
           ✦ RFI — ASK THE DRAWING
         </button>
       )}
 
       {chatOpen && (
-        <aside className="bp-drawer" aria-label="RFI — ask the drawing">
+        <aside className="bp-drawer" role="dialog" aria-label="RFI — ask the drawing">
           <div className="bp-drawer-head">
             <div className="bp-drawer-title">
               <div className="bp-drawer-title-main">RFI — REQUEST FOR INFORMATION</div>
@@ -340,14 +388,19 @@ export function BlueprintArticleLayout({
             >
               {view === 'log' ? 'CHAT' : `LOG (${log.length})`}
             </button>
-            <button type="button" className="bp-drawer-btn" onClick={() => setChatOpen(false)}>
+            <button
+              type="button"
+              className="bp-drawer-btn"
+              onClick={() => setChatOpen(false)}
+              aria-label="Close the RFI panel"
+            >
               ✕
             </button>
           </div>
 
           {view === 'chat' ? (
             <>
-              <div ref={chatBodyRef} className="bp-drawer-body">
+              <div ref={chatBodyRef} className="bp-drawer-body" aria-live="polite">
                 {msgs.length === 0 && !busy ? (
                   <div className="bp-drawer-empty">
                     <p>
@@ -385,15 +438,22 @@ export function BlueprintArticleLayout({
               </div>
               <div className="bp-drawer-inputrow">
                 <input
+                  ref={drawerInputRef}
                   className="bp-drawer-input"
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') send(draft, 'typed')
+                    if (e.key === 'Enter' && !e.nativeEvent.isComposing) send(draft, 'typed')
                   }}
                   placeholder="Type a question…"
+                  aria-label="Ask the drawing a question"
                 />
-                <button type="button" className="bp-drawer-send" onClick={() => send(draft, 'typed')}>
+                <button
+                  type="button"
+                  className="bp-drawer-send"
+                  onClick={() => send(draft, 'typed')}
+                  aria-label="Send question"
+                >
                   →
                 </button>
               </div>

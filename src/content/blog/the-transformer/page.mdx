@@ -16,13 +16,13 @@ export const metadata = createMetadata(rawMetadata)
 
 <BpAnchor id="s0" num="00" label="Abstract" />
 
-In 2017, eight researchers at Google published a paper whose central claim sounded like a provocation: you can throw away recurrence entirely — the thing every serious sequence model had been built on for two decades — and replace it with nothing but attention. The paper was called *Attention Is All You Need*, and the title turned out to be an understatement. Nine years later, the architecture it introduced is not merely dominant; it is effectively the only one that matters. Language, code, images, audio, protein folding — all of it now runs through the same machine.
+In 2017, eight researchers at Google published a paper whose central claim sounded like a provocation: you can throw away recurrence entirely — the thing every serious sequence model had been built on for two decades — and replace it with nothing but attention. The paper was called *Attention Is All You Need*, and the title turned out to be an understatement. Nine years later, the architecture it introduced is effectively the only one that matters. Language, code, images, audio, protein folding — all of it now runs through the same machine.
 
 <BpNote>Vaswani et al., *Attention Is All You Need*, NeurIPS 2017. Eight authors; roughly 200k citations and counting.</BpNote>
 
 What makes that strange is how small the machine is. Strip away the training infrastructure and the trillion tokens of data, and the transformer is about a page of math. Three learned projections, a dot product, a softmax, a two-layer neural network, and a normalization trick — stacked in a loop. That's the entire circuit inside GPT-5, Claude, and Gemini.
 
-This drawing takes the machine apart piece by piece. By the bottom of the page you will know what a token actually is, why attention is just three matrix multiplications, what the 96 layers of a large model are doing all day, and why a single knob called temperature is the difference between a model that plagiarizes and one that hallucinates. No hand-waving. Every part gets a schematic.
+This drawing takes the machine apart piece by piece. By the bottom of the page you will know what a token actually is, why attention is just three matrix multiplications, what the 96 layers of a large model are doing all day, and what the single knob called temperature actually trades away. No hand-waving. Every part gets a schematic.
 
 <BpSection id="s1" num="01" label="The sequence problem" sheet="SHEET 1 OF 8" title="The problem with reading one word at a time" />
 
@@ -85,7 +85,9 @@ Before 2017, sequence models were recurrent. An RNN reads a sentence the way you
   </svg>
 </BpFigure>
 
-The transformer's move is to delete the ticker tape. Every token gets to look directly at every other token, in parallel, in a single matrix multiplication. The cost is quadratic — n tokens means n² pairwise interactions — but quadratic work that a GPU can do all at once beats linear work it has to do one step at a time. That single trade, *more math for less waiting*, is why transformers won.
+The transformer's move is to delete the ticker tape. Every token gets to look directly at every other token, in parallel, in a single matrix multiplication.
+
+<BpNote>Fine print: GPT-style decoders add a causal mask — each position sees only what came before it. The all-at-once parallelism pays off in training and prompt processing; generating new text is still one token per pass (see § 07).</BpNote> The cost is quadratic — n tokens means n² pairwise interactions — but quadratic work that a GPU can do all at once beats linear work it has to do one step at a time. That single trade, *more math for less waiting*, is why transformers won.
 
 <BpSection id="s2" num="02" label="Tokens & embeddings" sheet="SHEET 2 OF 8" title="Tokens: the machine's atoms" />
 
@@ -154,7 +156,7 @@ To update token *i*, take its query and dot it against every token's key. High d
   <span style={{ fontSize: 28 }}>)</span> V
 </BpEquation>
 
-<BpNote>√d_k: with d_k=64 dims, dot products of unit-ish vectors have std ≈ 8. Unscaled, softmax saturates and gradients die.</BpNote>
+<BpNote>√d_k: with d_k=64 and unit-variance components, dot products have std ≈ √64 = 8. Unscaled, softmax saturates and gradients die.</BpNote>
 
 <BpFigure caption="FIG. 3 — SCALED DOT-PRODUCT ATTENTION. THREE PROJECTIONS, ONE DOT PRODUCT, ONE SOFTMAX, ONE BLEND.">
   <svg viewBox="0 0 940 300">
@@ -202,7 +204,7 @@ To update token *i*, take its query and dot it against every token's key. High d
   </svg>
 </BpFigure>
 
-Abstract until you watch it work. Below is the sentence the original paper used to show off. The pronoun *&quot;it&quot;* is ambiguous — it could be the animal or the street. Hover any token to see where its attention goes. Hover *it*: the model has learned, from nothing but text statistics, that tired things are animals, not streets.
+Abstract until you watch it work. Below is the canonical sentence from the Transformer's release. The pronoun *&quot;it&quot;* is ambiguous — it could be the animal or the street. Hover any token to see where its attention goes. Hover *it*: trained models learn, from nothing but text statistics, that tired things are animals, not streets. The weights below are hand-drawn to match the published visualizations.
 
 <AttentionDemo />
 
@@ -210,7 +212,7 @@ Abstract until you watch it work. Below is the sentence the original paper used 
 
 One attention pattern per layer is too few. &quot;Which noun does this pronoun bind to?&quot; and &quot;what verb governs me?&quot; are different questions with different answers. So the transformer runs attention several times in parallel — 8 to 128 **heads** — each with its own small W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>, each free to learn its own notion of relevance. Their outputs are concatenated and mixed back down with one more matrix.
 
-Crucially this is nearly free: each head works in d<sub>model</sub>/h dimensions, so the total compute matches single-head attention. When researchers dissect trained models they find heads with legible jobs — previous-token heads, syntax heads, *induction heads* that scan for &quot;the last time this pattern appeared, what came next?&quot; Induction heads are the best current explanation for in-context learning.
+This is nearly free: each head works in d<sub>model</sub>/h dimensions, so the total compute matches single-head attention. When researchers dissect trained models they find heads with legible jobs — previous-token heads, syntax heads, *induction heads* that scan for &quot;the last time this pattern appeared, what came next?&quot; Induction heads are the leading candidate explanation for in-context learning.
 
 <BpNote>See Anthropic's &quot;In-context Learning and Induction Heads&quot; (2022) for the dissection work.</BpNote>
 
@@ -248,7 +250,7 @@ Crucially this is nearly free: each head works in d<sub>model</sub>/h dimensions
 
 <BpSection id="s5" num="05" label="Positional encoding" sheet="SHEET 5 OF 8" title="Positional encoding: telling a bag of words about order" />
 
-There's a bug in everything above. Attention is a sum over all positions — it treats the input as a *bag* of tokens. &quot;Dog bites man&quot; and &quot;man bites dog&quot; produce identical attention outputs. The fix: stamp each token with a vector encoding its position before the first layer. The original paper used interleaved sine and cosine waves at geometrically spaced frequencies — fast oscillations in the early dimensions, glacial ones in the late dimensions, giving every position a unique barcode:
+There's a bug in everything above. Attention is a sum over all positions — it treats the input as a *bag* of tokens. Reorder &quot;dog bites man&quot; into &quot;man bites dog&quot; and attention produces the same output vectors, just reordered: the mechanism cannot tell which order the words came in. The fix: stamp each token with a vector encoding its position before the first layer. The original paper used interleaved sine and cosine waves at geometrically spaced frequencies — fast oscillations in the early dimensions, glacial ones in the late dimensions, giving every position a unique barcode:
 
 <BpEquation tag="EQ. 5.1">
   PE<sub style={{ fontSize: 13 }}>(pos, 2i)</sub> = sin(pos / 10000<sup style={{ fontSize: 13 }}>2i/d</sup>) &nbsp;&nbsp;·&nbsp;&nbsp; PE<sub style={{ fontSize: 13 }}>(pos, 2i+1)</sub> = cos(pos / 10000<sup style={{ fontSize: 13 }}>2i/d</sup>)
@@ -256,7 +258,7 @@ There's a bug in everything above. Attention is a sum over all positions — it 
 
 <PositionalEncodingDemo />
 
-Why sinusoids and not just the integer position? Because for any fixed offset k, PE(pos+k) is a *linear function* of PE(pos) — the same trigonometric identity that makes clock arithmetic work — so &quot;three tokens back&quot; becomes something a learned matrix can express. Modern models mostly use a descendant called RoPE, which rotates the query and key vectors by position instead of adding to them, but the idea is identical: order enters the model as geometry.
+Why sinusoids instead of the raw integer position? Because for any fixed offset k, PE(pos+k) is a *linear function* of PE(pos) — the same trigonometric identity that makes clock arithmetic work — so &quot;three tokens back&quot; becomes something a learned matrix can express. Modern models mostly use a descendant called RoPE, which rotates the query and key vectors by position instead of adding to them, but the idea is identical: order enters the model as geometry.
 
 <BpSection id="s6" num="06" label="The block" sheet="SHEET 6 OF 8" title="The block: assembling the circuit" />
 
@@ -306,15 +308,15 @@ The final layer outputs one raw score (*logit*) per vocabulary entry. A softmax 
 
 <TemperatureDemo />
 
-This is also where the model's honest epistemology lives: it never outputs a word, only a distribution over words. &quot;Hallucination&quot; isn't a malfunction — sampling *is* the function. Every trick you've heard of (top-k, top-p, beam search) is just a different policy for picking from this same bar chart.
+This is also where the model's honest epistemology lives: it never outputs a word, only a distribution over words. Sampling *is* the function — and a fluent draw from that distribution can land on unsupported content under any decoding policy, greedy included. That failure is what gets called hallucination. Every trick you've heard of (top-k, top-p, beam search) is just a different policy for picking from this same bar chart.
 
 <BpNote>Inference optimization in one line: cache each token's K and V so old tokens are never recomputed. That's the KV cache — and why long contexts eat GPU memory.</BpNote>
 
 <BpSection id="s8" num="08" label="Scale" sheet="SHEET 8 OF 8" title="Scale: the same drawing, enlarged" />
 
-Here is the uncomfortable secret of the last nine years: almost nothing in this drawing has changed since 2017. GPT-4 is not a cleverer circuit than the original transformer — it is the same circuit with bigger matrices, more layers, and vastly more data. Parameters grow roughly as 12·N·d², and the field discovered that loss falls as a smooth, boringly reliable power law in compute. Capability wasn't designed in; it was purchased, order of magnitude by order of magnitude.
+Here is the uncomfortable secret of the last nine years: almost nothing in this drawing has changed since 2017. GPT-4 is the same circuit as the original transformer, with bigger matrices, more layers, and vastly more data. Parameters grow roughly as 12·N·d², and the field discovered that loss falls as a smooth, boringly reliable power law in compute. Capability was purchased, order of magnitude by order of magnitude.
 
-<BpFigure caption="FIG. 9 — SIX ORDERS OF MAGNITUDE, ONE ARCHITECTURE. THE DRAWING NEVER CHANGED; THE PAPER SIZE DID.">
+<BpFigure caption="FIG. 9 — MORE THAN FOUR ORDERS OF MAGNITUDE, ONE ARCHITECTURE. THE DRAWING NEVER CHANGED; THE PAPER SIZE DID.">
   <svg viewBox="0 0 900 300">
     <g stroke="currentColor" strokeWidth={0.5} opacity={0.4} fill="none">
       <path d="M80 250 H860 M80 250 V20"></path>
@@ -332,24 +334,24 @@ Here is the uncomfortable secret of the last nine years: almost nothing in this 
       <text x={576} y={272}>2022</text>
       <text x={716} y={272}>2023+</text>
     </g>
-    <path d="M110 233 L230 211 L350 190 L470 155 L590 141 L730 118" fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" opacity={0.7}></path>
+    <path d="M110 227 L230 206 L350 187 L470 127 L590 113 L730 98" fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" opacity={0.7}></path>
     <g fill="var(--bp-accent)">
-      <circle cx={110} cy={233} r={4} className="bp-pulse"></circle>
-      <circle cx={230} cy={211} r={4} className="bp-pulse" style={{ animationDelay: '.2s' }}></circle>
-      <circle cx={350} cy={190} r={4} className="bp-pulse" style={{ animationDelay: '.4s' }}></circle>
-      <circle cx={470} cy={155} r={4} className="bp-pulse" style={{ animationDelay: '.6s' }}></circle>
-      <circle cx={590} cy={141} r={4} className="bp-pulse" style={{ animationDelay: '.8s' }}></circle>
-      <circle cx={730} cy={118} r={4} className="bp-pulse" style={{ animationDelay: '1s' }}></circle>
+      <circle cx={110} cy={227} r={4} className="bp-pulse"></circle>
+      <circle cx={230} cy={206} r={4} className="bp-pulse" style={{ animationDelay: '.2s' }}></circle>
+      <circle cx={350} cy={187} r={4} className="bp-pulse" style={{ animationDelay: '.4s' }}></circle>
+      <circle cx={470} cy={127} r={4} className="bp-pulse" style={{ animationDelay: '.6s' }}></circle>
+      <circle cx={590} cy={113} r={4} className="bp-pulse" style={{ animationDelay: '.8s' }}></circle>
+      <circle cx={730} cy={98} r={4} className="bp-pulse" style={{ animationDelay: '1s' }}></circle>
     </g>
     <g className="bp-svg-t" fill="currentColor">
-      <text x={122} y={228}>Transformer · 65M</text>
-      <text x={242} y={206}>BERT · 340M</text>
-      <text x={362} y={185}>GPT-2 · 1.5B</text>
-      <text x={482} y={150}>GPT-3 · 175B</text>
-      <text x={602} y={136}>PaLM · 540B</text>
-      <text x={742} y={113}>GPT-4 · ~1.8T*</text>
+      <text x={122} y={222}>Transformer · 65M</text>
+      <text x={242} y={201}>BERT · 340M</text>
+      <text x={362} y={182}>GPT-2 · 1.5B</text>
+      <text x={482} y={122}>GPT-3 · 175B</text>
+      <text x={602} y={108}>PaLM · 540B</text>
+      <text x={742} y={93}>GPT-4 · ~1.8T*</text>
     </g>
-    <text x={742} y={290} className="bp-svg-t9" fill="currentColor" opacity={0.6}>* estimated</text>
+    <text x={680} y={290} className="bp-svg-t9" fill="currentColor" opacity={0.6}>* estimated — never confirmed by OpenAI</text>
     <text x={90} y={36} className="bp-svg-t" fill="currentColor">PARAMETERS (LOG SCALE)</text>
   </svg>
 </BpFigure>

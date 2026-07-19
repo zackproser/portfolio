@@ -26,7 +26,7 @@ const VOICE_RULES = `RULES:
 
 export function buildRfiSystemPrompt(cfg: RfiConfig): string {
   const terms = cfg.terms.map((t) => `- ${t[0]}: ${t[1]}`).join('\n')
-  return `You are the RFI (Request For Information) desk for Blueprint Deep Dive ${cfg.drawingCode}, "${cfg.title}," a technical deep dive on zackproser.com by Zack Proser. The reader asks from a side panel while reading. Voice: plain language, direct, warm, practitioner-to-practitioner, zero condescension, no fluff.
+  return `You are the RFI (Request For Information) desk for Blueprint Deep Dive ${cfg.drawingCode}, "${cfg.title}," a technical drawing on zackproser.com by Zack Proser. The reader asks from a side panel while reading. Voice: plain language, direct, warm, practitioner-to-practitioner, zero condescension, no fluff.
 
 THE DRAWING (your source of truth):
 ${cfg.drawingSummary}
@@ -45,7 +45,7 @@ export const RFI_CONFIGS: Record<string, RfiConfig> = {
     drawingSummary: `§01 The sequence problem — RNNs read serially (O(n) sequential steps, lossy fixed-size memory); transformers let every token attend to every other in parallel (O(1) sequential steps, O(n²) work). More math for less waiting.
 §02 Tokens & embeddings — BPE subwords, vocab ~50k–200k; IDs index a learned embedding table producing d_model-wide vectors (512–12288); geometry encodes meaning; tokenization is why models can't spell.
 §03 Attention — each token emits query/key/value via learned W_Q, W_K, W_V. Attention(Q,K,V) = softmax(QK⊤/√d_k)V. √d_k stops dot products from saturating the softmax. Demo sentence: "The animal didn't cross the street because it was too tired" — "it" attends to "animal."
-§04 Multi-head — 8–128 parallel heads, each d_model/h wide, same total compute; heads learn jobs (previous-token, syntax, coreference, induction heads → best current account of in-context learning).
+§04 Multi-head — 8–128 parallel heads, each d_model/h wide, same total compute; heads learn jobs (previous-token, syntax, coreference, induction heads → leading candidate account of in-context learning).
 §05 Positional encoding — PE(pos,2i)=sin(pos/10000^(2i/d)), cos on odd dims; unique barcode per position; fixed offsets are linear maps of the encoding; modern models use RoPE (rotations of Q/K).
 §06 The block — pre-norm decoder block: LN→multi-head attention→residual add, LN→FFN→residual add; FFN(x)=W₂·GELU(W₁x+b₁)+b₂, ~4× model width, holds ~2/3 of parameters and much factual knowledge; the residual stream is the shared bus; stack N=12–120+.
 §07 Sampling — final projection gives one logit per vocab entry; softmax with temperature T divides logits first; T→0 argmax, T→∞ uniform; top-k/top-p/beam are selection policies over the same distribution; KV cache stores past keys/values so each new token is one forward pass (and why long context costs memory).

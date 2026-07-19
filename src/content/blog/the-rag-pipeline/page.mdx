@@ -227,25 +227,25 @@ The assembly stage turns ranked chunks into a bounded evidence packet. Reserve t
 <BpFigure caption="FIG. 7 — CONTEXT ASSEMBLY UNDER A FIXED TOKEN BUDGET. EVIDENCE COMPETES WITH INSTRUCTIONS, HISTORY, THE QUERY, AND OUTPUT HEADROOM.">
   <svg viewBox="0 0 920 250">
     <g fill="none" stroke="currentColor" strokeWidth={1.2}>
-      <rect x={35} y={92} width={130} height={64}></rect>
-      <rect x={165} y={92} width={120} height={64}></rect>
-      <rect x={285} y={92} width={260} height={64}></rect>
-      <rect x={545} y={92} width={110} height={64}></rect>
-      <rect x={655} y={92} width={220} height={64}></rect>
+      <rect x={35} y={92} width={105} height={64}></rect>
+      <rect x={140} y={92} width={84} height={64}></rect>
+      <rect x={224} y={92} width={420} height={64}></rect>
+      <rect x={644} y={92} width={42} height={64}></rect>
+      <rect x={686} y={92} width={189} height={64}></rect>
     </g>
     <g className="bp-svg-t12" fill="currentColor">
-      <text x={58} y={120}>SYSTEM</text>
-      <text x={58} y={141}>1.0k</text>
-      <text x={187} y={120}>HISTORY</text>
-      <text x={187} y={141}>0.8k</text>
-      <text x={333} y={120}>EVIDENCE · 4.0k</text>
-      <text x={567} y={120}>QUERY</text>
-      <text x={567} y={141}>0.4k</text>
-      <text x={696} y={120}>OUTPUT RESERVE</text>
-      <text x={696} y={141}>1.8k</text>
+      <text x={48} y={120}>SYSTEM</text>
+      <text x={48} y={141}>1.0k</text>
+      <text x={150} y={120}>HISTORY</text>
+      <text x={150} y={141}>0.8k</text>
+      <text x={372} y={131}>EVIDENCE · 4.0k</text>
+      <text x={700} y={120}>OUTPUT RESERVE</text>
+      <text x={700} y={141}>1.8k</text>
     </g>
+    <text x={612} y={78} className="bp-svg-t10" fill="currentColor">QUERY · 0.4k</text>
+    <path d="M665 82 V90" fill="none" stroke="currentColor" strokeWidth={1}></path>
     <path d="M35 178 H875 M35 172 V184 M875 172 V184" fill="none" stroke="currentColor" strokeWidth={1}></path>
-    <text x={370} y={202} className="bp-svg-t10" fill="currentColor">EXAMPLE 8k WORKING BUDGET</text>
+    <text x={370} y={202} className="bp-svg-t10" fill="currentColor">EXAMPLE 8k WORKING BUDGET · WIDTHS TO SCALE</text>
     <text x={35} y={48} className="bp-svg-t10" fill="currentColor">ILLUSTRATIVE ALLOCATION · ACTUAL TOKEN COUNTS DEPEND ON MODEL AND REQUEST</text>
   </svg>
 </BpFigure>

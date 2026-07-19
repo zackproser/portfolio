@@ -64,7 +64,7 @@ An embedding is an ordered list of numbers: **x** ∈ ℝ<sup>d</sup>. The dimen
 
 <BpNote>A 1,536-dimensional float32 vector occupies 6,144 bytes before index overhead: 1,536 values × 4 bytes. One million raw vectors are about 5.7 GiB.</BpNote>
 
-The encoder is the important part. A text embedding model tokenizes the input, runs it through a transformer, pools token representations into one vector, and often normalizes that vector. The same encoder must process both sides of a comparison. Coordinates from unrelated models live in unrelated spaces, even when their vectors have the same length.
+The encoder is the important part. A text embedding model tokenizes the input, runs it through a transformer, pools token representations into one vector, and often normalizes that vector. Both sides of a comparison must follow the model's documented encoding contract — some retrieval models pair a query encoder with a document encoder trained together, and instruction prefixes are part of that contract. Coordinates from unrelated models live in unrelated spaces, even when their vectors have the same length.
 
 <BpFigure caption="FIG. 2 — THE EMBEDDING PIPELINE: VARIABLE-LENGTH INPUT BECOMES ONE FIXED-WIDTH COORDINATE IN ℝᵈ.">
   <svg viewBox="0 0 920 230">

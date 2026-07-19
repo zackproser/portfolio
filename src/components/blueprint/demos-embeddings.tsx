@@ -51,7 +51,7 @@ export function CosineSimilarityDemo() {
       label={<>INTERACTIVE — SELECT A WORD · QUERY = ⟨{active.word}⟩</>}
       footer="FIG. 3 — COSINE COMPARES DIRECTION FROM THE ORIGIN. COORDINATES ARE A HAND-DRAWN 2D TEACHING EXAMPLE."
     >
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(180px, 1fr)', gap: 24 }}>
+      <div className="bp-cosine-grid">
         <svg viewBox="0 0 470 310" style={{ width: '100%', color: 'var(--bp-line)' }}>
           <g fill="none" stroke="currentColor" strokeWidth={0.7} opacity={0.45}>
             <path d="M20 155 H450 M235 18 V292" />
@@ -84,7 +84,10 @@ export function CosineSimilarityDemo() {
                 onFocus={() => setSelected(index)}
                 onClick={() => setSelected(index)}
                 onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') setSelected(index)
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    setSelected(index)
+                  }
                 }}
                 style={{ cursor: 'pointer' }}
               >
@@ -141,7 +144,8 @@ export function NearestNeighborDemo() {
       }
       footer="FIG. 7 — MORE SEARCH WORK RAISES RECALL AND COST. LATENCY UNITS AND RESULTS ARE ILLUSTRATIVE, NOT A BENCHMARK."
     >
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(54px, 1fr))', gap: 10 }}>
+      <div className="bp-scroll-x">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(54px, 1fr))', gap: 10, minWidth: 340 }}>
         {[0, 1, 2, 3, 4].map((neighbor) => {
           const found = state.found.includes(neighbor)
           return (
@@ -154,6 +158,7 @@ export function NearestNeighborDemo() {
             </div>
           )
         })}
+        </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--bp-mono)', fontSize: 12, marginTop: 16 }}>
         <span>RECALL@5 = {(recall * 100).toFixed(0)}%</span>
