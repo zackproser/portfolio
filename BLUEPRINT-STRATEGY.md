@@ -3,6 +3,13 @@
 
 Date: 2026-07-19
 
+> **Renumbering note (2026-07-19):** TDD-005 was claimed by **The Workshop**
+> (gold-standard AI training workshops → RFP commission funnel), which jumped
+> the queue by editorial decision. The technical slate below shifts by one:
+> The Vector Database → TDD-006, The Context Window → TDD-007, The Speech
+> Pipeline → TDD-008, The Agent Loop → TDD-009. Priorities and content are
+> unchanged.
+
 ## Executive recommendation
 
 Publish the next five drawings in this order:

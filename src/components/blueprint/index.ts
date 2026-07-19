@@ -1,4 +1,5 @@
 export { BlueprintArticleLayout } from './BlueprintArticleLayout'
+export { BlueprintRfpDesk } from './BlueprintRfpDesk'
 export type { BlueprintMeta } from './BlueprintArticleLayout'
 export { BpSection, BpAnchor, BpNote, BpFigure, BpEquation, BpFrac, BpInteractive, BpQA, BpReferences } from './bits'
 export type { BpReference } from './bits'

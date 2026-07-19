@@ -873,6 +873,74 @@
   .bp-capture--done { display: none !important; }
 }
 
+/* ---------- RFP desk (workshop commission form) ---------- */
+
+.bp-rfp {
+  grid-column: 1 / 3;
+  margin: 64px 0 0;
+  border: 2px solid var(--bp-accent);
+  background: var(--bp-panel);
+  scroll-margin-top: 96px;
+}
+.bp-rfp-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--bp-line-soft);
+  padding: 14px 24px;
+  font-family: var(--bp-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-accent);
+}
+.bp-rfp-strip .bp-num { color: var(--bp-fg-subtle); }
+.bp-rfp-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.bp-rfp-pitch {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 62ch;
+  color: var(--bp-fg);
+}
+.bp-rfp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+.bp-rfp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bp-rfp-field > span {
+  font-family: var(--bp-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--bp-fg-subtle);
+}
+.bp-rfp-field--wide { grid-column: 1 / -1; }
+.bp-rfp-textarea { resize: vertical; font-family: var(--bp-mono); }
+.bp-rfp-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+@media (max-width: 700px) {
+  .bp-rfp-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media print {
+  .bp-rfp { display: none !important; }
+}
+
 /* ---------- colophon ---------- */
 
 .bp-colophon {

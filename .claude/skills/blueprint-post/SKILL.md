@@ -57,6 +57,10 @@ A Blueprint Deep Dive renders a technical explainer as an engineering drawing. F
 
 Client components in `demos-<topic>.tsx`: hardcoded deterministic data, real algorithm over toy inputs, `({ fig = N }: { fig?: number } = {})` prop for the caption number, existing CSS classes (`bp-attn-chip`, `bp-slider-label`, `bp-scroll-x`), keyboard access (preventDefault on Space for `role="button"`), and an ILLUSTRATIVE/NOT-A-BENCHMARK disclaimer in the footer when data is hand-made. Wide bodies get a `bp-scroll-x` wrapper with an inner `minWidth`.
 
+## Conversion posts
+
+For drawings whose goal is a booking rather than subscriptions (e.g. TDD-005 The Workshop), place `<BlueprintRfpDesk drawingCode="TDD-NNN" />` after the last sheet's prose and before `<BpReferences>`. It renders APPENDIX C — RFP DESK (an embedded commission form posting to `/api/consultation`) and registers itself on the rail. The newsletter NEXT SHEET card still renders after the RFI desk.
+
 ## RFI config
 
 Add to `RFI_CONFIGS` in `src/lib/blueprint/rfi-configs.ts`: `drawingCode`, `title`, `path`, a per-sheet `drawingSummary` (one dense line per §, mirroring what the post actually says — the model answers ONLY from this), and 12–15 glossary `terms`.
