@@ -23,7 +23,7 @@ function cosine(a: Point, b: Point) {
   return (a.x * b.x + a.y * b.y) / (Math.hypot(a.x, a.y) * Math.hypot(b.x, b.y))
 }
 
-export function CosineSimilarityDemo() {
+export function CosineSimilarityDemo({ fig = 3 }: { fig?: number } = {}) {
   const [selected, setSelected] = useState(0)
   const active = POINTS[selected]
   const ranked = useMemo(
@@ -52,7 +52,7 @@ export function CosineSimilarityDemo() {
   return (
     <BpInteractive
       label={<>INTERACTIVE — SELECT A WORD · QUERY = ⟨{active.word}⟩</>}
-      footer="FIG. 3 — COSINE COMPARES DIRECTION FROM THE ORIGIN. COORDINATES ARE A HAND-DRAWN 2D TEACHING EXAMPLE."
+      footer={`FIG. ${fig} — COSINE COMPARES DIRECTION FROM THE ORIGIN. COORDINATES ARE A HAND-DRAWN 2D TEACHING EXAMPLE.`}
     >
       <div className="bp-cosine-grid">
         <svg viewBox="0 0 470 310" style={{ width: '100%', color: 'var(--bp-line)' }}>
@@ -136,7 +136,7 @@ const SEARCH_STEPS = [
   { probes: 64, found: [0, 1, 2, 3, 4], latency: 8 },
 ]
 
-export function NearestNeighborDemo() {
+export function NearestNeighborDemo({ fig = 7 }: { fig?: number } = {}) {
   const [step, setStep] = useState(1)
   const state = SEARCH_STEPS[step]
   const recall = state.found.length / 5
@@ -150,7 +150,7 @@ export function NearestNeighborDemo() {
           <input type="range" min={0} max={3} step={1} value={step} onChange={(e) => setStep(Number(e.target.value))} />
         </label>
       }
-      footer="FIG. 7 — MORE SEARCH WORK RAISES RECALL AND COST. LATENCY UNITS AND RESULTS ARE ILLUSTRATIVE, NOT A BENCHMARK."
+      footer={`FIG. ${fig} — MORE SEARCH WORK RAISES RECALL AND COST. LATENCY UNITS AND RESULTS ARE ILLUSTRATIVE, NOT A BENCHMARK.`}
     >
       <div className="bp-scroll-x">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(54px, 1fr))', gap: 10, minWidth: 340 }}>

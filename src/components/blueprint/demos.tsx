@@ -36,7 +36,7 @@ function attnWeights(i: number): number[] {
   return ex.map((e) => e / sum)
 }
 
-export function AttentionDemo() {
+export function AttentionDemo({ fig = 4 }: { fig?: number } = {}) {
   const [hov, setHov] = useState(7)
   const w = attnWeights(hov)
   const maxW = Math.max(...w)
@@ -51,7 +51,7 @@ export function AttentionDemo() {
       }
       footer={
         <>
-          FIG. 4 — ILLUSTRATIVE WEIGHTS FOR ONE ATTENTION HEAD, ROW ⟨{hovTok}⟩, HAND-DRAWN TO MATCH
+          FIG. {fig} — ILLUSTRATIVE WEIGHTS FOR ONE ATTENTION HEAD, ROW ⟨{hovTok}⟩, HAND-DRAWN TO MATCH
           PUBLISHED VISUALIZATIONS. WEIGHTS SUM TO 1.00.
         </>
       }
@@ -96,7 +96,7 @@ const TEMP_LOGITS: Array<[string, number]> = [
   ['car', -1.6],
 ]
 
-export function TemperatureDemo() {
+export function TemperatureDemo({ fig = 8 }: { fig?: number } = {}) {
   const [temp, setTemp] = useState(1)
   const ex = TEMP_LOGITS.map(([, l]) => Math.exp(l / temp))
   const sum = ex.reduce((a, b) => a + b, 0)
@@ -121,7 +121,7 @@ export function TemperatureDemo() {
           />
         </label>
       }
-      footer="FIG. 8 — SOFTMAX WITH TEMPERATURE. T→0: ARGMAX (DETERMINISTIC). T→∞: UNIFORM (NOISE). LOGITS FIXED."
+      footer={`FIG. ${fig} — SOFTMAX WITH TEMPERATURE. T→0: ARGMAX (DETERMINISTIC). T→∞: UNIFORM (NOISE). LOGITS FIXED.`}
     >
       <div className="bp-temp-bars">
         {TEMP_LOGITS.map(([word], i) => {
@@ -150,7 +150,7 @@ export function TemperatureDemo() {
 
 /* ---------------- Positional encoding demo ---------------- */
 
-export function PositionalEncodingDemo() {
+export function PositionalEncodingDemo({ fig = 6 }: { fig?: number } = {}) {
   const [dim, setDim] = useState(2)
   const freq = 1 / Math.pow(10000, dim / 8)
   let sin = ''
@@ -185,7 +185,7 @@ export function PositionalEncodingDemo() {
           />
         </label>
       }
-      footer="FIG. 6 — ONE FREQUENCY PAIR OF THE POSITIONAL BARCODE. SLIDE i: EARLY DIMS OSCILLATE FAST, LATE DIMS SLOWLY."
+      footer={`FIG. ${fig} — ONE FREQUENCY PAIR OF THE POSITIONAL BARCODE. SLIDE i: EARLY DIMS OSCILLATE FAST, LATE DIMS SLOWLY.`}
     >
       <svg viewBox="0 0 860 180" style={{ width: '100%', color: 'var(--bp-line)' }}>
         <g stroke="currentColor" strokeWidth={0.5} opacity={0.35}>

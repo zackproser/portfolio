@@ -420,10 +420,12 @@ function Gallery({ posts, showLead }: { posts: ArticleWithSlug[]; showLead: bool
         const pattern = THUMB_PATTERNS[i % THUMB_PATTERNS.length];
         const kindKey = post.type || "blog";
         const imgSrc = resolveImageSrc(post.image);
+        const isBlueprint = post.blogStyle === "blueprint";
+        const bpNumber = post.blueprint?.number;
         return (
           <Link
             key={post.slug ?? `${post.title}-${i}`}
-            className={`eb-card${isLead ? " is-lead" : ""}`}
+            className={`eb-card${isLead ? " is-lead" : ""}${isBlueprint ? " eb-card--blueprint" : ""}`}
             href={post.slug as any}
           >
             <div className={`eb-thumb ${imgSrc ? "" : pattern}`}>
@@ -438,14 +440,21 @@ function Gallery({ posts, showLead }: { posts: ArticleWithSlug[]; showLead: bool
                 />
               ) : null}
               <span className="eb-thumb-num">
-                {pad2(i + 1)} · {KIND_LABEL[kindKey] ?? kindKey}
+                {isBlueprint
+                  ? `${bpNumber ? `TDD-${bpNumber}` : pad2(i + 1)} · DRAWING`
+                  : `${pad2(i + 1)} · ${KIND_LABEL[kindKey] ?? kindKey}`}
               </span>
               {!imgSrc && <span className="eb-thumb-glyph">{firstGlyph(post.title)}</span>}
             </div>
             <div className="eb-card-body">
               <div className="eb-card-meta">
-                <span className="eb-kind-pill">{KIND_LABEL[kindKey] ?? kindKey}</span>
+                <span className="eb-kind-pill">
+                  {isBlueprint ? "Blueprint Deep Dive" : KIND_LABEL[kindKey] ?? kindKey}
+                </span>
                 <span>{fmtMonYear(post.date)}</span>
+                {isBlueprint && post.blueprint?.readTime ? (
+                  <span className="eb-bp-readtime">{post.blueprint.readTime}</span>
+                ) : null}
               </div>
               <h3 className="eb-card-title">{post.title}</h3>
               <p className="eb-card-dek">{post.description}</p>
@@ -455,7 +464,7 @@ function Gallery({ posts, showLead }: { posts: ArticleWithSlug[]; showLead: bool
                     <span key={t}>#{t}</span>
                   ))}
                 </div>
-                <span>Read →</span>
+                <span>{isBlueprint ? "Open the drawing →" : "Read →"}</span>
               </div>
             </div>
           </Link>
@@ -498,7 +507,9 @@ function Ledger({ groups }: { groups: Array<{ year: string; posts: ArticleWithSl
                     <h3 className="eb-row-title">{post.title}</h3>
                     <p className="eb-row-dek">{post.description}</p>
                   </div>
-                  <div className="eb-kind">{KIND_LABEL[kindKey] ?? kindKey}</div>
+                  <div className="eb-kind">
+                    {post.blogStyle === "blueprint" ? "Blueprint" : KIND_LABEL[kindKey] ?? kindKey}
+                  </div>
                   <div className="eb-arrow">→</div>
                 </Link>
               );

@@ -221,6 +221,8 @@ export function BlueprintArticleLayout({
           })
           scrollChat()
         }
+        // Flush any multibyte sequence split across the final chunk
+        answer += decoder.decode()
         if (!answer.trim()) {
           answer = 'That one didn’t go through — give it a few seconds and try again.'
           setMsgs((s) => {
@@ -312,11 +314,11 @@ export function BlueprintArticleLayout({
       <article className="bp-article">
         {children}
 
-        {/* APPENDIX — RFI desk */}
-        <div id="s9" data-sec="s9" data-num="A" data-label="RFI desk" className="bp-rfi-desk">
+        {/* APPENDIX — RFI desk (references, when present, are Appendix A) */}
+        <div id="s9" data-sec="s9" data-num="B" data-label="RFI desk" className="bp-rfi-desk">
           <div className="bp-rfi-desk-strip">
-            <span>APPENDIX A — RFI DESK · REQUEST FOR INFORMATION</span>
-            <span className="bp-num">{drawingCode}-A</span>
+            <span>APPENDIX B — RFI DESK · REQUEST FOR INFORMATION</span>
+            <span className="bp-num">{drawingCode}-B</span>
           </div>
           <div className="bp-rfi-desk-body">
             <p>
@@ -336,7 +338,7 @@ export function BlueprintArticleLayout({
                 aria-label="File an RFI — ask a question about this drawing"
               />
               <button type="button" className="bp-rfi-file" onClick={() => send(inlineQ, 'rfi-desk')}>
-                FILE RFI →
+                ASK A QUESTION →
               </button>
             </div>
             <div className="bp-rfi-chips">

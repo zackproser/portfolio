@@ -1,6 +1,7 @@
 export { BlueprintArticleLayout } from './BlueprintArticleLayout'
 export type { BlueprintMeta } from './BlueprintArticleLayout'
-export { BpSection, BpAnchor, BpNote, BpFigure, BpEquation, BpFrac, BpInteractive } from './bits'
+export { BpSection, BpAnchor, BpNote, BpFigure, BpEquation, BpFrac, BpInteractive, BpQA, BpReferences } from './bits'
+export type { BpReference } from './bits'
 export { AttentionDemo, TemperatureDemo, PositionalEncodingDemo } from './demos'
 export { CosineSimilarityDemo, NearestNeighborDemo } from './demos-embeddings'
 export { ChunkingDemo, RetrievalScoreDemo } from './demos-rag'

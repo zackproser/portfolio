@@ -15,7 +15,7 @@ function makeChunks(text: string, size: number, overlap: number) {
   return chunks
 }
 
-export function ChunkingDemo() {
+export function ChunkingDemo({ fig = 4 }: { fig?: number } = {}) {
   const [size, setSize] = useState(160)
   const [overlap, setOverlap] = useState(30)
   const chunks = useMemo(() => makeChunks(SAMPLE, size, Math.min(overlap, size - 1)), [size, overlap])
@@ -36,7 +36,7 @@ export function ChunkingDemo() {
           </label>
         </div>
       }
-      footer="FIG. 4 — FIXED-SIZE CHARACTER CHUNKS. BOUNDARIES ARE VISIBLE; PRODUCTION SYSTEMS USUALLY COUNT TOKENS."
+      footer={`FIG. ${fig} — FIXED-SIZE CHARACTER CHUNKS. BOUNDARIES ARE VISIBLE; PRODUCTION SYSTEMS USUALLY COUNT TOKENS.`}
     >
       <div style={{ display: 'grid', gap: 10 }}>
         {chunks.map((chunk, index) => (
@@ -62,7 +62,7 @@ const PASSAGES = [
   { title: 'User session expiration', dense: 0.79, keyword: 0.29 },
 ]
 
-export function RetrievalScoreDemo() {
+export function RetrievalScoreDemo({ fig = 5 }: { fig?: number } = {}) {
   const [alpha, setAlpha] = useState(0.5)
   const ranked = useMemo(
     () => PASSAGES.map((passage) => ({ ...passage, score: alpha * passage.dense + (1 - alpha) * passage.keyword })).sort((a, b) => b.score - a.score),
@@ -78,7 +78,7 @@ export function RetrievalScoreDemo() {
           <input type="range" min={0} max={1} step={0.05} value={alpha} onChange={(e) => setAlpha(Number(e.target.value))} />
         </label>
       }
-      footer="FIG. 5 — α=0 IS KEYWORD-ONLY; α=1 IS DENSE-ONLY. COMPONENT SCORES ARE FIXED, NORMALIZED TEACHING VALUES."
+      footer={`FIG. ${fig} — α=0 IS KEYWORD-ONLY; α=1 IS DENSE-ONLY. COMPONENT SCORES ARE FIXED, NORMALIZED TEACHING VALUES.`}
     >
       <div className="bp-scroll-x">
         <div style={{ minWidth: 470 }}>

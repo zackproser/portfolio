@@ -17,8 +17,20 @@ const LIMIT = 60
 const WINDOW_MS = 60 * 60 * 1000
 const MAX_TRACKED_IPS = 5000
 
+// Backstop for spoofed/rotating client IPs: bound the total spend one
+// process can generate regardless of how many distinct IPs appear.
+let globalCount = 0
+let globalWindowStart = 0
+const GLOBAL_LIMIT = 1500
+
 function rateLimited(ip: string): boolean {
   const now = Date.now()
+  if (now - globalWindowStart > WINDOW_MS) {
+    globalWindowStart = now
+    globalCount = 0
+  }
+  globalCount++
+  if (globalCount > GLOBAL_LIMIT) return true
   // Bound the map: a scan across many IPs must not grow memory forever.
   if (hits.size > MAX_TRACKED_IPS) hits.clear()
   const entry = hits.get(ip)
@@ -31,7 +43,10 @@ function rateLimited(ip: string): boolean {
 }
 
 export async function POST(req: Request) {
-  const ip = (req.headers.get('x-forwarded-for') ?? 'unknown').split(',')[0].trim()
+  // Rightmost x-forwarded-for entry: the hop appended by the platform's
+  // own proxy. The leftmost entries are client-supplied and spoofable.
+  const forwarded = (req.headers.get('x-forwarded-for') ?? 'unknown').split(',')
+  const ip = forwarded[forwarded.length - 1].trim()
   if (rateLimited(ip)) {
     return new Response('Slow down a little — try again in a bit.', { status: 429 })
   }

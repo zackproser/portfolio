@@ -68,6 +68,52 @@ export function BpFrac({ top, bottom }: { top: React.ReactNode; bottom: React.Re
 }
 
 /**
+ * Conversational aside styled as an inline RFI: a plain-language
+ * question a reader starting from zero would ask, answered in place.
+ * Main-column width, dashed frame so it reads as an annotation rather
+ * than a figure.
+ */
+export function BpQA({ q, children }: { q: string; children: React.ReactNode }) {
+  return (
+    <div className="bp-qa">
+      <div className="bp-qa-q">Q — {q}</div>
+      <div className="bp-qa-a">{children}</div>
+    </div>
+  )
+}
+
+export interface BpReference {
+  label: string // "Vaswani et al., 'Attention Is All You Need', NeurIPS 2017"
+  href: string
+}
+
+/**
+ * References appendix ("APPENDIX A"). Give it drawingCode like
+ * "TDD-001" for the corner tag. Rendered before the RFI desk, which
+ * the layout appends as APPENDIX B.
+ */
+export function BpReferences({ drawingCode, items }: { drawingCode: string; items: BpReference[] }) {
+  return (
+    <div id="refs" data-sec="refs" data-num="A" data-label="References" className="bp-references">
+      <div className="bp-references-strip">
+        <span>APPENDIX A — REFERENCES · SOURCES CITED</span>
+        <span className="bp-num">{drawingCode}-A</span>
+      </div>
+      <ol className="bp-references-list">
+        {items.map((ref, i) => (
+          <li key={ref.href}>
+            <span className="bp-ref-num">[{String(i + 1).padStart(2, '0')}]</span>
+            <a href={ref.href} target="_blank" rel="noreferrer">
+              {ref.label}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}
+
+/**
  * Full-width interactive panel shell: mono accent header line, optional
  * right-side controls, children, and a FIG.-style footer caption.
  */
