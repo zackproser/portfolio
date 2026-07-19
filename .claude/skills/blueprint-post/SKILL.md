@@ -61,6 +61,17 @@ A Blueprint Deep Dive renders a technical explainer as an engineering drawing. F
 
 Client components in `demos-<topic>.tsx`: hardcoded deterministic data, real algorithm over toy inputs, `({ fig = N }: { fig?: number } = {})` prop for the caption number, existing CSS classes (`bp-attn-chip`, `bp-slider-label`, `bp-scroll-x`), keyboard access (preventDefault on Space for `role="button"`), and an ILLUSTRATIVE/NOT-A-BENCHMARK disclaimer in the footer when data is hand-made. Wide bodies get a `bp-scroll-x` wrapper with an inner `minWidth`.
 
+## Detachable plates (gated artifacts)
+
+Wave-3+ drawings gate one separately valuable artifact (never the article): poster, worksheet, or evidence bundle. Pipeline:
+
+1. Write the worksheet content as `src/content/blog/<slug>/plate.md` (constrained markdown: ##/###, lists, tables, `____` for fill-in blanks).
+2. Register the asset in `src/lib/blueprint/assets.ts` (id `bp-NNN-<slug>`, name, drawingCode, fileUrl `https://zackproser.b-cdn.net/plates/<id>.pdf`).
+3. Place `<BpDetachablePlate drawingCode assetId name format contents fileUrl />` in the MDX immediately after the sheet where the reader first needs it.
+4. `npm run blueprint:plate -- --slug <slug> --asset <id>` → PDF (A2 poster page + typeset worksheet); `node scripts/blueprint/upload-plate.mjs --asset <id>` → Bunny + purge.
+
+Delivery: `/api/blueprint-asset` subscribes (interest:blueprint-series + `asset:<id>` tags), returns the file URL for the success screen, and emails a copy via Postmark when configured. The title-block capture form auto-collapses to a scroll link on plate posts so a drawing never shows three email fields; already-subscribed readers get a direct download with no second consent ask.
+
 ## Conversion posts
 
 For drawings whose goal is a booking rather than subscriptions (e.g. TDD-005 The Workshop), place `<BlueprintRfpDesk drawingCode="TDD-NNN" />` after the last sheet's prose and before `<BpReferences>`. It renders APPENDIX C — RFP DESK (an embedded commission form posting to `/api/consultation`) and registers itself on the rail. The newsletter NEXT SHEET card still renders after the RFI desk.

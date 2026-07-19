@@ -20,7 +20,7 @@ export interface NextDrawing {
 const SUBSCRIBED_KEY = 'bp-series-subscribed'
 const SYNC_EVENT = 'bp-series-subscribed'
 
-function useSeriesSubscribed(): [boolean, () => void] {
+export function useSeriesSubscribed(): [boolean, () => void] {
   const [subscribed, setSubscribed] = useState(false)
   useEffect(() => {
     try {
@@ -57,7 +57,17 @@ export function BlueprintSeriesCapture({
   const [subscribed, markSubscribed] = useSeriesSubscribed()
   const [status, setStatus] = useState<'idle' | 'submitting' | 'error'>('idle')
   const [started, setStarted] = useState(false)
+  const [hasPlate, setHasPlate] = useState(false)
   const location = `blueprint:${variant}:${drawingCode}`
+
+  // Coexistence rule: a drawing with a DETACHABLE PLATE never shows
+  // three email fields. The title-block form collapses to a link that
+  // scrolls to the plate offer.
+  useEffect(() => {
+    if (variant === 'title-block') {
+      setHasPlate(!!document.querySelector('.bp-plate'))
+    }
+  }, [variant])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -108,6 +118,24 @@ export function BlueprintSeriesCapture({
     next?.title && next?.number
       ? `${next.status === 'in-production' ? 'IN PRODUCTION' : 'NEXT SHEET'} · TDD-${next.number} · ${next.title.toUpperCase()}`
       : 'NEXT SUBJECT UNDER REVIEW'
+
+  if (variant === 'title-block' && hasPlate) {
+    return (
+      <div className="bp-capture bp-capture--row">
+        <span className="bp-capture-kicker">DISTRIBUTION</span>
+        <button
+          type="button"
+          className="bp-rfi-loglink"
+          onClick={() => {
+            track('blueprint-capture-plate-link', { location })
+            document.querySelector('.bp-plate')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }}
+        >
+          GET THE DETACHABLE PLATE + FUTURE DRAWINGS →
+        </button>
+      </div>
+    )
+  }
 
   if (variant === 'title-block') {
     return (

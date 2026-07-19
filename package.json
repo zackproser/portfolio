@@ -35,6 +35,7 @@
     "blueprint:art": "node scripts/blueprint/generate-art.mjs",
     "blueprint:art:upload": "node scripts/blueprint/upload-art.mjs",
     "blueprint:issue-email": "node scripts/blueprint/issue-email.mjs",
+    "blueprint:plate": "node scripts/blueprint/generate-plate.mjs",
     "verify:citations": "node scripts/verify-citations.mjs"
   },
   "browserslist": "defaults, not ie <= 11",
