@@ -1,0 +1,280 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import {
+  BpSection,
+  BpAnchor,
+  BpNote,
+  BpFigure,
+  BpEquation,
+  BpQA,
+  BpReferences,
+  BpDetachablePlate,
+  RequestSchedulerDemo,
+  KvLedgerDemo,
+} from '@/components/blueprint'
+
+export const metadata = createMetadata(rawMetadata)
+
+<BpAnchor id="s0" num="00" label="Abstract" />
+
+A language model endpoint hides a resource allocator. Every accepted request asks for a share of the model weights, temporary activation space, a KV cache that grows one token at a time, and repeated access to accelerator compute and memory bandwidth. The inference engine decides when each request enters, where its state resides, which other requests share an iteration, and whether a new prompt may delay tokens already streaming.
+
+This drawing follows one request and then adds contention. Prefill processes the supplied prompt in parallel. Decode produces one new token per sequence per iteration. Their shapes differ, so a schedule that raises total tokens per second can also make the first token or the gaps between later tokens worse. Memory is equally conditional: weights are mostly fixed, activations peak around kernel execution, and KV state scales with live sequence tokens.
+
+The citable object is a worked memory-and-time ledger. Its 7B teaching case uses explicit binary units and keeps every category separate. The scheduler panel uses fixed synthetic arrivals and labeled assumptions; it is an algorithm demonstration, not a hardware benchmark. Product shootouts and vendor benchmark tables stay outside the permanent sheets because model revision, traffic shape, kernels, hardware, and latency targets change the answer.
+
+<BpSection id="s1" num="01" label="Request life" sheet="SHEET 1 OF 8" title="Serving begins where one forward pass ends" />
+
+An offline model call can be described as tensor operations. A service must also admit, queue, cancel, stream, meter, isolate, and recover requests. It receives text or token IDs, applies the chat template and tokenizer, validates length, chooses a replica, waits for capacity, allocates KV pages, runs prefill, samples the first token, and repeats decode until an end condition. Only then can it release the request’s cache blocks.
+
+Each boundary carries state. The router knows tenant and deadline. The scheduler knows arrivals, token budgets, and resident sequences. The model runner owns device buffers and kernels. The sampler owns decoding parameters and random state. The streamer owns backpressure and cancellation. A request can fail before any matrix multiplication, finish while its batch peers continue, or lose its client while device work remains queued.
+
+The service clock starts before the GPU clock. Authentication, request parsing, tokenizer work, replica selection, and queue delay can dominate a short prompt. Streaming introduces another clock at the network boundary: a token may be computed but unavailable to the caller while serialization or a slow connection backs up. Measure timestamps at acceptance, scheduler admission, prefill start/end, each token-ready event, each token-write event, and release. Those points separate engine delay from transport delay without pretending that either is invisible to the user.
+
+<BpFigure caption="FIG. 1 — ONE REQUEST CROSSES ADMISSION, TOKENIZATION, SCHEDULING, PREFILL, ITERATIVE DECODE, AND RELEASE. KV STATE IS ALLOCATED BEFORE COMPUTE AND FREED AFTER THE TERMINAL TOKEN OR CANCELLATION.">
+  <svg viewBox="0 0 920 330">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={24} y={112} width={118} height={70}></rect><rect x={178} y={112} width={118} height={70}></rect>
+      <rect x={332} y={112} width={118} height={70}></rect><rect x={486} y={112} width={118} height={70}></rect>
+      <rect x={640} y={112} width={118} height={70}></rect><rect x={794} y={112} width={102} height={70}></rect>
+      <rect x={332} y={238} width={426} height={52}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.2} strokeDasharray="6 5" className="bp-dash">
+      <path d="M142 147 H176 M296 147 H330 M450 147 H484 M604 147 H638 M758 147 H792 M691 182 V236 M383 238 V184"></path>
+    </g>
+    <g fill="currentColor"><path d="M174 147 l-8 -4 v8 z M328 147 l-8 -4 v8 z M482 147 l-8 -4 v8 z M636 147 l-8 -4 v8 z M790 147 l-8 -4 v8 z M383 186 l-4 8 h8 z"></path></g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={48} y={141}>ADMIT</text><text x={44} y={160}>+ ROUTE</text><text x={199} y={141}>TOKENIZE</text><text x={206} y={160}>+ LIMIT</text>
+      <text x={351} y={141}>QUEUE</text><text x={351} y={160}>+ ALLOCATE</text><text x={510} y={141}>PREFILL</text><text x={518} y={160}>PROMPT</text>
+      <text x={665} y={141}>DECODE</text><text x={666} y={160}>1 TOKEN</text><text x={815} y={141}>STREAM</text><text x={817} y={160}>+ FREE</text>
+      <text x={420} y={270}>KV BLOCK TABLE · TOKEN BUDGET · CANCELLATION STATE</text>
+    </g>
+    <text x={330} y={58} className="bp-svg-t10" fill="currentColor">CONTROL PLANE</text><text x={509} y={215} className="bp-svg-t10" fill="currentColor">MODEL RUNNER</text>
+  </svg>
+</BpFigure>
+
+<BpNote>Cancellation must reach both scheduler and cache manager. Releasing the HTTP connection without removing queued/device work wastes capacity; freeing blocks before in-flight kernels stop risks corrupt reuse.</BpNote>
+
+This makes serving a separate discipline from model architecture. The [Transformer drawing’s KV-cache section](/blog/the-transformer#s7) explains why earlier keys and values can be reused. The inference engine turns that reuse into an allocation and scheduling problem across many unrelated sequences. The site’s [interactive demos index](/demos) supplies adjacent tokenization and retrieval experiments; the scheduler below stays local so its assumptions remain beside the ledger.
+
+<BpQA q="Why can a model fit on a GPU and still fail to serve one request?">
+The weight file may fit while the complete runtime does not. Kernel workspaces, graph captures, allocator reserve, activations, and the request’s growing KV cache require additional bytes. “Weights fit” answers one ledger line, not the resident-memory total.
+</BpQA>
+
+<BpSection id="s2" num="02" label="Two workloads" sheet="SHEET 2 OF 8" title="Prefill and decode ask the accelerator for different work" />
+
+**Prefill** consumes all prompt tokens. Within each layer, many prompt positions can be projected and processed in parallel. Attention still respects the causal mask, but the device receives large matrix operations with substantial arithmetic per launch. Prompt length drives time-to-first-token because decode cannot emit the first sampled token until the prompt’s final position has passed through the model.
+
+**Decode** begins after prefill. Each active sequence contributes one current token to an iteration, reads its previous KV entries, produces logits, samples one token, and appends one K vector and one V vector per layer. The serial dependency is absolute: token *t + 1* needs token *t*. Batching adds sequences to the iteration, yet no scheduler can parallelize future positions of one autoregressive sequence.
+
+<BpEquation tag="EQ. 2.1">
+  TTFT [ms/request] = queue delay [ms/request] + prefill service [ms/request] + first-step overhead [ms/request]
+</BpEquation>
+
+<BpEquation tag="EQ. 2.2">
+  ITL<sub>i</sub> [ms/token] = available time(token<sub>i+1</sub>) [ms] − available time(token<sub>i</sub>) [ms]
+</BpEquation>
+
+<BpFigure caption="FIG. 2 — PREFILL EXPOSES PROMPT-POSITION PARALLELISM; DECODE EXPOSES SEQUENCE-LEVEL BATCHING BUT RETAINS A TOKEN-BY-TOKEN DEPENDENCY WITHIN EACH REQUEST.">
+  <svg viewBox="0 0 920 350">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}><rect x={38} y={58} width={844} height={104}></rect><rect x={38} y={213} width={844} height={98}></rect></g>
+    <g className="bp-svg-t12" fill="currentColor"><text x={60} y={87}>PREFILL</text><text x={60} y={242}>DECODE</text></g>
+    <g fill="none" stroke="currentColor" strokeWidth={1}>
+      {Array.from({ length: 8 }, (_, i) => <rect key={`p-${i}`} x={180 + i * 72} y={90} width={54} height={40}></rect>)}
+      {Array.from({ length: 7 }, (_, i) => <rect key={`d-${i}`} x={180 + i * 92} y={245} width={54} height={40}></rect>)}
+    </g>
+    <g className="bp-svg-t10" fill="currentColor">
+      {Array.from({ length: 8 }, (_, i) => <text key={`pt-${i}`} x={197 + i * 72} y={115}>P{i + 1}</text>)}
+      {Array.from({ length: 7 }, (_, i) => <text key={`dt-${i}`} x={197 + i * 92} y={270}>T{i + 1}</text>)}
+      <text x={304} y={148}>MANY PROMPT POSITIONS IN LARGE KERNELS</text><text x={290} y={302}>ONE NEW TOKEN PER SEQUENCE PER ITERATION</text>
+    </g>
+    <path d="M234 265 H270 M326 265 H362 M418 265 H454 M510 265 H546 M602 265 H638 M694 265 H730" fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash"></path>
+  </svg>
+</BpFigure>
+
+The distinction predicts interference. A long prefill admitted whole may occupy the runner long enough to widen decode gaps for sequences already streaming. Chunked prefill divides that prompt into bounded token work so decode iterations can run between chunks. SARATHI formalized this piggybacking approach; DistServe later treated prefill and decode as separable phases that can be provisioned around different latency objectives.
+
+Token throughput needs two counters because input and output tokens represent different shapes. A prefill-heavy service may report a large total-token rate while generating few streamed tokens. A decode-heavy service may spend most of its time rereading weights and growing KV for small one-token batches. Report input tokens/s and output tokens/s separately, alongside request lengths. End-to-end latency also scales with requested output: approximately TTFT plus the sum of later ITLs, so comparing requests with different completion lengths without bucketing them mixes workload with system behavior.
+
+<BpNote>Example timing vocabulary: a request accepted at 0 ms, admitted at 18 ms, and first streamed at 94 ms has 18 ms queue delay and 94 ms TTFT. Tokens arriving at 94, 121, and 151 ms yield ITLs of 27 and 30 ms/token.</BpNote>
+
+<BpSection id="s3" num="03" label="Memory ledger" sheet="SHEET 3 OF 8" title="Weights, activations, and KV state occupy different ledgers" />
+
+Weight memory is primarily fixed after a replica loads. Let **P** be parameters and **b**<sub>w</sub> stored bytes per parameter. Quantized formats add scales, zero points, packing, and sometimes a higher-precision subset, so metadata belongs on the same line rather than disappearing into a slogan.
+
+<BpEquation tag="EQ. 3.1">
+  M<sub>weights</sub> [bytes] = P [parameters] × b<sub>w</sub> [bytes/parameter] + M<sub>metadata</sub> [bytes]
+</BpEquation>
+
+Activation and runtime memory varies with kernels, batch token count, graph captures, temporary outputs, communication buffers, and allocator policy. It should be measured at the intended maximum batch shape and carried as **M**<sub>runtime,peak</sub>. Training-style “activations per token” estimates often mislead here because inference kernels may fuse operations and reuse storage.
+
+KV state scales directly. With **L** layers, **H**<sub>kv</sub> KV heads per layer, head dimension **d**<sub>h</sub> elements per head, **S** sequence tokens per request, and **b**<sub>kv</sub> bytes per cached element, every token stores one key and one value at every layer.
+
+<BpEquation tag="EQ. 3.2">
+  M<sub>KV,request</sub> [bytes/request] = 2 [K,V] × L [layers] × H<sub>kv</sub> [heads/layer] × d<sub>h</sub> [elements/head] × S [tokens/request] × b<sub>kv</sub> [bytes/element]
+</BpEquation>
+
+The worked case assumes 7,000,000,000 parameters in BF16, no added weight metadata, 32 layers, 8 KV heads, head dimension 128, BF16 KV, 4,096 tokens per resident request, and 16 resident requests. Weights consume 14,000,000,000 bytes = **13.04 GiB**. KV consumes 131,072 bytes/token = **128 KiB/token**, then 536,870,912 bytes/request = **0.50 GiB/request**, then **8.00 GiB** for 16 requests. Add a separately budgeted **3.00 GiB** runtime peak and a **4.00 GiB** safety reserve on a 40 GiB device. The committed-plus-reserved total is **28.04 GiB**.
+
+Sequence length in that multiplication is each request’s current prompt plus generated tokens, not the configured maximum unless memory is actually reserved to that maximum. For a mixed batch, replace **N × S** with the sum of live sequence lengths: **Σ**<sub>r</sub> **S**<sub>r</sub>. Paging rounds each request to block boundaries, so physical allocation uses **Σ**<sub>r</sub> ceil(**S**<sub>r</sub> / **B**) × **B** tokens for block size **B** tokens/block. Prefix sharing can make physical occupancy smaller than the naïve sum when multiple requests reference the same immutable blocks; copy-on-write restores separate ownership when a branch diverges.
+
+The safety line is deliberate capacity, not unidentified waste. It absorbs measurement error, allocator behavior, and transient shapes. It should be chosen from observed peaks and failure tolerance, then named in the workbook. If a runtime reserves memory without committing it, record both allocator-reserved and tensor-allocated bytes. Device telemetry alone cannot say which bytes are reclaimable or which request owns them.
+
+<BpNote>Worked units: 1 KiB = 2^10 bytes and 1 GiB = 2^30 bytes. Decimal “GB” would produce different displayed values. The parameter count is exactly 7.0 billion for arithmetic, not a claim about a named checkpoint.</BpNote>
+
+<KvLedgerDemo fig={3} />
+
+Grouped-query attention lowers **H**<sub>kv</sub> below the query-head count, which is why the cache formula needs KV heads rather than total attention heads. The GQA paper describes converting multi-head checkpoints to fewer KV heads. The model configuration, not its marketing size, supplies the ledger inputs.
+
+<BpQA q="How many concurrent 4,096-token requests fit in the worked 40 GiB device?">
+The memory-only ceiling is floor((40 − 13.04 − 3.00 − 4.00) GiB ÷ 0.50 GiB/request) = 39 requests. That does not promise acceptable latency or 39 simultaneous compute slots. It says the declared memory categories leave room for 39 equal-size KV allocations under these assumptions.
+</BpQA>
+
+<BpSection id="s4" num="04" label="KV paging" sheet="SHEET 4 OF 8" title="Paging turns variable sequences into block tables" />
+
+A naïve allocator reserves one contiguous region for a request’s maximum sequence. If the output ends early, the unused tail becomes internal waste. If many differently sized regions are allocated and freed, total free memory can be large while no single contiguous hole satisfies the next request. Copying a cache to grow it adds traffic precisely when the engine is busy.
+
+PagedAttention applies an operating-system idea to KV storage. A request’s logical cache is divided into fixed-size token blocks. Its block table maps logical block numbers to non-contiguous physical blocks. The next token fills the current block or allocates another; completion returns those blocks to a shared pool. Only the last block can contain ordinary rounding waste. The vLLM paper also describes copy-on-write sharing for common prompt state and parallel sampling.
+
+<BpFigure caption="FIG. 4 — CONTIGUOUS RESERVATION STRANDS UNUSED TAILS AND HOLES. PAGING MAPS EACH LOGICAL SEQUENCE TO FIXED PHYSICAL KV BLOCKS; ONLY ITS LAST BLOCK NEEDS PARTIAL OCCUPANCY.">
+  <svg viewBox="0 0 920 390">
+    <g className="bp-svg-t12" fill="currentColor"><text x={42} y={52}>CONTIGUOUS RESERVATION</text><text x={42} y={213}>PAGED KV POOL</text><text x={638} y={213}>REQUEST BLOCK TABLE</text></g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.1}>
+      <rect x={42} y={74} width={820} height={76}></rect>
+      <rect x={42} y={236} width={520} height={112}></rect><rect x={638} y={236} width={224} height={112}></rect>
+      {Array.from({ length: 10 }, (_, i) => <rect key={`c-${i}`} x={42 + i * 82} y={74} width={82} height={76}></rect>)}
+      {Array.from({ length: 16 }, (_, i) => <rect key={`b-${i}`} x={42 + (i % 8) * 65} y={236 + Math.floor(i / 8) * 56} width={65} height={56}></rect>)}
+    </g>
+    <g fill="var(--bp-accent)" opacity={0.24}><rect x={288} y={75} width={82} height={74}></rect><rect x={616} y={75} width={164} height={74}></rect><rect x={172} y={237} width={64} height={54}></rect><rect x={432} y={293} width={64} height={54}></rect></g>
+    <g className="bp-svg-t10" fill="currentColor"><text x={302} y={116}>TAIL</text><text x={667} y={116}>FREE HOLES</text><text x={667} y={265}>L0 → P9</text><text x={667} y={287}>L1 → P2</text><text x={667} y={309}>L2 → P14</text><text x={667} y={331}>L3 → PARTIAL</text></g>
+    <path d="M637 274 H585 L219 265 M637 296 H585 L89 321 M637 318 H585 L479 321" fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash"></path>
+  </svg>
+</BpFigure>
+
+Block size creates a real trade. Smaller blocks reduce last-block waste and make short growth increments cheaper, but increase block-table entries and allocation operations. Larger blocks simplify metadata and can suit kernels, but amplify rounding loss across many short sequences. Prefix caching adds a second policy question: reusable blocks save prefill work only when hit rate and reuse lifetime repay the bytes and lookup cost.
+
+Consider three requests with live lengths 17, 33, and 65 tokens under 16-token blocks. Their logical occupancy is 115 tokens. Physical occupancy is 2 + 3 + 5 = 10 blocks, or 160 token slots, leaving 45 slots unused across their last blocks. With four-token blocks, physical occupancy falls to 124 slots, while block-table entries rise from 10 to 31. This arithmetic describes rounding only; kernel layout, allocator metadata, and shared prefixes add separate terms.
+
+Paging improves allocation efficiency; it does not reduce the logical KV bytes required by the formula. Under pressure, an engine may reject admission, preempt a sequence, swap state, or free it and recompute its prefix later. Each response has a latency cost. “No OOM” can therefore coexist with cache thrash and terrible tail latency.
+
+<BpSection id="s5" num="05" label="Batching" sheet="SHEET 5 OF 8" title="Iteration-level scheduling connects utilization to latency" />
+
+Static batching fixes a group of requests for a larger span of work. Padding makes short prompts pay for a long prompt’s shape, and a short generation can leave its slot idle until longer peers finish. New arrivals wait for the batch boundary. This policy is simple and can work for homogeneous offline jobs, but interactive traffic rarely arrives or ends in lockstep.
+
+Continuous batching revisits membership at iteration boundaries. Finished sequences leave; admitted sequences join when token and memory budgets permit. Orca called the underlying move **iteration-level scheduling** and paired it with selective batching. Paged KV allocation makes changing membership practical because each request carries a block table rather than a fixed rectangular cache slab.
+
+The scheduler still chooses whose latency to spend. First-come, first-served is predictable until long prompts block the line. Prioritizing prefills can lower new-request TTFT while stretching ITL for active decodes. Prioritizing decodes preserves streaming cadence while queues age. Chunking prefills caps interference. Tenant weights, deadlines, maximum batched tokens, preemption cost, and replica routing all change the trace.
+
+<RequestSchedulerDemo fig={5} />
+
+The panel’s metrics use request acceptance as time zero. Increase prompt length to add prefill work, lower the KV budget to force admission pressure, or compare policies with the same fixed arrivals. Its synthetic tick costs are intentionally visible. A production comparison needs real prompt/output distributions, a declared SLO, warm-up, model and tokenizer revisions, kernel versions, accelerator topology, and separate input/output token accounting.
+
+<BpNote>Tail example: seven 512-token prompts and one 1,792-token prompt enter the fixed trace. A static group waits on the long member. Continuous admission can release finished slots earlier, while prefill priority can still create a large decode gap.</BpNote>
+
+<BpQA q="Why can p95 look healthy while p99 collapses?">
+A small class of long prompts, burst arrivals, allocator retries, preempted sequences, or replica imbalance can occupy less than five percent of samples yet dominate the slowest one percent. Record the joint prompt/output distribution and correlate tail requests with queue age, prefill chunks, evictions, and replica assignment.
+</BpQA>
+
+<BpDetachablePlate
+  drawingCode="TDD-011"
+  assetId="bp-011-capacity-workbook"
+  name="Inference Capacity Workbook"
+  format="A1 poster + editable workbook · PDF"
+  contents={[
+    'Weight, runtime, and KV formulas with the worked 7B ledger',
+    'Concurrency envelope and quantization decision tables',
+    'TTFT, ITL, percentile, and benchmark-input record',
+    'One-page OOM, queue-growth, and cache-fragmentation checklist',
+  ]}
+  fileUrl="https://zackproser.b-cdn.net/plates/bp-011-capacity-workbook.pdf"
+/>
+
+<BpSection id="s6" num="06" label="Kernels + bits" sheet="SHEET 6 OF 8" title="IO-aware attention and quantization attack different costs" />
+
+Standard attention materializes or repeatedly moves intermediates between high-bandwidth memory and faster on-chip memory. FlashAttention tiles queries, keys, and values, computes attention blocks on chip, and maintains the softmax statistics needed to combine tiles exactly. The result changes memory traffic and temporary storage without approximating dense attention. IO-awareness matters because fewer floating-point operations do not guarantee less wall-clock time when data movement is the limiting resource.
+
+<BpFigure caption="FIG. 6 — FLASHATTENTION TILES ATTENTION SO Q, K, AND V BLOCKS ARE REUSED IN FAST ON-CHIP MEMORY WHILE SOFTMAX STATISTICS ARE ACCUMULATED; THE FULL SCORE MATRIX NEED NOT BE WRITTEN TO HBM.">
+  <svg viewBox="0 0 920 340">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}><rect x={42} y={52} width={836} height={82}></rect><rect x={42} y={205} width={836} height={82}></rect><rect x={338} y={151} width={244} height={38}></rect></g>
+    <g className="bp-svg-t12" fill="currentColor"><text x={67} y={82}>HBM · LARGE / HIGH LATENCY</text><text x={67} y={108}>Q, K, V BLOCKS · OUTPUT BLOCKS</text><text x={67} y={236}>SRAM · SMALL / FAST</text><text x={67} y={262}>TILED SCORES · ONLINE SOFTMAX · VALUE ACCUMULATION</text><text x={373} y={176}>FEWER HBM READS / WRITES</text></g>
+    <path d="M338 134 V149 M582 189 V203" fill="none" stroke="currentColor" strokeWidth={1.4} strokeDasharray="6 5" className="bp-dash"></path>
+  </svg>
+</BpFigure>
+
+Quantization changes representation. Lower-bit weights reduce stored bytes and memory traffic; lower-bit activations can enable different matrix kernels; lower-bit KV reduces the per-token cache line. These are three decisions with different calibration, kernel, and quality consequences. A nominal four-bit weight file may still dequantize into higher precision for unsupported operations, carry scales and outliers, or use kernels that underperform at small batches.
+
+SmoothQuant targets activation outliers that make W8A8 post-training quantization difficult. For a channel-wise scale **s**, the transformation divides activation channel **X** by **s** and multiplies the matching weight channel by **s**. Their matrix product is mathematically unchanged before quantization; the difficulty moves from activations toward weights, which are easier to calibrate under the method’s assumptions. The quantized computation can still introduce error.
+
+<BpEquation tag="EQ. 6.1">
+  (**X** diag(**s**)<sup>−1</sup>)(diag(**s**) **W**) = **XW** &nbsp; [same real-valued product before rounding]
+</BpEquation>
+
+Quantization stops being “free” when quality loss crosses the task boundary, conversion or calibration becomes operationally fragile, the target hardware lacks the intended kernels, metadata erases expected memory savings, or latency moves the wrong way at the deployed batch shape. Measure perplexity only if it predicts the application. Otherwise use the task evaluation, prompt languages, structured-output validity, and tail cases the endpoint must preserve.
+
+Keep memory claims aligned with the chosen target. Weight-only quantization can cut the fixed replica line while leaving BF16 KV unchanged, so long-context concurrency barely moves after weights cease to dominate. KV quantization directly changes bytes/token but adds its own accuracy and kernel questions. Activation quantization primarily targets compatible matrix execution and transient storage. A deployment can combine all three, yet the capacity workbook should retain three rows so a regression can be traced to the changed representation.
+
+<BpSection id="s7" num="07" label="Capacity frontier" sheet="SHEET 7 OF 8" title="Capacity is an envelope bounded by memory, compute, and latency" />
+
+A concurrency number without a workload is incomplete. Memory capacity depends on resident tokens. Compute capacity depends on input and output token rates, batch shapes, kernels, and parallelism. Service capacity adds latency objectives: requests count as useful only if TTFT, ITL, or end-to-end deadlines are met. The relevant quantity is often **goodput**, completed work inside the stated SLO.
+
+<BpEquation tag="EQ. 7.1">
+  N<sub>memory</sub> [requests] = floor((M<sub>device</sub> − M<sub>weights</sub> − M<sub>runtime,peak</sub> − M<sub>safety</sub>) [bytes] / M<sub>KV,request</sub> [bytes/request])
+</BpEquation>
+
+<BpFigure caption="FIG. 7 — THE SAFE OPERATING REGION LIES BELOW THREE CEILINGS. MORE CONCURRENCY MAY FIT IN MEMORY YET MISS TTFT OR ITL; MORE RAW TOKENS PER SECOND MAY ARRIVE AFTER THEIR DEADLINES.">
+  <svg viewBox="0 0 920 390">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}><path d="M92 50 V326 H858"></path><path d="M92 286 C260 274 420 244 552 184 C682 126 775 91 858 80"></path><path d="M92 250 C260 235 391 199 502 147 C630 87 745 70 858 65"></path></g>
+    <path d="M92 286 C260 274 420 244 552 184 C682 126 775 91 858 80 V326 H92 Z" fill="var(--bp-accent)" opacity={0.13}></path>
+    <path d="M92 205 H858" fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="6 5" className="bp-dash"></path>
+    <g className="bp-svg-t12" fill="currentColor"><text x={100} y={42}>USEFUL OUTPUT TOKENS / S</text><text x={695} y={359}>CONCURRENT REQUESTS →</text><text x={615} y={174}>LATENCY CEILING</text><text x={624} y={232}>MEMORY CEILING</text><text x={620} y={113}>RAW THROUGHPUT</text><text x={250} y={308}>SAFE MEASURED REGION</text></g>
+  </svg>
+</BpFigure>
+
+Build the envelope by sweeping offered load and length buckets, not by quoting one saturation point. Hold model and system revision fixed. Record p50, p95, and p99 queue delay, TTFT, ITL, end-to-end latency, input tokens per second, output tokens per second, cache occupancy, and preemptions. Repeat for burst shapes that resemble production. Stop increasing load when the declared SLO fails, even if aggregate throughput continues upward.
+
+Use an open-loop load generator when the question is overload behavior. A closed-loop client that waits for one response before sending the next automatically reduces arrivals as latency rises, concealing queue growth. Record offered rate and achieved completion rate separately. Warm-up should cover model load, graph compilation or capture, allocator stabilization, and cache state, while the measured window should still include the cold behavior users actually face when scale-to-zero or replica churn is part of production.
+
+Replicas add another queueing layer. More replicas can reduce queue delay and isolate failures, but each replica duplicates weights unless the topology shards a model. Tensor or pipeline parallelism changes communication and per-device memory. A router that sends traffic by request count can overload one replica with long prompts while another handles short completions. Token-aware routing and per-replica telemetry make the imbalance visible.
+
+<BpSection id="s8" num="08" label="Failure boundary" sheet="SHEET 8 OF 8" title="Failure lines reveal which serving layer you need" />
+
+**OOM** is a ledger violation or an allocation spike. Separate load-time weights, runtime peak, logical KV, physical KV blocks, allocator reserve, and communication buffers. Record the exact phase: model load, prefill admission, decode growth, or graph capture. Lowering maximum concurrency may hide an underestimated per-request cache; lowering maximum sequence length may hide an unbounded admission policy.
+
+**Queue collapse** begins when sustained admitted work exceeds completion capacity. Queue age rises, TTFT stretches, clients retry, and retries increase offered load. Admission control, bounded queues, load shedding, and retry budgets prevent a slow service from becoming a positive-feedback loop. Scaling after saturation helps only if new replicas become ready before the queue and retry storm consume the deadline.
+
+**Cache thrash** appears as frequent preemption, eviction, swapping, or prefix recomputation. The engine may remain below an OOM threshold while useful work falls because the same prompt tokens are processed repeatedly. Compare logical live KV bytes with reserved block bytes, allocation failures, prefix-cache hit rate, and recomputed tokens. A block-size change should be tested against the real sequence distribution rather than chosen from average length.
+
+<BpFigure caption="FIG. 8 — THREE FAILURE LINES MAP TO DIFFERENT EVIDENCE: OOM TO THE MEMORY LEDGER, QUEUE COLLAPSE TO ARRIVAL VERSUS COMPLETION RATES, AND CACHE THRASH TO LOGICAL STATE VERSUS ALLOCATION AND RECOMPUTATION EVENTS.">
+  <svg viewBox="0 0 920 360">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}><rect x={42} y={58} width={250} height={242}></rect><rect x={335} y={58} width={250} height={242}></rect><rect x={628} y={58} width={250} height={242}></rect></g>
+    <g className="bp-svg-t12" fill="currentColor"><text x={70} y={91}>OOM</text><text x={363} y={91}>QUEUE COLLAPSE</text><text x={656} y={91}>CACHE THRASH</text></g>
+    <g className="bp-svg-t10" fill="currentColor">
+      <text x={70} y={132}>WEIGHTS</text><text x={70} y={155}>+ RUNTIME PEAK</text><text x={70} y={178}>+ PHYSICAL KV</text><text x={70} y={201}>+ RESERVE</text><text x={70} y={253}>PHASE OF FAILURE?</text>
+      <text x={363} y={132}>ARRIVALS &gt; COMPLETIONS</text><text x={363} y={155}>QUEUE AGE ↑</text><text x={363} y={178}>TTFT ↑</text><text x={363} y={201}>RETRIES ↑</text><text x={363} y={253}>ADMISSION BOUND?</text>
+      <text x={656} y={132}>PREEMPTIONS</text><text x={656} y={155}>EVICTIONS</text><text x={656} y={178}>RECOMPUTED TOKENS</text><text x={656} y={201}>CACHE HIT RATE ↓</text><text x={656} y={253}>USEFUL WORK?</text>
+    </g>
+  </svg>
+</BpFigure>
+
+The selection boundary follows ownership. Choose an **engine** when you control model processes and need direct scheduling, kernels, cache policy, and hardware tuning. Choose an **endpoint platform** when you want a deployable model service with autoscaling, routing, observability, and operational APIs while retaining meaningful runtime choices. Choose **managed inference** when the provider can own accelerators, upgrades, availability, and most capacity planning under a contract you can test.
+
+The boundary is set by required control, evidence, and staff time. Custom kernels and cache policies demand engine ownership. Data residency, fixed revisions, or strict tail SLOs may demand a dedicated endpoint. Variable traffic and a small operations team may favor managed capacity. In every case, preserve the same benchmark input record and latency vocabulary. Abstraction can transfer operation; it cannot make workload assumptions disappear.
+
+Portability has limits. An engine configuration couples model architecture, quantized format, kernel availability, device generation, parallelism, and traffic. An endpoint contract couples scale behavior, quota, routing, observability, and revision policy. A managed API may expose only request-level metrics. Before choosing, identify the lowest layer where the team must diagnose a missed SLO. If the necessary cache, scheduler, or kernel evidence exists only below the product boundary, either require that evidence contractually or own the lower layer.
+
+<BpQA q="What should be compared before choosing an engine, endpoint, or managed API?">
+Compare the exact model and revision, supported precision, maximum input/output tokens, isolation, cold-start behavior, streaming semantics, cancellation, observability, measured TTFT/ITL under your traffic, failure policy, data handling, and total operating ownership. A vendor throughput row without those fields cannot support the decision.
+</BpQA>
+
+<BpReferences
+  drawingCode="TDD-011"
+  items={[
+    { label: 'Kwon et al., “Efficient Memory Management for Large Language Model Serving with PagedAttention,” SOSP 2023', href: 'https://arxiv.org/abs/2309.06180' },
+    { label: 'Dao et al., “FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness,” NeurIPS 2022', href: 'https://arxiv.org/abs/2205.14135' },
+    { label: 'Xiao et al., “SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models,” ICML 2023', href: 'https://arxiv.org/abs/2211.10438' },
+    { label: 'Yu et al., “Orca: A Distributed Serving System for Transformer-Based Generative Models,” OSDI 2022', href: 'https://www.usenix.org/conference/osdi22/presentation/yu' },
+    { label: 'Agrawal et al., “SARATHI: Efficient LLM Inference by Piggybacking Decodes with Chunked Prefills,” 2023', href: 'https://arxiv.org/abs/2308.16369' },
+    { label: 'Zhong et al., “DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving,” OSDI 2024', href: 'https://arxiv.org/abs/2401.09670' },
+    { label: 'Ainslie et al., “GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints,” EMNLP 2023', href: 'https://arxiv.org/abs/2305.13245' },
+  ]}
+/>

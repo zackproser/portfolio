@@ -18,4 +18,9 @@ export const ASSET_REGISTRY: Record<string, BlueprintAsset> = {
     drawingCode: 'TDD-010',
     fileUrl: 'https://zackproser.b-cdn.net/plates/bp-010-circuit-tracing.pdf',
   },
+  'bp-011-capacity-workbook': {
+    name: 'Inference Capacity Workbook',
+    drawingCode: 'TDD-011',
+    fileUrl: 'https://zackproser.b-cdn.net/plates/bp-011-capacity-workbook.pdf',
+  },
 }

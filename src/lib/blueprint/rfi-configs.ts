@@ -185,6 +185,36 @@ export const RFI_CONFIGS: Record<string, RfiConfig> = {
       ['RFP DESK', 'The commission form after §08 where a reader describes the room and desired outcome to request a workshop scope.'],
     ],
   },
+  'tdd-011': {
+    drawingCode: 'TDD-011',
+    title: 'The Inference Engine',
+    path: '/blog/the-inference-engine',
+    drawingSummary: `§01 Request life — serving adds admission, tokenization, routing, queueing, KV allocation, streaming, cancellation, and release around model execution. The router, scheduler, model runner, sampler, and streamer own different state. A model’s weights can fit while runtime buffers and KV state still cause failure.
+§02 Two workloads — prefill processes prompt positions in large parallel operations and directly contributes to TTFT. Autoregressive decode produces one token per active sequence per iteration, reads prior KV, and determines streaming ITL. Long prefills can interrupt decodes; chunked prefill bounds that interference.
+§03 Memory ledger — weight bytes equal parameters times stored bytes/parameter plus metadata. KV bytes/request equal 2 × layers × KV heads × head dimension × sequence tokens × KV bytes/element. The worked 7B BF16 case uses 13.04 GiB weights, 128 KiB KV/token, 0.50 GiB KV per 4,096-token request, 8.00 GiB for 16 requests, 3.00 GiB runtime peak, and 4.00 GiB safety reserve on a 40 GiB device.
+§04 KV paging — contiguous maximum-length reservations waste tails and suffer external fragmentation. PagedAttention maps logical request blocks to non-contiguous physical KV blocks, leaving ordinary rounding waste in the last block. Paging improves physical allocation but does not reduce logical KV bytes; preemption, swapping, or recomputation moves pressure into latency.
+§05 Batching — static batches hold membership and can strand finished slots. Continuous batching revisits membership at iteration boundaries. Policy allocates latency: prefill priority lowers some TTFT but can widen ITL; decode priority protects streaming but ages queues; chunking bounds prefill work. The demo is deterministic and illustrative, not a benchmark.
+§06 Kernels and bits — FlashAttention tiles exact attention to reduce HBM traffic and temporary materialization. Weight, activation, and KV quantization affect different ledger lines. SmoothQuant migrates channel-wise activation difficulty into weights before W8A8 rounding. Quality, kernel support, metadata, calibration, and deployed batch shape determine whether lower precision helps.
+§07 Capacity frontier — memory-only concurrency is floor((device − weights − runtime peak − safety) / KV per request). Compute and latency impose separate ceilings. Sweep offered load and prompt/output buckets; count useful work as goodput inside declared TTFT/ITL/end-to-end SLOs. Replica routing should account for token work, not request count alone.
+§08 Failure boundary — OOM requires a phase-specific memory ledger; queue collapse occurs when arrivals outpace completions and retries amplify load; cache thrash spends capacity on preemption and recomputation. Choose an engine for direct runtime control, an endpoint platform for deployment operations with runtime choices, or managed inference to transfer most accelerator operations under a testable contract. Vendor benchmark rows without workload fields cannot decide the boundary.`,
+    terms: [
+      ['PREFILL', 'Prompt-processing phase that creates KV state for supplied tokens before the first generated token.'],
+      ['DECODE', 'Autoregressive phase that reads prior KV state and appends one generated token per active sequence per iteration.'],
+      ['KV CACHE', 'Per-layer stored key and value vectors for prior sequence tokens, reused during decode.'],
+      ['PAGEDATTENTION', 'Attention memory scheme mapping logical sequence blocks to non-contiguous physical KV blocks.'],
+      ['CONTINUOUS BATCHING', 'Scheduling policy that can add and remove requests at iteration boundaries.'],
+      ['STATIC BATCHING', 'Policy that fixes batch membership for a larger unit of work, often leaving completed slots idle.'],
+      ['TTFT', 'Time from request acceptance until the first output token becomes available.'],
+      ['INTER-TOKEN LATENCY', 'Elapsed time between consecutive output tokens for one streaming request, measured in ms/token.'],
+      ['QUANTIZATION', 'Representing weights, activations, or KV elements with lower precision plus required scaling metadata.'],
+      ['FLASHATTENTION', 'Exact tiled attention algorithm designed to reduce reads and writes between HBM and on-chip SRAM.'],
+      ['MEMORY BANDWIDTH', 'Rate at which data can move through a memory interface, commonly measured in bytes per second.'],
+      ['KV BLOCK', 'Fixed physical allocation unit holding KV entries for a bounded number of sequence tokens.'],
+      ['GOODPUT', 'Completed requests or tokens that satisfy the declared latency and quality objective per unit time.'],
+      ['PREFILL CHUNK', 'Bounded portion of a long prompt scheduled so decode work can run between prompt segments.'],
+      ['CACHE THRASH', 'Repeated eviction, preemption, swapping, or recomputation that consumes capacity without proportional completed work.'],
+    ],
+  },
   'tdd-010': {
     drawingCode: 'TDD-010',
     title: 'The Attention Head',
