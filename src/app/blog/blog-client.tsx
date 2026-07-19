@@ -19,7 +19,13 @@ const KIND_LABEL: Record<string, string> = {
   video: "Video",
   demo: "Demo",
   course: "Course",
+  blueprint: "Blueprint",
 };
+
+// Blueprint Deep Dives are stored as type "blog" but filter as their
+// own kind so readers can isolate the drawing series in one click.
+const kindOf = (a: ArticleWithSlug): string =>
+  a.blogStyle === "blueprint" ? "blueprint" : a.type || "blog";
 
 const THUMB_PATTERNS = ["t-grid", "t-dots", "t-rule", "t-diag"] as const;
 
@@ -98,7 +104,7 @@ export default function BlogClient({ articles }: BlogClientProps) {
     const kindCounts: Record<string, number> = {};
     const tagCounts: Record<string, number> = {};
     for (const a of articles) {
-      const k = a.type || "blog";
+      const k = kindOf(a);
       kindCounts[k] = (kindCounts[k] || 0) + 1;
       for (const t of a.tags || []) tagCounts[t] = (tagCounts[t] || 0) + 1;
     }
@@ -110,14 +116,32 @@ export default function BlogClient({ articles }: BlogClientProps) {
     [tagCounts]
   );
   const kindOrder = useMemo(
-    () => Object.keys(kindCounts).sort((a, b) => kindCounts[b] - kindCounts[a]),
+    () =>
+      Object.keys(kindCounts).sort((a, b) => {
+        // Blueprint leads the chip row regardless of count
+        if (a === "blueprint") return -1;
+        if (b === "blueprint") return 1;
+        return kindCounts[b] - kindCounts[a];
+      }),
     [kindCounts]
   );
+
+  // Deep-linkable kind filter: /blog?kind=blueprint
+  useEffect(() => {
+    const k = new URLSearchParams(window.location.search).get("kind");
+    if (k && (k === "All" || KIND_LABEL[k])) setKind(k);
+  }, []);
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (kind === "All") url.searchParams.delete("kind");
+    else url.searchParams.set("kind", kind);
+    window.history.replaceState(null, "", url.toString());
+  }, [kind]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     const out = articles.filter((a) => {
-      if (kind !== "All" && (a.type || "blog") !== kind) return false;
+      if (kind !== "All" && kindOf(a) !== kind) return false;
       if (tag !== "All" && !(a.tags || []).includes(tag)) return false;
       if (q) {
         const hay = `${a.title} ${a.description} ${(a.tags || []).join(" ")} ${a.type || ""}`.toLowerCase();
