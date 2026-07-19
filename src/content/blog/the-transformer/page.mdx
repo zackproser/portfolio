@@ -87,7 +87,9 @@ Before 2017, sequence models were recurrent. An RNN reads a sentence the way you
 
 The transformer's move is to delete the ticker tape. Every token gets to look directly at every other token, in parallel, in a single matrix multiplication.
 
-<BpNote>Fine print: GPT-style decoders add a causal mask — each position sees only what came before it. The all-at-once parallelism pays off in training and prompt processing; generating new text is still one token per pass (see § 07).</BpNote> The cost is quadratic — n tokens means n² pairwise interactions — but quadratic work that a GPU can do all at once beats linear work it has to do one step at a time. That single trade, *more math for less waiting*, is why transformers won.
+<BpNote>Fine print: GPT-style decoders add a causal mask — each position sees only what came before it. The all-at-once parallelism pays off in training and prompt processing; generating new text is still one token per pass (see § 07).</BpNote>
+
+The cost is quadratic — n tokens means n² pairwise interactions — but quadratic work that a GPU can do all at once beats linear work it has to do one step at a time. That single trade, *more math for less waiting*, is why transformers won.
 
 <BpSection id="s2" num="02" label="Tokens & embeddings" sheet="SHEET 2 OF 8" title="Tokens: the machine's atoms" />
 
