@@ -1,0 +1,21 @@
+{
+  "title": "The RAG Pipeline",
+  "author": "Zachary Proser",
+  "date": "2026-07-18",
+  "description": "A complete working drawing of retrieval-augmented generation: ingestion, chunking, hybrid search, reranking, context assembly, evaluation, and failure handling.",
+  "image": "https://zackproser.b-cdn.net/images/og-images/the-rag-pipeline.png",
+  "tags": ["AI", "RAG", "Retrieval", "Vector Search", "LLMs"],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "003",
+    "subject": "RETRIEVAL",
+    "readTime": "22 MIN",
+    "eyebrow": "Grounded generation · Complete working drawing",
+    "subtitle": "A language model can write from evidence only after a retrieval system finds, ranks, budgets, and delivers the right evidence.",
+    "rfiSuggestions": [
+      "How do I tell a retrieval failure from a generation failure?",
+      "When does hybrid search beat dense retrieval?",
+      "Which RAG metrics belong in a production dashboard?"
+    ]
+  }
+}

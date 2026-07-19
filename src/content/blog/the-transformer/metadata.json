@@ -1,0 +1,21 @@
+{
+  "title": "The Transformer",
+  "author": "Zachary Proser",
+  "date": "2026-07-18",
+  "description": "Every frontier model — GPT, Claude, Gemini, Llama — is this one circuit, photocopied. A blueprint deep dive with a schematic for every part: tokens, attention, multi-head, positional encoding, the block, sampling, and scale.",
+  "image": "https://zackproser.b-cdn.net/images/og-images/the-transformer.png",
+  "tags": ["AI", "Transformers", "Attention", "Deep Learning", "LLMs"],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "001",
+    "subject": "ATTENTION",
+    "readTime": "25 MIN",
+    "eyebrow": "Neural architecture · Complete working drawing",
+    "subtitle": "Every frontier model — GPT, Claude, Gemini, Llama — is this one circuit, photocopied. Here is the full schematic.",
+    "rfiSuggestions": [
+      "Why divide by √d_k and not d_k?",
+      "Where does a model store facts?",
+      "Explain the KV cache like I'm on-call for it"
+    ]
+  }
+}

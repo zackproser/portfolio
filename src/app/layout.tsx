@@ -11,6 +11,7 @@ import '@/styles/global.css';
 import '@/styles/editorial-home.css';
 import '@/styles/editorial-blog.css';
 import '@/styles/blog-post.css';
+import '@/styles/blueprint-deep-dive.css';
 import '@/styles/testimonials.css';
 import '@/styles/contact.css';
 import '@/styles/partnerships.css';

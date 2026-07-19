@@ -1,0 +1,275 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import {
+  BpSection,
+  BpAnchor,
+  BpNote,
+  BpFigure,
+  BpEquation,
+  BpFrac,
+  CosineSimilarityDemo,
+  NearestNeighborDemo,
+} from '@/components/blueprint'
+
+export const metadata = createMetadata(rawMetadata)
+
+<BpAnchor id="s0" num="00" label="Abstract" />
+
+Every useful AI system eventually has to answer the same question: *which things are related?* Search needs passages related to a query. A recommender needs products related to a person. A classifier needs examples related to a label. Raw strings cannot answer any of those questions. They only tell you whether two sequences of characters match.
+
+Embeddings supply the missing coordinate system. An embedding model turns an object into a fixed-length vector, placing related objects near one another in a learned space. Once meaning has coordinates, retrieval becomes geometry: compare angles, find neighbors, draw boundaries, and cluster points. That abstraction carries a surprising amount of applied AI.
+
+This drawing follows the full load path — text into vectors, training into geometry, cosine into rankings, and approximate search into production. It also marks the failure lines: bad chunks, domain mismatch, stale indexes, model migrations, and the false confidence of a tidy similarity score.
+
+<BpSection id="s1" num="01" label="String matching" sheet="SHEET 1 OF 8" title="Strings match characters, not intent" />
+
+A lexical search engine is excellent when the query contains the language of the answer. Search for `connection timeout` and a document containing those exact terms should rank well. The trouble starts when the writer and reader choose different words. `The checkout is slow` and `payment latency increased` can describe the same incident while sharing no useful token.
+
+<BpNote>Exact matching still matters. Product codes, error IDs, names, and quoted phrases often carry more signal as tokens than as semantic vectors.</BpNote>
+
+Synonym tables patch the obvious gaps, then collapse under real language. *Bank* changes meaning beside *river* or *loan*. *Jaguar* may be an animal, a car, or a software release. Intent also crosses languages and formats: a support ticket, stack trace, and runbook can all point to one failure without looking alike as strings.
+
+<BpFigure caption="FIG. 1 — LEXICAL MATCHING SEES TOKEN OVERLAP. SEMANTIC MATCHING RECOVERS SHARED INTENT ACROSS DIFFERENT WORDS.">
+  <svg viewBox="0 0 900 250">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={25} y={42} width={250} height={54}></rect>
+      <rect x={25} y={148} width={250} height={54}></rect>
+      <rect x={625} y={42} width={250} height={54}></rect>
+      <rect x={625} y={148} width={250} height={54}></rect>
+      <circle cx={450} cy={122} r={48}></circle>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M275 69 H390 M275 175 H390 M498 105 H625 M498 139 H625"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M388 69 l-8 -4 v8 z M388 175 l-8 -4 v8 z M623 105 l-8 -4 v8 z M623 139 l-8 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={44} y={74}>&quot;checkout is slow&quot;</text>
+      <text x={44} y={180}>&quot;payment latency&quot;</text>
+      <text x={416} y={118}>ENCODE</text>
+      <text x={417} y={135}>+ SCORE</text>
+      <text x={646} y={74}>TOKEN OVERLAP: 0</text>
+      <text x={646} y={180}>SEMANTIC: NEAR</text>
+    </g>
+    <text x={25} y={226} className="bp-svg-t10" fill="currentColor">SAME INCIDENT · DIFFERENT SURFACE FORM</text>
+  </svg>
+</BpFigure>
+
+Embeddings attack this mismatch directly. Instead of designing a longer list of linguistic rules, train a model to produce representations where items used in similar ways occupy nearby regions. Search then compares the query vector with document vectors, regardless of whether their characters overlap.
+
+<BpSection id="s2" num="02" label="Coordinates" sheet="SHEET 2 OF 8" title="An embedding is a learned address" />
+
+An embedding is an ordered list of numbers: **x** ∈ ℝ<sup>d</sup>. The dimension *d* might be hundreds or thousands, depending on the model. Feed in a sentence, image, product, or user history; receive one fixed-width point. The coordinates have no hand-written labels. Dimension 417 does not mean &quot;medical.&quot; Meaning is distributed across many directions.
+
+<BpNote>A 1,536-dimensional float32 vector occupies 6,144 bytes before index overhead: 1,536 values × 4 bytes. One million raw vectors are about 5.7 GiB.</BpNote>
+
+The encoder is the important part. A text embedding model tokenizes the input, runs it through a transformer, pools token representations into one vector, and often normalizes that vector. The same encoder must process both sides of a comparison. Coordinates from unrelated models live in unrelated spaces, even when their vectors have the same length.
+
+<BpFigure caption="FIG. 2 — THE EMBEDDING PIPELINE: VARIABLE-LENGTH INPUT BECOMES ONE FIXED-WIDTH COORDINATE IN ℝᵈ.">
+  <svg viewBox="0 0 920 230">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={20} y={82} width={180} height={54}></rect>
+      <rect x={285} y={70} width={150} height={78}></rect>
+      <rect x={520} y={82} width={120} height={54}></rect>
+      <rect x={735} y={42} width={160} height={134}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M200 109 H283 M435 109 H518 M640 109 H733"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M281 109 l-8 -4 v8 z M516 109 l-8 -4 v8 z M731 109 l-8 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={41} y={113}>TEXT / IMAGE / ITEM</text>
+      <text x={311} y={103}>ENCODER</text>
+      <text x={312} y={122}>fθ(·)</text>
+      <text x={548} y={113}>POOL</text>
+      <text x={758} y={68}>x ∈ ℝᵈ</text>
+      <text x={758} y={94}>[ 0.12</text>
+      <text x={758} y={116}>−0.07</text>
+      <text x={758} y={138}> 0.31 … ]</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor" opacity={0.75}>
+      <text x={20} y={196}>VARIABLE LENGTH</text>
+      <text x={735} y={196}>FIXED WIDTH · d COORDINATES</text>
+    </g>
+  </svg>
+</BpFigure>
+
+That fixed-width contract is what makes embeddings composable. A database can store every vector in one column. A search service can accept a query vector and return IDs. A downstream classifier can train on the same representation. The original objects stay complicated; the interface between systems becomes an array of numbers.
+
+<BpSection id="s3" num="03" label="Geometry" sheet="SHEET 3 OF 8" title="Geometry becomes a language for meaning" />
+
+Nearby points tend to share properties the training objective rewarded. Animal words may form a neighborhood. Vehicle words may form another. Directions can encode relationships, which is why vector arithmetic sometimes produces the familiar *king − man + woman ≈ queen* result. It is a useful intuition, not a universal algebra of concepts.
+
+<BpNote>Two dimensions make the drawing legible. Production embeddings use far more dimensions, and any 2D projection distorts some distances.</BpNote>
+
+Cosine similarity measures the angle between two nonzero vectors. A score of 1 means the same direction, 0 means perpendicular, and −1 means opposite directions. When vectors are normalized to unit length, cosine similarity equals their dot product and ranking becomes especially cheap.
+
+<BpEquation tag="EQ. 3.1">
+  cos(θ) = <BpFrac top={<>x · y</>} bottom={<>‖x‖₂ ‖y‖₂</>} />
+</BpEquation>
+
+<CosineSimilarityDemo />
+
+Distance does not explain itself. A score of 0.82 can be excellent in one corpus and mediocre in another. Thresholds must be calibrated against labeled pairs from the actual task. For ranking, relative order often matters more than an absolute cutoff.
+
+<BpSection id="s4" num="04" label="Training" sheet="SHEET 4 OF 8" title="Training pulls positives together" />
+
+The geometry comes from examples. A **positive pair** says these two inputs should be close: a query and its clicked result, two translations, a caption and its image, or two views of the same item. **Negatives** say which inputs should separate. Training adjusts encoder weights so positives gain similarity relative to negatives in the batch.
+
+<BpFigure caption="FIG. 4 — CONTRASTIVE TRAINING: POSITIVE PAIRS PULL TOGETHER; NEGATIVES SUPPLY THE PRESSURE THAT SHAPES THE REST OF THE SPACE.">
+  <svg viewBox="0 0 900 270">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={24} y={54} width={190} height={46}></rect>
+      <rect x={24} y={166} width={190} height={46}></rect>
+      <circle cx={470} cy={82} r={8}></circle>
+      <circle cx={530} cy={105} r={8}></circle>
+      <circle cx={650} cy={188} r={8}></circle>
+      <circle cx={750} cy={55} r={8}></circle>
+      <circle cx={800} cy={210} r={8}></circle>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M214 77 C310 77 360 82 460 82 M214 189 C330 189 390 115 520 105"></path>
+      <path d="M478 84 L522 102"></path>
+    </g>
+    <g stroke="currentColor" strokeWidth={1} opacity={0.55}>
+      <path d="M548 113 L640 180 M548 97 L740 59 M538 116 L790 204" strokeDasharray="7 6"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={42} y={82}>QUERY: RESET CACHE</text>
+      <text x={42} y={194}>DOC: INVALIDATION</text>
+      <text x={446} y={52}>POSITIVE</text>
+      <text x={633} y={218}>NEGATIVE</text>
+      <text x={731} y={35}>NEGATIVE</text>
+      <text x={776} y={240}>NEGATIVE</text>
+    </g>
+    <text x={424} y={148} className="bp-svg-t10" fill="currentColor">PULL</text>
+    <text x={606} y={90} className="bp-svg-t10" fill="currentColor">PUSH</text>
+  </svg>
+</BpFigure>
+
+A simplified InfoNCE objective treats the matching item as the correct class among the batch. The temperature τ controls how sharply similarity differences are penalized. Larger batches provide more in-batch negatives, though their quality matters: trivial negatives teach little, while false negatives punish genuinely related pairs.
+
+<BpEquation tag="EQ. 4.1">
+  L<sub>i</sub> = −log <BpFrac top={<>exp(sim(q<sub>i</sub>, p<sub>i</sub>) / τ)</>} bottom={<>Σ<sub>j</sub> exp(sim(q<sub>i</sub>, p<sub>j</sub>) / τ)</>} />
+</BpEquation>
+
+Training data defines &quot;similar.&quot; A general model may group documents by topic; a support-search model may learn that an error message and its resolution belong together. Fine-tuning can improve one retrieval contract while damaging another. Evaluation has to mirror the intended use.
+
+<BpSection id="s5" num="05" label="Unit sphere" sheet="SHEET 5 OF 8" title="The unit hypersphere removes magnitude" />
+
+Normalize **x** by dividing it by ‖**x**‖₂ and every vector lands on the surface of a unit hypersphere. Magnitude disappears; only direction remains. This is common for semantic retrieval because the encoder's vector length is rarely the signal the application wants.
+
+<BpFigure caption="FIG. 5 — L2 NORMALIZATION PROJECTS DIFFERENT MAGNITUDES ONTO THE UNIT SPHERE. ANGLE, NOT LENGTH, DETERMINES COSINE RANK.">
+  <svg viewBox="0 0 900 280">
+    <g fill="none" stroke="currentColor" strokeWidth={1}>
+      <circle cx={450} cy={140} r={112}></circle>
+      <ellipse cx={450} cy={140} rx={112} ry={34} strokeDasharray="4 4"></ellipse>
+      <path d="M450 140 L555 98 M450 140 L610 76 M450 140 L378 48"></path>
+      <path d="M555 98 L610 76" strokeDasharray="4 4" className="bp-dash"></path>
+    </g>
+    <g fill="var(--bp-accent)">
+      <circle cx={555} cy={98} r={5}></circle>
+      <circle cx={378} cy={48} r={5}></circle>
+    </g>
+    <circle cx={610} cy={76} r={5} fill="currentColor"></circle>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={620} y={75}>raw x · ‖x‖ &gt; 1</text>
+      <text x={566} y={99}>x / ‖x‖</text>
+      <text x={300} y={42}>normalized y</text>
+      <text x={425} y={160}>ORIGIN</text>
+    </g>
+    <text x={25} y={260} className="bp-svg-t10" fill="currentColor">FOR UNIT VECTORS: COSINE SIMILARITY = DOT PRODUCT · EUCLIDEAN DISTANCE GIVES THE SAME ORDERING</text>
+  </svg>
+</BpFigure>
+
+Dot product, cosine, and Euclidean distance are not interchangeable on arbitrary vectors. Dot product rewards alignment and magnitude. Cosine ignores magnitude. Euclidean distance measures straight-line separation. After unit normalization, they induce equivalent nearest-neighbor rankings because ‖x−y‖² = 2−2(x·y).
+
+The practical rule is mechanical: use the similarity function the model was trained and documented for, normalize exactly where its contract expects, and record that choice beside the index. A silent metric mismatch can make a healthy index look semantically broken.
+
+<BpSection id="s6" num="06" label="Vector search" sheet="SHEET 6 OF 8" title="Nearest neighbors without scanning everything" />
+
+Exact search computes the query's similarity against every stored vector. That is simple and correct, but the work grows with the collection. Approximate nearest-neighbor indexes trade a controlled amount of recall for fewer comparisons and lower latency.
+
+HNSW — Hierarchical Navigable Small World — builds a graph. Upper layers contain sparse long-range links; lower layers contain dense local links. Search enters high, makes greedy jumps toward the query, then descends and explores a candidate frontier. Parameters controlling construction quality, graph degree, and search breadth trade memory and latency for recall.
+
+<BpNote>ANN recall should be measured against exact top-k results on a representative query set. Search latency alone cannot reveal neighbors the index missed.</BpNote>
+
+<BpFigure caption="FIG. 6 — HNSW INTUITION: LONG JUMPS ON SPARSE UPPER LAYERS, LOCAL REFINEMENT ON THE DENSE BASE GRAPH.">
+  <svg viewBox="0 0 920 300">
+    <g fill="none" stroke="currentColor" strokeWidth={0.9} opacity={0.65}>
+      <path d="M120 58 H370 L650 58 L810 58"></path>
+      <path d="M120 145 L230 145 L370 145 L500 145 L650 145 L730 145 L810 145"></path>
+      <path d="M70 238 L120 238 L180 238 L230 238 L300 238 L370 238 L440 238 L500 238 L570 238 L650 238 L730 238 L810 238 L870 238"></path>
+      <path d="M120 58 V238 M370 58 V238 M650 58 V238 M810 58 V238 M230 145 V238 M500 145 V238 M730 145 V238"></path>
+    </g>
+    <path d="M120 50 L370 50 L650 50 L810 50 L730 137 L650 230" fill="none" stroke="var(--bp-accent)" strokeWidth={2} strokeDasharray="5 4" className="bp-dash"></path>
+    <g fill="currentColor">
+      {[120, 370, 650, 810].map((x) => <circle key={`a-${x}`} cx={x} cy={58} r={5}></circle>)}
+      {[120, 230, 370, 500, 650, 730, 810].map((x) => <circle key={`b-${x}`} cx={x} cy={145} r={4}></circle>)}
+      {[70, 120, 180, 230, 300, 370, 440, 500, 570, 650, 730, 810, 870].map((x) => <circle key={`c-${x}`} cx={x} cy={238} r={3}></circle>)}
+    </g>
+    <circle cx={650} cy={238} r={8} fill="var(--bp-accent)"></circle>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={25} y={62}>L2</text>
+      <text x={25} y={149}>L1</text>
+      <text x={25} y={242}>L0</text>
+      <text x={668} y={267}>QUERY NEIGHBORHOOD</text>
+    </g>
+  </svg>
+</BpFigure>
+
+<NearestNeighborDemo />
+
+The database also needs filters, deletes, replication, and persistence. Metadata filtering can happen before or during graph traversal depending on the engine; highly selective filters may starve the search of candidates. Production vector search is a retrieval system with operational constraints, not a floating-point party trick.
+
+<BpSection id="s7" num="07" label="Failure lines" sheet="SHEET 7 OF 8" title="The space inherits every upstream mistake" />
+
+**Chunking** decides what one point represents. Embed an entire manual and the useful paragraph gets averaged into everything around it. Embed isolated sentences and pronouns, headings, and definitions lose their context. Overlap protects boundary facts while increasing index size and duplicate results. The right unit is usually the smallest chunk that can answer a likely question on its own.
+
+You can inspect those tradeoffs in the [interactive embeddings demo](/demos/embeddings), then test them against your own corpus. Toy clusters teach the geometry; real evaluation reveals whether the retrieval unit carries enough evidence.
+
+<BpFigure caption="FIG. 8 — FOUR COMMON FAILURE LINES: BAD RETRIEVAL UNITS, DOMAIN SHIFT, HIGH-DIMENSION CROWDING, AND INCOMPATIBLE MODEL VERSIONS.">
+  <svg viewBox="0 0 900 290">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={25} y={35} width={190} height={92}></rect>
+      <rect x={235} y={35} width={190} height={92}></rect>
+      <rect x={445} y={35} width={190} height={92}></rect>
+      <rect x={655} y={35} width={220} height={92}></rect>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={42} y={59}>CHUNKING</text>
+      <text x={42} y={84}>[too small][or one</text>
+      <text x={42} y={102}>giant document]</text>
+      <text x={252} y={59}>DOMAIN SHIFT</text>
+      <text x={252} y={88}>LEGAL → MEDICAL</text>
+      <text x={462} y={59}>CROWDING</text>
+      <text x={462} y={88}>DISTANCES CONVERGE</text>
+      <text x={672} y={59}>VERSION DRIFT</text>
+      <text x={672} y={84}>INDEX: MODEL A</text>
+      <text x={672} y={104}>QUERY: MODEL B</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash">
+      <path d="M120 127 V205 H760 V127"></path>
+      <path d="M330 127 V205 M540 127 V205"></path>
+    </g>
+    <rect x={320} y={205} width={280} height={48} fill="none" stroke="currentColor" strokeWidth={1.2}></rect>
+    <text x={355} y={234} className="bp-svg-t12" fill="currentColor">MEASURE ON REAL QUERIES</text>
+  </svg>
+</BpFigure>
+
+High dimension brings unintuitive behavior. Data is sparse, volume concentrates far from the center, and distance distributions can bunch together. This family of effects is often called the **curse of dimensionality**. Modern learned embeddings remain useful because their data occupies structured manifolds rather than filling space uniformly, but index tuning and evaluation still matter.
+
+<BpNote>Never mix model versions in one search space. Re-embed the corpus into a new index, evaluate it, then switch query traffic atomically or by an explicit migration plan.</BpNote>
+
+Embedding drift is more immediate. Change the model, pooling method, normalization, instruction prefix, or preprocessing and the coordinate system changes. Old document vectors compared with new query vectors produce meaningless scores. Store model ID, dimensions, metric, preprocessing version, and index build ID as one deployable contract.
+
+<BpSection id="s8" num="08" label="Applications" sheet="SHEET 8 OF 8" title="One abstraction, many systems" />
+
+In **RAG**, query embeddings retrieve passages for a generator. In **deduplication**, neighbor search finds paraphrases and near-copies. **Recommendation** embeds users and items into compatible spaces. **Classification** compares an input with class prototypes or trains a small head over frozen vectors. **Clustering** exposes themes for exploration, though cluster labels still need human judgment.
+
+The shared abstraction does not make these applications identical. Each needs its own positive pairs, relevance judgments, thresholds, latency budget, and failure policy. A recommender optimizes behavior over time; a RAG retriever optimizes evidence for a question; a dedup system may care about precision at one strict threshold.
+
+The enduring design is simple: turn complicated objects into coordinates, define the neighborhood your task needs, and measure whether the geometry serves it. The vector is the interface. The training data, index, and evaluation make it useful.

@@ -1,0 +1,334 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import {
+  BpSection,
+  BpAnchor,
+  BpNote,
+  BpFigure,
+  BpEquation,
+  ChunkingDemo,
+  RetrievalScoreDemo,
+} from '@/components/blueprint'
+
+export const metadata = createMetadata(rawMetadata)
+
+<BpAnchor id="s0" num="00" label="Abstract" />
+
+Retrieval-augmented generation gives a language model a temporary, query-specific memory. Before the model answers, another system searches an external corpus, selects evidence, and places that evidence in the prompt. The generator still predicts tokens; now those predictions can be conditioned on current, private, and attributable source material.
+
+The useful work sits in the pipeline around the model. Documents must be parsed into retrieval units, embedded and indexed, found by several ranking signals, reranked with a more expensive model, fitted into a context budget, and traced through evaluation. A weak link anywhere produces a fluent answer backed by the wrong material.
+
+This drawing treats RAG as production plumbing. Every stage has an input contract, an output contract, a cost, and a failure mode. The goal is a system you can inspect when the answer is wrong, not a single call that happens to look convincing.
+
+<BpSection id="s1" num="01" label="External memory" sheet="SHEET 1 OF 8" title="The model needs a source it can inspect" />
+
+A model's parameters compress patterns from training. They do not provide a dependable database of every training fact, and they cannot contain events or documents created after training. Private runbooks, current inventory, customer records, and today's policy need another path into the answer.
+
+Longer context windows help when the relevant material is already known and fits. They do not decide which ten pages matter among ten million, keep an index current, or attach access controls to each passage. Retrieval supplies that selection layer.
+
+Fine-tuning changes behavior: style, format, task habits, and sometimes domain performance. It is a poor database update mechanism because facts become diffuse in weights, provenance is hard to recover, and deletion is awkward. Retrieval keeps source material outside the model where it can be versioned, filtered, cited, and removed.
+
+<BpNote>A model can answer from retrieved evidence without changing a single parameter. Updating the corpus can take minutes; retraining or fine-tuning follows a different and usually slower lifecycle.</BpNote>
+
+<BpFigure caption="FIG. 1 — PARAMETERS SUPPLY LANGUAGE AND PATTERNS. RETRIEVAL SUPPLIES QUERY-SPECIFIC, CURRENT EVIDENCE AT INFERENCE TIME.">
+  <svg viewBox="0 0 920 260">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={30} y={96} width={155} height={58}></rect>
+      <rect x={300} y={30} width={190} height={58}></rect>
+      <rect x={300} y={164} width={190} height={58}></rect>
+      <rect x={625} y={86} width={150} height={78}></rect>
+      <rect x={820} y={96} width={75} height={58}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M185 125 H250 V59 H298 M185 125 H250 V193 H298 M490 59 H555 V112 H623 M490 193 H555 V138 H623 M775 125 H818"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M296 59 l-8 -4 v8 z M296 193 l-8 -4 v8 z M621 112 l-8 -4 v8 z M621 138 l-8 -4 v8 z M816 125 l-8 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={72} y={129}>QUERY</text>
+      <text x={332} y={63}>PARAMETERS</text>
+      <text x={326} y={197}>RETRIEVED EVIDENCE</text>
+      <text x={667} y={120}>MODEL</text>
+      <text x={655} y={140}>+ PROMPT</text>
+      <text x={835} y={129}>ANSWER</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor" opacity={0.75}>
+      <text x={322} y={106}>LANGUAGE · REASONING PATTERNS</text>
+      <text x={322} y={242}>CURRENT · PRIVATE · CITABLE</text>
+    </g>
+  </svg>
+</BpFigure>
+
+The economics follow the same split. Retrieval adds storage, embedding, and search costs on every corpus and query. Fine-tuning adds training and model-management costs. Neither is free; they buy different capabilities. Use retrieval when the answer depends on selecting external facts at request time.
+
+<BpSection id="s2" num="02" label="Pipeline" sheet="SHEET 2 OF 8" title="The complete circuit has two paths" />
+
+RAG has an **offline path** and an **online path**. Offline, connectors read sources, parsers recover structure, a chunker creates retrieval units, an embedding model produces vectors, and an index stores vectors with text and metadata. Online, the user's query is transformed, searched, filtered, reranked, packed into a prompt, and sent to the generator.
+
+<BpFigure caption="FIG. 2 — THE RAG PIPELINE. TOP: OFFLINE INGESTION. BOTTOM: ONLINE QUERY, RETRIEVAL, RERANKING, CONTEXT ASSEMBLY, AND GENERATION.">
+  <svg viewBox="0 0 980 390">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={20} y={58} width={110} height={50}></rect>
+      <rect x={175} y={58} width={110} height={50}></rect>
+      <rect x={330} y={58} width={110} height={50}></rect>
+      <rect x={485} y={58} width={110} height={50}></rect>
+      <rect x={640} y={45} width={130} height={76}></rect>
+      <rect x={20} y={270} width={110} height={50}></rect>
+      <rect x={175} y={270} width={110} height={50}></rect>
+      <rect x={330} y={270} width={110} height={50}></rect>
+      <rect x={485} y={270} width={110} height={50}></rect>
+      <rect x={640} y={270} width={130} height={50}></rect>
+      <rect x={815} y={270} width={140} height={50}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M130 83 H173 M285 83 H328 M440 83 H483 M595 83 H638"></path>
+      <path d="M130 295 H173 M285 295 H328 M440 295 H483 M595 295 H638 M770 295 H813"></path>
+      <path d="M705 121 V213 H385 V268"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M171 83 l-8 -4 v8 z M326 83 l-8 -4 v8 z M481 83 l-8 -4 v8 z M636 83 l-8 -4 v8 z"></path>
+      <path d="M171 295 l-8 -4 v8 z M326 295 l-8 -4 v8 z M481 295 l-8 -4 v8 z M636 295 l-8 -4 v8 z M811 295 l-8 -4 v8 z M385 266 l-4 -8 h8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={45} y={87}>SOURCES</text>
+      <text x={207} y={87}>PARSE</text>
+      <text x={360} y={87}>CHUNK</text>
+      <text x={520} y={87}>EMBED</text>
+      <text x={681} y={78}>VECTOR +</text>
+      <text x={674} y={98}>TEXT INDEX</text>
+      <text x={50} y={299}>QUERY</text>
+      <text x={195} y={299}>REWRITE</text>
+      <text x={350} y={299}>RETRIEVE</text>
+      <text x={516} y={299}>RERANK</text>
+      <text x={657} y={299}>ASSEMBLE</text>
+      <text x={844} y={299}>GENERATE</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor" opacity={0.75}>
+      <text x={20} y={25}>OFFLINE / ASYNCHRONOUS</text>
+      <text x={20} y={245}>ONLINE / REQUEST PATH</text>
+      <text x={646} y={145}>IDS · ACLS · VERSION · PROVENANCE</text>
+      <text x={340} y={350}>TRACE EVERY HANDOFF: QUERY → CANDIDATES → CONTEXT → ANSWER → CITATIONS</text>
+    </g>
+  </svg>
+</BpFigure>
+
+Every arrow needs identifiers and versions. A chunk should carry source ID, document version, location, access policy, parser version, chunker version, embedding model, and index build. A request trace should preserve the original query, transformed queries, candidate scores, reranker order, final context, model configuration, answer, and citations.
+
+<BpNote>If you log only the final prompt, you lose the candidates that retrieval or reranking discarded — often the evidence needed to diagnose a miss.</BpNote>
+
+Freshness is an ingestion property. Updates must create or replace chunks; deletes must remove them; permission changes must propagate before search can expose stale access. Treat the index as a derived view of source systems, with reconciliation jobs and observable lag.
+
+<BpSection id="s3" num="03" label="Chunking" sheet="SHEET 3 OF 8" title="Chunking defines what retrieval can return" />
+
+The retriever returns chunks, so chunk boundaries become a hard limit on evidence quality. **Fixed-size chunking** is cheap and predictable but can split a definition from its explanation. **Structure-aware chunking** follows headings, paragraphs, lists, or code symbols. **Semantic chunking** detects topic shifts, adding model cost and another behavior to test.
+
+Overlap copies text from the end of one chunk into the next. It protects facts near boundaries, increases embedding and storage cost, and can flood the top ranks with near-duplicates. Parent-child retrieval offers another pattern: index small child chunks for precise matching, then return a larger parent section for context.
+
+<BpNote>A 20% overlap adds roughly 25% more indexed text when every new chunk advances by 80% of its length. Metadata and index overhead come on top.</BpNote>
+
+<BpFigure caption="FIG. 3 — CHUNKING STRATEGIES: FIXED WINDOWS IGNORE STRUCTURE; STRUCTURAL WINDOWS FOLLOW THE DOCUMENT; OVERLAP DUPLICATES BOUNDARY TEXT.">
+  <svg viewBox="0 0 920 280">
+    <g fill="none" stroke="currentColor" strokeWidth={1.1}>
+      <rect x={180} y={28} width={190} height={46}></rect>
+      <rect x={370} y={28} width={190} height={46}></rect>
+      <rect x={560} y={28} width={190} height={46}></rect>
+      <rect x={180} y={112} width={285} height={46}></rect>
+      <rect x={465} y={112} width={120} height={46}></rect>
+      <rect x={585} y={112} width={165} height={46}></rect>
+      <rect x={180} y={196} width={240} height={46}></rect>
+      <rect x={380} y={196} width={240} height={46}></rect>
+      <rect x={580} y={196} width={170} height={46}></rect>
+    </g>
+    <g fill="var(--bp-accent)" opacity={0.18}>
+      <rect x={380} y={197} width={40} height={44}></rect>
+      <rect x={580} y={197} width={40} height={44}></rect>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={25} y={56}>FIXED</text>
+      <text x={25} y={140}>STRUCTURE</text>
+      <text x={25} y={224}>OVERLAP</text>
+      <text x={245} y={56}>200 TOKENS</text>
+      <text x={430} y={56}>200 TOKENS</text>
+      <text x={620} y={56}>200 TOKENS</text>
+      <text x={276} y={140}>SECTION A</text>
+      <text x={492} y={140}>LIST</text>
+      <text x={624} y={140}>SECTION B</text>
+    </g>
+    <text x={180} y={270} className="bp-svg-t10" fill="currentColor">SHADED REGIONS ARE INDEXED TWICE</text>
+  </svg>
+</BpFigure>
+
+<ChunkingDemo />
+
+Character counts in the teaching panel make boundaries easy to see; production chunkers commonly count model tokens. Start from document structure, set a range rather than a sacred size, and evaluate with real questions. The [RAG visualized walkthrough](/demos/rag-visualized) shows how one query moves through these handoffs.
+
+<BpSection id="s4" num="04" label="Retrieval" sheet="SHEET 4 OF 8" title="Dense and lexical retrieval cover different misses" />
+
+**Dense retrieval** embeds query and chunks, then ranks by vector similarity. It handles paraphrases, conceptual matches, and multilingual similarity when the embedding model supports them. It can blur exact identifiers and rare terms because those strings occupy little of the pooled semantic representation.
+
+**Keyword retrieval**, commonly BM25, rewards terms that appear in a passage and discounts terms common across the corpus. It excels at error codes, function names, legal clauses, product SKUs, and quoted language. It misses paraphrases when query and document vocabulary diverge.
+
+Hybrid retrieval runs both and combines normalized scores or fuses ranks. The blend coefficient α below is an intuition aid; production systems often use reciprocal rank fusion because dense and BM25 score scales are unrelated.
+
+<BpEquation tag="EQ. 4.1">
+  score(d, q) = α · dense(d, q) + (1 − α) · bm25(d, q)
+</BpEquation>
+
+<RetrievalScoreDemo />
+
+Filters belong in this stage: tenant, permissions, language, product, time range, or document status. Apply security predicates inside retrieval whenever the store supports it. Post-filtering a small top-k can leave too few legal results and can expose forbidden text to application memory or logs.
+
+<BpSection id="s5" num="05" label="Reranking" sheet="SHEET 5 OF 8" title="Retrieve wide, then read carefully" />
+
+Embedding search uses a **bi-encoder**: query and passage are encoded separately, so passage vectors can be precomputed. That makes search fast enough for millions of candidates, but query and passage cannot inspect each other's tokens during scoring.
+
+A **cross-encoder** reads the query and one candidate together. Full token-level attention produces a more precise relevance judgment at much higher cost. The common cascade retrieves tens or hundreds of candidates cheaply, reranks that short list, and sends only the best few passages to the prompt.
+
+<BpNote>Reranking cannot recover a document absent from the candidate set. Tune first-stage recall before celebrating second-stage precision.</BpNote>
+
+<BpFigure caption="FIG. 6 — TWO-STAGE RANKING: BI-ENCODER SEARCH MAXIMIZES CANDIDATE RECALL; CROSS-ENCODER SCORING IMPROVES FINAL PRECISION.">
+  <svg viewBox="0 0 920 285">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={25} y={105} width={120} height={52}></rect>
+      <rect x={230} y={52} width={160} height={158}></rect>
+      <rect x={475} y={78} width={180} height={106}></rect>
+      <rect x={760} y={104} width={130} height={54}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M145 131 H228 M390 131 H473 M655 131 H758"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M226 131 l-8 -4 v8 z M471 131 l-8 -4 v8 z M756 131 l-8 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={57} y={135}>QUERY</text>
+      <text x={259} y={78}>BI-ENCODER</text>
+      <text x={260} y={105}>TOP 100</text>
+      <text x={260} y={132}>CHEAP · SEPARATE</text>
+      <text x={260} y={159}>PRECOMPUTED</text>
+      <text x={260} y={186}>HIGH RECALL</text>
+      <text x={499} y={108}>CROSS-ENCODER</text>
+      <text x={499} y={136}>TOP 8</text>
+      <text x={499} y={160}>JOINT · EXPENSIVE</text>
+      <text x={781} y={136}>CONTEXT</text>
+    </g>
+    <text x={229} y={246} className="bp-svg-t10" fill="currentColor">FAST SEARCH NARROWS THE FIELD</text>
+    <text x={500} y={246} className="bp-svg-t10" fill="currentColor">CAREFUL READING ORDERS THE SHORTLIST</text>
+  </svg>
+</BpFigure>
+
+Rerankers can also enforce policies that vector similarity cannot express cleanly: source authority, recency, document type, diversity, or whether a candidate contains enough context to answer. Keep learned relevance separate from explicit business rules so each can be inspected.
+
+<BpSection id="s6" num="06" label="Context budget" sheet="SHEET 6 OF 8" title="The prompt is a packing problem" />
+
+The assembly stage turns ranked chunks into a bounded evidence packet. Reserve tokens for system instructions, conversation history, tool schemas, the user's question, and the model's answer. What remains is the retrieval budget. Adding passages until the window is full can reduce quality by introducing conflicts and distracting material.
+
+<BpFigure caption="FIG. 7 — CONTEXT ASSEMBLY UNDER A FIXED TOKEN BUDGET. EVIDENCE COMPETES WITH INSTRUCTIONS, HISTORY, THE QUERY, AND OUTPUT HEADROOM.">
+  <svg viewBox="0 0 920 250">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={35} y={92} width={130} height={64}></rect>
+      <rect x={165} y={92} width={120} height={64}></rect>
+      <rect x={285} y={92} width={260} height={64}></rect>
+      <rect x={545} y={92} width={110} height={64}></rect>
+      <rect x={655} y={92} width={220} height={64}></rect>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={58} y={120}>SYSTEM</text>
+      <text x={58} y={141}>1.0k</text>
+      <text x={187} y={120}>HISTORY</text>
+      <text x={187} y={141}>0.8k</text>
+      <text x={333} y={120}>EVIDENCE · 4.0k</text>
+      <text x={567} y={120}>QUERY</text>
+      <text x={567} y={141}>0.4k</text>
+      <text x={696} y={120}>OUTPUT RESERVE</text>
+      <text x={696} y={141}>1.8k</text>
+    </g>
+    <path d="M35 178 H875 M35 172 V184 M875 172 V184" fill="none" stroke="currentColor" strokeWidth={1}></path>
+    <text x={370} y={202} className="bp-svg-t10" fill="currentColor">EXAMPLE 8k WORKING BUDGET</text>
+    <text x={35} y={48} className="bp-svg-t10" fill="currentColor">ILLUSTRATIVE ALLOCATION · ACTUAL TOKEN COUNTS DEPEND ON MODEL AND REQUEST</text>
+  </svg>
+</BpFigure>
+
+Ordering matters. Models can underuse evidence buried in the middle of a long context — the **lost-in-the-middle** effect. Put the strongest material where the chosen model follows it reliably, group related chunks, remove duplicates, and preserve source boundaries. Tell the model how to cite, how to handle conflicts, and to abstain when evidence is insufficient.
+
+<BpNote>Count tokens with the target model's tokenizer. Character estimates can fail badly on code, tables, non-English text, and long identifiers.</BpNote>
+
+Compression is another model call with another failure surface. Extractive compression keeps selected source sentences and preserves provenance more cleanly. Abstractive summaries save more tokens but can erase qualifications or invent connective claims. Evaluate the compressed evidence, not only the final prose.
+
+<BpSection id="s7" num="07" label="Eval & failures" sheet="SHEET 7 OF 8" title="Evaluate each stage at its boundary" />
+
+When an answer is wrong, first ask whether the required evidence existed in the corpus. Then ask whether ingestion parsed it, retrieval found it, reranking kept it, assembly included it, and generation used it. A single end-to-end score hides which component needs work.
+
+Retrieval metrics need labeled relevance. **Hit rate@k** asks whether at least one relevant item appeared. **Recall@k** asks how much of the relevant set appeared. **MRR** rewards putting the first relevant result high. **nDCG** handles graded relevance and position. Measure latency and filtered-result counts beside quality.
+
+<BpFigure caption="FIG. 8 — THE RAG TRIAD AND THE FAILURE TRACE. CONTEXT RELEVANCE, FAITHFULNESS, AND ANSWER RELEVANCE TEST DIFFERENT EDGES.">
+  <svg viewBox="0 0 920 300">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <circle cx={460} cy={45} r={38}></circle>
+      <circle cx={260} cy={230} r={38}></circle>
+      <circle cx={660} cy={230} r={38}></circle>
+      <path d="M432 72 L288 203 M488 72 L632 203 M298 230 H622"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={438} y={49}>QUERY</text>
+      <text x={234} y={234}>CONTEXT</text>
+      <text x={636} y={234}>ANSWER</text>
+      <text x={289} y={120}>CONTEXT</text>
+      <text x={289} y={138}>RELEVANCE</text>
+      <text x={580} y={120}>ANSWER</text>
+      <text x={580} y={138}>RELEVANCE</text>
+      <text x={423} y={220}>FAITHFULNESS</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor" opacity={0.75}>
+      <text x={25} y={280}>DID RETRIEVAL FIND USEFUL EVIDENCE? · DID THE ANSWER STAY WITHIN IT? · DID THE ANSWER ADDRESS THE QUERY?</text>
+    </g>
+  </svg>
+</BpFigure>
+
+Generation metrics separate **faithfulness** — are claims supported by supplied context? — from **answer relevance** — does the response address the question? **Context relevance** measures whether retrieved material is useful rather than merely related. This RAG triad catches the fluent answer that ignores evidence and the faithful answer built from irrelevant evidence.
+
+Build a small human-reviewed evaluation set before tuning. Include answerable questions, unanswerable questions, exact identifiers, paraphrases, permission boundaries, stale documents, conflicting sources, tables, and multi-hop cases. Model-based judges can scale review, but calibrate them against humans and retain examples behind every aggregate score.
+
+<BpSection id="s8" num="08" label="Use boundaries" sheet="SHEET 8 OF 8" title="Know when the pipeline is excess machinery" />
+
+Use plain long context when the source set is small, already selected, and fits comfortably. A contract reviewer analyzing one uploaded agreement may need careful parsing and prompting more than a persistent retrieval index. Search adds failure modes when there is nothing meaningful to search.
+
+Use tools when the task needs actions or exact live state. A database query, calculator, filesystem read, or API call can return authoritative structured results. An agent may still use retrieval for documentation, but vector search should not impersonate a transactional system.
+
+Use fine-tuning when the target is behavior: stable tone, format, classification policy, or repeated task procedure. Retrieval can provide examples and facts, yet stuffing many demonstrations into every prompt may cost more and behave less consistently than a tuned model.
+
+<BpFigure caption="FIG. 9 — ROUTING THE PROBLEM: SELECTED SMALL CORPUS → LONG CONTEXT; SEARCHABLE KNOWLEDGE → RAG; LIVE ACTION → TOOLS; REPEATED BEHAVIOR → FINE-TUNING.">
+  <svg viewBox="0 0 920 300">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={30} y={118} width={145} height={58}></rect>
+      <rect x={330} y={20} width={220} height={48}></rect>
+      <rect x={330} y={86} width={220} height={48}></rect>
+      <rect x={330} y={152} width={220} height={48}></rect>
+      <rect x={330} y={218} width={220} height={48}></rect>
+      <rect x={700} y={118} width={180} height={58}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M175 147 H250 V44 H328 M250 110 H328 M250 176 H328 M250 242 H328"></path>
+      <path d="M550 44 H630 V147 H698 M550 110 H630 M550 176 H630 M550 242 H630"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={62} y={151}>TASK</text>
+      <text x={365} y={50}>LONG CONTEXT</text>
+      <text x={414} y={116}>RAG</text>
+      <text x={401} y={182}>TOOLS</text>
+      <text x={365} y={248}>FINE-TUNING</text>
+      <text x={730} y={151}>COMPOSE AS NEEDED</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor" opacity={0.75}>
+      <text x={566} y={44}>SMALL · SELECTED</text>
+      <text x={566} y={110}>LARGE · SEARCHABLE</text>
+      <text x={566} y={176}>LIVE · EXACT · ACTION</text>
+      <text x={566} y={242}>REPEATED BEHAVIOR</text>
+    </g>
+  </svg>
+</BpFigure>
+
+These choices compose. A support agent can retrieve policy, call an order API, and answer in a fine-tuned format. The architecture should follow the information source and required guarantee for each step.
+
+The working pipeline ends where it began: with evidence. Keep sources current, make retrieval measurable, preserve provenance through prompt assembly, require the generator to stay inside the supplied record, and expose every handoff in the trace. Then a wrong answer becomes an engineering problem with a location.
