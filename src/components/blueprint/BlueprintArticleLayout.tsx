@@ -233,14 +233,17 @@ export function BlueprintArticleLayout({
         answer += decoder.decode()
         if (!answer.trim()) {
           answer = 'That one didn’t go through — give it a few seconds and try again.'
-          setMsgs((s) => {
-            const next = [...s]
-            next[next.length - 1] = { role: 'assistant', text: answer }
-            return next
-          })
         } else {
           ok = true
         }
+        // Sync the visible bubble with the final text — the in-loop
+        // snapshots never include the flushed tail bytes.
+        const finalAnswer = answer
+        setMsgs((s) => {
+          const next = [...s]
+          next[next.length - 1] = { role: 'assistant', text: finalAnswer }
+          return next
+        })
       } catch {
         answer = 'That one didn’t go through — give it a few seconds and try again.'
         setMsgs((s) => {
