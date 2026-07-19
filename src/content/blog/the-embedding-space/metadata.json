@@ -3,8 +3,14 @@
   "author": "Zachary Proser",
   "date": "2026-07-18",
   "description": "How embedding models turn text into geometry, how cosine similarity and approximate nearest-neighbor search work, and where production semantic systems fail.",
-  "image": "https://zackproser.b-cdn.net/images/og-images/the-embedding-space.png",
-  "tags": ["AI", "Embeddings", "Vector Search", "Semantic Search", "RAG"],
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-embedding-space-hero.webp",
+  "tags": [
+    "AI",
+    "Embeddings",
+    "Vector Search",
+    "Semantic Search",
+    "RAG"
+  ],
   "blogStyle": "blueprint",
   "blueprint": {
     "number": "002",

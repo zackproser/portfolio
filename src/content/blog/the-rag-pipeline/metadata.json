@@ -3,8 +3,14 @@
   "author": "Zachary Proser",
   "date": "2026-07-18",
   "description": "A complete working drawing of retrieval-augmented generation: ingestion, chunking, hybrid search, reranking, context assembly, evaluation, and failure handling.",
-  "image": "https://zackproser.b-cdn.net/images/og-images/the-rag-pipeline.png",
-  "tags": ["AI", "RAG", "Retrieval", "Vector Search", "LLMs"],
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-rag-pipeline-hero.webp",
+  "tags": [
+    "AI",
+    "RAG",
+    "Retrieval",
+    "Vector Search",
+    "LLMs"
+  ],
   "blogStyle": "blueprint",
   "blueprint": {
     "number": "003",

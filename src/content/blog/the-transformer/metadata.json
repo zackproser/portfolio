@@ -3,8 +3,14 @@
   "author": "Zachary Proser",
   "date": "2026-07-18",
   "description": "Every frontier model — GPT, Claude, Gemini, Llama — is this one circuit, photocopied. A complete working drawing with a schematic for every part: tokens, attention, multi-head, positional encoding, the block, sampling, and scale.",
-  "image": "https://zackproser.b-cdn.net/images/og-images/the-transformer.png",
-  "tags": ["AI", "Transformers", "Attention", "Deep Learning", "LLMs"],
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-transformer-hero.webp",
+  "tags": [
+    "AI",
+    "Transformers",
+    "Attention",
+    "Deep Learning",
+    "LLMs"
+  ],
   "blogStyle": "blueprint",
   "blueprint": {
     "number": "001",

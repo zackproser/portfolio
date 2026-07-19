@@ -3,17 +3,20 @@
 import { useMemo, useState } from 'react'
 import { BpInteractive } from './bits'
 
-type Point = { word: string; x: number; y: number }
+// lx/ly place each word's label so neighbors never collide; the
+// coordinates are tuned so every word's top cosine neighbor is its
+// intuitive partner (king→queen, dog→puppy, car→truck).
+type Point = { word: string; x: number; y: number; lx: number; ly: number }
 
 const POINTS: Point[] = [
-  { word: 'king', x: 126, y: -42 },
-  { word: 'queen', x: 114, y: -68 },
-  { word: 'man', x: 88, y: -18 },
-  { word: 'woman', x: 78, y: -54 },
-  { word: 'dog', x: -82, y: -48 },
-  { word: 'puppy', x: -103, y: -57 },
-  { word: 'car', x: -56, y: 105 },
-  { word: 'truck', x: -35, y: 119 },
+  { word: 'king', x: 126, y: -42, lx: 10, ly: 4 },
+  { word: 'queen', x: 114, y: -68, lx: 8, ly: -8 },
+  { word: 'man', x: 95, y: -8, lx: 10, ly: 16 },
+  { word: 'woman', x: 70, y: -58, lx: -60, ly: 2 },
+  { word: 'dog', x: -82, y: -48, lx: 10, ly: 12 },
+  { word: 'puppy', x: -103, y: -57, lx: -54, ly: -4 },
+  { word: 'car', x: -56, y: 105, lx: -44, ly: -4 },
+  { word: 'truck', x: -35, y: 119, lx: 12, ly: 8 },
 ]
 
 function cosine(a: Point, b: Point) {
@@ -92,7 +95,12 @@ export function CosineSimilarityDemo() {
                 style={{ cursor: 'pointer' }}
               >
                 <circle cx={x} cy={y} r={hot ? 6 : 4} fill={hot ? 'var(--bp-accent)' : 'currentColor'} />
-                <text x={x + 8} y={y - 7} className="bp-svg-t12" fill={hot ? 'var(--bp-accent)' : 'currentColor'}>
+                <text
+                  x={x + point.lx}
+                  y={y + point.ly}
+                  className="bp-svg-t12"
+                  fill={hot ? 'var(--bp-accent)' : 'currentColor'}
+                >
                   {point.word}
                 </text>
               </g>
