@@ -123,6 +123,10 @@
   cursor: pointer;
   border-radius: 2px;
 }
+.bp-theme-toggle:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
 
 /* ---------- index of sheets (left rail) ---------- */
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { track } from '@vercel/analytics'
 
@@ -19,8 +19,12 @@ export function BlueprintRfpDesk({
   const pathname = usePathname()
   const [status, setStatus] = useState<'idle' | 'submitting' | 'done' | 'error'>('idle')
   const [started, setStarted] = useState(false)
-  const [renderTs] = useState(() => Date.now())
+  const renderTs = useRef(0)
   const location = `blueprint:rfp:${drawingCode}`
+
+  useEffect(() => {
+    renderTs.current = Date.now()
+  }, [])
 
   const onFocusStart = () => {
     if (!started) {
@@ -49,7 +53,7 @@ export function BlueprintRfpDesk({
           phoneNumber: '',
           message: `[Workshop RFP via ${pathname}]\n\nRoom: ${field('room')}\n\nOutcome wanted: ${field('outcome')}`,
           hp: field('website_url'),
-          _t: renderTs,
+          _t: renderTs.current || Date.now(),
         }),
       })
       if (!response.ok) throw new Error('rfp failed')

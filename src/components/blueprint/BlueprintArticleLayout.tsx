@@ -49,6 +49,8 @@ const DEFAULT_SUGGESTIONS = [
   'Where does this break down in practice?',
 ]
 
+const THEME_KEY = 'bp-article-theme'
+
 function monthYear(date?: string): string {
   if (!date) return ''
   try {
@@ -75,6 +77,7 @@ export function BlueprintArticleLayout({
   const suggestions = bp.rfiSuggestions?.length ? bp.rfiSuggestions : DEFAULT_SUGGESTIONS
 
   const [dark, setDark] = useState(true)
+  const [mounted, setMounted] = useState(false)
   const [prog, setProg] = useState(0)
   const [toc, setToc] = useState<TocEntry[]>([])
   const [active, setActive] = useState('s0')
@@ -97,6 +100,28 @@ export function BlueprintArticleLayout({
   const rfiTabRef = useRef<HTMLButtonElement | null>(null)
   const drawerWasOpen = useRef(false)
   const logKey = `bp-rfi-${drawingId}`
+
+  // The server-rendered button has no handler yet. Keep it visibly inactive
+  // until hydration completes, then restore the reader's last print mode.
+  useEffect(() => {
+    try {
+      const storedTheme = localStorage.getItem(THEME_KEY)
+      if (storedTheme === 'light') setDark(false)
+      if (storedTheme === 'dark') setDark(true)
+    } catch {
+      // Storage may be unavailable; the in-memory theme still works.
+    }
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+    try {
+      localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light')
+    } catch {
+      // Storage may be unavailable; keep the current in-memory theme.
+    }
+  }, [dark, mounted])
 
   // Build the INDEX OF SHEETS from the rendered MDX and track scroll.
   useEffect(() => {
@@ -286,8 +311,14 @@ export function BlueprintArticleLayout({
         <div className="bp-progress-bar" style={{ width: `${(prog * 100).toFixed(1)}%` }} />
       </div>
 
-      <button type="button" className="bp-theme-toggle" onClick={() => setDark((d) => !d)}>
-        {dark ? '◑ Light print' : '◑ Blueprint'}
+      <button
+        type="button"
+        className="bp-theme-toggle"
+        onClick={() => setDark((d) => !d)}
+        disabled={!mounted}
+        aria-label={mounted ? `Switch to ${dark ? 'light print' : 'blueprint'} theme` : 'Theme control loading'}
+      >
+        {mounted ? (dark ? '◑ Light print' : '◑ Blueprint') : '◑ Theme loading'}
       </button>
 
       {toc.length > 0 && (
