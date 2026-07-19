@@ -1,0 +1,304 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import {
+  BpSection,
+  BpAnchor,
+  BpNote,
+  BpFigure,
+  BpQA,
+  BpReferences,
+  BlueprintRfpDesk,
+} from '@/components/blueprint'
+
+export const metadata = createMetadata(rawMetadata)
+
+<BpAnchor id="s0" num="00" label="Abstract" />
+
+An AI training workshop has one job: move a room from hearing about a capability to performing it. The unit of work is therefore larger than a deck. It includes the room diagnosis, the learning sequence, the software attendees touch, the operating plan for the live session, and the support that follows it.
+
+This drawing documents the system I use to build that result. Its source material is shipped work: conference labs, an internal training, a Claude Cowork session, and a private glossary application built for a mixed corporate audience. The details vary by room, but the circuit stays recognizable. Define what people should be able to do. Build the artifacts that let them do it. Rehearse the path. Capture where they struggle. Keep helping after the chairs are stacked.
+
+The standard is observable capability. A workshop succeeds when attendees leave with a working result they can inspect, rerun, and extend. That principle determines the curriculum, the run of show, and the engagement around it.
+
+<BpSection id="s1" num="01" label="Product" sheet="SHEET 1 OF 8" title="A workshop is a product, not a talk" />
+
+A talk transfers a point of view. A good one can change what a room notices, give language to a problem, and create the energy to act. A workshop accepts a harder assignment: transfer enough capability that people perform the work while the facilitator is still there.
+
+That distinction changes the build. Slides become one interface in a small product. Setup is onboarding. Exercises are the core interaction. A visible finish line is the acceptance test. Questions are user research. The repo, glossary, and recap are retention mechanisms. The session itself is one scheduled release of the system.
+
+At the 2026 AI Engineer World’s Fair in San Francisco, conference founder swyx told Nick Nisi and me that our workshops were “the gold standard” for AI Engineer content and asked for help raising the bar across the event. The comment supplied useful provenance, but the work behind it matters more: a hand-built deck served to phones, a real-time room board, a glossary with chat, a local coach, and exercises with failing checks. The hour onstage sat on top of shipped software. [The original account describes the five principles and artifacts](/blog/gold-standard-ai-workshops).
+
+<BpNote>The World’s Fair session ran for one hour. The supporting deck, board, glossary, coach, and playground were designed to remain useful after that hour.</BpNote>
+
+Product thinking also gives the facilitator a sharper completion test. “The audience understood agents” is difficult to inspect. “Each attendee ran a typed workflow, saw structured output, and knows where to change one step” can be observed in the room. The latter statement tells you what to build and what to cut.
+
+<BpQA q="How is this different from a conference talk with exercises?">
+A workshop begins with the attendee’s completed action and works backward. The exercises carry the teaching, the environment is tested as part of the curriculum, and the attendee keeps a working artifact. A talk can contain an exercise; a workshop is an operating system built around successful practice.
+</BpQA>
+
+<BpSection id="s2" num="02" label="Room diagnosis" sheet="SHEET 2 OF 8" title="Read the room before you write a slide" />
+
+The first design material is the room: roles, prior exposure, devices, permissions, terminology, and the work people hope to change. A facilitator needs to know who will be present and what access they will have long before choosing examples. An engineering conference with personal laptops permits a different lab from an internal company session with managed machines and mixed functions.
+
+For a GHX Collaboration Week workshop, the audience stretched from leaders who had never opened a terminal to advanced engineers. The glossary itself stated that four out of five people in the room had never opened one. A single middle-of-the-road track would have made the opening hostile to beginners and the ending dull for experts. The designed path started at the computer vocabulary, walked through AI terms, and climbed toward agents, verification loops, and orchestration.
+
+<BpFigure caption="FIG. 1 — NEEDS-ASSESSMENT SPECTRUM: ONE SHARED OUTCOME, WITH ENTRY RAMPS AND EXTENSION WORK MATCHED TO THE ROOM.">
+  <svg viewBox="0 0 920 290">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <path d="M65 145 H855"></path>
+      <circle cx={95} cy={145} r={38}></circle>
+      <circle cx={325} cy={145} r={38}></circle>
+      <circle cx={595} cy={145} r={38}></circle>
+      <circle cx={825} cy={145} r={38}></circle>
+      <rect x={286} y={222} width={348} height={42}></rect>
+    </g>
+    <g fill="var(--bp-accent)">
+      <circle cx={95} cy={145} r={6}></circle>
+      <circle cx={325} cy={145} r={6}></circle>
+      <circle cx={595} cy={145} r={6}></circle>
+      <circle cx={825} cy={145} r={6}></circle>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={54} y={89}>LEADER</text>
+      <text x={34} y={205}>NO TERMINAL</text>
+      <text x={282} y={89}>OPERATOR</text>
+      <text x={272} y={205}>GUIDED TASK</text>
+      <text x={552} y={89}>BUILDER</text>
+      <text x={539} y={205}>EDITS WORKFLOW</text>
+      <text x={778} y={89}>ENGINEER</text>
+      <text x={759} y={205}>EXTENDS SYSTEM</text>
+      <text x={326} y={248}>ONE OUTCOME · MULTIPLE ENTRY RAMPS</text>
+    </g>
+  </svg>
+</BpFigure>
+
+The design contract is one outcome sentence: **After this workshop, the room can _____.** Use a verb that can be demonstrated: run, build, inspect, compare, schedule, or publish. “Understand AI” produces a survey. “Build and rerun one approved workflow against a real team task” produces a curriculum.
+
+Then inventory constraints. Can people install packages? Will API keys be available? Is the network dependable? Which source material is safe? Does the room share one baseline task, or do departments need separate examples? The answers decide whether the lab runs locally, in a browser, through a prepared repository, or as a facilitator-led build with parallel non-coding work.
+
+A useful discovery call asks for examples rather than adjectives. “Mixed experience” could mean one team has used chat while another ships agents, or it could mean everyone uses the same tool with different confidence. Ask what people do today, where the work stops, what has already been tried, and which result would matter to their manager. Request the actual operating constraints: device policy, identity provider, model access, repository host, browser restrictions, and approval boundaries. Those facts produce an honest room map and prevent a curriculum built around access attendees will never receive.
+
+<BpQA q="What if half the room can’t code?">
+Give everyone the same outcome with different controls. A non-coder can run a prepared workflow, inspect its inputs and outputs, and judge whether the result is fit for work. Engineers can modify a step, schema, or verification check. Shared vocabulary and paired work keep both tracks in one room without pretending their starting points match.
+</BpQA>
+
+<BpSection id="s3" num="03" label="Artifact stack" sheet="SHEET 3 OF 8" title="The artifact stack surrounds the hour" />
+
+The core product is a circuit of artifacts, each assigned to a moment before, during, or after delivery. The deck carries the teaching sequence. Serving it as an application lets attendees open the same frame on a phone from a QR code instead of photographing a distant screen. The live board turns room check-ins into shared evidence. The glossary gives unfamiliar terms a quiet path to resolution. The repository supplies executable work. The recap restores the whole system after the event.
+
+<BpFigure caption="FIG. 2 — ARTIFACT-STACK CIRCUIT: SHIPPED SOFTWARE FEEDS THE LIVE HOUR, CAPTURES ROOM SIGNAL, AND RETURNS AS DURABLE FOLLOW-THROUGH.">
+  <svg viewBox="0 0 920 430">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={365} y={166} width={190} height={96}></rect>
+      <rect x={45} y={44} width={190} height={68}></rect>
+      <rect x={365} y={44} width={190} height={68}></rect>
+      <rect x={685} y={44} width={190} height={68}></rect>
+      <rect x={45} y={318} width={190} height={68}></rect>
+      <rect x={365} y={318} width={190} height={68}></rect>
+      <rect x={685} y={318} width={190} height={68}></rect>
+    </g>
+    <g fill="none" stroke="var(--bp-accent)" strokeWidth={1.4} strokeDasharray="6 5" className="bp-dash">
+      <path d="M235 78 H363 M555 78 H683 M780 112 V212 H557 M365 212 H140 V316 M235 352 H363 M555 352 H683 M780 318 V264 H557"></path>
+    </g>
+    <g fill="currentColor" className="bp-svg-t12">
+      <text x={99} y={73}>DECK APP</text>
+      <text x={73} y={94}>QR → PHONE</text>
+      <text x={407} y={73}>LIVE BOARD</text>
+      <text x={392} y={94}>ROOM CHECK-INS</text>
+      <text x={734} y={73}>GLOSSARY</text>
+      <text x={720} y={94}>CHAT + SEARCH</text>
+      <text x={401} y={205}>LIVE HOUR</text>
+      <text x={394} y={230}>TEACH → DO → SEE</text>
+      <text x={84} y={347}>HANDS-ON REPO</text>
+      <text x={78} y={368}>WORKING CHECKS</text>
+      <text x={415} y={347}>QUESTION LOG</text>
+      <text x={397} y={368}>SIGNAL BY TOPIC</text>
+      <text x={738} y={347}>RECAP POST</text>
+      <text x={715} y={368}>LINKS EVERYTHING</text>
+    </g>
+  </svg>
+</BpFigure>
+
+Every element must earn its maintenance cost. The live board earns its place when the session needs the room to see its own before-and-after movement. A glossary earns its place when terminology blocks participation. A repo earns its place when installation, modification, or rerunning matters to the outcome. There is no requirement to build every item every time; there is a requirement that each chosen artifact solve a named part of the learning path.
+
+Specify an owner and acceptance check for each artifact. The phone deck must load on venue Wi-Fi and remain legible without presenter narration. The glossary must answer from approved material and expose a human route when it cannot. The repo must install from a clean machine, state its prerequisites, and carry a known-good result. The live board must degrade gracefully if an attendee skips check-in. The recap must point back to canonical artifacts rather than copy fragments that will drift. These are product requirements because a workshop audience encounters them as users.
+
+<BpNote>The Cowork event drew 800 registrations for 150 seats. The public repo and recap let the material travel beyond the people who could enter the office.</BpNote>
+
+Durability changes design decisions. A screenshot records the presenter’s success. A repository lets the attendee reproduce it. A PDF freezes a deck. A deployed glossary can accept a question weeks later. The useful artifact answers, “What will this person open on Monday when the facilitator is gone?”
+
+<BpQA q="Why build custom software for a one-hour session?">
+Build it when software removes a real learning bottleneck or creates evidence the room could not get from slides. The same app can handle onboarding, private questions, shared progress, and follow-through. If a static handout does the job, use the handout; the criterion is durable usefulness, not production volume.
+</BpQA>
+
+<BpSection id="s4" num="04" label="Curriculum" sheet="SHEET 4 OF 8" title="De-jargonification comes before code" />
+
+Mixed rooms often fail before the exercise starts. A person hears three unknown terms in the opening minute, decides everyone else understands them, and stops asking. Psychological safety needs an interface, not a sentence from the stage.
+
+The GHX workshop made “no dumb questions” structural. Attendees could ask aloud or use an ask-anything chat on the glossary. The interface answered from the glossary’s contents, used plain language, and logged the question. Someone who did not want to reveal a gap to colleagues still had a path into the material. The room gained a question channel; the facilitators gained a record of which language caused friction.
+
+The curriculum then moved in a deliberate order: ground rules, a de-jargonification walk, guided practice, independent construction, and an advanced extension. Each stage removes a different obstacle. Ground rules reduce social risk. Vocabulary reduces semantic risk. A guided block proves the environment. Independent work creates ownership. Extension work keeps experienced engineers engaged without forcing beginners to skip foundations.
+
+<BpFigure caption="FIG. 3 — CURRICULUM SEQUENCE: REMOVE SOCIAL AND LANGUAGE FRICTION BEFORE ASKING THE ROOM TO BUILD.">
+  <svg viewBox="0 0 920 260">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={20} y={80} width={155} height={88}></rect>
+      <rect x={202} y={80} width={155} height={88}></rect>
+      <rect x={384} y={80} width={155} height={88}></rect>
+      <rect x={566} y={80} width={155} height={88}></rect>
+      <rect x={748} y={80} width={152} height={88}></rect>
+    </g>
+    <g fill="none" stroke="var(--bp-accent)" strokeWidth={1.2} strokeDasharray="5 4" className="bp-dash">
+      <path d="M175 124 H200 M357 124 H382 M539 124 H564 M721 124 H746"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={54} y={109}>GROUND</text><text x={58} y={132}>RULES</text><text x={42} y={153}>ASK SAFELY</text>
+      <text x={225} y={109}>GLOSSARY</text><text x={223} y={132}>WALK</text><text x={218} y={153}>NAME PARTS</text>
+      <text x={416} y={109}>GUIDED</text><text x={414} y={132}>RUN</text><text x={407} y={153}>FIRST PROOF</text>
+      <text x={596} y={109}>HANDS-ON</text><text x={604} y={132}>BUILD</text><text x={595} y={153}>OWN RESULT</text>
+      <text x={780} y={109}>EXTEND</text><text x={776} y={132}>SYSTEM</text><text x={771} y={153}>GO FURTHER</text>
+    </g>
+  </svg>
+</BpFigure>
+
+<BpNote>The GHX plan reserved 30 minutes for the de-jargonification walk before hands-on blocks. Its glossary climbed through five levels, from basic computer terms to advanced agents.</BpNote>
+
+De-jargonification is precise technical work. Replace a dense term with a plain definition, show the object, then use the formal name consistently. Do not hide the language people will encounter at work. Give them a handle for it before asking them to reason with it.
+
+Check comprehension through use, not a vocabulary recital. Ask an attendee to choose which tool should handle a task, identify what evidence an agent returned, or explain where a workflow can fail. A correct choice shows that the term has become operational. A repeated wrong choice tells the facilitator which definition or demonstration needs another pass. The glossary remains available throughout the lab, so looking something up is treated as competent work rather than evidence that the person missed the lesson.
+
+<BpSection id="s5" num="05" label="Hands-on lab" sheet="SHEET 5 OF 8" title="The lab runs working code" />
+
+A lab needs a real input, real state changes, and an output worth keeping. Lorem ipsum can prove that a button renders; it cannot teach the judgment required to use a system at work. The workshop repository should therefore contain the smallest honest version of the production pattern, with setup instructions and visible completion checks.
+
+At the 2025 AI Engineer World Fair, more than 70 engineers spent two hours building an agentic meme generator in TypeScript with Mastra. The subject was playful; the system was real. One step used structured generation and Zod schemas to extract workplace frustrations. Another fetched meme templates from Imgflip. A generation step produced typed captions. The final step called Imgflip’s caption API and returned a stable image URL. The workflow exposed modular steps, schemas, model output, external API behavior, and failure paths in a result attendees could rerun.
+
+The Cowork workshop used a different lab shape. In one hour, attendees built a go-to-market pipeline across seven modules: prospect identification, competitive intelligence, positioning, personalized outreach, blog content, a four-week calendar, and a scheduled publishing task. All seven stayed in one Cowork session. The prospect data fed the competitive work; both informed positioning; that accumulated context fed outreach and content. The architecture lesson was carried by the session history itself.
+
+<BpNote>The published Cowork run sheet allocated about 8, 7, 5, 5, 8, 3, and 2 minutes across the seven modules. It ended with a task scheduled for every Monday at 9 AM.</BpNote>
+
+These labs share three properties. The output is recognizable: a shareable meme or a working GTM pipeline. Each step exposes a transferable pattern rather than a product tour. The attendee keeps the implementation and can run it again. An internal training can use the same rule: the Claude skills session distributed a version-controlled skill containing plain-language instructions, code, configuration, and setup notes, so colleagues could install and adapt the workflow after training.
+
+Repository design should reveal the learning boundary. Put completed infrastructure and irrelevant plumbing on the starting branch. Leave the target decision visible: a schema to complete, a step to connect, a prompt to constrain, or a verification rule to add. Supply a checkpoint after each block so an attendee can confirm state before carrying an error forward. Keep final code available through a separate branch or tag, but make the normal path pass through the intended work. The attendee should be able to explain what changed and why — watching dependency installation finish teaches nothing.
+
+<BpFigure caption="FIG. 4 — TWO LAB SHAPES: A TYPED MASTRA PIPELINE AND A SINGLE COWORK SESSION WHOSE CONTEXT ACCUMULATES ACROSS SEVEN MODULES.">
+  <svg viewBox="0 0 920 350">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={25} y={54} width={160} height={58}></rect><rect x={225} y={54} width={160} height={58}></rect>
+      <rect x={425} y={54} width={160} height={58}></rect><rect x={625} y={54} width={160} height={58}></rect>
+      <rect x={25} y={230} width={108} height={56}></rect><rect x={146} y={230} width={108} height={56}></rect>
+      <rect x={267} y={230} width={108} height={56}></rect><rect x={388} y={230} width={108} height={56}></rect>
+      <rect x={509} y={230} width={108} height={56}></rect><rect x={630} y={230} width={108} height={56}></rect>
+      <rect x={751} y={230} width={144} height={56}></rect>
+    </g>
+    <g fill="none" stroke="var(--bp-accent)" strokeWidth={1.2} strokeDasharray="5 4" className="bp-dash">
+      <path d="M185 83 H223 M385 83 H423 M585 83 H623 M785 83 H880 V145 H105 V228"></path>
+      <path d="M133 258 H144 M254 258 H265 M375 258 H386 M496 258 H507 M617 258 H628 M738 258 H749"></path>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor">
+      <text x={54} y={78}>EXTRACT</text><text x={48} y={97}>ZOD OBJECT</text>
+      <text x={257} y={78}>FETCH</text><text x={250} y={97}>TEMPLATES</text>
+      <text x={451} y={78}>GENERATE</text><text x={454} y={97}>CAPTIONS</text>
+      <text x={661} y={78}>CALL API</text><text x={650} y={97}>SHARE URL</text>
+      <text x={51} y={263}>1 · ICP</text><text x={163} y={263}>2 · INTEL</text><text x={282} y={263}>3 · POSITION</text>
+      <text x={406} y={263}>4 · EMAIL</text><text x={530} y={263}>5 · BLOG</text><text x={645} y={263}>6 · PLAN</text>
+      <text x={770} y={263}>7 · SCHEDULE</text>
+      <text x={304} y={324}>ONE SESSION · CONTEXT ACCUMULATES →</text>
+    </g>
+  </svg>
+</BpFigure>
+
+<BpQA q="How much should attendees build themselves?">
+Enough to cross the outcome sentence under live conditions. Prepare setup, fixtures, and recovery paths; preserve the decision or modification that carries the lesson. Typing boilerplate consumes the scarce hour. Choosing a schema, changing a workflow step, inspecting a failure, and rerunning the result creates transferable practice.
+</BpQA>
+
+<BpSection id="s6" num="06" label="Live operations" sheet="SHEET 6 OF 8" title="Delivery runs on a visible clock" />
+
+The run of show is an operating document. Every block needs a start, a stop, an owner, an attendee action, and a recovery route. Put the promised outcome at the top. Mark the sections that can compress without breaking the learning chain. Keep a known-good branch, prepared outputs, and direct links ready. Decide who watches the room while the other facilitator drives the screen.
+
+Pacing is read from evidence, not presenter instinct. Look for completed commands, changed files, generated artifacts, and hands that stay raised. Ask the room for a visible status signal. If many people are blocked, stop and repair the shared dependency. If a few are blocked, a circulating facilitator or paired path keeps the main rail moving. Announce time caps so attendees know when to keep trying and when to take the recovery path.
+
+<BpFigure caption="FIG. 5 — RUN-OF-SHOW RAIL: SHORT TEACHING BEATS ALTERNATE WITH ATTENDEE ACTION, OBSERVATION, AND A RESERVED RECOVERY PATH.">
+  <svg viewBox="0 0 920 270">
+    <path d="M45 145 H875" fill="none" stroke="currentColor" strokeWidth={1.2}></path>
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={45} y={76} width={130} height={64}></rect><rect x={195} y={150} width={165} height={64}></rect>
+      <rect x={380} y={76} width={130} height={64}></rect><rect x={530} y={150} width={165} height={64}></rect>
+      <rect x={715} y={76} width={160} height={64}></rect>
+    </g>
+    <g fill="var(--bp-accent)"><circle cx={175} cy={145} r={5}></circle><circle cx={360} cy={145} r={5}></circle><circle cx={510} cy={145} r={5}></circle><circle cx={695} cy={145} r={5}></circle></g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={83} y={102}>TEACH</text><text x={68} y={123}>ONE MODEL</text>
+      <text x={235} y={178}>ROOM DOES</text><text x={224} y={198}>VISIBLE ACTION</text>
+      <text x={412} y={102}>CHECK</text><text x={403} y={123}>ROOM STATE</text>
+      <text x={565} y={178}>RECOVER</text><text x={550} y={198}>KNOWN-GOOD PATH</text>
+      <text x={751} y={102}>EXTEND</text><text x={736} y={123}>OR CLOSE LOOP</text>
+    </g>
+  </svg>
+</BpFigure>
+
+Live failure is useful when it is bounded and narrated. State what you expected, show the evidence you received, form one hypothesis, and test it. That models professional debugging. If the repair threatens the next learning block, switch to the known-good state and preserve the failure for the recap. The workshop serves the room, not the presenter’s determination to win one argument with a dependency.
+
+That switch requires explicit authority. Before delivery, decide who can call the fallback and what signal triggers it: a shared authentication failure, an external API outage, or too few completed checkpoints to continue. Name the transition aloud so attendees understand they did not cause the change. Show the prepared output, explain which work it stands in for, and resume at the next decision point. A fallback preserves the causal chain of the lesson; silently jumping ahead leaves the room unsure which state is real.
+
+Questions belong in the run of show too. Capture each one with topic, point in the curriculum, and whether it was answered live. The GHX chat wrote questions and answers to a durable log. That log turned private uncertainty into usable post-event signal without requiring the facilitator to remember every exchange.
+
+<BpNote>The Cowork format reserved 30 minutes after the one-hour build for audience Q&amp;A with Lydia from Anthropic’s Claude Code team.</BpNote>
+
+<BpSection id="s7" num="07" label="Follow-through" sheet="SHEET 7 OF 8" title="The workshop continues after the room empties" />
+
+Follow-through starts during design. Name the support window, channel, response expectation, and artifact owner before delivery. Put those details in the repository and leave-behind, then repeat them at the close. Attendees should know where to ask when they apply the pattern to a less cooperative real task.
+
+The GHX glossary promised asynchronous support from the June 17 workshop through July 1. The page stayed live, the chat remained available, and new terms could be added during the window. That fixed deadline made support concrete. It also created a period in which the team could distinguish a one-off setup failure from a recurring curriculum gap.
+
+<BpFigure caption="FIG. 6 — QUESTION-SIGNAL LOOP: PRIVATE AND LIVE QUESTIONS BECOME A REPORT, THEN REPAIRS TO ARTIFACTS, CURRICULUM, AND THE NEXT ENGAGEMENT.">
+  <svg viewBox="0 0 920 300">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={35} y={105} width={155} height={74}></rect><rect x={250} y={105} width={155} height={74}></rect>
+      <rect x={465} y={105} width={155} height={74}></rect><rect x={680} y={105} width={205} height={74}></rect>
+    </g>
+    <g fill="none" stroke="var(--bp-accent)" strokeWidth={1.3} strokeDasharray="5 4" className="bp-dash">
+      <path d="M190 142 H248 M405 142 H463 M620 142 H678 M782 179 V245 H112 V181"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={75} y={133}>QUESTION</text><text x={57} y={157}>LIVE OR PRIVATE</text>
+      <text x={291} y={133}>LOG</text><text x={271} y={157}>TOPIC + STAGE</text>
+      <text x={504} y={133}>REPORT</text><text x={485} y={157}>PATTERN + GAP</text>
+      <text x={721} y={133}>REPAIR SYSTEM</text><text x={705} y={157}>ARTIFACT · AGENDA</text>
+      <text x={299} y={273}>NEXT DELIVERY STARTS WITH BETTER EVIDENCE</text>
+    </g>
+  </svg>
+</BpFigure>
+
+The post-event report should be plain: questions grouped by topic, blocked steps, artifacts completed, unresolved items, and recommended changes. Send the answers. Patch the setup instructions. Add the missing glossary term. Publish a recap that links the deck, repo, outputs, and recording where available. [The Cowork recap](/blog/claude-cowork-workshop-anthropic) does this publicly; internal engagements can use the same structure inside the client’s systems.
+
+Finally, test the outcome sentence. Evidence may come from completed repository checks, submitted artifacts, a rerun during the support window, or a short follow-up demonstration. Attendance and satisfaction describe reach and experience. They do not prove the room can perform the target task. Measure the action that was promised.
+
+Report evidence at the right level. An individual exercise can record whether its check passed. A team workflow can record whether a second person installed and ran it from the documentation. A leadership session can require participants to compare two proposed uses and identify access, verification, and ownership requirements. Keep names out when the purpose is curriculum repair rather than performance management. The report should separate environment failures from conceptual gaps; they demand different fixes and carry different implications for the next workshop.
+
+<BpSection id="s8" num="08" label="Commission" sheet="SHEET 8 OF 8" title="Commissioning one starts with the room" />
+
+A workshop engagement follows the same sequence as the drawing. The scoping call identifies the room, the current workflow, access constraints, and the business reason for teaching it. That conversation produces the outcome sentence. The outcome determines the artifact plan: perhaps a browser-based deck and guided workflow for a mixed group, or a typed repository with verification gates for engineers.
+
+Build then proceeds around the riskiest attendee action. Setup is tested on the devices and permissions people will actually use. Exercises are rehearsed against real services or approved substitutes. The run of show names timing, owners, checkpoints, and fallback states. Delivery alternates short teaching beats with room action. Follow-through ships the artifacts, supports application through an agreed window, and reports what the questions and completed work revealed.
+
+The variable parts are meaningful: room size, skill distribution, subject, security posture, venue, available time, artifact depth, and support period. A conference session may optimize for rapid onboarding and a shareable public repo. Corporate AI training may require approved data, private deployment, multiple entry ramps, and an internal handoff. The method remains the same because the outcome remains observable.
+
+The final handoff names what the client owns and who maintains it. That may include source repositories, deck source, prompts, schemas, setup instructions, recordings, question reports, and recommended next exercises. It also records external dependencies and the point at which the material was tested. A named internal owner can then accept fixes during the support window and decide which artifacts enter normal team documentation. Without that handoff, a strong live session can leave behind an impressive folder that nobody is responsible for running again.
+
+See [/workshops](/workshops) for current workshop formats and examples. To commission a workshop for your team, file the RFP below with the room you have and what you want that room to be able to do. That is enough to begin the scope.
+
+<BlueprintRfpDesk drawingCode="TDD-005" letter="A" />
+
+<BpReferences
+  drawingCode="TDD-005"
+  letter="B"
+  items={[
+    { label: 'Proser, “What Makes an AI Workshop the Gold Standard,” 2026', href: 'https://zackproser.com/blog/gold-standard-ai-workshops' },
+    { label: 'Proser, “A Conference Workshop Playbook: What We Learned Teaching 200+ Engineers,” 2026', href: 'https://zackproser.com/blog/conference-workshop-playbook' },
+    { label: 'Proser, “Claude Cowork Workshop with Anthropic: Building a Complete GTM Pipeline in One Session,” 2026', href: 'https://zackproser.com/blog/claude-cowork-workshop-anthropic' },
+    { label: 'Proser, “Claude Skills as Self-Documenting Runbooks/Processes You Share With Your Team,” 2025', href: 'https://zackproser.com/blog/claude-skills-internal-training' },
+    { label: 'Proser and Nisi, “AI Pipelines and Agents in Pure TypeScript with Mastra.ai,” workshop repository, 2025', href: 'https://github.com/zackproser/ai-eng-world-faire-workshop' },
+    { label: 'Proser, “Claude Cowork GTM Workshop,” workshop repository, 2026', href: 'https://github.com/zackproser/cowork-workshop' },
+  ]}
+/>

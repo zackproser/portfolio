@@ -78,9 +78,10 @@ export function BlueprintArticleLayout({
   const [prog, setProg] = useState(0)
   const [toc, setToc] = useState<TocEntry[]>([])
   const [active, setActive] = useState('s0')
-  // The RFI desk is Appendix A unless the post renders a BpReferences
-  // appendix, which claims A and pushes the desk to B.
-  const [rfiLetter, setRfiLetter] = useState<'A' | 'B'>('A')
+  // The RFI desk takes the next appendix letter after any MDX
+  // appendices (BpReferences, BlueprintRfpDesk): none → A, one → B,
+  // two → C.
+  const [rfiLetter, setRfiLetter] = useState<'A' | 'B' | 'C'>('A')
 
   // Chat drawer state
   const [chatOpen, setChatOpen] = useState(false)
@@ -102,13 +103,16 @@ export function BlueprintArticleLayout({
     const root = rootRef.current
     if (!root) return
     const secs = Array.from(root.querySelectorAll<HTMLElement>('[data-sec]'))
-    const hasRefs = secs.some((s) => s.getAttribute('data-sec') === 'refs')
-    setRfiLetter(hasRefs ? 'B' : 'A')
+    const appendixCount = secs.filter((s) =>
+      ['refs', 'rfp'].includes(s.getAttribute('data-sec') || ''),
+    ).length
+    const desk = (['A', 'B', 'C'] as const)[Math.min(appendixCount, 2)]
+    setRfiLetter(desk)
     setToc(
       secs.map((s) => ({
         id: s.getAttribute('data-sec') || '',
-        // The RFI desk's rail letter depends on whether references exist
-        num: s.getAttribute('data-sec') === 's9' ? (hasRefs ? 'B' : 'A') : s.getAttribute('data-num') || '',
+        // The RFI desk's rail letter follows the MDX appendices
+        num: s.getAttribute('data-sec') === 's9' ? desk : s.getAttribute('data-num') || '',
         label: s.getAttribute('data-label') || '',
       })),
     )

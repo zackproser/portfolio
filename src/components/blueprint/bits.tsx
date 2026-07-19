@@ -88,16 +88,27 @@ export interface BpReference {
 }
 
 /**
- * References appendix ("APPENDIX A"). Give it drawingCode like
- * "TDD-001" for the corner tag. Rendered before the RFI desk, which
- * the layout appends as APPENDIX B.
+ * References appendix. Give it drawingCode like "TDD-001" for the
+ * corner tag. Defaults to APPENDIX A; pass `letter` when another
+ * appendix (e.g. the RFP desk) precedes it in the drawing. The RFI
+ * desk always takes the next letter after all MDX appendices.
  */
-export function BpReferences({ drawingCode, items }: { drawingCode: string; items: BpReference[] }) {
+export function BpReferences({
+  drawingCode,
+  items,
+  letter = 'A',
+}: {
+  drawingCode: string
+  items: BpReference[]
+  letter?: 'A' | 'B'
+}) {
   return (
-    <div id="refs" data-sec="refs" data-num="A" data-label="References" className="bp-references">
+    <div id="refs" data-sec="refs" data-num={letter} data-label="References" className="bp-references">
       <div className="bp-references-strip">
-        <span>APPENDIX A — REFERENCES · SOURCES CITED</span>
-        <span className="bp-num">{drawingCode}-A</span>
+        <span>APPENDIX {letter} — REFERENCES · SOURCES CITED</span>
+        <span className="bp-num">
+          {drawingCode}-{letter}
+        </span>
       </div>
       <ol className="bp-references-list">
         {items.map((ref, i) => (

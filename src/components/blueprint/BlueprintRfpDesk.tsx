@@ -9,7 +9,13 @@ import { track } from '@vercel/analytics'
 // takes a request for the real thing: a workshop built for your room.
 // Posts to the existing /api/consultation endpoint (Postmark email).
 
-export function BlueprintRfpDesk({ drawingCode }: { drawingCode: string }) {
+export function BlueprintRfpDesk({
+  drawingCode,
+  letter = 'B',
+}: {
+  drawingCode: string
+  letter?: 'A' | 'B'
+}) {
   const pathname = usePathname()
   const [status, setStatus] = useState<'idle' | 'submitting' | 'done' | 'error'>('idle')
   const [started, setStarted] = useState(false)
@@ -57,10 +63,12 @@ export function BlueprintRfpDesk({ drawingCode }: { drawingCode: string }) {
 
   if (status === 'done') {
     return (
-      <div className="bp-rfp" id="rfp" data-sec="rfp" data-num="C" data-label="RFP desk">
+      <div className="bp-rfp" id="rfp" data-sec="rfp" data-num={letter} data-label="RFP desk">
         <div className="bp-rfp-strip">
-          <span>APPENDIX C — RFP DESK · REQUEST FOR PROPOSAL</span>
-          <span className="bp-num">{drawingCode}-C</span>
+          <span>APPENDIX {letter} — RFP DESK · REQUEST FOR PROPOSAL</span>
+          <span className="bp-num">
+            {drawingCode}-{letter}
+          </span>
         </div>
         <div className="bp-rfp-body">
           <div className="bp-capture-recorded">
@@ -72,10 +80,12 @@ export function BlueprintRfpDesk({ drawingCode }: { drawingCode: string }) {
   }
 
   return (
-    <form className="bp-rfp" id="rfp" data-sec="rfp" data-num="C" data-label="RFP desk" onSubmit={handleSubmit} noValidate>
+    <form className="bp-rfp" id="rfp" data-sec="rfp" data-num={letter} data-label="RFP desk" onSubmit={handleSubmit} noValidate>
       <div className="bp-rfp-strip">
-        <span>APPENDIX C — RFP DESK · REQUEST FOR PROPOSAL</span>
-        <span className="bp-num">{drawingCode}-C</span>
+        <span>APPENDIX {letter} — RFP DESK · REQUEST FOR PROPOSAL</span>
+        <span className="bp-num">
+            {drawingCode}-{letter}
+          </span>
       </div>
       <div className="bp-rfp-body">
         <p className="bp-rfp-pitch">

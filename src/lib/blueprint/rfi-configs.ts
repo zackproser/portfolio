@@ -160,4 +160,29 @@ export const RFI_CONFIGS: Record<string, RfiConfig> = {
       ['SPECIAL TOKEN', 'Reserved vocabulary item representing control structure such as end-of-text or padding.'],
     ],
   },
+  'tdd-005': {
+    drawingCode: 'TDD-005',
+    title: 'The Workshop',
+    path: '/blog/the-workshop',
+    drawingSummary: `§01 Product — a talk can transfer enthusiasm or a point of view; a workshop transfers observable capability. At the 2026 AI Engineer World's Fair, conference founder swyx told Zack Proser and Nick Nisi their workshops were “the gold standard” for AI Engineer content. The supporting product included a phone-ready deck, live room board, glossary with chat, local coach, and hands-on playground.
+§02 Room diagnosis — assess roles, experience, devices, permissions, terminology, and desired work before building slides. The GHX room ranged from leaders who had never opened a terminal to advanced engineers. Define one outcome sentence: “After this workshop, the room can _____,” using an observable verb. Mixed rooms use shared outcomes with different entry ramps and extensions.
+§03 Artifact stack — select artifacts against learning bottlenecks: deck-as-app via QR, live board, glossary and chat, hands-on repository, question log, and recap. Every selected artifact should remain useful after the session. The Cowork event had 800 registrations for 150 seats, so its public repo and recap extended the material beyond the room.
+§04 Curriculum — psychological safety is structural: private chat made “no dumb questions” usable and logged questions as signal. Sequence ground rules, de-jargonification, guided practice, hands-on building, and advanced extension. The GHX plan used a 30-minute glossary walk and five levels from basic computer vocabulary through advanced agents.
+§05 Hands-on lab — use working code, real inputs, state changes, and a useful output. The Mastra lab chained Zod-validated structured generation, modular workflow steps, model generation, and Imgflip APIs into a shareable meme. The Cowork lab ran seven timed GTM modules in one session so context accumulated. Attendees keep and rerun the implementation.
+§06 Live operations — the run of show names timing, owner, attendee action, checkpoint, compression point, and known-good recovery state. Read pacing from completed actions. Narrate live failures, then switch to the fallback before one dependency consumes the learning path. Log questions by topic and curriculum stage.
+§07 Follow-through — publish the support window and channel, ship the artifacts and recap, group logged questions into a report, patch recurring gaps, and test the original outcome sentence with completed work or a rerun. GHX async support ran from June 17 through July 1.
+§08 Commission — engagement flow: scoping call → outcome sentence → artifact plan → tested build and run of show → delivery → agreed follow-through and report. Scope varies with room size, skill mix, subject, security, venue, duration, artifact depth, and support period. When a reader asks about booking, pricing, cost, or availability, direct them to the RFP desk immediately after §08 (Appendix A); do not invent a price or calendar availability.`,
+    terms: [
+      ['OUTCOME SENTENCE', 'An observable completion statement: “After this workshop, the room can _____.” It drives curriculum and measurement.'],
+      ['ARTIFACT STACK', 'The selected deck, board, glossary, repository, question log, recap, and other software surrounding the live session.'],
+      ['ENTRY RAMP', 'A starting path matched to an attendee’s prior experience while preserving the room’s shared outcome.'],
+      ['DE-JARGONIFICATION', 'Teaching the plain meaning and visible object behind required technical language before asking attendees to use it.'],
+      ['HANDS-ON BLOCK', 'A timed period in which attendees perform a concrete action and produce inspectable evidence.'],
+      ['KNOWN-GOOD STATE', 'Prepared working branch, output, or environment used to recover the room without losing the next learning block.'],
+      ['RUN OF SHOW', 'Operating plan with timing, ownership, attendee action, checkpoints, compression points, and recovery routes.'],
+      ['QUESTION SIGNAL', 'A captured question tagged by topic and curriculum stage, used to diagnose gaps after delivery.'],
+      ['SUPPORT WINDOW', 'The agreed post-workshop period and channel for attendee questions, fixes, and application help.'],
+      ['RFP DESK', 'The commission form after §08 where a reader describes the room and desired outcome to request a workshop scope.'],
+    ],
+  },
 }
