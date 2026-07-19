@@ -1,0 +1,326 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import {
+  BpSection,
+  BpAnchor,
+  BpNote,
+  BpFigure,
+  BpEquation,
+  BpQA,
+  BpReferences,
+  BpDetachablePlate,
+  InductionCircuitDemo,
+} from '@/components/blueprint'
+
+export const metadata = createMetadata(rawMetadata)
+
+<BpAnchor id="s0" num="00" label="Abstract" />
+
+An attention map can look like a copying algorithm. The bright diagonal is an observation: at each repeated token, one head attends to the token that followed its earlier match. That image alone cannot tell us what information the head writes, whether the write favors the copied token, or whether the model needs the head to perform the behavior.
+
+This drawing climbs those questions in order. **Pattern evidence** locates a candidate. **Logit attribution** asks whether its output points toward the expected next token. **Intervention** removes or replaces the component and measures whether the behavior changes. Each layer supports a stronger claim while adding assumptions of its own.
+
+The worked example is a real CPU export from the 124-million-parameter GPT-2 checkpoint, revision `607a30d…`, over three repeated-token prompts. The export script, tokenized inputs, attention tensors, attribution, ablations, versions, and failed pattern candidates ship with the page. It is a small replication of an induction-like circuit, bounded to this model, selector, prompt set, and metric.
+
+<BpSection id="s1" num="01" label="Head anatomy" sheet="SHEET 1 OF 8" title="A head routes one write into a shared stream" />
+
+An attention head has two coupled jobs. Its **QK circuit** decides where to read. Its **OV circuit** decides what to write. The compact account in [The Transformer §03](/blog/the-transformer#s3) derives scaled dot-product attention; [§04](/blog/the-transformer#s4) shows how many heads run in parallel. Here the same machinery becomes an object of investigation.
+
+For residual-stream matrix **X**, one head projects queries **Q** = **XW**<sub>Q</sub>, keys **K** = **XW**<sub>K</sub>, and values **V** = **XW**<sub>V</sub>. The causal mask removes future keys. Softmax turns the remaining QK scores into a row of weights. That row mixes values, and **W**<sub>O</sub> maps the result back to model width.
+
+<BpEquation tag="EQ. 1.1">
+  head(**X**) = softmax((**XW**<sub>Q</sub>)(**XW**<sub>K</sub>)<sup>T</sup> / √d<sub>h</sub> + **M**) **XW**<sub>V</sub> **W**<sub>O</sub>
+</BpEquation>
+
+The attention matrix belongs to the routing half only. Two heads can attend to the same source position and write different directions because their OV matrices differ. A head can also write something useful through a diffuse pattern, or aim a sharp pattern at information that later computation cancels.
+
+<BpNote>GPT-2 small has 12 layers, 12 heads per layer, model width 768, and head width 64. Every head writes a 768-wide vector back into the same residual stream.</BpNote>
+
+<BpFigure caption="FIG. 1 — ONE HEAD CONTAINS A ROUTING CIRCUIT AND A WRITING CIRCUIT. THE ATTENTION MAP EXPOSES QK ROUTING; BEHAVIOR ALSO DEPENDS ON THE OV WRITE AND EVERYTHING THAT READS IT LATER.">
+  <svg viewBox="0 0 920 310">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={24} y={105} width={145} height={72}></rect>
+      <rect x={225} y={38} width={125} height={58}></rect>
+      <rect x={225} y={116} width={125} height={58}></rect>
+      <rect x={225} y={194} width={125} height={58}></rect>
+      <rect x={420} y={68} width={155} height={78}></rect>
+      <rect x={420} y={190} width={155} height={58}></rect>
+      <rect x={646} y={105} width={120} height={72}></rect>
+      <rect x={815} y={105} width={82} height={72}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash">
+      <path d="M169 141 H198 V67 H223 M198 141 H223 M198 141 V223 H223 M350 67 H418 M350 145 H389 V107 H418 M350 223 H418 M575 107 H644 M575 219 H610 V141 H644 M766 141 H813"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M221 67 l-8 -4 v8 z M221 145 l-8 -4 v8 z M221 223 l-8 -4 v8 z M416 107 l-8 -4 v8 z M416 219 l-8 -4 v8 z M642 141 l-8 -4 v8 z M811 141 l-8 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={55} y={137}>RESIDUAL X</text><text x={67} y={157}>[P × 768]</text>
+      <text x={265} y={73}>Q</text><text x={265} y={151}>K</text><text x={265} y={229}>V</text>
+      <text x={450} y={99}>QK SCORES</text><text x={447} y={121}>MASK + SOFTMAX</text>
+      <text x={454} y={224}>VALUE CONTENT</text>
+      <text x={681} y={137}>WEIGHTED</text><text x={689} y={157}>SUM</text>
+      <text x={837} y={137}>W<tspan baselineShift="sub">O</tspan></text><text x={831} y={157}>WRITE</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor">
+      <text x={436} y={52}>ROUTE: WHERE TO READ</text><text x={432} y={280}>CONTENT: WHAT TO WRITE</text>
+    </g>
+  </svg>
+</BpFigure>
+
+<BpQA q="Is one attention head one human-readable feature?">
+Usually no. “Head” names an architectural component, not a guarantee of one semantic role. A head can participate in several behaviors, and one behavior can be distributed across several heads and MLPs. Interpretability supplies testable descriptions at a chosen level; it does not turn every parameter group into a tidy concept.
+</BpQA>
+
+<BpSection id="s2" num="02" label="Research question" sheet="SHEET 2 OF 8" title="Interpretability turns weights into mechanism claims" />
+
+A trained model gives us weights, activations, and outputs. A mechanism claim adds structure: component A detects a condition, passes information to component B, and changes behavior C. The claim should predict what appears inside the model and what happens when the proposed route is disrupted.
+
+The transformer-circuits framework treats the residual stream as a shared communication channel. Heads and MLPs read from it and write back to it. This view makes composition concrete. A late head can read a feature written by an earlier head; its QK circuit and OV circuit can be studied as products of weight matrices rather than as isolated parameter names.
+
+Three evidence layers keep the language disciplined. First, observe an activation or attention pattern associated with the behavior. Second, read the component’s output into a behavior-relevant basis, such as vocabulary logits. Third, intervene at the proposed component or path and compare the measured behavior. Correlation enters at the first layer. Causal evidence begins with a controlled change at the third.
+
+<BpFigure caption="FIG. 2 — CLAIM-STRENGTH LADDER. EACH RUNG ADDS A QUESTION AND AN ASSUMPTION; A HIGHER RUNG DOES NOT ERASE THE RECORD BENEATH IT.">
+  <svg viewBox="0 0 920 300">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={60} y={205} width={240} height={58}></rect>
+      <rect x={340} y={135} width={240} height={128}></rect>
+      <rect x={620} y={65} width={240} height={198}></rect>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={88} y={231}>1 · PATTERN</text><text x={88} y={250}>WHERE DID IT ATTEND?</text>
+      <text x={368} y={162}>2 · ATTRIBUTION</text><text x={368} y={181}>WHAT DID IT WRITE?</text><text x={368} y={234}>+ READOUT CONVENTION</text>
+      <text x={648} y={92}>3 · INTERVENTION</text><text x={648} y={111}>DID BEHAVIOR DEPEND ON IT?</text><text x={648} y={164}>+ REPLACEMENT CHOICE</text><text x={648} y={184}>+ CONTROL INPUT</text><text x={648} y={204}>+ METRIC</text>
+    </g>
+    <path d="M110 44 H810" fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash"></path>
+    <path d="M808 44 l-8 -4 v8 z" fill="currentColor"></path>
+    <text x={298} y={31} className="bp-svg-t10" fill="currentColor">STRONGER, NARROWER CLAIM →</text>
+  </svg>
+</BpFigure>
+
+<BpNote>Michel, Levy, and Neubig ablated attention heads and found that many could be removed at test time with limited effect, while some heads mattered sharply. Component count and component necessity are separate facts.</BpNote>
+
+The ladder also blocks a common category error. A visualization answers “where was weight placed?” A causal statement answers “what would have changed under an intervention?” The same experiment can produce a beautiful pattern and a weak, reversed, or prompt-dependent ablation effect. Those disagreements are results, not blemishes to hide.
+
+A mechanism hypothesis becomes useful when it risks failure. “This head pays attention to repeated material” can absorb almost any heatmap after the fact. “[A][B] … [A] routes to the earlier [B], writes toward B, and loses that copying effect when the route is removed” predicts three measurements before the tensors are opened. It also predicts controls: break the repeated prefix and the stripe should weaken; preserve the prefix while changing the continuation and the copied target should change; patch the clean route into a corrupted run and the score should recover.
+
+Candidate discovery and hypothesis testing therefore deserve separate data whenever the budget allows. One prompt set can locate promising heads, while a held-out set estimates whether the declared pattern and effect generalize. This page uses the same three tiny prompts for screening and reporting, so its claim stays at replication scale. The selector is published to make that limitation inspectable.
+
+<BpSection id="s3" num="03" label="Behavior" sheet="SHEET 3 OF 8" title="Induction continues a pattern seen inside the prompt" />
+
+Take a sequence `A B C D … A B`. After the second `B`, a model that uses the earlier pattern can raise `C` as the next token. More generally, when a token **A** appears again, an induction pattern attends to the token **B** that followed the earlier **A**, then writes in a direction that helps predict **B** now. The behavior has the form `[A][B] … [A] → [B]`.
+
+This is a form of in-context pattern completion. The relevant association lives in the current sequence; no weight update occurs during the prompt. Olsson and collaborators studied heads with this pattern across small attention-only models and larger language models, connecting their emergence to a sharp change in in-context learning during training.
+
+Induction heads became a useful case study because they connect a visible algorithm, a compact weight-level account, and a behavioral capability. They also expose the limits of that connection. The training evidence in the original study associates induction-head formation with improved in-context loss; it does not reduce every instance of in-context learning to this one circuit. The repeated-token behavior gives us a tractable microscope slide, not a catalog of everything a language model learns from context.
+
+<BpEquation tag="EQ. 3.1">
+  induction target at position t = token at (previous occurrence of x<sub>t</sub>) + 1
+</BpEquation>
+
+The exact tokenization matters. Our prepared prompts use GPT-2 tokens that repeat as two equal eight-token cycles: letters, number words, and color words. The behavior metric averages, across the second cycle, the expected continuation token’s logit minus the mean logit of the other cycle tokens. That local comparison isolates copying within the prepared alphabet; it is not a language-model benchmark.
+
+<BpFigure caption="FIG. 3 — PREFIX MATCHING CREATES AN OFF-DIAGONAL STRIPE. AT THE SECOND A, THE USEFUL SOURCE IS THE B THAT FOLLOWED THE FIRST A.">
+  <svg viewBox="0 0 920 300">
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={150} y={45}>KEY POSITION →</text><text x={38} y={150} transform="rotate(-90 38 150)">QUERY POSITION →</text>
+      <text x={170} y={78}>A</text><text x={235} y={78}>B</text><text x={300} y={78}>C</text><text x={365} y={78}>D</text><text x={430} y={78}>A</text><text x={495} y={78}>B</text><text x={560} y={78}>C</text><text x={625} y={78}>D</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1}>
+      {Array.from({ length: 9 }, (_, i) => <path key={`v-${i}`} d={`M${135 + i * 65} 90 V270`}></path>)}
+      {Array.from({ length: 9 }, (_, i) => <path key={`h-${i}`} d={`M135 ${90 + i * 22.5} H655`}></path>)}
+    </g>
+    <g fill="var(--bp-accent)" opacity={0.78}>
+      <rect x={201} y={181} width={63} height={21}></rect><rect x={266} y={204} width={63} height={21}></rect><rect x={331} y={226} width={63} height={21}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash">
+      <path d="M427 190 H690 V118 H270"></path>
+    </g>
+    <path d="M272 118 l8 -4 v8 z" fill="currentColor"></path>
+    <text x={682} y={101} className="bp-svg-t10" fill="currentColor">SECOND A ROUTES TO EARLIER B</text>
+  </svg>
+</BpFigure>
+
+<BpQA q="Is repeating a sequence the same as few-shot learning?">
+It is a controlled fragment of in-context learning: the prompt supplies a relation and the model continues it. Few-shot tasks can require richer representations, task inference, and several circuits. The repeated-token test is valuable because its expected route and next-token effect can be specified exactly.
+</BpQA>
+
+<BpSection id="s4" num="04" label="Circuit" sheet="SHEET 4 OF 8" title="Two heads compose the induction route" />
+
+The canonical two-layer account begins with a **previous-token head**. At position *i*, it attends to *i − 1* and copies information about the previous token into the current residual state. That write gives a later head a way to compare “the token before me” with tokens at earlier positions.
+
+The later **induction head** uses that written feature in its QK circuit. Its query at the current position matches keys at positions whose previous token resembles the current prefix. The matching key position is the token after the earlier occurrence. Its OV circuit then copies information about that source token toward the vocabulary direction for the next prediction.
+
+Written as a path, the first head supplies a shifted token feature; the second head uses a QK composition to route toward the earlier continuation and an OV composition to write that continuation. The circuit is distributed through the residual stream. There is no wire connecting two named modules, only compatible reads and writes learned in separate layers.
+
+<BpFigure caption="FIG. 4 — HERO CIRCUIT PLATE. THE PREVIOUS-TOKEN HEAD WRITES A SHIFTED FEATURE; THE INDUCTION HEAD USES QK PREFIX MATCHING TO FIND THE EARLIER CONTINUATION, THEN ITS OV CIRCUIT WRITES TOWARD THAT TOKEN.">
+  <svg viewBox="0 0 920 430">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={24} y={52} width={872} height={66}></rect>
+      <rect x={64} y={172} width={180} height={88}></rect>
+      <rect x={310} y={158} width={265} height={116}></rect>
+      <rect x={640} y={172} width={216} height={88}></rect>
+      <rect x={310} y={332} width={265} height={58}></rect>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={52} y={79}>RESIDUAL STREAM</text><text x={52} y={100}>… [A] [B] … [A] · SHARED 768-D CHANNEL</text>
+      <text x={88} y={204}>PREVIOUS-TOKEN HEAD</text><text x={88} y={226}>ATTEND i → i−1</text><text x={88} y={246}>WRITE “PREVIOUS = A”</text>
+      <text x={338} y={188}>INDUCTION HEAD · QK</text><text x={338} y={212}>QUERY: PREVIOUS FEATURE</text><text x={338} y={234}>KEY: EARLIER PREFIX</text><text x={338} y={256}>ROUTE CURRENT A → EARLIER B</text>
+      <text x={670} y={204}>INDUCTION HEAD · OV</text><text x={670} y={226}>READ EARLIER B</text><text x={670} y={246}>WRITE “NEXT = B”</text>
+      <text x={343} y={367}>UNEMBED → B LOGIT RISES</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.4} strokeDasharray="6 5" className="bp-dash">
+      <path d="M154 118 V170 M244 216 H308 M575 216 H638 M748 260 V300 H442 V330 M442 274 V330"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M154 168 l-4 -8 h8 z M306 216 l-8 -4 v8 z M636 216 l-8 -4 v8 z M442 328 l-4 -8 h8 z"></path>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor">
+      <text x={72} y={294}>L4H11 IN THIS EXPORT</text><text x={356} y={306}>QK COMPOSITION</text><text x={676} y={294}>L5H1 IN THIS EXPORT</text><text x={610} y={366}>OV → VOCABULARY</text>
+    </g>
+  </svg>
+</BpFigure>
+
+<BpNote>The export uses zero-indexed labels. L4H11 placed 0.848 mean attention on the previous-token diagonal across the prompt set. L5H1 placed 0.536 mean attention on the prescribed induction locations.</BpNote>
+
+Composition is a hypothesis about information flow, not a guarantee that these two heads work alone. Other heads establish token identity, MLPs transform the stream, and later layers can amplify or suppress the write. The useful experimental question is whether the named path predicts effects that survive controls.
+
+<BpSection id="s5" num="05" label="Pattern evidence" sheet="SHEET 5 OF 8" title="Layer one: locate the candidate pattern" />
+
+Pattern evidence begins with a declared template. For every query in the second cycle, score attention to the position immediately after the corresponding token in the first cycle. Average that weight across eligible positions and prompts. This produces a prefix-matching score without asking whether the head’s output helps the expected token.
+
+Our exporter computes that score for all 144 GPT-2 heads on three prompts. It screens the 24 highest heads, requires mean pattern score of at least 0.10, and retains candidates whose later ablation reduces the separately defined copying metric. Among those retained candidates, L5H1 had the largest aggregate drop. L5H5 actually had the brightest mean pattern, 0.599 versus 0.536, which illustrates why selection and evidence layers should remain visible.
+
+The protocol pins the model repository and resolved commit, loads the checkpoint in evaluation mode with eager attention, and seeds Torch with zero. Each visible prompt is checked after tokenization: its first eight token IDs must exactly equal its second eight. Attention scores are averaged over seven valid continuation positions per prompt. That ledger prevents a whitespace split or multi-token word from quietly changing the intended circuit.
+
+The selector mixes discovery and intervention because this page needs one candidate for the interactive. It records the full rule rather than presenting L5H1 as a famous coordinate chosen in advance. A stricter study would preregister the threshold, separate discovery prompts from evaluation prompts, repeat across seeds or checkpoints, and publish confidence intervals over a broader distribution of sequences.
+
+At the demo’s active query, token `G` in the second cycle, L5H1 places 0.783 attention on `H` in the first cycle. That is the prescribed source for predicting the next `H`. The row looks exactly like copying. The proper layer-one claim remains narrow: this head routes strongly along the induction template on this input.
+
+<InductionCircuitDemo fig={5} />
+
+Use the head buttons to compare attention rows. Then zero the previous-token head, candidate induction head, or same-layer MLP. The bars never change with those toggles because they show the intact exported attention pattern for the selected display head. The behavior readouts do change: each toggle selects one of eight precomputed full forward passes.
+
+<BpQA q="Why can a bright attention cell be misleading?">
+The cell reports a routing weight, not the value vector carried along that route or the effect of the resulting residual write. Attention also branches across heads and layers. A bright cell can carry irrelevant content, be canceled later, or accompany a behavior produced through another path.
+</BpQA>
+
+<BpSection id="s6" num="06" label="Attribution" sheet="SHEET 6 OF 8" title="Layer two: read the head in vocabulary space" />
+
+Logit attribution asks whether the head’s write points toward the token the copying hypothesis predicts. Take the selected head’s pre-projection result, pass only its 64-wide slice through the corresponding rows of **W**<sub>O</sub>, and obtain a 768-wide residual write. Then apply a declared readout into vocabulary space.
+
+Our export uses the intact run’s final layer-normalization scale and gain, excludes bias, and dots the head write with GPT-2’s tied unembedding. This linear decomposition assigns L5H1 a direct contribution of +0.243 to the `H` target logit at the active position. Relative to the mean contribution for the other cycle tokens, its direct copying-score attribution is +0.398.
+
+<BpEquation tag="EQ. 6.1">
+  DLA<sub>h→v</sub> = **W**<sub>U,v</sub> · LN<sub>scale,intact</sub>(**z**<sub>h</sub> **W**<sub>O,h</sub>)
+</BpEquation>
+
+<BpFigure caption="FIG. 6 — DIRECT LOGIT ATTRIBUTION READS ONE HEAD WRITE THROUGH A FROZEN FINAL NORMALIZATION SCALE AND THE UNEMBEDDING. THE RESULT IS A DECOMPOSITION, NOT A COUNTERFACTUAL RUN.">
+  <svg viewBox="0 0 920 270">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={30} y={92} width={175} height={78}></rect><rect x={270} y={92} width={175} height={78}></rect><rect x={510} y={92} width={175} height={78}></rect><rect x={750} y={92} width={140} height={78}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash"><path d="M205 131 H268 M445 131 H508 M685 131 H748"></path></g>
+    <g fill="currentColor"><path d="M266 131 l-8 -4 v8 z M506 131 l-8 -4 v8 z M746 131 l-8 -4 v8 z"></path></g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={62} y={122}>HEAD RESULT</text><text x={74} y={145}>64 VALUES</text>
+      <text x={302} y={122}>W<tspan baselineShift="sub">O,h</tspan> SLICE</text><text x={299} y={145}>768-D WRITE</text>
+      <text x={538} y={122}>FROZEN LN</text><text x={538} y={145}>SCALE + GAIN</text>
+      <text x={782} y={122}>W<tspan baselineShift="sub">U</tspan></text><text x={770} y={145}>LOGITS</text>
+    </g>
+    <text x={278} y={222} className="bp-svg-t10" fill="currentColor">ACTIVE TARGET ATTRIBUTION: +0.243 LOGIT · COPY-SCORE ATTRIBUTION: +0.398</text>
+  </svg>
+</BpFigure>
+
+Layer normalization makes attribution conventions matter. Freezing the intact scale yields an additive accounting view; recomputing normalization for a component alone answers a different question. Nonlinear downstream computation also means a direct attribution cannot equal the result of removing the head and rerunning the network. Attribution supports “the write points toward H under this readout.” It does not support “the model requires this head.”
+
+Raw logits and probabilities answer different practical questions. A logit difference remains readable when softmax saturates, while probability includes competition from the entire 50,257-token vocabulary. At the active position, both intact and ablated runs still favor `H` strongly, yet the local copy score falls by more than three. Reporting the target probability beside the logit contrast shows why an apparently small probability change can accompany a material circuit effect.
+
+Attribution can be expanded into a table over vocabulary tokens. A copying OV circuit should tend to place weight on the attended token’s own output direction across many source tokens. That weight-level “copying score” is related to, but distinct from, the prompt-level logit contrast used here. The page keeps the terms explicit so a matrix statistic, a component attribution, and a behavioral score do not collapse into one number.
+
+<BpSection id="s7" num="07" label="Intervention" sheet="SHEET 7 OF 8" title="Layer three: break the proposed route" />
+
+An intervention changes an internal variable and reruns the model. The simplest version here is zero ablation: before the selected attention output projection, set that head’s 64-value slice to zero at every position. The remaining eleven head slices pass through unchanged. A separate hook can zero the earlier previous-token head or the layer-five MLP output.
+
+With all components intact, the active-position copying score is 9.418. Zeroing L5H1 reduces it to 6.218, a drop of 3.200. Across every eligible position in all three prompts, the mean drop is 1.023. Zeroing the earlier L4H11 head at the displayed position reduces the score by 2.350. These results causally implicate both components in this measured copying behavior under the stated zero intervention.
+
+<BpNote>The active intact run assigns 99.31% probability to `H`; L5H1 ablation assigns 92.54%. The logit contrast is a cleaner local measure here because the probability is already near saturation.</BpNote>
+
+The MLP control exposes interaction. Zeroing layer five’s MLP raises the active copying score by 1.405, while zeroing both that MLP and L5H1 leaves the score 0.100 above intact. Effects do not add independently. Removing a large component can shift layer normalization and downstream routes, so the ablation result belongs to the whole counterfactual run.
+
+<BpFigure caption="FIG. 7 — ABLATION CREATES A COUNTERFACTUAL FORWARD PASS. THE OBSERVED DROP SUPPORTS A CAUSAL CLAIM ABOUT THE TESTED COMPONENT, INTERVENTION, INPUTS, AND METRIC.">
+  <svg viewBox="0 0 920 300">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={35} y={45} width={360} height={82}></rect><rect x={525} y={45} width={360} height={82}></rect>
+      <rect x={35} y={182} width={360} height={70}></rect><rect x={525} y={182} width={360} height={70}></rect>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={65} y={75}>INTACT FORWARD PASS</text><text x={65} y={98}>L5H1 OUTPUT PRESERVED</text><text x={65} y={117}>COPY SCORE = 9.418</text>
+      <text x={555} y={75}>ZERO-ABLATION PASS</text><text x={555} y={98}>L5H1 SLICE = 0</text><text x={555} y={117}>COPY SCORE = 6.218</text>
+      <text x={65} y={212}>SAME MODEL + PROMPT</text><text x={65} y={233}>ONE DECLARED INTERNAL CHANGE</text>
+      <text x={555} y={212}>OBSERVED EFFECT</text><text x={555} y={233}>Δ COPY SCORE = −3.200</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash"><path d="M395 86 H523 M395 217 H523"></path></g>
+    <g fill="currentColor"><path d="M521 86 l-8 -4 v8 z M521 217 l-8 -4 v8 z"></path></g>
+  </svg>
+</BpFigure>
+
+Zero is a strong and possibly off-distribution replacement. Mean ablation substitutes an average activation. Resampling ablation borrows a value from a control distribution. Activation patching replaces a corrupted-run activation with its clean-run counterpart and asks how much a clean behavior is restored. Path patching narrows the replacement to a proposed sender–receiver route. Each intervention defines a different counterfactual.
+
+A clean–corrupted pair makes restoration especially legible. Start with a repeated sequence where the model predicts the expected continuation. Corrupt one prefix token while holding length and token class stable, then verify that the copying metric falls. Patch the candidate activation from the clean run into the matching site of the corrupted run. Recovery supports the claim that information carried at that site is sufficient to restore part of the behavior in that paired setting. Patching every site until something recovers can overfit as easily as scanning every heatmap, so the search procedure still belongs in the evidence record.
+
+Necessity, sufficiency, and mediation are different claims. Ablation probes necessity under a replacement. Restoration probes a form of sufficiency. A path-specific experiment asks whether the sender’s effect reaches behavior through a named receiver rather than through every downstream consumer. None of these tests identifies a component’s natural-language “purpose”; each measures a counterfactual defined by the investigator.
+
+Good controls include heads with similar attention entropy, nearby heads without the target pattern, shuffled continuation tokens, prompts with no repeat, and several token families. Report adverse cases. In our screen, L7H10 had a 0.431 pattern score yet zeroing it increased the aggregate copying metric by 0.238. A pattern-only reading would have assigned the wrong causal direction.
+
+<BpQA q="Does ablation prove this head is the only way the model copies?">
+No. It shows that the measured behavior depends on the altered component under this replacement, to the observed degree. Redundant routes can preserve some behavior, and zeroing can disturb computations beyond the hypothesized path. Sufficiency needs a separate test, such as restoring or transplanting the proposed activation into a suitable control run.
+</BpQA>
+
+<BpDetachablePlate
+  drawingCode="TDD-010"
+  assetId="bp-010-circuit-tracing"
+  name="Circuit Tracing Field Sheet"
+  format="A1 poster + editable worksheet · PDF"
+  contents={[
+    'QK and OV circuit plate with the induction composition',
+    'Claim-strength ladder: pattern → attribution → intervention',
+    'Intervention checklist and tensor-shape ledger',
+    'Blank experiment record for your own model runs',
+  ]}
+  fileUrl="https://zackproser.b-cdn.net/plates/bp-010-circuit-tracing.pdf"
+/>
+
+<BpSection id="s8" num="08" label="Boundaries" sheet="SHEET 8 OF 8" title="The result is local; the open problem is distributed" />
+
+This replication supports a bounded statement: GPT-2 contains heads that match a prepared induction template; one selected head writes positively toward the copied token under a frozen-scale logit readout; and zeroing that head reduces the declared copying score across the prompt set. It does not establish that every in-context behavior uses induction heads, that L5H1 has one exclusive function, or that the two named heads form a complete circuit.
+
+**Superposition** is a central boundary. A model can represent more features than it has dimensions by placing features in overlapping directions. Polysemantic components and distributed features make one-head labels lossy. Anthropic’s toy models show how sparsity and feature geometry can produce superposition; they provide a conceptual model, not a direct decomposition of GPT-2’s residual stream.
+
+The same boundary applies to vocabulary attribution. A positive token direction is legible because the unembedding supplies a convenient basis. Many useful intermediate features have no single-token name. Sparse autoencoders and related feature-discovery methods try to recover more interpretable directions, but they introduce training objectives, dictionary size, reconstruction error, and feature-splitting choices. They remain outside this drawing’s circuit claim.
+
+Causal tracing work such as ROME locates states whose restoration can recover a factual prediction after a corrupted input. Circuit studies such as the GPT-2 indirect-object-identification work combine path patching, component analysis, and adversarial tests over a richer behavior. Those methods extend the same principle: write a hypothesis that predicts an internal route, intervene on that route, and measure a task-relevant effect.
+
+<BpNote>The shipped JSON is 15 KB, far below the 200 KB cap. It records GPT-2 revision `607a30d…`, Transformers 4.57.6, Torch 2.8.0, Python 3.9.6, all prompts, the selector, tensor rows, eight intervention conditions, and the script SHA-256.</BpNote>
+
+Several open problems remain. Candidate selection can overfit a prompt set. Interventions can move activations off distribution. Effects can be nonlinear and redundant. A circuit found in one checkpoint can drift during training or change across scales. Feature-level accounts can conflict with component-level accounts. The strongest work publishes the selector, inputs, metric, tensors, controls, and failures so another investigator can attack the claim rather than admire the diagram.
+
+A useful next experiment would split dozens of token cycles into discovery and evaluation sets, include nonrepeating and repeated-prefix/wrong-continuation controls, and compare zero, mean, and resampling ablations. It would patch L4H11’s output specifically into L5H1’s key input, test nearby heads as negative controls, and bootstrap the copying-score effect across prompts. Repeating the protocol across several GPT-2 revisions or independently trained small models would separate one checkpoint’s coordinates from a recurring circuit motif.
+
+Another extension would trace training checkpoints. If the proposed composition causes an in-context learning change, the previous-token signal, induction stripe, vocabulary attribution, and causal effect should emerge in a coherent order. A matched learning curve can test that temporal prediction. A final behavioral score alone cannot reveal whether the same internal route appeared suddenly, accumulated gradually, or was replaced later in training.
+
+That standard is the durable lesson. Attention maps are useful maps. Attribution connects a component to an output direction. Intervention supplies the counterfactual evidence required for a causal mechanism claim. Keeping those layers separate makes interpretability results easier to reproduce, challenge, and improve.
+
+<BpReferences
+  drawingCode="TDD-010"
+  items={[
+    { label: "Vaswani et al., ‘Attention Is All You Need,’ NeurIPS 2017", href: "https://arxiv.org/abs/1706.03762" },
+    { label: "Elhage et al., ‘A Mathematical Framework for Transformer Circuits,’ 2021", href: "https://transformer-circuits.pub/2021/framework/index.html" },
+    { label: "Olsson et al., ‘In-context Learning and Induction Heads,’ 2022", href: "https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html" },
+    { label: "Elhage et al., ‘Toy Models of Superposition,’ 2022", href: "https://transformer-circuits.pub/2022/toy_model/index.html" },
+    { label: "Michel, Levy, and Neubig, ‘Are Sixteen Heads Really Better than One?,’ NeurIPS 2019", href: "https://arxiv.org/abs/1905.10650" },
+    { label: "Vig, ‘A Multiscale Visualization of Attention in the Transformer Model,’ ACL 2019", href: "https://arxiv.org/abs/1906.05714" },
+    { label: "Wang et al., ‘Interpretability in the Wild: a Circuit for Indirect Object Identification in GPT-2 small,’ ICLR 2023", href: "https://arxiv.org/abs/2211.00593" },
+    { label: "Meng et al., ‘Locating and Editing Factual Associations in GPT,’ NeurIPS 2022", href: "https://arxiv.org/abs/2202.05262" },
+  ]}
+/>

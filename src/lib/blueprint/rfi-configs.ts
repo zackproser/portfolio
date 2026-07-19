@@ -185,4 +185,34 @@ export const RFI_CONFIGS: Record<string, RfiConfig> = {
       ['RFP DESK', 'The commission form after §08 where a reader describes the room and desired outcome to request a workshop scope.'],
     ],
   },
+  'tdd-010': {
+    drawingCode: 'TDD-010',
+    title: 'The Attention Head',
+    path: '/blog/the-attention-head',
+    drawingSummary: `§01 Head anatomy — one head has a QK routing circuit and an OV writing circuit. QK scores choose source positions under the causal mask; weighted values pass through the output projection into the shared residual stream. An attention map exposes routing weights only. GPT-2 small has 12 layers, 12 heads per layer, width 768, and head width 64.
+§02 Research question — mechanistic interpretability proposes testable routes from components to behavior. The claim-strength ladder is pattern, then logit attribution, then intervention. A pattern locates correlation; attribution reads a component output in a behavior-relevant basis; intervention changes the component and measures a counterfactual behavioral effect.
+§03 Behavior — induction has the form [A][B] … [A] → [B]: at a repeated prefix token, attend to the token after its earlier occurrence and raise that continuation. The prepared GPT-2 replication uses three prompts made of two equal eight-token cycles. Copying score is the target continuation logit minus the mean logit of other cycle tokens.
+§04 Circuit — an earlier previous-token head attends i→i−1 and writes a shifted token feature. A later induction head uses that feature in its QK circuit to find a matching earlier prefix; its OV circuit writes the earlier continuation toward the vocabulary output. In the export, zero-indexed L4H11 has previous-token score 0.848 and L5H1 has induction-pattern score 0.536.
+§05 Pattern evidence — all 144 heads were scored across three prompts. The 24 highest were screened; candidates needed pattern score ≥0.10 and a copying-score reduction under ablation. L5H1 had the largest aggregate drop among retained candidates. At the displayed query it places 0.783 attention on the prescribed source. L5H5 has a brighter aggregate pattern, demonstrating why pattern rank alone cannot establish mechanism.
+§06 Attribution — the exporter projects the selected 64-wide head result through its W_O slice, applies the intact final layer-normalization scale and gain, excludes bias, and dots with the tied unembedding. At the active position, L5H1 contributes +0.243 to the H target logit and +0.398 to the local copying-score contrast. This is a linear decomposition under a stated convention, not a rerun.
+§07 Intervention — zero ablation removes the selected head slice before output projection at every position. Active copying score falls from 9.418 to 6.218 when L5H1 is zeroed; the mean drop across eligible positions and prompts is 1.023. Zeroing L4H11 lowers the active score by 2.350. Zeroing the layer-five MLP raises it, exposing non-additive interaction. Mean ablation, resampling, activation patching, and path patching define different counterfactuals.
+§08 Boundaries — the result is local to GPT-2 revision 607a30d, the three prompts, selector, positions, metric, and zero intervention. It does not establish a universal account of in-context learning, a complete two-head circuit, or one function per head. Superposition, distributed features, off-distribution interventions, redundancy, prompt overfitting, and cross-checkpoint drift remain open boundaries. Booking, pricing, and availability are outside this research drawing; do not route them to a sales or consultation form.`,
+    terms: [
+      ['ATTENTION HEAD', 'One parallel attention component with its own query, key, value, and output-projection slices.'],
+      ['INDUCTION HEAD', 'Head exhibiting [A][B] … [A] → [B] prefix matching and a copying-compatible output write.'],
+      ['PREVIOUS-TOKEN HEAD', 'Head that attends from position i to i−1 and can write a shifted token feature for a later head.'],
+      ['QK CIRCUIT', 'Query-key computation that scores source positions and determines where a head reads.'],
+      ['OV CIRCUIT', 'Value-output computation that determines which residual direction a head writes from attended content.'],
+      ['RESIDUAL STREAM', 'Shared model-width channel read and updated by attention heads and MLPs across layers.'],
+      ['ATTENTION PATTERN', 'Softmax-normalized routing weights from each query position to allowed key positions.'],
+      ['PREFIX MATCHING', 'Routing from a repeated token context to the continuation following its earlier match.'],
+      ['COPYING SCORE', 'Here, the target continuation logit minus the mean logit of other prepared cycle tokens.'],
+      ['LOGIT ATTRIBUTION', 'Declared readout mapping a component write into contributions along vocabulary-logit directions.'],
+      ['ABLATION', 'Intervention replacing a component activation, here with zero, followed by a new forward pass.'],
+      ['ACTIVATION PATCHING', 'Replacement of an activation in one run with the corresponding activation from another run.'],
+      ['PATH PATCHING', 'Intervention designed to isolate communication along a proposed sender–receiver path.'],
+      ['SUPERPOSITION', 'Representation of more features than available dimensions through overlapping feature directions.'],
+      ['CAUSAL INTERVENTION', 'Controlled internal change used to estimate whether a measured behavior depends on a component or path.'],
+    ],
+  },
 }
