@@ -51,6 +51,10 @@
   overflow-x: clip;
 }
 
+/* The site theme (next-themes `.dark` on <html>) drives the drawing —
+   the nav toggle and the drawing's own button set the same theme.
+   `.bp-dark` is kept as an equivalent explicit hook. */
+.dark .bp,
 .bp.bp-dark {
   --bp-paper: #16213e;
   --bp-grid: rgba(125, 211, 252, 0.07);
@@ -1388,6 +1392,7 @@
 
 @media print {
   .bp,
+  .dark .bp,
   .bp.bp-dark {
     /* Force the light-print token set regardless of the on-screen theme */
     --bp-paper: #ffffff;

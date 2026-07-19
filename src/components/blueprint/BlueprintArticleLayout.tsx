@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useTheme } from 'next-themes'
 import type { Content } from '@/types'
 import { RfiMarkdown } from './rfi-markdown'
 import { BlueprintSeriesCapture, NextDrawing } from './BlueprintSeriesCapture'
@@ -49,8 +50,6 @@ const DEFAULT_SUGGESTIONS = [
   'Where does this break down in practice?',
 ]
 
-const THEME_KEY = 'bp-article-theme'
-
 function monthYear(date?: string): string {
   if (!date) return ''
   try {
@@ -76,7 +75,11 @@ export function BlueprintArticleLayout({
   const drawingCode = `TDD-${number}`
   const suggestions = bp.rfiSuggestions?.length ? bp.rfiSuggestions : DEFAULT_SUGGESTIONS
 
-  const [dark, setDark] = useState(true)
+  // One theme for the whole site: the drawing follows next-themes'
+  // `.dark` class via CSS, and this layout's own toggle sets the same
+  // theme the nav toggle does.
+  const { resolvedTheme, setTheme } = useTheme()
+  const dark = resolvedTheme !== 'light'
   const [mounted, setMounted] = useState(false)
   const [prog, setProg] = useState(0)
   const [toc, setToc] = useState<TocEntry[]>([])
@@ -101,27 +104,12 @@ export function BlueprintArticleLayout({
   const drawerWasOpen = useRef(false)
   const logKey = `bp-rfi-${drawingId}`
 
-  // The server-rendered button has no handler yet. Keep it visibly inactive
-  // until hydration completes, then restore the reader's last print mode.
+  // The server-rendered button has no handler yet. Keep it visibly
+  // inactive until hydration completes; next-themes persists the
+  // chosen theme itself.
   useEffect(() => {
-    try {
-      const storedTheme = localStorage.getItem(THEME_KEY)
-      if (storedTheme === 'light') setDark(false)
-      if (storedTheme === 'dark') setDark(true)
-    } catch {
-      // Storage may be unavailable; the in-memory theme still works.
-    }
     setMounted(true)
   }, [])
-
-  useEffect(() => {
-    if (!mounted) return
-    try {
-      localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light')
-    } catch {
-      // Storage may be unavailable; keep the current in-memory theme.
-    }
-  }, [dark, mounted])
 
   // Build the INDEX OF SHEETS from the rendered MDX and track scroll.
   useEffect(() => {
@@ -306,7 +294,7 @@ export function BlueprintArticleLayout({
   ]
 
   return (
-    <div ref={rootRef} className={`bp${dark ? ' bp-dark' : ''}`}>
+    <div ref={rootRef} className="bp">
       <div className="bp-progress-track">
         <div className="bp-progress-bar" style={{ width: `${(prog * 100).toFixed(1)}%` }} />
       </div>
@@ -314,7 +302,7 @@ export function BlueprintArticleLayout({
       <button
         type="button"
         className="bp-theme-toggle"
-        onClick={() => setDark((d) => !d)}
+        onClick={() => setTheme(dark ? 'light' : 'dark')}
         disabled={!mounted}
         aria-label={mounted ? `Switch to ${dark ? 'light print' : 'blueprint'} theme` : 'Theme control loading'}
       >
