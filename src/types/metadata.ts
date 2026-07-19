@@ -38,6 +38,12 @@ export interface ExtendedMetadata extends Metadata {
     subtitle?: string  // Serif italic dek under the H1
     revision?: string  // Colophon revision (default "REV A")
     rfiSuggestions?: string[]  // Suggestion chips for the RFI desk/drawer
+    nextDrawing?: {  // Advertised on the series-capture card
+      number: string  // "005"
+      title?: string
+      subject?: string
+      status?: 'planned' | 'in-production' | 'issued'
+    }
   }
   durSec?: number  // Video duration in seconds (for video content type)
   views?: number  // Video view count (for video content type)

@@ -130,4 +130,34 @@ export const RFI_CONFIGS: Record<string, RfiConfig> = {
       ['ABSTENTION', 'Deliberate refusal to answer when supplied evidence is absent, conflicting, or insufficient.'],
     ],
   },
+  'tdd-004': {
+    drawingCode: 'TDD-004',
+    title: 'The Tokenizer',
+    path: '/blog/the-tokenizer',
+    drawingSummary: `§01 Representation tradeoff — models consume integer IDs, not raw text. Bytes and characters guarantee coverage but lengthen sequences; words shorten common inputs but create huge vocabularies and out-of-vocabulary failures. Subwords choose a middle point, with vocabulary size trading embedding parameters against sequence length.
+§02 Vocabulary training — BPE begins from small symbols, counts adjacent pairs over a weighted corpus, merges the most frequent pair, and repeats. Merge order is the learned artifact. Gage described BPE for compression in 1994; Sennrich et al. adapted it to neural translation in 2016. WordPiece came through speech search; GPT-2 used byte-level BPE.
+§03 Encoding — inference replays the fixed ordered merge table over new text. Earlier merges create symbols used by later merges, so applying every available merge without rank order gives a different segmentation. Encoding is deterministic for a fixed tokenizer configuration and normalization pipeline.
+§04 Bytes and Unicode — byte-level BPE starts from UTF-8 bytes, so every input is representable without an unknown token. Non-ASCII characters span multiple bytes; uncommon emoji and CJK text may fragment. Tokenizers also encode whitespace through markers or space-attached vocabulary entries, and normalization changes boundaries.
+§05 IDs and embeddings — each final token maps to an integer vocabulary ID, which selects one row from a learned embedding matrix. IDs are arbitrary addresses, not magnitudes or semantic coordinates. Tokenization is the bridge from text to the token vectors used by transformers and embedding models.
+§06 Systems cost — token count determines context occupancy, prefill work, generated decoding steps, latency, and API billing. Fertility means tokens per word or comparable text unit; it varies by language and domain. A tokenizer trained heavily on one language can make another language longer and more expensive.
+§07 Failure lines — token boundaries can hide character structure needed for spelling and counting, split digits inconsistently for arithmetic, fracture code identifiers, and allocate many pieces to rare names. The strawberry letter-counting failure belongs to this class, though model capability and data also matter.
+§08 Design boundaries — BPE greedily builds frequent units; WordPiece uses a likelihood-inspired merge score and greedy longest-match encoding; Unigram begins with many candidates and prunes them probabilistically. SentencePiece trains from raw text. Byte models such as ByT5 remove subword OOV issues but run longer sequences. Vocabulary size is a systems decision balancing sequence length, embedding parameters, multilingual coverage, and serving cost.`,
+    terms: [
+      ['TOKEN', 'One vocabulary item emitted by a tokenizer and represented by an integer ID.'],
+      ['VOCABULARY', 'Fixed inventory of tokens available to an encoder and its embedding table.'],
+      ['BPE', 'Byte-pair encoding: repeated merging of the most frequent adjacent symbol pair.'],
+      ['MERGE TABLE', 'Ordered list of symbol-pair merges learned from the training corpus and replayed during encoding.'],
+      ['MERGE RANK', 'Position of a pair in the ordered merge table; lower ranks apply earlier.'],
+      ['BYTE-LEVEL BPE', 'BPE whose base alphabet covers bytes, allowing any UTF-8 input to be represented.'],
+      ['UTF-8', 'Variable-width Unicode encoding using one to four bytes per code point.'],
+      ['FALLBACK', 'Base representation used when no larger learned token matches, commonly bytes or characters.'],
+      ['TOKEN ID', 'Integer address assigned to one vocabulary entry.'],
+      ['EMBEDDING LOOKUP', 'Selection of the learned matrix row indexed by a token ID.'],
+      ['FERTILITY', 'Number of tokens produced per word or another comparable unit of text.'],
+      ['WORDPIECE', 'Subword method associated with likelihood-based vocabulary construction and greedy longest-match encoding.'],
+      ['UNIGRAM', 'Probabilistic subword model that prunes a large candidate vocabulary and scores segmentations.'],
+      ['SENTENCEPIECE', 'Language-independent tokenizer toolkit that can train directly from raw sentences.'],
+      ['SPECIAL TOKEN', 'Reserved vocabulary item representing control structure such as end-of-text or padding.'],
+    ],
+  },
 }

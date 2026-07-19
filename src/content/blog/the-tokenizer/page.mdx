@@ -1,0 +1,357 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import {
+  BpSection,
+  BpAnchor,
+  BpNote,
+  BpFigure,
+  BpEquation,
+  BpQA,
+  BpReferences,
+  BpeMergeBench,
+  TokenBoundaryInspector,
+} from '@/components/blueprint'
+
+export const metadata = createMetadata(rawMetadata)
+
+<BpAnchor id="s0" num="00" label="Abstract" />
+
+A language model receives integers. The sentence you type has to cross a boundary before any attention layer, embedding lookup, or matrix multiplication can begin. A **tokenizer** performs that conversion: it divides text into vocabulary pieces, then replaces every piece with an ID.
+
+Those boundaries shape the whole system. They determine how much text fits in a context window, which strings receive compact learned representations, how much input costs, and where spelling, code, numbers, names, and underrepresented languages become awkward. Two models can read the same visible sentence as different integer sequences because their tokenizers learned different vocabularies from different corpora.
+
+This drawing follows byte-pair encoding from vocabulary training through deterministic encoding, byte fallback, embedding lookup, systems cost, and characteristic failures. It closes with the design boundary between BPE, WordPiece, Unigram, bytes, and tokenizer-free models. The central lesson is mechanical: a token is a trained allocation decision between vocabulary space and sequence length.
+
+<BpSection id="s1" num="01" label="Representation" sheet="SHEET 1 OF 8" title="Text is not a model input" />
+
+Computers can store text as bytes, but a transformer expects a bounded sequence of indices into a learned table. The obvious units all fail in different ways. One token per byte gives complete coverage and a tiny base vocabulary, while making ordinary text long. One token per Unicode character is closer to writing, but Unicode contains scripts, combining marks, emoji sequences, and compatibility forms that complicate the idea of one visible character.
+
+Words look efficient until language starts moving. Inflection turns *walk*, *walked*, and *walking* into separate entries. Product names, misspellings, URLs, source identifiers, and newly coined terms grow the inventory without limit. Languages without whitespace-delimited words expose the assumption immediately. A fixed word vocabulary must either emit an unknown token or carry an impractically large tail of rare entries.
+
+Subword tokenization chooses a middle point. Frequent strings can become single tokens. Rare strings decompose into reusable pieces, characters, or bytes. *Tokenization* might become `token` + `ization`; an unfamiliar name might become several smaller fragments. Coverage stays finite while common text remains shorter than its character or byte representation.
+
+<BpNote>A vocabulary of 50,000 tokens with width 4,096 contains 204.8 million embedding values. At two bytes per value, that input table alone occupies about 391 MiB before optimizer state or an untied output table.</BpNote>
+
+<BpFigure caption="FIG. 1 — REPRESENTATION TRADEOFF: SMALL BASE ALPHABETS LENGTHEN SEQUENCES; WHOLE-WORD VOCABULARIES GROW WITHOUT A CLEAN COVERAGE BOUNDARY.">
+  <svg viewBox="0 0 920 285">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={30} y={58} width={190} height={112}></rect>
+      <rect x={255} y={58} width={190} height={112}></rect>
+      <rect x={480} y={58} width={190} height={112}></rect>
+      <rect x={705} y={58} width={185} height={112}></rect>
+      <path d="M55 222 H865"></path>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash">
+      <path d="M220 114 H253 M445 114 H478 M670 114 H703"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M251 114 l-8 -4 v8 z M476 114 l-8 -4 v8 z M701 114 l-8 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={92} y={84}>BYTES</text>
+      <text x={55} y={115}>TINY VOCABULARY</text>
+      <text x={55} y={139}>LONG SEQUENCE</text>
+      <text x={299} y={84}>CHARACTERS</text>
+      <text x={280} y={115}>SCRIPT COMPLEXITY</text>
+      <text x={280} y={139}>MEDIUM LENGTH</text>
+      <text x={534} y={84}>SUBWORDS</text>
+      <text x={505} y={115}>FINITE COVERAGE</text>
+      <text x={505} y={139}>BALANCED LENGTH</text>
+      <text x={766} y={84}>WORDS</text>
+      <text x={730} y={115}>HUGE VOCABULARY</text>
+      <text x={730} y={139}>RARE-WORD OOV</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor">
+      <text x={30} y={252}>MORE SEQUENCE POSITIONS</text>
+      <text x={705} y={252}>MORE VOCABULARY ENTRIES</text>
+    </g>
+  </svg>
+</BpFigure>
+
+Vocabulary size therefore connects two costs. A larger vocabulary adds rows to the embedding and output matrices. A smaller vocabulary produces more positions, increasing context use and the work performed over the sequence. Tokenizer design picks a point on that curve for a particular corpus, model, and serving budget.
+
+<BpQA q="Why not feed the model single letters?">
+Letters guarantee reasonable coverage for alphabetic writing, but they turn each word into many model positions and do not map cleanly onto every writing system. Unicode also separates code points from what readers perceive as characters: an accent can be a separate combining mark, and one emoji can contain several code points. Subwords retain small-unit fallback while giving frequent strings compact entries.
+</BpQA>
+
+<BpSection id="s2" num="02" label="Vocabulary training" sheet="SHEET 2 OF 8" title="The corpus writes an ordered merge table" />
+
+Byte-pair encoding began as compression. Philip Gage's 1994 algorithm repeatedly replaced the most common adjacent byte pair with a byte that did not occur in the data, storing substitutions so the stream could be reconstructed. The subword version keeps the repeated-pair idea but uses each selected pair as a new vocabulary symbol.
+
+Training starts by expressing every corpus word as base symbols and retaining its frequency. Count every adjacent pair, weighted by how often its word occurs. Merge the pair with the largest count everywhere it appears. Add the joined symbol to the vocabulary, recount, and repeat until the vocabulary reaches its target size or another stopping rule fires.
+
+<BpEquation tag="EQ. 2.1">
+  pair<sup>*</sup> = arg max<sub>(a,b)</sub> count<sub>corpus</sub>(a, b)
+</BpEquation>
+
+Suppose `low`, `lower`, and `lowest` occur often. Early counts may select `l` + `o` → `lo`, then `lo` + `w` → `low`. Later merges can use `low` as one symbol. A different corpus might favor `e` + `r` first. Frequency ties also need a deterministic convention. The resulting merge order records the path taken through these choices.
+
+<BpNote>Sennrich, Haddow, and Birch adapted BPE segmentation to rare-word neural machine translation in 2016. Their method let an open vocabulary be represented through a fixed subword inventory.</BpNote>
+
+<BpFigure caption="FIG. 2 — BPE TRAINING IS A FEEDBACK LOOP: COUNT PAIRS, SELECT THE MOST FREQUENT, MERGE IT THROUGH THE CORPUS, THEN COUNT AGAIN.">
+  <svg viewBox="0 0 920 270">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={30} y={94} width={175} height={70}></rect>
+      <rect x={275} y={94} width={150} height={70}></rect>
+      <rect x={495} y={94} width={150} height={70}></rect>
+      <rect x={715} y={94} width={175} height={70}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash">
+      <path d="M205 129 H273 M425 129 H493 M645 129 H713 M802 164 V220 H350 V166"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M271 129 l-8 -4 v8 z M491 129 l-8 -4 v8 z M711 129 l-8 -4 v8 z M350 168 l-4 8 h8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={76} y={122}>WEIGHTED</text>
+      <text x={82} y={142}>CORPUS</text>
+      <text x={313} y={122}>COUNT</text>
+      <text x={304} y={142}>ADJACENT PAIRS</text>
+      <text x={530} y={122}>ARGMAX</text>
+      <text x={521} y={142}>FREQUENCY</text>
+      <text x={750} y={122}>MERGE PAIR</text>
+      <text x={747} y={142}>EVERYWHERE</text>
+    </g>
+    <text x={518} y={246} className="bp-svg-t10" fill="currentColor">REPEAT UNTIL VOCABULARY BUDGET IS FILLED</text>
+  </svg>
+</BpFigure>
+
+WordPiece belongs to the same subword lineage but does not use raw pair frequency as its defining selection rule. The system described by Schuster and Nakajima for Japanese and Korean voice search optimized a wordpiece inventory around language-model likelihood. Later WordPiece tokenizers commonly encode with greedy longest matching, marking continuation pieces such as `##ing`.
+
+GPT-2 used a byte-level BPE variant. It maps the 256 possible bytes into visible Unicode symbols, then learns merges over that alphabet. This makes the base inventory complete for arbitrary byte strings while still allowing frequent sequences to collapse into larger tokens.
+
+<BpNote>GPT-2 used a vocabulary of 50,257 entries and byte-level BPE, described in Radford et al.'s 2019 report. Vocabulary sizes and preprocessing rules differ across model families.</BpNote>
+
+<BpeMergeBench />
+
+The frequency toggle exposes a training fact that is easy to miss: duplication changes the tokenizer. Double one word and its internal pairs receive more votes at every round. An early changed winner creates different symbols for later rounds, so the merge tables can diverge even when nearly all corpus text stays the same.
+
+<BpSection id="s3" num="03" label="Encoding" sheet="SHEET 3 OF 8" title="Encoding replays the learned order" />
+
+Vocabulary training is an offline operation. Once the tokenizer is fixed, encoding new text does not count pairs again or learn from the prompt. It applies the stored preprocessing rules and replays the learned merge priorities.
+
+Start with the base symbols for one input region. Find pairs that appear in the merge table. Apply the eligible pair with the earliest rank, update the symbol sequence, and continue until no ranked pair remains. Equivalent implementations can process the same operation more efficiently, but the rank order still defines the result.
+
+Order matters because one merge creates the input to another. Given ranks `e + r → er`, then `low + er → lower`, the second operation cannot exist before `er` has been formed. Treating the vocabulary as an unordered bag of strings and greedily taking any available long piece can produce a segmentation that the trained algorithm never defined.
+
+<BpFigure caption="FIG. 4 — ENCODING IS DETERMINISTIC REPLAY. EACH EARLY MERGE CREATES SYMBOLS THAT LATER-RANKED MERGES MAY CONSUME.">
+  <svg viewBox="0 0 920 285">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={25} y={45} width={185} height={54}></rect>
+      <rect x={255} y={45} width={185} height={54}></rect>
+      <rect x={485} y={45} width={185} height={54}></rect>
+      <rect x={715} y={45} width={180} height={54}></rect>
+      <rect x={255} y={180} width={415} height={58}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash">
+      <path d="M210 72 H253 M440 72 H483 M670 72 H713 M805 99 V150 H462 V178"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M251 72 l-8 -4 v8 z M481 72 l-8 -4 v8 z M711 72 l-8 -4 v8 z M462 176 l-4 -8 h8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={59} y={77}>▁ l o w e r</text>
+      <text x={286} y={77}>▁ lo w e r</text>
+      <text x={519} y={77}>▁ low e r</text>
+      <text x={750} y={77}>▁ low er</text>
+      <text x={287} y={214}>FINAL PIECES → [▁low] [er] → TOKEN IDS</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor">
+      <text x={274} y={126}>RANK 01</text>
+      <text x={504} y={126}>RANK 02</text>
+      <text x={734} y={126}>RANK 03</text>
+    </g>
+  </svg>
+</BpFigure>
+
+Determinism is broader than merges. Unicode normalization, case folding, pattern-based pre-tokenization, whitespace handling, allowed special tokens, and byte conversion all belong to the tokenizer configuration. Change one and identical visible text may reach the merge stage as different symbols. Production systems should version the tokenizer files beside the model weights and use the model's official encoder.
+
+Decoding reverses IDs to their byte or string pieces, concatenates them, and converts bytes back into text. Individual byte-level tokens do not always decode into valid text by themselves because a token boundary can split a multi-byte UTF-8 sequence. The complete sequence can still decode correctly.
+
+<BpQA q="Do all models share a tokenizer?">
+No. Model families train or select their own vocabularies, normalization rules, special tokens, and merge tables. Two models can assign different IDs and boundaries to the same sentence, and even related model generations may change tokenizers. Count with the exact tokenizer tied to the model you will call.
+</BpQA>
+
+For a larger side-by-side lab covering character, word, BPE, WordPiece, prepared examples, IDs, and pricing, use [the interactive tokenization demo](/demos/tokenize). The drawing here stays focused on the learned merge circuit.
+
+<BpSection id="s4" num="04" label="Bytes & Unicode" sheet="SHEET 4 OF 8" title="Byte fallback closes the vocabulary" />
+
+Unicode assigns numbers called code points to characters and symbols. UTF-8 serializes each code point into one to four bytes. ASCII letters use one byte. Many accented letters use two. Common CJK characters usually use three, and many emoji use four before variation selectors, skin-tone modifiers, or zero-width joiners enter the sequence.
+
+A byte-level tokenizer begins with coverage for all 256 byte values. Any UTF-8 text can therefore fall back to bytes when no larger learned merge matches. There is no out-of-vocabulary string at the byte layer. The tradeoff appears as fragmentation: an uncommon character may consume several tokens if its bytes were never merged together during vocabulary training.
+
+<BpFigure caption="FIG. 5 — UTF-8 BYTE FALLBACK REPRESENTS EVERY INPUT. FREQUENT BYTE SEQUENCES MAY MERGE; UNCOMMON ONES REMAIN SEVERAL TOKENS.">
+  <svg viewBox="0 0 920 280">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={25} y={48} width={160} height={60}></rect>
+      <rect x={255} y={35} width={410} height={86}></rect>
+      <rect x={735} y={48} width={160} height={60}></rect>
+      <rect x={255} y={185} width={410} height={54}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash">
+      <path d="M185 78 H253 M665 78 H733 M460 121 V183"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M251 78 l-8 -4 v8 z M731 78 l-8 -4 v8 z M460 181 l-4 -8 h8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={88} y={82}>🍓</text>
+      <text x={289} y={69}>UTF-8 BYTES</text>
+      <text x={287} y={98}>F0 · 9F · 8D · 93</text>
+      <text x={773} y={74}>BPE</text>
+      <text x={757} y={94}>MERGES</text>
+      <text x={290} y={218}>FALLBACK: [F0] [9F] [8D] [93] · ALWAYS REPRESENTABLE</text>
+    </g>
+  </svg>
+</BpFigure>
+
+Whitespace is data. GPT-style vocabularies often contain entries whose decoded form begins with a space; SentencePiece uses a visible `▁` marker for a word boundary. That is why `token` at the beginning of a string can receive a different ID from ` token` after a space. Newlines, tabs, repeated spaces, and indentation can each alter boundaries.
+
+Normalization can combine or separate visually equivalent forms. The character `é` can be one precomposed code point or `e` followed by a combining acute accent. A normalizer may make them identical before tokenization; a tokenizer without that normalization sees different byte sequences. Security-sensitive and code-preserving applications need to know exactly which transformations occur.
+
+Emoji and CJK fragmentation is a corpus effect layered over UTF-8. A tokenizer trained mostly on English bytes sees many votes for English letter sequences and fewer for other scripts. Common CJK byte sequences may still become full-character or multi-character tokens in a multilingual corpus. Rare emoji sequences can split across code-point components or bytes. Byte fallback prevents failure to encode, but it does not promise equal efficiency.
+
+<BpNote>UTF-8 uses 1–4 bytes per Unicode code point. A visible grapheme can contain several code points, so its byte length can exceed four; family emoji joined with zero-width joiners are a familiar example.</BpNote>
+
+<TokenBoundaryInspector />
+
+<BpSection id="s5" num="05" label="IDs & embeddings" sheet="SHEET 5 OF 8" title="A token ID selects one learned row" />
+
+After segmentation, the tokenizer maps every vocabulary piece to an integer ID. The numbers are arbitrary addresses. ID 42 is not smaller, simpler, or more related to ID 43 than to ID 40,000. Rearranging the ID assignment while rearranging the model's corresponding rows would leave the computation unchanged.
+
+The first model operation is an embedding lookup. If the vocabulary has size *V* and the model width is *d*, the learned matrix **E** has shape *V* × *d*. Token ID *i* selects row **E**<sub>i</sub>. Position information and other model-specific inputs are then combined with those row vectors before transformer blocks operate on the sequence.
+
+<BpFigure caption="FIG. 7 — TOKEN IDS ARE ADDRESSES. EACH ID SELECTS ONE ROW FROM THE LEARNED V × d EMBEDDING MATRIX.">
+  <svg viewBox="0 0 920 290">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={25} y={94} width={190} height={62}></rect>
+      <rect x={300} y={35} width={260} height={205}></rect>
+      <rect x={650} y={94} width={240} height={62}></rect>
+      <path d="M300 92 H560 M300 126 H560 M300 160 H560 M300 194 H560"></path>
+    </g>
+    <rect x={301} y={127} width={258} height={32} fill="var(--bp-accent)" opacity={0.16}></rect>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash">
+      <path d="M215 125 H298 M560 143 H648"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M296 125 l-8 -4 v8 z M646 143 l-8 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={65} y={130}>TOKEN ID = 317</text>
+      <text x={330} y={62}>EMBEDDING TABLE E ∈ ℝⱽˣᵈ</text>
+      <text x={325} y={117}>ROW 316</text>
+      <text x={325} y={150}>ROW 317 · [0.12, −0.07, …]</text>
+      <text x={325} y={185}>ROW 318</text>
+      <text x={690} y={130}>d-WIDE VECTOR</text>
+    </g>
+  </svg>
+</BpFigure>
+
+This is the bridge into [the Transformer’s token and embedding path in §02](/blog/the-transformer#s2). The transformer never receives the spelling of a token beside its ID. Character relationships must be inferred through training, represented across multiple tokens, or supplied by architectures with finer-grained inputs.
+
+The same boundary leads into [the embedding space](/blog/the-embedding-space). A transformer embedding row represents one vocabulary token before context. A text embedding model later combines contextual token states into a vector for a sentence, passage, or other object. Tokenization controls the pieces available to that encoder and the number of positions it must pool.
+
+Special tokens occupy reserved IDs. End-of-text, beginning-of-sequence, padding, separators, chat-role markers, and tool delimiters can structure the input without corresponding to ordinary visible text. Their exact IDs and behavior are model contracts. Passing a special token as literal text may be rejected, escaped into ordinary pieces, or interpreted as control syntax depending on the API.
+
+<BpSection id="s6" num="06" label="Systems cost" sheet="SHEET 6 OF 8" title="Tokens are the systems accounting unit" />
+
+Context limits count tokens, not characters or words. A 100,000-token window can hold very different amounts of visible text depending on language, code density, whitespace, and the tokenizer. Instructions, conversation history, retrieved passages, tool schemas, the current query, and generated output all draw from that same position budget.
+
+Tokens also track work. During prompt processing, the model computes representations across all input positions. Attention in a standard dense layer compares positions with positions, while feed-forward work grows linearly with position count. During autoregressive generation, each new token requires another model pass and extends the key-value cache. More tokens usually mean more latency and accelerator work, though batching, kernels, caching, and hardware prevent a universal milliseconds-per-token rule.
+
+Many APIs price input and output per token, often at different rates. The arithmetic is direct: token count multiplied by the applicable rate. Cached-input discounts, batch tiers, and model-specific rates complicate invoices, but they do not change the tokenizer's role in determining the counted units.
+
+<BpEquation tag="EQ. 6.1">
+  request price = input tokens × input rate + output tokens × output rate
+</BpEquation>
+
+**Fertility** measures how many tokens a tokenizer produces per word or another comparable text unit. Lower fertility packs that language more compactly. Comparing across scripts requires care because whitespace-delimited words are not universal; parallel translations, characters, bytes, or linguistically segmented units can provide fairer denominators for a specific study.
+
+<BpFigure caption="FIG. 8 — TOKEN FERTILITY CHANGES CONTEXT OCCUPANCY AND PRICE. BAR VALUES ARE AN ILLUSTRATIVE SCHEMATIC, NOT A MODEL BENCHMARK.">
+  <svg viewBox="0 0 920 300">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <path d="M180 38 V255 H875"></path>
+      <rect x={180} y={57} width={270} height={32}></rect>
+      <rect x={180} y={112} width={425} height={32}></rect>
+      <rect x={180} y={167} width={585} height={32}></rect>
+      <rect x={180} y={222} width={670} height={32}></rect>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={35} y={78}>LANGUAGE A</text>
+      <text x={35} y={133}>LANGUAGE B</text>
+      <text x={35} y={188}>LANGUAGE C</text>
+      <text x={35} y={243}>CODE / RARE TEXT</text>
+      <text x={465} y={78}>LOWER FERTILITY</text>
+      <text x={620} y={133}>MORE POSITIONS</text>
+      <text x={780} y={188}>MORE CONTEXT</text>
+      <text x={715} y={243}>MORE BILLABLE TOKENS</text>
+    </g>
+    <path d="M450 274 H850" fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="5 4" className="bp-dash"></path>
+    <text x={500} y={294} className="bp-svg-t10" fill="currentColor">TOKENS FOR COMPARABLE CONTENT →</text>
+  </svg>
+</BpFigure>
+
+A vocabulary trained on uneven data tends to allocate its scarce whole tokens and merges unevenly. Languages with fewer or more diverse training examples can require more pieces for comparable content. The result is a systems inequity: less text fits, requests cost more, and useful relationships must cross longer token sequences.
+
+<BpQA q="Why is my non-English text more expensive?">
+The model bills the tokens emitted by its own tokenizer. If its vocabulary contains fewer long pieces for your language, the same amount of meaning can split into more tokens than an English translation. Measure parallel samples with the exact production tokenizer; character counts alone cannot predict the invoice.
+</BpQA>
+
+<BpSection id="s7" num="07" label="Failure lines" sheet="SHEET 7 OF 8" title="Boundaries become behavioral fault lines" />
+
+Spelling and letter counting expose the abstraction mismatch. A model may see `straw` + `berry`, one token for the whole word, or several byte-derived fragments. None of those inputs explicitly says there are three `r` characters. The model can learn spelling patterns statistically and can use tools or deliberate intermediate steps, but direct access to letter positions is absent when a whole fragment arrives as one ID.
+
+<BpQA q="Why does ‘strawberry’ trip up models?">
+The tokenizer may package several letters into one indivisible input ID, while the model is trained to predict tokens rather than execute character-indexing code. Counting repeated letters then has to be reconstructed from learned patterns. A character-level tool makes the operation explicit and dependable.
+</BpQA>
+
+Arithmetic has a related boundary problem. Digits may group in twos, threes, or longer frequent strings, and the grouping can change with leading spaces or neighboring punctuation. The model must learn arithmetic across several surface segmentations of the same numeric structure. Tokenization does not fully explain arithmetic errors, but inconsistent digit chunks raise the learning burden.
+
+Code inherits both word and punctuation fragmentation. A common keyword may occupy one token while `customerInvoiceAccumulator` becomes many pieces. Indentation and newlines consume positions. An identifier rename can alter sequence length and boundaries throughout a file without changing program behavior. Models trained heavily on code can receive code-specific merges, spending vocabulary capacity to shorten frequent operators, syntax, and identifier fragments.
+
+Names live in the long tail. A frequent public surname may have one entry; a rare personal or product name may decompose into fragments associated with unrelated common strings. That can make exact copying, pronunciation, and entity distinction harder. Byte fallback preserves the spelling in principle, while the model still has to carry the pieces accurately through generation.
+
+Multilingual inequity is both a failure line and a resource allocation choice. Higher fertility consumes context sooner and makes attention span more positions for comparable content. Training also supplies fewer repetitions for rare fragments. Tokenizer coverage, corpus balance, and model capacity interact, so no single token count proves a quality gap; it does identify one measurable source of unequal cost and sequence length.
+
+These failures share a diagnostic method: inspect boundaries with the correct tokenizer, compare token counts across representative inputs, and test the exact operation. A model that fails `strawberry` may still copy unfamiliar names well; a model with compact Japanese tokenization may still lack Japanese domain data. Boundaries locate pressure. They do not settle the whole causal story.
+
+<BpSection id="s8" num="08" label="Design boundary" sheet="SHEET 8 OF 8" title="Vocabulary size is a systems decision" />
+
+BPE, WordPiece, and Unigram all seek reusable subwords, but their training and encoding rules differ. BPE builds symbols through a sequence of pair merges and replays their ranks. WordPiece vocabulary construction is associated with improving a language-model objective, then commonly uses greedy longest-match encoding. Unigram starts from a large candidate inventory, assigns piece probabilities, and repeatedly prunes candidates while preserving likely segmentations.
+
+Taku Kudo's subword regularization work showed another benefit of a probabilistic tokenizer: training can sample multiple valid segmentations instead of presenting one fixed boundary every time. The model learns that nearby segmentations express the same text. At inference, a best-scoring segmentation can remain deterministic.
+
+SentencePiece, developed by Kudo and John Richardson, is a tokenizer toolkit rather than one segmentation algorithm. It supports BPE and Unigram models and trains directly from raw sentences. Treating whitespace as a normal symbol removes dependence on an external language-specific word splitter and supports detokenization from the emitted pieces.
+
+Byte-level models move the boundary down. ByT5 processes UTF-8 bytes directly and reported competitive results on a range of multilingual tasks, with particular strength under noisy inputs. The cost is longer sequences. Removing a large subword vocabulary saves parameters in the embedding and output layers, but transformer computation now spans many more positions.
+
+Token-free and character-level research pushes further. CANINE operates on character sequences with downsampling to control sequence length. Other designs learn segmentation inside the network or compress byte/character patches dynamically. These approaches can reduce dependence on a frozen language-specific vocabulary, while moving complexity into longer inputs, downsampling, local encoders, or learned patching.
+
+There is no context-free winner. A larger subword vocabulary shortens well-represented text and enlarges token-dependent matrices. A smaller vocabulary improves base coverage and parameter efficiency while increasing sequence length. Multilingual breadth competes for entries with domain-specific compactness. Code, DNA, speech units, and ordinary prose have different frequency structures.
+
+Vocabulary changes also break compatibility. Adding one attractive token after pretraining does not give it a useful embedding row or output weight, and shifting existing IDs points the model at the wrong learned vectors. Extending a tokenizer requires coordinated model training, initialization, evaluation, and often changes to serving artifacts. Teams can sometimes reserve unused IDs or fine-tune newly added rows, but the result is a model migration rather than a harmless text-processing update.
+
+The training corpus should match the traffic mix the system is expected to serve. Raw frequency alone can let duplicated boilerplate consume merges that would be more valuable elsewhere. Corpus sampling, per-language weighting, normalization, and vocabulary budget jointly express product priorities. Evaluate the resulting allocation before expensive model training, since fertility statistics and boundary inspection can reveal obvious gaps while tokenizer experiments are still cheap.
+
+The decision belongs beside the architecture and data plan:
+
+- Measure fertility on each target language and domain.
+- Include normalization, whitespace, and special-token behavior in the versioned contract.
+- Price embedding/output matrix parameters against sequence compute and cache memory.
+- Test character-sensitive, numeric, code, name, and noisy-text cases directly.
+- Keep the official tokenizer artifact inseparable from model deployment.
+
+The tokenizer is the first learned interface in the language-model circuit. It decides which strings earn one address, which must be assembled from smaller units, and how much sequence the rest of the model receives. Every later layer works within that allocation.
+
+<BpReferences
+  drawingCode="TDD-004"
+  items={[
+    { label: 'Sennrich, Haddow, and Birch, "Neural Machine Translation of Rare Words with Subword Units", ACL 2016', href: 'https://arxiv.org/abs/1508.07909' },
+    { label: 'Radford et al., "Language Models are Unsupervised Multitask Learners", OpenAI 2019', href: 'https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf' },
+    { label: 'Kudo, "Subword Regularization: Improving Neural Network Translation Models with Multiple Subword Candidates", ACL 2018', href: 'https://arxiv.org/abs/1804.10959' },
+    { label: 'Kudo and Richardson, "SentencePiece: A Simple and Language Independent Subword Tokenizer and Detokenizer for Neural Text Processing", EMNLP 2018', href: 'https://arxiv.org/abs/1808.06226' },
+    { label: 'Xue et al., "ByT5: Towards a Token-Free Future with Pre-trained Byte-to-Byte Models", TACL 2022', href: 'https://arxiv.org/abs/2105.13626' },
+    { label: 'Clark et al., "CANINE: Pre-training an Efficient Tokenization-Free Encoder for Language Representation", TACL 2022', href: 'https://arxiv.org/abs/2103.06874' },
+    { label: 'Rust et al., "How Good is Your Tokenizer? On the Monolingual Performance of Multilingual Language Models", ACL-IJCNLP 2021', href: 'https://arxiv.org/abs/2012.15613' },
+  ]}
+/>

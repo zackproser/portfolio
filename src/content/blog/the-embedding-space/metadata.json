@@ -22,6 +22,12 @@
       "When should I use cosine similarity instead of dot product?",
       "How do I choose an embedding model and lock its version?",
       "Why did my nearest-neighbor search miss the obvious result?"
-    ]
+    ],
+    "nextDrawing": {
+      "number": "004",
+      "title": "The Tokenizer",
+      "subject": "TOKENIZATION",
+      "status": "in-production"
+    }
   }
 }

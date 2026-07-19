@@ -22,6 +22,12 @@
       "Why divide by √d_k and not d_k?",
       "Where does a model store facts?",
       "Explain the KV cache like I'm on-call for it"
-    ]
+    ],
+    "nextDrawing": {
+      "number": "004",
+      "title": "The Tokenizer",
+      "subject": "TOKENIZATION",
+      "status": "in-production"
+    }
   }
 }

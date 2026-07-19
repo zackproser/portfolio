@@ -1,0 +1,33 @@
+{
+  "title": "The Tokenizer",
+  "author": "Zachary Proser",
+  "date": "2026-07-19",
+  "description": "How tokenization works: BPE tokenizer training, ordered merges, byte fallback, token IDs, costs, multilingual tradeoffs, and why LLMs use tokens.",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-tokenizer-hero.webp",
+  "tags": [
+    "AI",
+    "Tokenization",
+    "BPE",
+    "LLMs",
+    "NLP"
+  ],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "004",
+    "subject": "TOKENIZATION",
+    "readTime": "15 MIN",
+    "eyebrow": "Text into model inputs · Complete working drawing",
+    "subtitle": "A tokenizer decides which pieces of language the model can see, how many positions they consume, and what every request costs.",
+    "rfiSuggestions": [
+      "Why does the same text use different token counts across models?",
+      "How does BPE learn and replay an ordered merge table?",
+      "When should a model use subwords, bytes, or no fixed tokenizer?"
+    ],
+    "nextDrawing": {
+      "number": "005",
+      "title": "The Vector Database",
+      "subject": "VECTOR SEARCH",
+      "status": "planned"
+    }
+  }
+}

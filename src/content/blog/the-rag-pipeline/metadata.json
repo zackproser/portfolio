@@ -22,6 +22,12 @@
       "How do I tell a retrieval failure from a generation failure?",
       "When does hybrid search beat dense retrieval?",
       "Which RAG metrics belong in a production dashboard?"
-    ]
+    ],
+    "nextDrawing": {
+      "number": "004",
+      "title": "The Tokenizer",
+      "subject": "TOKENIZATION",
+      "status": "in-production"
+    }
   }
 }

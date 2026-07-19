@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import type { Content } from '@/types'
 import { RfiMarkdown } from './rfi-markdown'
+import { BlueprintSeriesCapture, NextDrawing } from './BlueprintSeriesCapture'
 
 // Blueprint Deep Dive article layout — the engineering-drawing chrome
 // around an MDX body: grid paper, title block, INDEX OF SHEETS rail,
@@ -21,6 +22,7 @@ export interface BlueprintMeta {
   subtitle?: string // serif italic dek under the H1
   revision?: string // "REV A"
   rfiSuggestions?: string[]
+  nextDrawing?: NextDrawing
 }
 
 interface TocEntry {
@@ -314,6 +316,7 @@ export function BlueprintArticleLayout({
               ) : null,
             )}
           </dl>
+          <BlueprintSeriesCapture variant="title-block" drawingCode={drawingCode} next={bp.nextDrawing} />
         </div>
       </header>
 
@@ -368,6 +371,8 @@ export function BlueprintArticleLayout({
             </button>
           </div>
         </div>
+
+        <BlueprintSeriesCapture variant="next-sheet" drawingCode={drawingCode} next={bp.nextDrawing} />
 
         <div className="bp-colophon">
           <div className="bp-colophon-meta">
