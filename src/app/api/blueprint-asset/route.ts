@@ -14,7 +14,49 @@ export const maxDuration = 30
 
 const dedup = new Map<string, number>()
 
+// Per-IP rate limit: this endpoint sends outbound email, so it must
+// not be drivable into email-bombing arbitrary addresses. Bounded,
+// self-evicting; a durable/WAF limiter is the platform-level backstop.
+const hits = new Map<string, { count: number; windowStart: number }>()
+const IP_LIMIT = 10
+const WINDOW_MS = 60 * 60 * 1000
+let globalCount = 0
+let globalWindowStart = 0
+const GLOBAL_LIMIT = 400
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now()
+  if (now - globalWindowStart > WINDOW_MS) {
+    globalWindowStart = now
+    globalCount = 0
+  }
+  globalCount++
+  if (globalCount > GLOBAL_LIMIT) return true
+  if (hits.size > 5000) {
+    for (const [k, e] of hits) if (now - e.windowStart > WINDOW_MS) hits.delete(k)
+    while (hits.size > 5000) {
+      const oldest = hits.keys().next().value
+      if (oldest === undefined) break
+      hits.delete(oldest)
+    }
+  }
+  const entry = hits.get(ip)
+  if (!entry || now - entry.windowStart > WINDOW_MS) {
+    hits.set(ip, { count: 1, windowStart: now })
+    return false
+  }
+  entry.count++
+  return entry.count > IP_LIMIT
+}
+
 export async function POST(req: NextRequest) {
+  const ip =
+    req.headers.get('x-real-ip')?.trim() ||
+    (req.headers.get('x-forwarded-for') ?? 'unknown').split(',')[0].trim()
+  if (rateLimited(ip)) {
+    return NextResponse.json({ error: 'Slow down a little — try again shortly.' }, { status: 429 })
+  }
+
   let body: unknown
   try {
     body = await req.json()
@@ -41,14 +83,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unknown asset' }, { status: 404 })
   }
 
-  // 30s dedup per email+asset, mirroring /api/form
+  // 30s dedup per email+asset for genuine double-submits of a
+  // SUCCESSFUL request. Recorded only after the subscribe succeeds so
+  // a transient failure stays retryable (mirrors /api/form).
   const key = `${email.trim().toLowerCase()}:${assetId}`
   const last = dedup.get(key)
   if (last && Date.now() - last < 30_000) {
     return NextResponse.json({ ok: true, fileUrl: asset.fileUrl })
   }
-  dedup.set(key, Date.now())
-  if (dedup.size > 5000) dedup.clear()
 
   const result = await subscribeToResend({
     email: email.trim(),
@@ -58,6 +100,8 @@ export async function POST(req: NextRequest) {
     console.error(`[blueprint-asset] subscribe failed for ${assetId}: ${result.error}`)
     return NextResponse.json({ error: 'Subscription failed — try again shortly' }, { status: 502 })
   }
+  dedup.set(key, Date.now())
+  if (dedup.size > 5000) dedup.clear()
   console.log(
     `[blueprint-asset] ${assetId} → ${email.trim().slice(0, 3)}… (referrer: ${typeof referrer === 'string' ? referrer.slice(0, 80) : 'n/a'})`,
   )

@@ -65,9 +65,12 @@ export function BlueprintSeriesCapture({
   // scrolls to the plate offer.
   useEffect(() => {
     if (variant === 'title-block') {
+      // Re-check per navigation: the App Router reconciles this client
+      // component across /blog/[slug] params instead of remounting, so
+      // a stale hasPlate would show the wrong row on the next drawing.
       setHasPlate(!!document.querySelector('.bp-plate'))
     }
-  }, [variant])
+  }, [variant, pathname])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
