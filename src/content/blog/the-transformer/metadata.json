@@ -2,7 +2,7 @@
   "title": "The Transformer",
   "author": "Zachary Proser",
   "date": "2026-07-18",
-  "description": "Every frontier model — GPT, Claude, Gemini, Llama — is this one circuit, photocopied. A complete working drawing with a schematic for every part: tokens, attention, multi-head, positional encoding, the block, sampling, and scale.",
+  "description": "How seq2seq attention became the transformer, how decoder-only models generate, and how tokens, attention heads, position, residual blocks, sampling, KV caching, and scaling fit together.",
   "image": "https://zackproser.b-cdn.net/images/blueprint-the-transformer-hero.webp",
   "tags": [
     "AI",
@@ -15,7 +15,7 @@
   "blueprint": {
     "number": "001",
     "subject": "ATTENTION",
-    "readTime": "25 MIN",
+    "readTime": "15 MIN",
     "eyebrow": "Neural architecture · Complete working drawing",
     "subtitle": "Every frontier model — GPT, Claude, Gemini, Llama — is this one circuit, photocopied. Here is the full schematic.",
     "rfiSuggestions": [

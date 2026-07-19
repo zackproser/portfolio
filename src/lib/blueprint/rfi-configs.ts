@@ -42,14 +42,14 @@ export const RFI_CONFIGS: Record<string, RfiConfig> = {
     drawingCode: 'TDD-001',
     title: 'The Transformer',
     path: '/blog/the-transformer',
-    drawingSummary: `§01 The sequence problem — RNNs read serially (O(n) sequential steps, lossy fixed-size memory); transformers let every token attend to every other in parallel (O(1) sequential steps, O(n²) work). More math for less waiting.
-§02 Tokens & embeddings — BPE subwords, vocab ~50k–200k; IDs index a learned embedding table producing d_model-wide vectors (512–12288); geometry encodes meaning; tokenization is why models can't spell.
+    drawingSummary: `§01 The sequence problem and history — Sutskever et al. seq2seq (2014) compressed a source into recurrent state; Bahdanau and Luong attention let decoders consult encoder states. The 2017 Transformer made a subtraction claim: attention could replace recurrence/convolution. RNNs require O(n) sequential steps; attention uses O(1) sequential steps and O(n²) pairwise work. Causal masking preserves parallel next-token training, while generation remains serial.
+§02 Tokens & embeddings — BPE subwords, vocab ~50k–200k; IDs index a learned embedding table producing d_model-wide vectors (512–12288). Token boundaries vary with language, whitespace, names, emoji, and code; every piece consumes context and compute.
 §03 Attention — each token emits query/key/value via learned W_Q, W_K, W_V. Attention(Q,K,V) = softmax(QK⊤/√d_k)V. √d_k stops dot products from saturating the softmax. Demo sentence: "The animal didn't cross the street because it was too tired" — "it" attends to "animal."
-§04 Multi-head — 8–128 parallel heads, each d_model/h wide, same total compute; heads learn jobs (previous-token, syntax, coreference, induction heads → leading candidate account of in-context learning).
-§05 Positional encoding — PE(pos,2i)=sin(pos/10000^(2i/d)), cos on odd dims; unique barcode per position; fixed offsets are linear maps of the encoding; modern models use RoPE (rotations of Q/K).
-§06 The block — pre-norm decoder block: LN→multi-head attention→residual add, LN→FFN→residual add; FFN(x)=W₂·GELU(W₁x+b₁)+b₂, ~4× model width, holds ~2/3 of parameters and much factual knowledge; the residual stream is the shared bus; stack N=12–120+.
-§07 Sampling — final projection gives one logit per vocab entry; softmax with temperature T divides logits first; T→0 argmax, T→∞ uniform; top-k/top-p/beam are selection policies over the same distribution; KV cache stores past keys/values so each new token is one forward pass (and why long context costs memory).
-§08 Scale — same circuit since 2017; params ≈ 12·N·d²; loss follows smooth power laws in compute; Transformer 65M (2017) → GPT-4 ~1.8T (estimated). RoPE, RMSNorm, SwiGLU, GQA, MoE are margin revisions, not new sheets.`,
+§04 Multi-head — 8–128 parallel heads, each d_model/h wide, same total compute; observed jobs include previous-token, syntax, coreference, and induction behavior, but labels are descriptive and computation may be distributed. Induction heads are a leading candidate account of in-context learning.
+§05 Positional encoding — PE(pos,2i)=sin(pos/10000^(2i/d)), cos on odd dims; unique barcode per position; fixed offsets are linear maps; modern models use RoPE rotations of Q/K. Position schemes permit coordinates beyond training ranges but do not guarantee useful extrapolation.
+§06 The block and decoder-only lineage — pre-norm block: LN→multi-head attention→residual add, LN→FFN→residual add. FFN is ~4× model width and holds ~2/3 of parameters; the residual stream is a shared bus. GPT-1 (2018) retained the causally masked decoder and next-token objective; GPT-2 and GPT-3 scaled the line and exposed prompt-based task adaptation.
+§07 Sampling — final projection gives one logit per vocab entry; temperature divides logits; top-k/top-p/beam are selection policies, not factual checks. KV caching reuses past keys/values, while attention work and cache reads still grow with context length.
+§08 Scale — params ≈ 12·N·d²; Kaplan et al. found power-law loss trends with size, data, and compute. Chinchilla showed many models were undertrained and that compute-optimal allocation requires more training tokens relative to parameters. RoPE, RMSNorm, SwiGLU, GQA, and MoE revise the same circuit.`,
     terms: [
       ['TOKEN', "Subword unit from a fixed vocabulary (~50k–200k entries), produced by byte-pair encoding. The model's atom."],
       ['EMBEDDING', 'Learned vector (d_model wide) representing one token. Geometry encodes meaning.'],
@@ -63,19 +63,22 @@ export const RFI_CONFIGS: Record<string, RfiConfig> = {
       ['LOGIT', 'Raw pre-softmax score for one vocabulary entry at the output layer.'],
       ['TEMPERATURE', 'Divisor on logits before sampling. Low = deterministic, high = diverse/chaotic.'],
       ['KV CACHE', 'Stored keys/values of past tokens so generation never recomputes them. Why context length costs memory.'],
+      ['SEQ2SEQ', 'Encoder-decoder lineage that maps one sequence to another; early systems used recurrence and one compressed source state.'],
+      ['CAUSAL MASK', 'Triangular attention mask hiding future tokens during parallel next-token training.'],
+      ['SCALING LAW', 'Empirical power-law relationship connecting loss with model size, data, and training compute over measured regimes.'],
     ],
   },
   'tdd-002': {
     drawingCode: 'TDD-002',
     title: 'The Embedding Space',
     path: '/blog/the-embedding-space',
-    drawingSummary: `§01 String matching — lexical search handles exact tokens, IDs, names, and quotes but misses equivalent intent expressed with different words; embeddings replace brittle synonym rules with learned semantic comparison.
-§02 Coordinates — an embedding is x∈ℝ^d, usually hundreds or thousands of learned coordinates with distributed meaning; one encoder maps variable-length objects to a fixed-width vector. Never compare vectors from unrelated models, even at equal dimensionality; a 1,536-d float32 vector is 6,144 bytes before index overhead.
+    drawingSummary: `§01 String matching and history — Harris (1954) and Firth (1957) established the distributional idea that meaning is reflected by linguistic company. word2vec (2013) made large-scale predictive word vectors practical; GloVe (2014) learned from global co-occurrence. One-vector-per-word systems could not disambiguate context.
+§02 Coordinates — an embedding is x∈ℝ^d with distributed meaning. Contextual encoders produce token vectors conditioned on the sentence; SBERT (2019) trained reusable sentence vectors for efficient comparison. Pooling, query/document roles, prefixes, and normalization belong to the contract. Never compare unrelated model spaces even at equal dimensionality; a 1,536-d float32 vector is 6,144 bytes before overhead.
 §03 Geometry — training places related items nearby and can encode useful relationship directions, though analogies are intuition rather than universal algebra. Cosine similarity is (x·y)/(‖x‖₂‖y‖₂), ranging from −1 to 1; calibrate thresholds on the real task because absolute scores are corpus-dependent.
-§04 Training — contrastive learning pulls positive pairs together relative to negatives; simplified InfoNCE treats the matching passage as the correct item among batch candidates and temperature τ controls sharpness. Data defines similarity; false negatives punish truly related items, while trivial negatives teach little.
+§04 Training — contrastive learning pulls positive pairs together relative to negatives; InfoNCE treats the match as the correct batch candidate and τ controls sharpness. Hard negatives teach application-specific boundaries; false negatives punish truly related items. Data defines similarity.
 §05 Unit sphere — L2 normalization projects vectors onto the unit hypersphere and removes magnitude. For unit vectors cosine equals dot product, and Euclidean distance produces the same ranking via ‖x−y‖²=2−2x·y; follow the model's documented metric and normalization contract.
-§06 Vector search — exact search scans every vector; ANN trades controlled recall for fewer comparisons. HNSW navigates sparse long-range upper layers then dense local layers; tune construction, degree, and search breadth, measure recall against exact top-k, and account for filters, deletes, replication, and persistence.
-§07 Failure lines — chunks can be too broad or too context-poor; domain shift changes what similarity should mean; high-dimensional distance can crowd; model, pooling, normalization, instruction, or preprocessing changes create incompatible coordinates. Version the entire embedding/index contract and migrate by rebuilding a separate index.
+§06 Vector search — exact search scans every vector; ANN trades controlled recall for fewer comparisons. HNSW (Malkov and Yashunin) navigates sparse long-range upper layers then dense local layers. Tune construction, graph degree, and search breadth; measure recall against exact top-k. Graph links, replication, deletes, and quantization add memory and accuracy tradeoffs.
+§07 Failure lines — chunks can be too broad or context-poor; anisotropy and hubness can distort neighborhoods; domain shift changes relevance; truncation, OCR, boilerplate, and preprocessing alter encoder input. Model, pooling, normalization, instruction, or preprocessing changes create incompatible coordinates. Rebuild a separate versioned index for migration.
 §08 Applications — RAG retrieves evidence, dedup finds near-copies, recommendation maps users and items, classification uses prototypes or learned heads, and clustering supports exploration. Each application needs its own positives, relevance judgments, thresholds, latency budget, and failure policy.`,
     terms: [
       ['EMBEDDING', 'A fixed-width learned vector representing an object; semantic properties are distributed across directions and coordinates.'],
@@ -90,19 +93,23 @@ export const RFI_CONFIGS: Record<string, RfiConfig> = {
       ['RECALL@K', 'Fraction of exact or labeled relevant neighbors found in the first k returned results.'],
       ['CHUNK', 'One retrieval unit embedded as a point; it should contain one coherent idea with enough local context.'],
       ['EMBEDDING DRIFT', 'Coordinate incompatibility caused by changing model, preprocessing, pooling, instructions, or normalization.'],
+      ['DISTRIBUTIONAL HYPOTHESIS', 'Meaning can be inferred from the linguistic contexts in which a word or expression appears.'],
+      ['CONTEXTUAL EMBEDDING', 'Representation conditioned on the surrounding tokens, allowing the same word to take different vectors in different sentences.'],
+      ['HARD NEGATIVE', 'Plausible but incorrect candidate used in training to teach a fine relevance distinction.'],
+      ['HUBNESS', 'A high-dimensional neighborhood effect where a few points appear unusually often among nearest neighbors.'],
     ],
   },
   'tdd-003': {
     drawingCode: 'TDD-003',
     title: 'The RAG Pipeline',
     path: '/blog/the-rag-pipeline',
-    drawingSummary: `§01 External memory — model weights hold compressed training patterns, not a dependable current database. Retrieval supplies private, current, attributable evidence without parameter changes; long context works when material is already selected, fine-tuning targets behavior, and tools serve exact live state or actions.
-§02 Pipeline — offline path: source→parse→chunk→embed→vector/text index; online path: query→rewrite→retrieve→rerank→assemble→generate. Preserve IDs, ACLs, provenance, component versions, candidates, final context, answer, and citations; freshness and deletion are ingestion responsibilities.
-§03 Chunking — fixed windows are predictable, structure-aware chunks follow document boundaries, semantic chunks detect topic shifts, overlap protects boundaries but duplicates storage/results, and parent-child retrieval matches small units then returns larger context. Start from structure and evaluate a range on real questions.
-§04 Retrieval — dense search handles paraphrase and conceptual matches; BM25 handles exact rare terms, IDs, and quoted language; hybrid combines both, often by reciprocal rank fusion because raw scales differ. Apply security and metadata filters inside retrieval when possible.
-§05 Reranking — bi-encoders independently encode query/passages for fast high-recall search; cross-encoders jointly read each query-candidate pair for slower, more precise ranking. Retrieve wide then rerank a shortlist; reranking cannot recover candidates the first stage missed.
-§06 Context budget — reserve tokens for instructions, history, query, and output, then pack selected evidence. Remove duplicates, preserve source boundaries, account for lost-in-the-middle behavior, order strong evidence deliberately, specify citation/abstention rules, and count with the target tokenizer.
-§07 Eval & failures — trace corpus→parse→retrieve→rerank→assemble→generate. Retrieval: hit rate@k, recall@k, MRR, nDCG, latency; generation triad: context relevance, faithfulness, answer relevance. Use a human-reviewed set covering unanswerable, exact, paraphrase, ACL, stale, conflicting, table, and multi-hop cases.
+    drawingSummary: `§01 External memory and history — DrQA (2017) paired lexical retrieval with a neural reader; REALM, DPR, and the RAG paper (2020) developed learned retrieval and retrieval-conditioned generation. Model weights are compressed training patterns, not a current database. Retrieval supplies private, current, attributable evidence; long context fits preselected material, fine-tuning targets behavior, and tools serve exact live state/actions.
+§02 Pipeline — offline: source→parse→chunk→embed→index; online: query→rewrite→retrieve→rerank→assemble→generate. The paths run on different clocks. Preserve IDs, ACLs, provenance, component versions, candidates, final context, answer, and citations. Freshness, deletion, idempotency, reconciliation, and permission lag are ingestion concerns.
+§03 Chunking — fixed windows are predictable; structure-aware chunks preserve headings, tables, code, and conversations; semantic chunks detect topic shifts. Overlap duplicates storage/results. Parent-child retrieval matches a focused child then returns broader context. Evaluate a size range on real questions.
+§04 Retrieval — BM25 comes from the Okapi probabilistic retrieval lineage and excels on exact rare terms; dense search handles paraphrase. Hybrid commonly uses reciprocal rank fusion because score scales differ. Preserve original queries beside rewrites; apply security and metadata filters inside retrieval.
+§05 Reranking — bi-encoders independently encode query/passages for reusable fast search; cross-encoders jointly read each pair for slower, more precise ranking. Retrieve wide then rerank a shortlist. Reranking cannot recover missing candidates; deduplication and diversity prevent repeated chunks from consuming context.
+§06 Context budget — reserve tokens for instructions, history, query, and output, then pack evidence. Lost-in-the-middle research found models can underuse evidence in central positions even when it fits. Remove duplicates, preserve boundaries, order deliberately, and test citation/abstention rules. Multi-hop questions may require decomposition or iterative retrieval.
+§07 Eval & failures — trace corpus→parse→retrieve→rerank→assemble→generate. Retrieval: hit rate@k, recall@k, MRR, nDCG, latency; generation: context relevance, faithfulness, answer relevance. Human-reviewed sets should cover unanswerable, exact, paraphrase, ACL, stale, conflicting, table, and multi-hop cases; expected source versions and abstention need direct testing.
 §08 Use boundaries — plain long context fits small preselected sources; tools return exact live state and perform actions; fine-tuning changes repeated behavior; RAG selects from large searchable knowledge. These patterns compose, and architecture should follow the source and guarantee required at each step.`,
     terms: [
       ['RAG', 'Retrieval-augmented generation: selecting external evidence at request time and supplying it to a generator.'],
@@ -117,6 +124,10 @@ export const RFI_CONFIGS: Record<string, RfiConfig> = {
       ['FAITHFULNESS', 'Degree to which answer claims are supported by the context supplied to the generator.'],
       ['HIT RATE@K', 'Share of queries with at least one relevant result among the first k candidates.'],
       ['PROVENANCE', 'Source identity, version, location, and transformations needed to trace evidence back to its origin.'],
+      ['OPEN-DOMAIN QA', 'Question answering over a large corpus where retrieval first selects documents for a reader.'],
+      ['RERANKER', 'Second-stage model that scores a small retrieved candidate set with richer query-passage interaction.'],
+      ['LOST IN THE MIDDLE', 'Observed tendency for models to use evidence less reliably when it sits in the middle of a long input.'],
+      ['ABSTENTION', 'Deliberate refusal to answer when supplied evidence is absent, conflicting, or insufficient.'],
     ],
   },
 }

@@ -2,7 +2,7 @@
   "title": "The RAG Pipeline",
   "author": "Zachary Proser",
   "date": "2026-07-18",
-  "description": "A complete working drawing of retrieval-augmented generation: ingestion, chunking, hybrid search, reranking, context assembly, evaluation, and failure handling.",
+  "description": "From open-domain question answering to production RAG: ingestion, chunking, BM25 and dense retrieval, reranking, context assembly, citations, evaluation, and failure tracing.",
   "image": "https://zackproser.b-cdn.net/images/blueprint-the-rag-pipeline-hero.webp",
   "tags": [
     "AI",
@@ -15,7 +15,7 @@
   "blueprint": {
     "number": "003",
     "subject": "RETRIEVAL",
-    "readTime": "22 MIN",
+    "readTime": "15 MIN",
     "eyebrow": "Grounded generation · Complete working drawing",
     "subtitle": "A language model can write from evidence only after a retrieval system finds, ranks, budgets, and delivers the right evidence.",
     "rfiSuggestions": [

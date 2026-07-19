@@ -7,6 +7,8 @@ import {
   BpFigure,
   BpEquation,
   BpFrac,
+  BpQA,
+  BpReferences,
   CosineSimilarityDemo,
   NearestNeighborDemo,
 } from '@/components/blueprint'
@@ -28,6 +30,10 @@ A lexical search engine is excellent when the query contains the language of the
 <BpNote>Exact matching still matters. Product codes, error IDs, names, and quoted phrases often carry more signal as tokens than as semantic vectors.</BpNote>
 
 Synonym tables patch the obvious gaps, then collapse under real language. *Bank* changes meaning beside *river* or *loan*. *Jaguar* may be an animal, a car, or a software release. Intent also crosses languages and formats: a support ticket, stack trace, and runbook can all point to one failure without looking alike as strings.
+
+The underlying idea predates neural networks. Zellig Harris argued in 1954 that differences in meaning correspond to differences in linguistic environments. J. R. Firth compressed the intuition into the line most people remember: &quot;You shall know a word by the company it keeps.&quot; This **distributional hypothesis** turns surrounding language into evidence. If *physician* and *doctor* repeatedly appear beside patients, clinics, and treatment, their shared company reveals a relationship without a hand-written synonym entry.
+
+<BpNote>Harris, &quot;Distributional Structure&quot; (1954), supplied the formal linguistic lineage. Firth's often-quoted formulation appeared in his 1957 essay on linguistic theory.</BpNote>
 
 <BpFigure caption="FIG. 1 — LEXICAL MATCHING SEES TOKEN OVERLAP. SEMANTIC MATCHING RECOVERS SHARED INTENT ACROSS DIFFERENT WORDS.">
   <svg viewBox="0 0 900 250">
@@ -58,6 +64,12 @@ Synonym tables patch the obvious gaps, then collapse under real language. *Bank*
 
 Embeddings attack this mismatch directly. Instead of designing a longer list of linguistic rules, train a model to produce representations where items used in similar ways occupy nearby regions. Search then compares the query vector with document vectors, regardless of whether their characters overlap.
 
+That route became practical at scale with word2vec in 2013. Its skip-gram objective learned a word vector by predicting nearby words; the efficient training procedure produced useful geometry from huge text collections. GloVe followed in 2014 with an objective built from global word co-occurrence counts. Both assigned one vector to each vocabulary word, so *bank* had to occupy one location whether the sentence concerned money or a river.
+
+<BpQA q="Did embeddings begin with modern language models?">
+No. Researchers have represented words with vectors for decades, and word2vec made the approach widely practical in 2013. Modern transformer encoders add context: the vector for *bank* can change when the sentence mentions a loan versus a river.
+</BpQA>
+
 <BpSection id="s2" num="02" label="Coordinates" sheet="SHEET 2 OF 8" title="An embedding is a learned address" />
 
 An embedding is an ordered list of numbers: **x** ∈ ℝ<sup>d</sup>. The dimension *d* might be hundreds or thousands, depending on the model. Feed in a sentence, image, product, or user history; receive one fixed-width point. The coordinates have no hand-written labels. Dimension 417 does not mean &quot;medical.&quot; Meaning is distributed across many directions.
@@ -65,6 +77,10 @@ An embedding is an ordered list of numbers: **x** ∈ ℝ<sup>d</sup>. The dimen
 <BpNote>A 1,536-dimensional float32 vector occupies 6,144 bytes before index overhead: 1,536 values × 4 bytes. One million raw vectors are about 5.7 GiB.</BpNote>
 
 The encoder is the important part. A text embedding model tokenizes the input, runs it through a transformer, pools token representations into one vector, and often normalizes that vector. Both sides of a comparison must follow the model's documented encoding contract — some retrieval models pair a query encoder with a document encoder trained together, and instruction prefixes are part of that contract. Coordinates from unrelated models live in unrelated spaces, even when their vectors have the same length.
+
+Contextual language models changed the unit being represented. Instead of looking up one permanent vector per word, the encoder produces token representations conditioned on the whole sentence. Sentence-BERT, published in 2019, adapted BERT with siamese and triplet training so a sentence could be encoded once and compared efficiently with other sentence vectors. That distinction matters operationally: ordinary cross-encoded BERT can compare a pair carefully, but it cannot precompute one reusable vector per corpus item for fast nearest-neighbor search.
+
+Pooling decides how many contextual token vectors become one object vector. Mean pooling averages the eligible token states; other models use a designated token or a learned pooling layer. A title plus body may be encoded together, or separately and combined downstream. These choices alter the coordinate system, which is why the model name alone is insufficient version metadata.
 
 <BpFigure caption="FIG. 2 — THE EMBEDDING PIPELINE: VARIABLE-LENGTH INPUT BECOMES ONE FIXED-WIDTH COORDINATE IN ℝᵈ.">
   <svg viewBox="0 0 920 230">
@@ -99,6 +115,10 @@ The encoder is the important part. A text embedding model tokenizes the input, r
 
 That fixed-width contract is what makes embeddings composable. A database can store every vector in one column. A search service can accept a query vector and return IDs. A downstream classifier can train on the same representation. The original objects stay complicated; the interface between systems becomes an array of numbers.
 
+<BpQA q="Why can't I compare vectors from two models if both have 1,536 numbers?">
+The coordinates learned by each model have different meanings, much like two maps that use different origins and rotations. Coordinate 12 in one model has no agreed relationship to coordinate 12 in the other. Equal length only lets the dot product run; it does not make the score meaningful.
+</BpQA>
+
 <BpSection id="s3" num="03" label="Geometry" sheet="SHEET 3 OF 8" title="Geometry becomes a language for meaning" />
 
 Nearby points tend to share properties the training objective rewarded. Animal words may form a neighborhood. Vehicle words may form another. Directions can encode relationships, which is why vector arithmetic sometimes produces the familiar *king − man + woman ≈ queen* result. It is a useful intuition, not a universal algebra of concepts.
@@ -115,9 +135,19 @@ Cosine similarity measures the angle between two nonzero vectors. A score of 1 m
 
 Distance does not explain itself. A score of 0.82 can be excellent in one corpus and mediocre in another. Thresholds must be calibrated against labeled pairs from the actual task. For ranking, relative order often matters more than an absolute cutoff.
 
+Similarity also depends on how hard the candidate set is. A query against ten unrelated policy documents may show a large gap between first and second place. The same query against ten near-duplicate policy revisions can yield several scores packed into a narrow band. Calibration should include the confusable cases the production system will face, because those are where a threshold has to do real work.
+
+Real spaces can be anisotropic: vectors occupy a few preferred directions instead of spreading evenly around the sphere. Some points then become **hubs** that appear in many unrelated neighbor lists. Normalization does not automatically remove this structure. A quick operational check is to count how often each corpus item appears across top-k results for a broad query sample; a handful of generic chunks dominating the lists often signals poor content, a mismatched encoder, or hubness.
+
+<BpQA q="Does the nearest vector mean the answer is correct?">
+It means the encoder and metric ranked that item closest among the candidates searched. The item can still be irrelevant, stale, or only topically related. Treat similarity as one ranking signal and validate the returned content against the task.
+</BpQA>
+
 <BpSection id="s4" num="04" label="Training" sheet="SHEET 4 OF 8" title="Training pulls positives together" />
 
 The geometry comes from examples. A **positive pair** says these two inputs should be close: a query and its clicked result, two translations, a caption and its image, or two views of the same item. **Negatives** say which inputs should separate. Training adjusts encoder weights so positives gain similarity relative to negatives in the batch.
+
+Contrastive training turned this into a reusable recipe. Put related examples together, place many alternatives beside them, and ask the encoder to identify the matching partner. Work on contrastive predictive coding supplied the InfoNCE form used below; later systems applied related losses across images, sentences, and query-passage pairs at much larger batch and dataset scales. The resulting model learns a comparison space directly, rather than hoping a representation trained for another objective happens to rank well.
 
 <BpFigure caption="FIG. 4 — CONTRASTIVE TRAINING: POSITIVE PAIRS PULL TOGETHER; NEGATIVES SUPPLY THE PRESSURE THAT SHAPES THE REST OF THE SPACE.">
   <svg viewBox="0 0 900 270">
@@ -158,6 +188,8 @@ A simplified InfoNCE objective treats the matching item as the correct class amo
 
 Training data defines &quot;similar.&quot; A general model may group documents by topic; a support-search model may learn that an error message and its resolution belong together. Fine-tuning can improve one retrieval contract while damaging another. Evaluation has to mirror the intended use.
 
+Negative selection often determines whether the model learns a useful boundary. Random passages from unrelated topics become easy after a few training steps. **Hard negatives** look plausible but are wrong: a different refund policy, a sibling product manual, or a passage returned highly by an earlier retriever. They force the model to represent the distinction the application cares about. They also raise the cost of labeling, since an apparent negative may contain another valid answer.
+
 <BpSection id="s5" num="05" label="Unit sphere" sheet="SHEET 5 OF 8" title="The unit hypersphere removes magnitude" />
 
 Normalize **x** by dividing it by ‖**x**‖₂ and every vector lands on the surface of a unit hypersphere. Magnitude disappears; only direction remains. This is common for semantic retrieval because the encoder's vector length is rarely the signal the application wants.
@@ -189,13 +221,23 @@ Dot product, cosine, and Euclidean distance are not interchangeable on arbitrary
 
 The practical rule is mechanical: use the similarity function the model was trained and documented for, normalize exactly where its contract expects, and record that choice beside the index. A silent metric mismatch can make a healthy index look semantically broken.
 
+Normalization can also erase useful signal when magnitude was part of the training contract. Some models train dot-product scores where vector norms help express confidence or popularity. Projecting those vectors onto the sphere changes every score. The database setting, stored vectors, and query preprocessing must agree as one operation, ideally tested with a few known pairs during deployment.
+
 <BpSection id="s6" num="06" label="Vector search" sheet="SHEET 6 OF 8" title="Nearest neighbors without scanning everything" />
 
 Exact search computes the query's similarity against every stored vector. That is simple and correct, but the work grows with the collection. Approximate nearest-neighbor indexes trade a controlled amount of recall for fewer comparisons and lower latency.
 
 HNSW — Hierarchical Navigable Small World — builds a graph. Upper layers contain sparse long-range links; lower layers contain dense local links. Search enters high, makes greedy jumps toward the query, then descends and explores a candidate frontier. Parameters controlling construction quality, graph degree, and search breadth trade memory and latency for recall.
 
+Malkov and Yashunin's design joins two useful ideas. Navigable small-world graphs provide short paths across a neighborhood graph, while hierarchy gives the search coarse entry points before it spends work locally. During insertion, the index connects a new vector to selected neighbors and prunes connections to control degree. During search, a wider candidate frontier improves the chance of escaping a locally attractive route, at the price of more distance calculations.
+
+The graph is approximate because search visits only a fraction of the stored points. It may enter the wrong neighborhood or prune a route that leads to an exact top result. Increasing search breadth usually raises recall and latency together. Increasing construction effort can improve graph quality but makes indexing slower. Those knobs should be chosen from measured recall-versus-latency curves, not copied from a default configuration.
+
 <BpNote>ANN recall should be measured against exact top-k results on a representative query set. Search latency alone cannot reveal neighbors the index missed.</BpNote>
+
+Memory planning extends beyond the raw vector arithmetic in §02. HNSW stores neighbor links and per-node bookkeeping in addition to vector values and metadata. Replication multiplies that footprint, while deleted nodes may continue occupying space until compaction or rebuild. Float16, scalar quantization, or product quantization can reduce vector memory, but each introduces another accuracy comparison against the original float representation.
+
+Quantization changes the storage or approximation of coordinates; it does not change the embedding model's semantic contract. A sensible benchmark separates encoder quality from index quality: first evaluate exact search over full-precision vectors, then compare the compressed or approximate index against that result. Otherwise a missed passage leaves two suspects and no clean diagnosis.
 
 <BpFigure caption="FIG. 6 — HNSW INTUITION: LONG JUMPS ON SPARSE UPPER LAYERS, LOCAL REFINEMENT ON THE DENSE BASE GRAPH.">
   <svg viewBox="0 0 920 300">
@@ -224,6 +266,10 @@ HNSW — Hierarchical Navigable Small World — builds a graph. Upper layers con
 <NearestNeighborDemo />
 
 The database also needs filters, deletes, replication, and persistence. Metadata filtering can happen before or during graph traversal depending on the engine; highly selective filters may starve the search of candidates. Production vector search is a retrieval system with operational constraints, not a floating-point party trick.
+
+<BpQA q="Why use approximate search if exact search is correct?">
+Exact search is often the right baseline and can remain fast for modest collections or optimized batches. At tens of millions of vectors, comparing every point for every request can consume too much time and compute. ANN spends a small, measured amount of recall to avoid most comparisons.
+</BpQA>
 
 <BpSection id="s7" num="07" label="Failure lines" sheet="SHEET 7 OF 8" title="The space inherits every upstream mistake" />
 
@@ -266,10 +312,38 @@ High dimension brings unintuitive behavior. Data is sparse, volume concentrates 
 
 Embedding drift is more immediate. Change the model, pooling method, normalization, instruction prefix, or preprocessing and the coordinate system changes. Old document vectors compared with new query vectors produce meaningless scores. Store model ID, dimensions, metric, preprocessing version, and index build ID as one deployable contract.
 
+Domain shift can break an unchanged model too. A general encoder may treat two oncology terms as close because both occur in medical text, while a clinical search task needs their difference to dominate. New acronyms, catalog codes, and organization-specific meanings may be absent from training. A labeled slice of production queries is the only reliable way to see whether the inherited geometry matches local relevance.
+
+Inputs can fail before semantics enter the picture. Truncation may silently remove the paragraph containing the answer. Boilerplate navigation can dominate a short page. Unicode normalization, OCR errors, and markup stripping can make the query and corpus see different text. Store the exact embedded text or a reproducible pointer to it; debugging from the polished source document hides what the encoder actually received.
+
+Migration should build a parallel index from the original source objects. Run old and new encoders on the same evaluation queries, compare relevance and operational cost, then move traffic with an explicit version switch. Trying to transform old vectors into the new space is a separate learned alignment problem and rarely offers the clean audit trail of re-embedding.
+
 <BpSection id="s8" num="08" label="Applications" sheet="SHEET 8 OF 8" title="One abstraction, many systems" />
 
 In **RAG**, query embeddings retrieve passages for a generator. In **deduplication**, neighbor search finds paraphrases and near-copies. **Recommendation** embeds users and items into compatible spaces. **Classification** compares an input with class prototypes or trains a small head over frozen vectors. **Clustering** exposes themes for exploration, though cluster labels still need human judgment.
 
 The shared abstraction does not make these applications identical. Each needs its own positive pairs, relevance judgments, thresholds, latency budget, and failure policy. A recommender optimizes behavior over time; a RAG retriever optimizes evidence for a question; a dedup system may care about precision at one strict threshold.
 
+Offline evaluation should preserve that distinction. For retrieval, label which corpus items answer each query and measure recall at the candidate depth the application can afford. For classification, use per-class precision and recall so a large easy class does not hide a weak rare class. For recommendation, delayed behavior and exposure bias matter: users can only click items the earlier system showed them. A single cosine histogram cannot stand in for any of these outcomes.
+
+Latency belongs in the same report. A model that improves relevance but doubles vector width raises embedding time, network payload, index memory, and distance-computation cost. A graph setting that wins one recall point may miss the service budget at peak concurrency. Compare quality and cost on the same query distribution, then keep the old index available until the new contract proves stable.
+
+Recommendation also shows why &quot;nearby&quot; has no universal meaning. A user vector and an item vector can be trained in compatible spaces even though they represent different kinds of objects. A classification prototype may be written as a label description, while a clustering pipeline has no labels during grouping. The geometry earns its interpretation from the training and evaluation contract around it.
+
+Deduplication illustrates threshold economics. A false positive can merge two records that only share boilerplate; a false negative leaves redundant storage or repeated search results. Systems commonly use a high-similarity candidate stage followed by a second check over text, metadata, or a pairwise model. The vector narrows the comparison set, while the application defines what counts as the same object.
+
 The enduring design is simple: turn complicated objects into coordinates, define the neighborhood your task needs, and measure whether the geometry serves it. The vector is the interface. The training data, index, and evaluation make it useful.
+
+<BpReferences
+  drawingCode="TDD-002"
+  items={[
+    { label: 'Harris, "Distributional Structure", Word 1954', href: 'https://doi.org/10.1080/00437956.1954.11659520' },
+    { label: 'Mikolov et al., "Efficient Estimation of Word Representations in Vector Space", ICLR 2013', href: 'https://arxiv.org/abs/1301.3781' },
+    { label: 'Mikolov et al., "Distributed Representations of Words and Phrases and their Compositionality", NeurIPS 2013', href: 'https://arxiv.org/abs/1310.4546' },
+    { label: 'Pennington, Socher, and Manning, "GloVe: Global Vectors for Word Representation", EMNLP 2014', href: 'https://aclanthology.org/D14-1162/' },
+    { label: 'Reimers and Gurevych, "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks", EMNLP-IJCNLP 2019', href: 'https://arxiv.org/abs/1908.10084' },
+    { label: 'Oord, Li, and Vinyals, "Representation Learning with Contrastive Predictive Coding", 2018', href: 'https://arxiv.org/abs/1807.03748' },
+    { label: 'Gao, Yao, and Chen, "SimCSE: Simple Contrastive Learning of Sentence Embeddings", EMNLP 2021', href: 'https://arxiv.org/abs/2104.08821' },
+    { label: 'Malkov and Yashunin, "Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs", IEEE TPAMI 2018', href: 'https://arxiv.org/abs/1603.09320' },
+  ]}
+/>

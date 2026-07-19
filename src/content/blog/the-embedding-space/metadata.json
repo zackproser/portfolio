@@ -2,7 +2,7 @@
   "title": "The Embedding Space",
   "author": "Zachary Proser",
   "date": "2026-07-18",
-  "description": "How embedding models turn text into geometry, how cosine similarity and approximate nearest-neighbor search work, and where production semantic systems fail.",
+  "description": "From the distributional hypothesis and word2vec to contextual sentence encoders: how embeddings are trained, compared, indexed with HNSW, migrated, and evaluated in production.",
   "image": "https://zackproser.b-cdn.net/images/blueprint-the-embedding-space-hero.webp",
   "tags": [
     "AI",
@@ -15,7 +15,7 @@
   "blueprint": {
     "number": "002",
     "subject": "EMBEDDINGS",
-    "readTime": "20 MIN",
+    "readTime": "15 MIN",
     "eyebrow": "Semantic geometry · Complete working drawing",
     "subtitle": "Applied AI runs on a map where meaning has direction, distance, and neighborhoods. Here is how that map is built and searched.",
     "rfiSuggestions": [

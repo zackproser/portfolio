@@ -429,7 +429,28 @@ function Gallery({ posts, showLead }: { posts: ArticleWithSlug[]; showLead: bool
             href={post.slug as any}
           >
             <div className={`eb-thumb ${imgSrc ? "" : pattern}`}>
-              {imgSrc ? (
+              {imgSrc && isBlueprint && imgSrc.endsWith("-hero.webp") ? (
+                <>
+                  <Image
+                    src={imgSrc}
+                    alt=""
+                    fill
+                    sizes={isLead ? "(min-width:1000px) 520px, 100vw" : "(min-width:1000px) 380px, 100vw"}
+                    style={{ objectFit: "cover" }}
+                    className="eb-bp-img-dark"
+                    unoptimized
+                  />
+                  <Image
+                    src={imgSrc.replace("-hero.webp", "-hero-light.webp")}
+                    alt=""
+                    fill
+                    sizes={isLead ? "(min-width:1000px) 520px, 100vw" : "(min-width:1000px) 380px, 100vw"}
+                    style={{ objectFit: "cover" }}
+                    className="eb-bp-img-light"
+                    unoptimized
+                  />
+                </>
+              ) : imgSrc ? (
                 <Image
                   src={imgSrc}
                   alt=""

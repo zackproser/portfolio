@@ -76,6 +76,9 @@ export function BlueprintArticleLayout({
   const [prog, setProg] = useState(0)
   const [toc, setToc] = useState<TocEntry[]>([])
   const [active, setActive] = useState('s0')
+  // The RFI desk is Appendix A unless the post renders a BpReferences
+  // appendix, which claims A and pushes the desk to B.
+  const [rfiLetter, setRfiLetter] = useState<'A' | 'B'>('A')
 
   // Chat drawer state
   const [chatOpen, setChatOpen] = useState(false)
@@ -97,10 +100,13 @@ export function BlueprintArticleLayout({
     const root = rootRef.current
     if (!root) return
     const secs = Array.from(root.querySelectorAll<HTMLElement>('[data-sec]'))
+    const hasRefs = secs.some((s) => s.getAttribute('data-sec') === 'refs')
+    setRfiLetter(hasRefs ? 'B' : 'A')
     setToc(
       secs.map((s) => ({
         id: s.getAttribute('data-sec') || '',
-        num: s.getAttribute('data-num') || '',
+        // The RFI desk's rail letter depends on whether references exist
+        num: s.getAttribute('data-sec') === 's9' ? (hasRefs ? 'B' : 'A') : s.getAttribute('data-num') || '',
         label: s.getAttribute('data-label') || '',
       })),
     )
@@ -315,10 +321,12 @@ export function BlueprintArticleLayout({
         {children}
 
         {/* APPENDIX — RFI desk (references, when present, are Appendix A) */}
-        <div id="s9" data-sec="s9" data-num="B" data-label="RFI desk" className="bp-rfi-desk">
+        <div id="s9" data-sec="s9" data-num={rfiLetter} data-label="RFI desk" className="bp-rfi-desk">
           <div className="bp-rfi-desk-strip">
-            <span>APPENDIX B — RFI DESK · REQUEST FOR INFORMATION</span>
-            <span className="bp-num">{drawingCode}-B</span>
+            <span>APPENDIX {rfiLetter} — RFI DESK · REQUEST FOR INFORMATION</span>
+            <span className="bp-num">
+              {drawingCode}-{rfiLetter}
+            </span>
           </div>
           <div className="bp-rfi-desk-body">
             <p>

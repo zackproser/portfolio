@@ -6,6 +6,8 @@ import {
   BpNote,
   BpFigure,
   BpEquation,
+  BpQA,
+  BpReferences,
   ChunkingDemo,
   RetrievalScoreDemo,
 } from '@/components/blueprint'
@@ -29,6 +31,16 @@ Longer context windows help when the relevant material is already known and fits
 Fine-tuning changes behavior: style, format, task habits, and sometimes domain performance. It is a poor database update mechanism because facts become diffuse in weights, provenance is hard to recover, and deletion is awkward. Retrieval keeps source material outside the model where it can be versioned, filtered, cited, and removed.
 
 <BpNote>A model can answer from retrieved evidence without changing a single parameter. Updating the corpus can take minutes; retraining or fine-tuning follows a different and usually slower lifecycle.</BpNote>
+
+The lineage runs through open-domain question answering. DrQA, published by Chen and collaborators in 2017, searched Wikipedia with lexical features and passed selected passages to a neural reader. The architecture already contained the enduring split: a fast document retriever narrowed the corpus, then a more expensive model read the shortlist for an answer. The reader could only succeed if retrieval put the evidence in reach.
+
+Dense Passage Retrieval replaced that first-stage lexical representation with learned query and passage encoders in 2020. REALM trained a language model to retrieve from an external corpus as part of pretraining. Lewis and collaborators' 2020 RAG paper joined a neural retriever with a sequence generator and gave the pattern its durable name. These systems differed in training and generation details, but they shared one practical premise: knowledge can remain in an inspectable corpus and enter computation when a question arrives.
+
+<BpNote>DrQA (Chen et al., 2017), REALM (Guu et al., 2020), DPR (Karpukhin et al., 2020), and RAG (Lewis et al., 2020) mark the path from retrieve-then-read QA to retrieval-conditioned generation.</BpNote>
+
+<BpQA q="Is RAG a special kind of language model?">
+RAG is a system pattern around a language model. The retriever selects external material, the application assembles it, and the generator reads it in the request. You can swap the generator or search engine while keeping the same broad pipeline.
+</BpQA>
 
 <BpFigure caption="FIG. 1 — PARAMETERS SUPPLY LANGUAGE AND PATTERNS. RETRIEVAL SUPPLIES QUERY-SPECIFIC, CURRENT EVIDENCE AT INFERENCE TIME.">
   <svg viewBox="0 0 920 260">
@@ -62,9 +74,13 @@ Fine-tuning changes behavior: style, format, task habits, and sometimes domain p
 
 The economics follow the same split. Retrieval adds storage, embedding, and search costs on every corpus and query. Fine-tuning adds training and model-management costs. Neither is free; they buy different capabilities. Use retrieval when the answer depends on selecting external facts at request time.
 
+Retrieval also changes the failure contract. A parameter-only answer may be difficult to trace beyond the prompt and model version. A retrieval-backed answer can preserve document ID, revision, passage offsets, and the exact evidence delivered to the model. That record does not guarantee correctness, but it creates something an operator can inspect and a user can verify.
+
 <BpSection id="s2" num="02" label="Pipeline" sheet="SHEET 2 OF 8" title="The complete circuit has two paths" />
 
 RAG has an **offline path** and an **online path**. Offline, connectors read sources, parsers recover structure, a chunker creates retrieval units, an embedding model produces vectors, and an index stores vectors with text and metadata. Online, the user's query is transformed, searched, filtered, reranked, packed into a prompt, and sent to the generator.
+
+The two paths run on different clocks. Ingestion may take seconds or hours after a source changes; the request path usually has a latency budget measured in fractions of a second to a few seconds. A document is searchable only after every offline stage succeeds. Monitoring &quot;connector completed&quot; is insufficient when parsing dropped a table, embedding failed for one batch, or the new index has not become queryable.
 
 <BpFigure caption="FIG. 2 — THE RAG PIPELINE. TOP: OFFLINE INGESTION. BOTTOM: ONLINE QUERY, RETRIEVAL, RERANKING, CONTEXT ASSEMBLY, AND GENERATION.">
   <svg viewBox="0 0 980 390">
@@ -119,6 +135,12 @@ Every arrow needs identifiers and versions. A chunk should carry source ID, docu
 
 Freshness is an ingestion property. Updates must create or replace chunks; deletes must remove them; permission changes must propagate before search can expose stale access. Treat the index as a derived view of source systems, with reconciliation jobs and observable lag.
 
+Idempotent ingestion makes recovery possible. Reprocessing the same source version should produce the same chunk identities or safely replace the earlier set. Tombstones or source-version manifests help remove chunks that disappeared after an edit. For sensitive corpora, permission lag deserves its own service objective because a stale allow rule can become a data exposure, while a stale deny rule becomes a support ticket.
+
+<BpQA q="Why store all those versions if the text is already in the index?">
+Because an index entry is the output of several transformations. If a result suddenly disappears, you need to know whether the source changed, the parser dropped it, the chunker moved its boundary, or the embedding model changed. Versions turn that mystery into a comparison between two builds.
+</BpQA>
+
 <BpSection id="s3" num="03" label="Chunking" sheet="SHEET 3 OF 8" title="Chunking defines what retrieval can return" />
 
 The retriever returns chunks, so chunk boundaries become a hard limit on evidence quality. **Fixed-size chunking** is cheap and predictable but can split a definition from its explanation. **Structure-aware chunking** follows headings, paragraphs, lists, or code symbols. **Semantic chunking** detects topic shifts, adding model cost and another behavior to test.
@@ -126,6 +148,8 @@ The retriever returns chunks, so chunk boundaries become a hard limit on evidenc
 Overlap copies text from the end of one chunk into the next. It protects facts near boundaries, increases embedding and storage cost, and can flood the top ranks with near-duplicates. Parent-child retrieval offers another pattern: index small child chunks for precise matching, then return a larger parent section for context.
 
 <BpNote>A 20% overlap adds roughly 25% more indexed text when every new chunk advances by 80% of its length. Metadata and index overhead come on top.</BpNote>
+
+Tables, code, and conversations expose the weakness of one universal chunk rule. A table row may be meaningless without its column headers. A function needs its signature and perhaps its enclosing class. A support reply can depend on the customer message above it. Structure-aware parsing should carry those relationships into text or metadata before the chunker starts counting tokens.
 
 <BpFigure caption="FIG. 3 — CHUNKING STRATEGIES: FIXED WINDOWS IGNORE STRUCTURE; STRUCTURAL WINDOWS FOLLOW THE DOCUMENT; OVERLAP DUPLICATES BOUNDARY TEXT.">
   <svg viewBox="0 0 920 280">
@@ -163,11 +187,17 @@ Overlap copies text from the end of one chunk into the next. It protects facts n
 
 Character counts in the teaching panel make boundaries easy to see; production chunkers commonly count model tokens. Start from document structure, set a range rather than a sacred size, and evaluate with real questions. The [RAG visualized walkthrough](/demos/rag-visualized) shows how one query moves through these handoffs.
 
+Chunk size creates a precision-context trade. Small chunks give the retriever a focused target and reduce irrelevant prompt text, but may omit the qualifier that makes an answer safe. Large chunks preserve local narrative and consume more budget while diluting the embedding. Parent-child retrieval separates the two decisions: match against a focused child, then expand to a parent only after the match earns space.
+
 <BpSection id="s4" num="04" label="Retrieval" sheet="SHEET 4 OF 8" title="Dense and lexical retrieval cover different misses" />
 
 **Dense retrieval** embeds query and chunks, then ranks by vector similarity. It handles paraphrases, conceptual matches, and multilingual similarity when the embedding model supports them. It can blur exact identifiers and rare terms because those strings occupy little of the pooled semantic representation.
 
 **Keyword retrieval**, commonly BM25, rewards terms that appear in a passage and discounts terms common across the corpus. It excels at error codes, function names, legal clauses, product SKUs, and quoted language. It misses paraphrases when query and document vocabulary diverge.
+
+BM25 belongs to the Okapi retrieval tradition and remains strong because its assumptions match many real queries. Term frequency helps when a query term appears repeatedly, document-length normalization prevents long documents from winning by accumulation alone, and inverse document frequency gives rare terms more influence. Robertson and Zaragoza's 2009 survey describes the probabilistic lineage and the family of weighting choices behind the familiar formula.
+
+Dense Passage Retrieval demonstrated the complementary case: a learned bi-encoder could retrieve relevant Wikipedia passages when questions and answers used different surface language. Dense retrieval still has a vocabulary and training distribution, so it does not erase lexical failure. Hybrid search keeps both routes open.
 
 Hybrid retrieval runs both and combines normalized scores or fuses ranks. The blend coefficient α below is an intuition aid; production systems often use reciprocal rank fusion because dense and BM25 score scales are unrelated.
 
@@ -179,6 +209,8 @@ Hybrid retrieval runs both and combines normalized scores or fuses ranks. The bl
 
 Filters belong in this stage: tenant, permissions, language, product, time range, or document status. Apply security predicates inside retrieval whenever the store supports it. Post-filtering a small top-k can leave too few legal results and can expose forbidden text to application memory or logs.
 
+Query rewriting can help either branch and can also destroy signal. Expanding &quot;SSO loop&quot; into a fuller diagnostic query may surface prose that uses *repeated authentication redirect*. Replacing the user's exact error code with a paraphrase can remove the best BM25 term. Preserve the original query, search rewritten variants alongside it, and evaluate the fusion rather than assuming a more articulate query is better.
+
 <BpSection id="s5" num="05" label="Reranking" sheet="SHEET 5 OF 8" title="Retrieve wide, then read carefully" />
 
 Embedding search uses a **bi-encoder**: query and passage are encoded separately, so passage vectors can be precomputed. That makes search fast enough for millions of candidates, but query and passage cannot inspect each other's tokens during scoring.
@@ -186,6 +218,12 @@ Embedding search uses a **bi-encoder**: query and passage are encoded separately
 A **cross-encoder** reads the query and one candidate together. Full token-level attention produces a more precise relevance judgment at much higher cost. The common cascade retrieves tens or hundreds of candidates cheaply, reranks that short list, and sends only the best few passages to the prompt.
 
 <BpNote>Reranking cannot recover a document absent from the candidate set. Tune first-stage recall before celebrating second-stage precision.</BpNote>
+
+The cost gap comes from reuse. A bi-encoder computes each passage vector during ingestion and performs one cheap comparison at request time. A cross-encoder must run a fresh joint forward pass for every query-passage pair. Reranking 100 candidates means roughly 100 pair evaluations, though batching improves hardware use. Applying that model to a million passages per query would throw away the reason an index exists.
+
+<BpQA q="If retrieval found the document, why do I need a reranker?">
+First-stage retrieval is tuned to search broadly and cheaply, so a merely related passage can outrank the one that answers the exact question. A reranker reads the query and each candidate together, catching details such as negation, date, product version, or which entity performed an action. It improves the order of what retrieval already found.
+</BpQA>
 
 <BpFigure caption="FIG. 6 — TWO-STAGE RANKING: BI-ENCODER SEARCH MAXIMIZES CANDIDATE RECALL; CROSS-ENCODER SCORING IMPROVES FINAL PRECISION.">
   <svg viewBox="0 0 920 285">
@@ -219,6 +257,8 @@ A **cross-encoder** reads the query and one candidate together. Full token-level
 </BpFigure>
 
 Rerankers can also enforce policies that vector similarity cannot express cleanly: source authority, recency, document type, diversity, or whether a candidate contains enough context to answer. Keep learned relevance separate from explicit business rules so each can be inspected.
+
+Diversity matters when the first page contains five overlapping chunks from one document. Sending all five spends budget on repeated sentences and may crowd out a second source that confirms or challenges the first. Deduplication by source offsets, maximal marginal relevance, or a simple per-document cap can improve the evidence packet even when raw relevance scores fall slightly.
 
 <BpSection id="s6" num="06" label="Context budget" sheet="SHEET 6 OF 8" title="The prompt is a packing problem" />
 
@@ -254,11 +294,25 @@ Ordering matters. Models can underuse evidence buried in the middle of a long co
 
 <BpNote>Count tokens with the target model's tokenizer. Character estimates can fail badly on code, tables, non-English text, and long identifiers.</BpNote>
 
+Liu and collaborators measured this behavior in 2023 by moving relevant information through long inputs. Performance was often strongest when evidence appeared near the beginning or end and weaker when it sat in the middle, even for models whose context window covered the full input. A context window tells you how many tokens the model can accept. It does not promise equal use of every position.
+
+<BpNote>Liu et al., &quot;Lost in the Middle: How Language Models Use Long Contexts&quot; (2023). Position sensitivity should be tested on the exact generator and prompt shape used in production.</BpNote>
+
+<BpQA q="Why not send every retrieved passage if it fits?">
+Because fitting is a byte-count-style constraint, while usefulness is a reasoning constraint. Extra passages can repeat weaker evidence, introduce an older policy, or bury the decisive sentence between distractors. A smaller packet with clear source boundaries often gives the model an easier job.
+</BpQA>
+
 Compression is another model call with another failure surface. Extractive compression keeps selected source sentences and preserves provenance more cleanly. Abstractive summaries save more tokens but can erase qualifications or invent connective claims. Evaluate the compressed evidence, not only the final prose.
+
+Citations need a mechanical path back to chunks. Give each context block a stable source label and instruct the model to attach those labels to claims. After generation, verify that every cited label was present in the supplied context and resolve it to the original document location. This catches fabricated identifiers and broken links, though checking whether the cited passage truly supports the sentence requires a separate faithfulness judgment.
+
+Multi-hop questions complicate packing because no single passage contains the answer. One chunk may identify a product's owning team, while another gives that team's escalation policy. A single retrieval pass can miss the bridge between them. Query decomposition or iterative retrieval can find each step, but every added round increases latency and creates another place for an early mistake to steer later searches.
 
 <BpSection id="s7" num="07" label="Eval & failures" sheet="SHEET 7 OF 8" title="Evaluate each stage at its boundary" />
 
 When an answer is wrong, first ask whether the required evidence existed in the corpus. Then ask whether ingestion parsed it, retrieval found it, reranking kept it, assembly included it, and generation used it. A single end-to-end score hides which component needs work.
+
+That trace suggests a practical debugging order. Start with the source of truth and expected passage, then inspect each artifact produced downstream. If exact search cannot find the expected chunk, fix parsing or chunking. If exact search finds it but ANN does not, tune the index. If retrieval succeeds and the passage vanishes after reranking or assembly, the generator is innocent of that miss.
 
 Retrieval metrics need labeled relevance. **Hit rate@k** asks whether at least one relevant item appeared. **Recall@k** asks how much of the relevant set appeared. **MRR** rewards putting the first relevant result high. **nDCG** handles graded relevance and position. Measure latency and filtered-result counts beside quality.
 
@@ -290,6 +344,10 @@ Generation metrics separate **faithfulness** — are claims supported by supplie
 
 Build a small human-reviewed evaluation set before tuning. Include answerable questions, unanswerable questions, exact identifiers, paraphrases, permission boundaries, stale documents, conflicting sources, tables, and multi-hop cases. Model-based judges can scale review, but calibrate them against humans and retain examples behind every aggregate score.
 
+Evaluation sets age with the corpus. A policy question can change its correct passage after a revision, and a once-unanswerable question can become answerable when a document arrives. Store expected source versions and relevance labels, review disagreements, and keep a stable regression slice beside a rotating sample of current traffic. Production feedback is useful evidence, but clicks and thumbs-up reflect presentation and user expectations as well as retrieval quality.
+
+Abstention deserves direct tests. Include questions whose answer is absent, whose sources conflict, and whose only matching document is outside the user's permissions. Score whether the system declines cleanly and whether its explanation avoids revealing restricted details. An answer-quality average can hide a system that performs well on easy questions and improvises dangerously when evidence is missing.
+
 <BpSection id="s8" num="08" label="Use boundaries" sheet="SHEET 8 OF 8" title="Know when the pipeline is excess machinery" />
 
 Use plain long context when the source set is small, already selected, and fits comfortably. A contract reviewer analyzing one uploaded agreement may need careful parsing and prompting more than a persistent retrieval index. Search adds failure modes when there is nothing meaningful to search.
@@ -297,6 +355,8 @@ Use plain long context when the source set is small, already selected, and fits 
 Use tools when the task needs actions or exact live state. A database query, calculator, filesystem read, or API call can return authoritative structured results. An agent may still use retrieval for documentation, but vector search should not impersonate a transactional system.
 
 Use fine-tuning when the target is behavior: stable tone, format, classification policy, or repeated task procedure. Retrieval can provide examples and facts, yet stuffing many demonstrations into every prompt may cost more and behave less consistently than a tuned model.
+
+Use a direct structured lookup when the question has one authoritative row. Account balance, shipment status, and permission checks belong behind APIs or database queries with typed results. Retrieval can help locate the policy explaining a balance, while the live amount should come from the transactional source. The two results can share one answer without pretending they offer the same guarantee.
 
 <BpFigure caption="FIG. 9 — ROUTING THE PROBLEM: SELECTED SMALL CORPUS → LONG CONTEXT; SEARCHABLE KNOWLEDGE → RAG; LIVE ACTION → TOOLS; REPEATED BEHAVIOR → FINE-TUNING.">
   <svg viewBox="0 0 920 300">
@@ -332,3 +392,17 @@ Use fine-tuning when the target is behavior: stable tone, format, classification
 These choices compose. A support agent can retrieve policy, call an order API, and answer in a fine-tuned format. The architecture should follow the information source and required guarantee for each step.
 
 The working pipeline ends where it began: with evidence. Keep sources current, make retrieval measurable, preserve provenance through prompt assembly, require the generator to stay inside the supplied record, and expose every handoff in the trace. Then a wrong answer becomes an engineering problem with a location.
+
+<BpReferences
+  drawingCode="TDD-003"
+  items={[
+    { label: 'Chen et al., "Reading Wikipedia to Answer Open-Domain Questions", ACL 2017', href: 'https://arxiv.org/abs/1704.00051' },
+    { label: 'Robertson and Zaragoza, "The Probabilistic Relevance Framework: BM25 and Beyond", Foundations and Trends in Information Retrieval 2009', href: 'https://doi.org/10.1561/1500000019' },
+    { label: 'Guu et al., "REALM: Retrieval-Augmented Language Model Pre-Training", ICML 2020', href: 'https://arxiv.org/abs/2002.08909' },
+    { label: 'Karpukhin et al., "Dense Passage Retrieval for Open-Domain Question Answering", EMNLP 2020', href: 'https://arxiv.org/abs/2004.04906' },
+    { label: 'Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", NeurIPS 2020', href: 'https://arxiv.org/abs/2005.11401' },
+    { label: 'Khattab and Zaharia, "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT", SIGIR 2020', href: 'https://arxiv.org/abs/2004.12832' },
+    { label: 'Cormack, Clarke, and Büttcher, "Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods", SIGIR 2009', href: 'https://doi.org/10.1145/1571941.1572114' },
+    { label: 'Liu et al., "Lost in the Middle: How Language Models Use Long Contexts", TACL 2024', href: 'https://arxiv.org/abs/2307.03172' },
+  ]}
+/>
