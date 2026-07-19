@@ -1,0 +1,80 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'granola-apple-watch-app';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola meeting notes on Apple Watch" width={800} height={600} className="rounded-lg shadow-xl" />
+</AffiliateLink>
+<figcaption>Granola is bringing its device-based meeting capture to Apple Watch</figcaption>
+
+The moment you decide a conversation is worth capturing, pulling out your phone can be enough friction to let the moment pass.
+
+Granola's Apple Watch app is built for that moment.
+
+## Quick Answer
+
+**<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> is rolling out an Apple Watch app now.** I have early access ahead of the public launch.
+
+To set it up, open the Granola iOS app. A prompt walks you through setting up the Watch app. If you don't see the prompt, update the iOS app first.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Why Granola Fits on Your Wrist
+
+Granola already captures audio on your device. No meeting bot joins the call. After the conversation, you get a transcript, summary, and action items.
+
+The Watch removes the last bit of friction: getting to the capture control.
+
+Your wrist is already available when your phone is in a pocket or bag. Starting a capture from there is faster and less disruptive than pulling out a phone in the middle of a conversation.
+
+That makes the Watch a natural form factor for Granola. The value is speed at the exact moment you realize, "We should keep this."
+
+## How to Set Up the Granola Apple Watch App
+
+1. Open Granola on your iPhone
+2. Follow the prompt that walks you through Watch setup
+3. If the prompt is missing, update the Granola iOS app and check again
+
+Granola is still rolling the app out, so launch details may change. The setup prompt is the source to follow for the version you receive.
+
+## Who the Watch App Is For
+
+### Back-to-Back Meetings
+
+When one conversation runs into the next, a faster start gives you one less thing to manage. Granola can handle the transcript and turn it into usable notes afterward.
+
+### In-Person Conversations
+
+Granola's iOS and Android apps already capture in-person conversations. The Watch gives iPhone users a less disruptive way to begin that capture.
+
+### Impromptu Discussions
+
+The useful planning session often starts without a calendar invite. A hallway chat, coffee, or quick walk can turn into the conversation that defines the work. Faster capture helps more of those ideas survive.
+
+<Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola transcript summary and action items after a meeting" width={800} height={600} className="rounded-lg shadow-xl" />
+<figcaption>After a capture, Granola produces a transcript, summary, and action items</figcaption>
+
+## Honest Caveats
+
+I have early access ahead of the public launch, and the app is rolling out now. Specific details may change as Granola completes the public launch.
+
+The same consent rules apply on your wrist as on your phone or computer. Ask before you capture a conversation, and follow the laws where everyone involved is located. My [Granola call recording legal guide](/blog/granola-call-recording-legal-compliance) covers the basics.
+
+## Try Granola Free
+
+Granola has a free plan and works on Mac, Windows, iOS, and Android. New users who sign up through my link get their first three months free.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+<AffiliateLink product="granola" campaign={campaign}>Try Granola free for your first three months</AffiliateLink> and follow the setup prompt in the iOS app when the Watch rollout reaches you.
+
+## Related Guides
+
+- [How to transcribe meetings without a bot](/blog/how-to-transcribe-meetings-without-bot)
+- [My Granola AI review](/blog/granola-ai-review)
+- [Granola call recording: legal and compliance guide](/blog/granola-call-recording-legal-compliance)
