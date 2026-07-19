@@ -78,6 +78,16 @@ Art reads title/subtitle/number/readTime from metadata.json — regenerate and r
 
 Content drafting delegates well to sol (`codex exec -m gpt-5.6-sol --sandbox workspace-write ... - < brief.md`, backgrounded): give it the canon posts to read, the strategy outline, the files it may touch, and the hard rules; keep layout/CSS/route files off-limits. Review its output yourself — especially citations (fetch and title-match every link) and banned words.
 
+## Issuing the drawing (after deploy — this is what the capture card promises)
+
+Blueprint signups land in the General Resend audience with an `interest:blueprint-series` Topic opt-in (topics auto-create on first use; the welcome-v1 automation receives the tag on its trigger event and can branch on it). When a new drawing deploys:
+
+1. `npm run blueprint:issue-email -- --slug <slug>` → drawing-styled broadcast HTML in `scripts/blueprint/out/` + suggested subject.
+2. Resend dashboard → Broadcasts → new broadcast → audience **General**, topic **interest:blueprint-series** → paste HTML → send test → send. The `{{{RESEND_UNSUBSCRIBE_URL}}}` merge tag in the footer must resolve in the test.
+3. Update the PREVIOUS post's `nextDrawing.status` to `issued`.
+
+Skipping this step breaks the NEXT SHEET card's promise — treat it as part of publishing, not marketing.
+
 ## Verify before commit (all required)
 
 1. `npx tsc --noEmit` — no new errors.
