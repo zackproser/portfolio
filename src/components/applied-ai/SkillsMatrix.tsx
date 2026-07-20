@@ -53,7 +53,7 @@ const evidence: EvidenceCategory[] = [
       {
         label: '13+ years building distributed systems and production SaaS',
         links: [
-          { label: 'Projects', href: '/projects' },
+          { label: 'Projects', href: 'https://github.com/zackproser' },
           { label: 'Featured builds', href: '#projects' }
         ]
       },

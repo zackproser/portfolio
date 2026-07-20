@@ -299,7 +299,9 @@ export default function FeaturedProjects() {
           {/* See all link */}
           <div className="flex justify-center mt-8">
             <a
-              href="/projects"
+              href="https://github.com/zackproser"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 font-semibold"
             >
               See all projects

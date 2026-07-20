@@ -38,7 +38,7 @@ function createSlug(name) {
 function getRoutePriority(route) {
   if (route === '/') return 1.0;
   // Section/index pages
-  const sectionPages = ['/blog', '/videos', '/newsletter', '/comparisons', '/devtools', '/vectordatabases', '/services', '/products', '/demos', '/learn', '/about', '/projects', '/publications', '/speaking', '/tutorials'];
+  const sectionPages = ['/blog', '/videos', '/newsletter', '/comparisons', '/devtools', '/vectordatabases', '/services', '/products', '/demos', '/learn', '/about', '/publications', '/speaking', '/tutorials'];
   if (sectionPages.includes(route)) return 0.8;
   // Comparison pages (high value for SEO)
   if (route.startsWith('/comparisons/')) return 0.7;
