@@ -117,6 +117,7 @@ export async function POST(req: NextRequest) {
   // Best-effort email copy of the file link. The on-screen link is the
   // primary delivery; a Postmark failure never fails the exchange.
   const apiKey = process.env.POSTMARK_API_KEY
+  let emailSent = false
   if (apiKey) {
     try {
       await new ServerClient(apiKey).sendEmail({
@@ -134,10 +135,11 @@ export async function POST(req: NextRequest) {
         ].join('\n'),
         MessageStream: 'outbound',
       })
+      emailSent = true
     } catch (e) {
       console.error(`[blueprint-asset] Postmark send failed for ${assetId}:`, e)
     }
   }
 
-  return NextResponse.json({ ok: true, fileUrl: asset.fileUrl })
+  return NextResponse.json({ ok: true, fileUrl: asset.fileUrl, emailSent })
 }

@@ -33,6 +33,7 @@ export function BpDetachablePlate({
   const [open, setOpen] = useState(false)
   const [status, setStatus] = useState<'idle' | 'submitting' | 'done' | 'error'>('idle')
   const [delivered, setDelivered] = useState<string | null>(null)
+  const [emailSent, setEmailSent] = useState(false)
   const location = `blueprint:plate:${assetId}`
   const plateCode = `${drawingCode}-PLATE`
 
@@ -54,6 +55,7 @@ export function BpDetachablePlate({
       if (!res.ok) throw new Error(data?.error || 'failed')
       track('blueprint-plate-success', { location })
       setDelivered(data.fileUrl || fileUrl)
+      setEmailSent(data.emailSent ?? false)
       setStatus('done')
       markSubscribed()
     } catch {
@@ -81,7 +83,9 @@ export function BpDetachablePlate({
 
         {status === 'done' || (subscribed && delivered) ? (
           <div className="bp-plate-delivered">
-            <span className="bp-capture-recorded">✓ PLATE ISSUED — A COPY IS ALSO ON ITS WAY TO YOUR INBOX</span>
+            <span className="bp-capture-recorded">
+              ✓ PLATE ISSUED{emailSent ? ' — A COPY IS ALSO ON ITS WAY TO YOUR INBOX' : ''}
+            </span>
             <a className="bp-capture-btn bp-plate-download" href={delivered || fileUrl} target="_blank" rel="noreferrer">
               OPEN {name.toUpperCase()} →
             </a>
