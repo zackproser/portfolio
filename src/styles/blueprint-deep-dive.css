@@ -26,6 +26,15 @@
   --bp-fg-subtle: #7189a1;
   --bp-accent: #e67e22;
   --bp-accent-soft: rgba(230, 126, 34, 0.1);
+
+  /* Syntax highlighting, tuned for the light-print code panel */
+  --bp-code-base: #24405c;
+  --bp-code-comment: #5f7488;
+  --bp-code-keyword: #b23a10;
+  --bp-code-string: #2f7d3a;
+  --bp-code-number: #8a3fa8;
+  --bp-code-fn: #8a5a00;
+  --bp-code-punc: #4d6b85;
   --bp-link: #b84a00;
   --bp-link-hover: #d35400;
   --bp-shadow-md: 0 4px 10px -2px rgb(24 24 40 / 0.08), 0 2px 4px -2px rgb(24 24 40 / 0.05);
@@ -71,6 +80,15 @@
   --bp-fg-subtle: #94a3b8;
   --bp-accent: #f39c12;
   --bp-accent-soft: rgba(243, 156, 18, 0.2);
+
+  /* Syntax highlighting, tuned for the dark blueprint code panel */
+  --bp-code-base: #e6edf5;
+  --bp-code-comment: #94a3b8;
+  --bp-code-keyword: #f87171;
+  --bp-code-string: #b8d977;
+  --bp-code-number: #d3869b;
+  --bp-code-fn: #f5c451;
+  --bp-code-punc: #cbd5e1;
   --bp-link: #38bdf8;
   --bp-link-hover: #7dd3fc;
   --bp-shadow-md: 0 4px 10px -2px rgb(0 0 0 / 0.5);
@@ -322,6 +340,41 @@
   font-weight: 400;
   font-size: inherit;
 }
+
+/* Blueprint syntax palette. Scoped to .bp so it overrides the global
+   Gruvbox-dark Prism theme (whose cream base and muted grays/yellows wash
+   out on the light-print panel). Colors come from the theme-aware
+   --bp-code-* tokens above, so code reads cleanly in light and dark. */
+.bp code[class*="language-"],
+.bp pre[class*="language-"],
+.bp-article > pre code { color: var(--bp-code-base); }
+.bp .token.comment,
+.bp .token.prolog,
+.bp .token.cdata { color: var(--bp-code-comment); font-style: italic; }
+.bp .token.keyword,
+.bp .token.boolean,
+.bp .token.atrule,
+.bp .token.selector,
+.bp .token.important,
+.bp .token.delimiter,
+.bp .token.property,
+.bp .token.constant,
+.bp .token.variable { color: var(--bp-code-keyword); }
+.bp .token.string,
+.bp .token.char,
+.bp .token.attr-value,
+.bp .token.url { color: var(--bp-code-string); }
+.bp .token.number,
+.bp .token.entity,
+.bp .token.symbol { color: var(--bp-code-number); }
+.bp .token.builtin,
+.bp .token.function,
+.bp .token.tag,
+.bp .token.class-name,
+.bp .token.doctype { color: var(--bp-code-fn); }
+.bp .token.operator,
+.bp .token.punctuation,
+.bp .token.attr-name { color: var(--bp-code-punc); }
 .bp-article > ul,
 .bp-article > ol {
   margin: 0 0 22px;
