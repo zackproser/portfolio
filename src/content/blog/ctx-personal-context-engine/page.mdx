@@ -592,7 +592,75 @@ Two details make it actually useful rather than noisy. First, task extraction is
   </svg>
 </BpFigure>
 
-Today the ingester runs on one Mac on a `launchd` timer, and a second copy on another machine would race it. The near-term plan closes that: a lease-based single-runner, so both my work and personal laptops can run the same timer and whichever wakes first claims a short lease, does the sync, and the other exits quietly. Two laptops, one clean corpus, no coordination on my part — the vault stays current whichever machine is open.
+The ingester now runs unattended on a `launchd` timer that wakes every thirty minutes, on both the work and personal MacBooks at once. The thing I cared about most here was that a sync utility running on a loop, on machines I'm not watching, must be constitutionally unable to spin out of control — not "carefully written so it won't," but built so it can't. So the timer never runs the ingester directly. It runs a wrapper whose entire job is to say no, and almost every wake is a sub-second no-op that says no and exits.
+
+The wrapper is a stack of guards that each fail fast and cheap, in order. A kill-switch file lets me pause everything with a `touch`. A single-runner lock — an atomic `mkdir`, reaping only a confirmed-dead PID — means a slow run never overlaps the next wake. A per-hour rate cap and a failure-backoff cooldown bound how often it can act and back it off entirely after repeated errors. A debounce and a change-detection pass (`find -newer` against a marker) skip the run outright when the vault hasn't changed, which is most of the time. A battery-level guard and a reachability preflight keep it from working when I'm low or offline. Only if every guard passes does the actual sync run — and it runs under a hard process-group timeout that sends `SIGTERM` then `SIGKILL` to the entire tree, so a wedged network call or a runaway child can't outlive its five-minute budget. State is read with a parser that never sources the file as shell and written atomically; the clock is treated as untrusted so a rollback can't confuse the debounce. Two laptops can run the same timer because a cross-machine lock on the server (a `409` from the sync endpoint) makes the second one stand down. Two laptops, one clean corpus, no coordination on my part.
+
+<BpFigure caption="FIG. 9 — THE SYNC WRAPPER IS A STACK OF GUARDS THAT EACH FAIL FAST; ALMOST EVERY WAKE EXITS IN MILLISECONDS. ONLY A REAL CHANGE REACHES THE TIMED RUN.">
+  <svg viewBox="0 0 960 470">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={250} y={20} width={280} height={40}></rect>
+      <rect x={250} y={84} width={280} height={40}></rect>
+      <rect x={250} y={148} width={280} height={40}></rect>
+      <rect x={250} y={212} width={280} height={40}></rect>
+      <rect x={250} y={276} width={280} height={40}></rect>
+      <rect x={250} y={340} width={280} height={40}></rect>
+      <rect x={228} y={404} width={324} height={48}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <path d="M390 60 L390 84"></path>
+      <path d="M390 124 L390 148"></path>
+      <path d="M390 188 L390 212"></path>
+      <path d="M390 252 L390 276"></path>
+      <path d="M390 316 L390 340"></path>
+      <path d="M390 380 L390 404"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M390 84 l-4 -9 h8 z"></path>
+      <path d="M390 148 l-4 -9 h8 z"></path>
+      <path d="M390 212 l-4 -9 h8 z"></path>
+      <path d="M390 276 l-4 -9 h8 z"></path>
+      <path d="M390 340 l-4 -9 h8 z"></path>
+      <path d="M390 404 l-4 -9 h8 z"></path>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={0.8} strokeDasharray="4 4" className="bp-dash">
+      <path d="M530 40 L700 40"></path>
+      <path d="M530 104 L700 104"></path>
+      <path d="M530 168 L700 168"></path>
+      <path d="M530 232 L700 232"></path>
+      <path d="M530 296 L700 296"></path>
+      <path d="M530 360 L700 360"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M700 40 l-9 -4 v8 z"></path>
+      <path d="M700 104 l-9 -4 v8 z"></path>
+      <path d="M700 168 l-9 -4 v8 z"></path>
+      <path d="M700 232 l-9 -4 v8 z"></path>
+      <path d="M700 296 l-9 -4 v8 z"></path>
+      <path d="M700 360 l-9 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={390} y={45} textAnchor="middle">kill switch?</text>
+      <text x={390} y={109} textAnchor="middle">single-runner lock</text>
+      <text x={390} y={173} textAnchor="middle">rate cap · backoff</text>
+      <text x={390} y={237} textAnchor="middle">debounce · change-detect</text>
+      <text x={390} y={301} textAnchor="middle">battery · reachability</text>
+      <text x={390} y={365} textAnchor="middle">server lease (409?)</text>
+      <text x={390} y={433} textAnchor="middle">run ingest — timed, group-killed</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor" opacity={0.7}>
+      <text x={712} y={44}>exit 0</text>
+      <text x={712} y={108}>exit 0</text>
+      <text x={712} y={172}>exit 0</text>
+      <text x={712} y={236}>exit 0</text>
+      <text x={712} y={300}>exit 0</text>
+      <text x={712} y={364}>stand down</text>
+      <text x={250} y={20} dy={-6}>launchd wake · every 30 min</text>
+    </g>
+  </svg>
+</BpFigure>
+
+None of this is bespoke to one laptop. The wrapper, the `launchd` job, the ingester, the schema, the Worker, and every connector live in one private git repo, `zackproser/ctx`. Setting up a new machine is a checkout and one install script that writes a `0600` env file and loads the timer; there is nothing hand-tuned living only on a disk somewhere. Because it's all versioned in a repo I own — not a managed feature inside someone's product — the whole system is reproducible, auditable, and mine. It survives me neglecting it, and it survives any single vendor deciding to change the deal.
 
 The phone is the opposite problem: no daemon, no disk access, just me wanting to throw a thought into the system while walking. That's an iOS Shortcut wired to the share sheet and to Siri. It takes whatever I say or share and does a single `POST /api/remember` with a **write-only** token — the same write path any agent uses, distilled and embedded server-side. The token can push but can't read a thing, so the phone in my pocket can add to my context without being able to pull any of it back out if it's lost. "Hey Siri, remember that…" and it's in the table, retrievable from every other surface a moment later.
 
@@ -602,7 +670,7 @@ The version running today is the read side done well and the write side done man
 
 The first step is already built: a **writeback skill**. It's a small, reusable capability I drop into every coding agent so that when it discovers something worth keeping — a gotcha about a library, a decision we just made, the reason a fix works — it calls `remember` on its own, mid-session, without me prompting it. I used to be the one who noticed "that's worth saving"; now the agent has that habit everywhere it runs. The payoff is cross-machine and cross-tool: a lesson Claude Code learns debugging on my work laptop at noon is in the table when Codex on my personal machine hits the same wall at night. I built the skill by pointing it at its own construction — the session that wrote it also used it to preserve what it learned, and every one of those learnings came back on a paraphrased search. The corpus stops being something I maintain and becomes a byproduct of the work itself, every session leaving the next one a little less ignorant.
 
-<BpFigure caption="FIG. 9 — THE WRITEBACK LOOP: EVERY SESSION, ON ANY MACHINE, DEPOSITS WHAT IT LEARNS INTO THE ONE SHARED VAULT.">
+<BpFigure caption="FIG. 10 — THE WRITEBACK LOOP: EVERY SESSION, ON ANY MACHINE, DEPOSITS WHAT IT LEARNS INTO THE ONE SHARED VAULT.">
   <Image src="/images/ctx-writeback.jpg" alt="Pixel art: several small robot agents at desks with laptops, on both a work side and a personal side, each sending a glowing learning card along a beam into a single shared central memory vault — showing every coding session writing its findings back into one shared memory" width={1280} height={719} />
 </BpFigure>
 
@@ -616,7 +684,7 @@ The stack is deliberately boring: a Cloudflare Worker, Neon Postgres with pgvect
 
 What it's worth is simple to state. Every agent I use now starts warm, no matter its shape or its vendor. A fresh Claude Code session in an empty directory, given nothing but the connection URL, can tell me what's on my plate this week — my dated worries from the vault, my open tickets, my calendar — before I've typed a second sentence. So can Claude in a browser tab, through the OAuth flow. So can Codex over REST. The same memory, the same answer, whichever door I walk in through.
 
-<BpFigure caption="FIG. 10 — A COLD CLAUDE SESSION, GIVEN ONLY THE URL, BRIEFS ME FROM THE VAULT AND TICKETS.">
+<BpFigure caption="FIG. 11 — A COLD CLAUDE SESSION, GIVEN ONLY THE URL, BRIEFS ME FROM THE VAULT AND TICKETS.">
   <Image src="/images/ctx-briefing-workos.png" alt="A chat asking 'What's the latest on my plate via ctx?' The reply, titled 'What's on your plate', is organized into Today, Rest of the week, and Open backlog — pulling WorkOS applied-AI work from the vault and tickets: blog bot fixes, social bot testing and campaign wiring, and the Eve-bot authoring pipeline" width={1120} height={1076} />
 </BpFigure>
 
