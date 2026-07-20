@@ -24,10 +24,10 @@
       "What artifacts does my team keep?"
     ],
     "nextDrawing": {
-      "number": "006",
-      "title": "The Vector Database",
-      "subject": "VECTOR SEARCH",
-      "status": "planned"
+      "number": "010",
+      "title": "The Attention Head",
+      "subject": "INTERPRETABILITY",
+      "status": "in-production"
     }
   }
 }

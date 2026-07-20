@@ -1,0 +1,33 @@
+{
+  "title": "The Attention Head",
+  "author": "Zachary Proser",
+  "date": "2026-07-19",
+  "description": "How induction heads copy patterns in transformers, and how attention maps, logit attribution, and causal ablation support different strengths of claim.",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-attention-head-hero.webp",
+  "tags": [
+    "AI",
+    "Mechanistic Interpretability",
+    "Attention",
+    "Induction Heads",
+    "Transformers"
+  ],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "010",
+    "subject": "INTERPRETABILITY",
+    "readTime": "15 MIN",
+    "eyebrow": "Circuit evidence · Complete working drawing",
+    "subtitle": "An attention pattern suggests a copying circuit. Attribution measures its contribution. Intervention tests whether the behavior depends on it.",
+    "rfiSuggestions": [
+      "Why can an attention map suggest a mechanism without proving one?",
+      "How do previous-token and induction heads compose into a copying circuit?",
+      "What result would make an ablation causal evidence rather than a correlation?"
+    ],
+    "nextDrawing": {
+      "number": "011",
+      "title": "The Inference Engine",
+      "subject": "SERVING",
+      "status": "in-production"
+    }
+  }
+}

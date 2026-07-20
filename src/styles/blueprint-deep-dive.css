@@ -926,6 +926,97 @@
   .bp-capture--done { display: none !important; }
 }
 
+/* ---------- detachable plate (gated artifact) ---------- */
+
+.bp-plate {
+  grid-column: 1;
+  margin: 8px 0 26px;
+  border: 1.5px dashed var(--bp-accent);
+  background: var(--bp-panel);
+  position: relative;
+}
+/* perforation notch, like a tear-off sheet */
+.bp-plate::before {
+  content: '✂';
+  position: absolute;
+  top: -11px;
+  left: 18px;
+  font-size: 13px;
+  color: var(--bp-accent);
+  background: var(--bp-vellum);
+  padding: 0 6px;
+}
+.bp-plate-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--bp-line-soft);
+  padding: 12px 20px;
+  font-family: var(--bp-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-accent);
+}
+.bp-plate-format {
+  color: var(--bp-fg-subtle);
+  text-transform: none;
+  letter-spacing: 0.06em;
+}
+.bp-plate-body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bp-plate-name {
+  font-family: var(--bp-serif);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--bp-fg);
+}
+.bp-plate-contents {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--bp-fg-muted);
+}
+.bp-plate-contents li { display: flex; gap: 8px; }
+.bp-plate-tick { color: var(--bp-accent); flex-shrink: 0; }
+.bp-plate-body > .bp-capture-btn { align-self: flex-start; }
+.bp-plate-form { display: flex; flex-direction: column; gap: 10px; }
+.bp-plate-consent {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--bp-fg-muted);
+  max-width: 56ch;
+}
+.bp-plate-inputrow { display: flex; gap: 10px; flex-wrap: wrap; }
+.bp-plate-inputrow .bp-capture-input { flex: 1; min-width: 210px; max-width: 320px; }
+.bp-plate-delivered {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.bp-plate-download { text-decoration: none; display: inline-block; }
+.bp-plate-note {
+  font-family: var(--bp-mono);
+  font-size: 10.5px;
+  color: var(--bp-fg-subtle);
+}
+@media print {
+  .bp-plate { display: none !important; }
+}
+
 /* ---------- RFP desk (workshop commission form) ---------- */
 
 .bp-rfp {

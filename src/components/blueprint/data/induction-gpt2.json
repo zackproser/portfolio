@@ -1,0 +1,706 @@
+{
+  "provenance": {
+    "kind": "real-model-export",
+    "modelId": "openai-community/gpt2",
+    "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+    "transformersVersion": "4.57.6",
+    "torchVersion": "2.8.0",
+    "pythonVersion": "3.9.6",
+    "promptSet": [
+      " A B C D E F G H A B C D E F G H",
+      " one two three four five six seven eight one two three four five six seven eight",
+      " red blue green gold black white orange purple red blue green gold black white orange purple"
+    ],
+    "generationDate": "2026-07-19",
+    "exportScript": "scripts/blueprint/export-induction.py",
+    "exportScriptSha256": "78ced78ebf8b8cf221a699b3da1cbec95ccaa90fbd3738c33b8639b0a78975a3",
+    "command": "scripts/blueprint/out/induction-venv/bin/python scripts/blueprint/export-induction.py",
+    "selectionRule": "Screen the 24 heads with highest mean attention to the token after a matching prefix, retain candidates with mean pattern score \u22650.10 and a positive copying-score drop under zero ablation, then select the largest drop across all prompts. The previous-token head is the strongest mean t\u2192t\u22121 head in an earlier layer.",
+    "attribution": "Project the selected head result through its slice of c_proj, apply the intact run's final layer-normalization scale and gain, then dot with the tied unembedding. Bias is excluded.",
+    "intervention": "Zero the selected head's pre-projection slice at every position; MLP ablation zeros the candidate layer MLP output."
+  },
+  "modelShape": {
+    "layers": 12,
+    "headsPerLayer": 12,
+    "modelWidth": 768
+  },
+  "demo": {
+    "prompt": " A B C D E F G H A B C D E F G H",
+    "tokens": [
+      "\u0120A",
+      "\u0120B",
+      "\u0120C",
+      "\u0120D",
+      "\u0120E",
+      "\u0120F",
+      "\u0120G",
+      "\u0120H",
+      "\u0120A",
+      "\u0120B",
+      "\u0120C",
+      "\u0120D",
+      "\u0120E",
+      "\u0120F",
+      "\u0120G",
+      "\u0120H"
+    ],
+    "activePosition": 14,
+    "targetPosition": 7,
+    "targetToken": "\u0120H",
+    "copyingScoreDefinition": "Target-token logit minus the mean logit of the other first-cycle continuation tokens.",
+    "candidateInductionHead": {
+      "layer": 5,
+      "head": 1
+    },
+    "candidatePreviousTokenHead": {
+      "layer": 4,
+      "head": 11
+    },
+    "mlpLayer": 5,
+    "attentionHeads": [
+      {
+        "layer": 5,
+        "head": 1,
+        "meanInductionScore": 0.53601,
+        "meanCopyingScoreDropUnderAblation": 1.02334,
+        "activeRow": [
+          0.20452,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1e-05,
+          0.00598,
+          0.78268,
+          6e-05,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00675
+        ],
+        "fullPattern": [
+          [
+            1.0
+          ],
+          [
+            0.99906,
+            0.00094
+          ],
+          [
+            0.98444,
+            3e-05,
+            0.01553
+          ],
+          [
+            0.94674,
+            5e-05,
+            0.00067,
+            0.05254
+          ],
+          [
+            0.94787,
+            0.00064,
+            5e-05,
+            0.00266,
+            0.04879
+          ],
+          [
+            0.91008,
+            5e-05,
+            0.00011,
+            0.00065,
+            0.00074,
+            0.08838
+          ],
+          [
+            0.9528,
+            1e-05,
+            2e-05,
+            2e-05,
+            1e-05,
+            0.00029,
+            0.04684
+          ],
+          [
+            0.94148,
+            3e-05,
+            2e-05,
+            1e-05,
+            2e-05,
+            0.00012,
+            0.00518,
+            0.05314
+          ],
+          [
+            0.94701,
+            0.04206,
+            0.00372,
+            0.00021,
+            9e-05,
+            0.00026,
+            0.00057,
+            0.00023,
+            0.00586
+          ],
+          [
+            0.18142,
+            0.00017,
+            0.80664,
+            0.00436,
+            3e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00738
+          ],
+          [
+            0.17953,
+            1e-05,
+            0.00387,
+            0.81409,
+            0.00045,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00204
+          ],
+          [
+            0.37808,
+            1e-05,
+            6e-05,
+            0.01663,
+            0.59702,
+            0.00031,
+            2e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00787
+          ],
+          [
+            0.32671,
+            8e-05,
+            0.0,
+            0.00024,
+            0.00707,
+            0.66355,
+            0.00137,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1e-05,
+            0.00096
+          ],
+          [
+            0.20196,
+            0.0,
+            0.0,
+            2e-05,
+            2e-05,
+            0.00728,
+            0.7834,
+            0.00058,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00671
+          ],
+          [
+            0.20452,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1e-05,
+            0.00598,
+            0.78268,
+            6e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00675
+          ],
+          [
+            0.07777,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00012,
+            0.00301,
+            0.91623,
+            7e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            3e-05,
+            0.00276
+          ]
+        ]
+      },
+      {
+        "layer": 5,
+        "head": 5,
+        "meanInductionScore": 0.59852,
+        "meanCopyingScoreDropUnderAblation": 0.89795,
+        "activeRow": [
+          0.10759,
+          0.00018,
+          1e-05,
+          1e-05,
+          0.0,
+          2e-05,
+          0.00199,
+          0.8889,
+          0.00025,
+          6e-05,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00099
+        ],
+        "fullPattern": [
+          [
+            1.0
+          ],
+          [
+            0.98829,
+            0.01171
+          ],
+          [
+            0.9792,
+            0.00332,
+            0.01748
+          ],
+          [
+            0.97309,
+            0.00682,
+            0.00143,
+            0.01866
+          ],
+          [
+            0.96518,
+            0.01514,
+            9e-05,
+            0.00254,
+            0.01704
+          ],
+          [
+            0.95545,
+            0.00382,
+            0.00041,
+            0.00104,
+            0.00073,
+            0.03855
+          ],
+          [
+            0.98567,
+            0.00151,
+            8e-05,
+            7e-05,
+            2e-05,
+            0.00019,
+            0.01246
+          ],
+          [
+            0.95832,
+            0.0094,
+            0.00021,
+            2e-05,
+            5e-05,
+            0.00015,
+            0.00151,
+            0.03034
+          ],
+          [
+            0.17063,
+            0.8086,
+            0.0154,
+            0.0005,
+            0.00023,
+            0.00044,
+            0.00019,
+            0.00018,
+            0.00384
+          ],
+          [
+            0.27454,
+            0.00146,
+            0.71378,
+            0.00534,
+            4e-05,
+            0.0,
+            1e-05,
+            0.0,
+            0.0,
+            0.00482
+          ],
+          [
+            0.18657,
+            0.00077,
+            0.01017,
+            0.80078,
+            0.00067,
+            3e-05,
+            1e-05,
+            0.0,
+            0.0,
+            2e-05,
+            0.00099
+          ],
+          [
+            0.1624,
+            0.0012,
+            0.00029,
+            0.01013,
+            0.823,
+            0.00133,
+            5e-05,
+            0.0,
+            0.0,
+            2e-05,
+            1e-05,
+            0.00156
+          ],
+          [
+            0.11586,
+            0.00201,
+            1e-05,
+            0.00042,
+            0.00279,
+            0.87739,
+            0.00129,
+            0.0,
+            0.0,
+            1e-05,
+            0.0,
+            1e-05,
+            0.00021
+          ],
+          [
+            0.14721,
+            0.00036,
+            4e-05,
+            0.00013,
+            8e-05,
+            0.00641,
+            0.84234,
+            0.00153,
+            6e-05,
+            0.0001,
+            0.0,
+            0.0,
+            0.0,
+            0.00172
+          ],
+          [
+            0.10759,
+            0.00018,
+            1e-05,
+            1e-05,
+            0.0,
+            2e-05,
+            0.00199,
+            0.8889,
+            0.00025,
+            6e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00099
+          ],
+          [
+            0.03421,
+            0.00035,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            4e-05,
+            0.00087,
+            0.96248,
+            0.00169,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1e-05,
+            0.00034
+          ]
+        ]
+      },
+      {
+        "layer": 6,
+        "head": 9,
+        "meanInductionScore": 0.43291,
+        "meanCopyingScoreDropUnderAblation": 0.36682,
+        "activeRow": [
+          0.34704,
+          0.0002,
+          3e-05,
+          2e-05,
+          1e-05,
+          0.0,
+          0.01563,
+          0.63575,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00131
+        ],
+        "fullPattern": [
+          [
+            1.0
+          ],
+          [
+            0.97249,
+            0.02751
+          ],
+          [
+            0.97329,
+            0.00329,
+            0.02342
+          ],
+          [
+            0.95284,
+            0.00354,
+            0.00385,
+            0.03977
+          ],
+          [
+            0.94367,
+            0.00971,
+            0.00055,
+            0.00483,
+            0.04124
+          ],
+          [
+            0.97376,
+            0.00241,
+            0.00086,
+            0.00167,
+            0.00139,
+            0.01991
+          ],
+          [
+            0.9077,
+            0.0012,
+            0.00046,
+            0.00026,
+            0.00013,
+            0.0001,
+            0.09015
+          ],
+          [
+            0.98622,
+            0.00175,
+            0.00024,
+            2e-05,
+            0.0001,
+            3e-05,
+            0.00164,
+            0.01
+          ],
+          [
+            0.62833,
+            0.36771,
+            0.00334,
+            0.00011,
+            8e-05,
+            2e-05,
+            0.00012,
+            6e-05,
+            0.00023
+          ],
+          [
+            0.75978,
+            0.00394,
+            0.2313,
+            0.00106,
+            3e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00388
+          ],
+          [
+            0.38634,
+            0.00021,
+            0.01165,
+            0.60123,
+            9e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00048
+          ],
+          [
+            0.69785,
+            0.00076,
+            0.00092,
+            0.05425,
+            0.23841,
+            1e-05,
+            1e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00778
+          ],
+          [
+            0.66344,
+            0.00252,
+            4e-05,
+            0.00101,
+            0.01235,
+            0.32,
+            0.0003,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00033
+          ],
+          [
+            0.15925,
+            0.00015,
+            3e-05,
+            8e-05,
+            0.0001,
+            0.00279,
+            0.83715,
+            8e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00038
+          ],
+          [
+            0.34704,
+            0.0002,
+            3e-05,
+            2e-05,
+            1e-05,
+            0.0,
+            0.01563,
+            0.63575,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00131
+          ],
+          [
+            0.61112,
+            0.0009,
+            2e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.00052,
+            0.00504,
+            0.3814,
+            0.00015,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1e-05,
+            0.00083
+          ]
+        ]
+      }
+    ],
+    "previousTokenMeanScore": 0.84813,
+    "candidateMeanCopyingScoreDropUnderAblation": 1.02334,
+    "directLogitAttribution": {
+      "targetToken": 0.24311,
+      "copyingScore": 0.3977
+    },
+    "conditions": {
+      "p1-i1-m1": {
+        "targetLogit": -110.19051,
+        "targetProbability": 0.9931438,
+        "copyingScore": 9.41805,
+        "targetLogitDelta": 0.0,
+        "copyingScoreDelta": 0.0
+      },
+      "p1-i1-m0": {
+        "targetLogit": -214.04958,
+        "targetProbability": 0.9964669,
+        "copyingScore": 10.82274,
+        "targetLogitDelta": -103.85907,
+        "copyingScoreDelta": 1.40469
+      },
+      "p1-i0-m1": {
+        "targetLogit": -41.66373,
+        "targetProbability": 0.9254439,
+        "copyingScore": 6.21847,
+        "targetLogitDelta": 68.52678,
+        "copyingScoreDelta": -3.19958
+      },
+      "p1-i0-m0": {
+        "targetLogit": -36.40182,
+        "targetProbability": 0.9860612,
+        "copyingScore": 9.51847,
+        "targetLogitDelta": 73.78869,
+        "copyingScoreDelta": 0.10042
+      },
+      "p0-i1-m1": {
+        "targetLogit": -36.26324,
+        "targetProbability": 0.9632341,
+        "copyingScore": 7.06855,
+        "targetLogitDelta": 73.92727,
+        "copyingScoreDelta": -2.3495
+      },
+      "p0-i1-m0": {
+        "targetLogit": -196.94858,
+        "targetProbability": 0.9959481,
+        "copyingScore": 11.05318,
+        "targetLogitDelta": -86.75807,
+        "copyingScoreDelta": 1.63513
+      },
+      "p0-i0-m1": {
+        "targetLogit": -31.72883,
+        "targetProbability": 0.9419993,
+        "copyingScore": 6.71629,
+        "targetLogitDelta": 78.46168,
+        "copyingScoreDelta": -2.70176
+      },
+      "p0-i0-m0": {
+        "targetLogit": -135.82831,
+        "targetProbability": 0.9898424,
+        "copyingScore": 10.20998,
+        "targetLogitDelta": -25.6378,
+        "copyingScoreDelta": 0.79193
+      }
+    }
+  }
+}

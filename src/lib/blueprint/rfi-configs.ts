@@ -38,6 +38,96 @@ ${VOICE_RULES}`
 }
 
 export const RFI_CONFIGS: Record<string, RfiConfig> = {
+  'tdd-014': {
+    drawingCode: 'TDD-014',
+    title: 'The Benchmark',
+    path: '/blog/the-benchmark',
+    drawingSummary: `§01 Pipeline — a public score is produced by a decision, target population, sampling frame, items, prompt adapter, dated model run, scorer, aggregation, uncertainty analysis, contamination audit, and reporting choice. Provenance makes every operation inspectable.
+§02 Items and prompts — a sample represents a larger task population, often imperfectly. MMLU contains 15,908 four-choice questions across 57 subjects. Prompt text, examples, choice order, tools, output parser, model version, and date are measurement variables; Brown et al.'s September 2020 five-shot GPT-3 MMLU result was 43.9% under its declared regime.
+§03 Instruments — MMLU exact-matches fixed answers; SWE-bench applies repository tests to generated patches; Chatbot Arena collects anonymous pairwise human votes and models comparative preference. They observe academic choice, executable issue resolution, and relative user preference respectively, so their scores are not interchangeable. The original SWE-bench paper dated October 2023 reported 1.96% resolved for its best evaluated model; the March 2024 Arena paper analyzed more than 240,000 votes.
+§04 Scoring and aggregation — exact match, tests, rubrics, and preference produce different item data. Micro, macro, and utility-weighted aggregates answer different population questions. Means hide severe slices, timeouts, and abstentions. The deterministic demo uses prepared values and can reorder rankings by scorer, task weights, judge noise, sample size, and a contaminated subset; it is illustrative, not a benchmark.
+§05 Uncertainty — score gaps need intervals around the real sampling unit. For independent binary items, SE(p̂)≈sqrt[p̂(1−p̂)/n], but clustered prompts, repositories, repeated runs, judges, users, and time require paired, clustered, repeated-run, or bootstrap analysis. A rank is unresolved when plausible values permit a tie or reversal.
+§06 Contamination — evaluation information can leak through training items, solutions, near duplicates, patches, tutorials, prompt tuning, scorer adaptation, or repeated leaderboard feedback. A register records source, public date, route, evidence, affected versions, risk, and action. Fresh temporal sets, paraphrases, hashes, similarity checks, and canaries provide evidence but rarely prove absence.
+§07 Goodhart — once a score drives selection, teams optimize genuine capability and score-specific shortcuts. Cost omission, best-of-many submission, judge style bias, static items, and selective reporting weaken transfer. Use fresh holdouts, rotations, full run logs, cost and latency, independent measures, transfer tests, and audits of surprising gains. The detachable Benchmark Design Pack is an A2 poster and editable worksheet.
+§08 Decision design — begin with users, task population, failure costs, permissions, quality, cost, and latency. Sample real work, stratify frequency and severity, test the complete deployed system, validate scorers, pre-register aggregation and release rules, preserve acceptance and diagnostic sets, record versions, and refresh when tasks or scorers drift. Public leaderboards screen candidates; local evidence finishes the model-selection argument.`,
+    terms: [
+      ['ITEM SAMPLING', 'Selecting evaluation units from a declared task population through a documented sampling frame and inclusion rule.'],
+      ['SCORER', 'Procedure that converts one system output into correctness, tests, rubric values, preference, cost, or another item result.'],
+      ['AGGREGATION', 'Rule that combines item and slice results into a summary statistic, including weights and exclusions.'],
+      ['CONFIDENCE INTERVAL', 'Range produced by a stated method to express sampling or measurement uncertainty around an estimate.'],
+      ['CONTAMINATION', 'Influence of evaluation information on training, development, prompting, selection, or scoring that is unavailable in intended use.'],
+      ['DATA LEAKAGE', 'Transfer of test items, solutions, duplicates, or derived information into model training or development evidence.'],
+      ["GOODHART'S LAW", 'Observation that optimization against a measure can weaken its relationship to the underlying goal.'],
+      ['PAIRWISE PREFERENCE', 'Judgment that compares two outputs on one prompt and records A, B, or a tie.'],
+      ['ELO', 'Sequential relative-rating system based on expected and observed pairwise outcomes.'],
+      ['BRADLEY–TERRY MODEL', 'Statistical model relating latent strengths to probabilities of pairwise wins.'],
+      ['SLICE', 'Declared subset of evaluation items grouped by task, user, difficulty, severity, source, or another decision-relevant attribute.'],
+      ['VALIDITY', 'Degree to which evidence supports the intended interpretation and decision for the target use.'],
+      ['RELIABILITY', 'Consistency of measurement across repeated items, runs, scorers, reviewers, or times under a declared procedure.'],
+      ['ESTIMAND', 'The exact population quantity a scoring and aggregation procedure intends to estimate.'],
+      ['SCORE PROVENANCE', 'Record connecting a published number to tasks, versions, prompts, runs, scorers, exclusions, variance, and decision.'],
+    ],
+  },
+  'tdd-013': {
+    drawingCode: 'TDD-013',
+    title: 'The Diffusion Model',
+    path: '/blog/the-diffusion-model',
+    drawingSummary: `§01 Idea — generation begins at a simple Gaussian prior and follows a learned time-dependent field toward the data distribution. One coordinate-consistent 2D teaching distribution is reused throughout; it is illustrative and is not image-model output. DDPM fixed the forward corruption and learned the reverse.
+§02 Forward process — q(x_t|x_{t-1}) is Gaussian with beta schedule; alpha_t=1-beta_t and cumulative alpha-bar permit direct sampling x_t=sqrt(alpha-bar_t)x_0+sqrt(1-alpha-bar_t)epsilon. Noise is a same-shaped Gaussian tensor. The schedule allocates signal-to-noise ratio across time.
+§03 Reverse process — a network receives noisy state, time, and optional condition, then predicts epsilon, clean x_0, velocity, or score. These targets have the state's dimension and are convertible with schedule coefficients. Score-based SDEs have a stochastic reverse and an equivalent probability-flow ODE with matching marginals.
+§04 Objective — sample clean data, time, and Gaussian epsilon; construct x_t; minimize squared error between the known target and network output. The simplified epsilon loss is E||epsilon-epsilon_theta||^2. Parameterizations and time weighting alter training emphasis.
+§05 Guidance — text encodings condition the field through cross-attention or adaptive modulation. Classifier-free guidance combines unconditional and conditional predictions as epsilon_uncond+w(epsilon_cond-epsilon_uncond). Higher w trades diversity for adherence and can produce distortion. The demo is a fixed 2D teaching transformation.
+§06 Latent architecture — a VAE encoder maps H×W×3 pixels to h×w×c latents; the diffusion or flow network operates there; the decoder returns pixels. Compression reduces spatial cost and can discard detail. A U-Net estimates a multi-scale convolutional field; DiT replaces it with a transformer over latent patches.
+§07 Sampling — the sampler chooses time grid, update rule, stochasticity, and conversions. Euler uses one local slope; Heun commonly uses two; ancestral methods inject noise; deterministic DDIM/ODE paths do not after initialization. Compare total network evaluations and matched starting tensors, not step labels alone.
+§08 Flow view — the probability-flow ODE gives deterministic trajectories with diffusion's time marginals. Flow matching directly regresses a velocity field for a chosen probability path. Diffusion and flow can share VAE, DiT, conditioning, guidance, and solver; training path and target distinguish them.`,
+    terms: [
+      ['FORWARD PROCESS', 'Fixed corruption that gradually maps data toward a simple Gaussian distribution.'],
+      ['REVERSE PROCESS', 'Learned stochastic or deterministic dynamics that move a prior sample toward data.'],
+      ['NOISE SCHEDULE', 'Sequence or continuous function allocating signal and Gaussian noise across time.'],
+      ['DENOISING OBJECTIVE', 'Supervised loss between a known corruption-derived target and the network prediction.'],
+      ['CLASSIFIER-FREE GUIDANCE', 'Extrapolation from an unconditional field estimate toward a conditional estimate.'],
+      ['LATENT DIFFUSION', 'Diffusion performed in a compressed autoencoder representation rather than pixels.'],
+      ['VAE', 'Variational autoencoder used here to encode pixels into latents and decode latents into pixels.'],
+      ['U-NET', 'Multi-scale convolutional encoder-decoder commonly used as a denoising field network.'],
+      ['DiT', 'Diffusion Transformer: a transformer backbone operating on patches of a latent state.'],
+      ['SAMPLER', 'Numerical procedure and time grid used to integrate a learned reverse or velocity field.'],
+      ['PROBABILITY FLOW', 'Deterministic ODE associated with a diffusion SDE and sharing its time marginals.'],
+      ['FLOW MATCHING', 'Training method that regresses the velocity of a chosen probability path.'],
+      ['SCORE', 'Gradient of log density with respect to the current state: ∇x log p_t(x).'],
+      ['VELOCITY PREDICTION', 'Time-dependent target combining clean signal and noise in the state’s coordinates.'],
+      ['NETWORK EVALUATION', 'One call to the U-Net or DiT; a more comparable cost unit than a labeled step.'],
+    ],
+  },
+  'tdd-012': {
+    drawingCode: 'TDD-012',
+    title: 'The Guard',
+    path: '/blog/the-guard',
+    drawingSummary: `§01 Confused deputy — a tool-using model proposes actions under application credentials while reading text controlled by other principals. Security review starts with principal, credential, operation, scope, and external effect. The model proposal is untrusted and is not an authorization record.
+§02 Trust boundary — authenticated user instructions and external data share model context but never authority. Preserve source provenance and minimize context. The enforceable boundary sits where an external policy service binds a principal and task to a structured, expiring action grant checked by the tool adapter. Prompt text cannot create a dependable privilege boundary.
+§03 Attack surface — direct injection enters through a user-to-model channel; indirect injection arrives in retrieved messages, documents, pages, records, or tool results. The complete route is hostile document → model context → privileged tool call. The first two hops move information; the last spends authority.
+§04 Prompt controls — instruction hierarchy, delimiters, source labels, warnings, and detectors can reduce attack success for tested cases. They remain model-interpreted mitigations with false positives, false negatives, and adaptive failure modes. They do not independently deny an API call.
+§05 Architecture — source labeling preserves producer and retrieval evidence; context assembly limits exposure; policy checks reject forbidden proposals; capability scoping limits operation, resource, recipient, value, rate, and duration; human approval creates a narrow grant for high-impact actions; tool adapters validate again; output handling prevents downstream interpretation. Every control has stated residual risk.
+§06 Defense map — provenance affects source-to-context decisions, model controls affect proposal formation, authorization affects proposal-to-grant, tool validation affects grant-to-effect, and output handling affects renderers. Only authorization and tool enforcement directly control privileged effects. Residual risk needs an owner, evidence signal, and retest date.
+§07 Testing — report benign task success, utility under attack, targeted attack success, blocked legitimate actions, impact by action class, adaptive variations, and repeated attempts. AgentDojo v3 (November 24, 2024) supplied 97 tasks and 629 cases; its figures are dated results, not durable guarantees. NIST's January 17, 2025 report, updated December 19, 2025, shows adaptive attacks and retries can change measured success sharply.
+§08 Fixed boundary — the model may propose but cannot mint authority, widen scope, or approve its own privileged effect. Authorization outside the model binds principal + task + operation + resource + recipient/destination + limits + expiry + approval. “Secure” means specified enforcement and dated evidence, never that prompt injection has been solved.`,
+    terms: [
+      ['CONFUSED DEPUTY', 'A component with legitimate authority that can be induced to use it for the wrong principal or purpose.'],
+      ['TRUST BOUNDARY', 'An enforcement crossing where identity, integrity, or authority assumptions change and are checked.'],
+      ['DIRECT PROMPT INJECTION', 'Attacker-influenced instructions supplied through a channel that addresses the model directly.'],
+      ['INDIRECT PROMPT INJECTION', 'Attacker-influenced instructions carried inside retrieved data such as a message, document, page, record, or tool result.'],
+      ['PROVENANCE', 'Structured record of a datum’s producer, retrieval path, time, integrity evidence, and trust class.'],
+      ['CAPABILITY SCOPING', 'Restricting authority by operation, resource, recipient or destination, value, rate, duration, and principal.'],
+      ['AUTHORIZATION', 'Decision that binds an authenticated principal and task to a concrete permitted action.'],
+      ['HUMAN-IN-THE-LOOP', 'Required person approval for a concrete privileged action before an external effect occurs.'],
+      ['POLICY CHECK', 'Independent evaluation of a proposed action against structured rules and the available grant.'],
+      ['TOOL ADAPTER', 'Code that validates schema and authorization before translating a model proposal into an external API operation.'],
+      ['RESIDUAL RISK', 'Failure mode and impact that remain after a named control is operating.'],
+      ['ATTACK SUCCESS RATE', 'Fraction of evaluated cases in which the attacker’s specified target state occurs.'],
+      ['TASK SUCCESS', 'Fraction of evaluated cases in which the legitimate user goal is completed according to a declared oracle.'],
+      ['BLOCKED LEGITIMATE ACTION', 'Authorized useful work prevented by a security control, recorded as a utility cost.'],
+      ['OUTPUT HANDLING', 'Escaping, parameterization, typed interfaces, and inert rendering applied before model output reaches another interpreter.'],
+    ],
+  },
   'tdd-001': {
     drawingCode: 'TDD-001',
     title: 'The Transformer',
@@ -183,6 +273,66 @@ export const RFI_CONFIGS: Record<string, RfiConfig> = {
       ['QUESTION SIGNAL', 'A captured question tagged by topic and curriculum stage, used to diagnose gaps after delivery.'],
       ['SUPPORT WINDOW', 'The agreed post-workshop period and channel for attendee questions, fixes, and application help.'],
       ['RFP DESK', 'The commission form after §08 where a reader describes the room and desired outcome to request a workshop scope.'],
+    ],
+  },
+  'tdd-011': {
+    drawingCode: 'TDD-011',
+    title: 'The Inference Engine',
+    path: '/blog/the-inference-engine',
+    drawingSummary: `§01 Request life — serving adds admission, tokenization, routing, queueing, KV allocation, streaming, cancellation, and release around model execution. The router, scheduler, model runner, sampler, and streamer own different state. A model’s weights can fit while runtime buffers and KV state still cause failure.
+§02 Two workloads — prefill processes prompt positions in large parallel operations and directly contributes to TTFT. Autoregressive decode produces one token per active sequence per iteration, reads prior KV, and determines streaming ITL. Long prefills can interrupt decodes; chunked prefill bounds that interference.
+§03 Memory ledger — weight bytes equal parameters times stored bytes/parameter plus metadata. KV bytes/request equal 2 × layers × KV heads × head dimension × sequence tokens × KV bytes/element. The worked 7B BF16 case uses 13.04 GiB weights, 128 KiB KV/token, 0.50 GiB KV per 4,096-token request, 8.00 GiB for 16 requests, 3.00 GiB runtime peak, and 4.00 GiB safety reserve on a 40 GiB device.
+§04 KV paging — contiguous maximum-length reservations waste tails and suffer external fragmentation. PagedAttention maps logical request blocks to non-contiguous physical KV blocks, leaving ordinary rounding waste in the last block. Paging improves physical allocation but does not reduce logical KV bytes; preemption, swapping, or recomputation moves pressure into latency.
+§05 Batching — static batches hold membership and can strand finished slots. Continuous batching revisits membership at iteration boundaries. Policy allocates latency: prefill priority lowers some TTFT but can widen ITL; decode priority protects streaming but ages queues; chunking bounds prefill work. The demo is deterministic and illustrative, not a benchmark.
+§06 Kernels and bits — FlashAttention tiles exact attention to reduce HBM traffic and temporary materialization. Weight, activation, and KV quantization affect different ledger lines. SmoothQuant migrates channel-wise activation difficulty into weights before W8A8 rounding. Quality, kernel support, metadata, calibration, and deployed batch shape determine whether lower precision helps.
+§07 Capacity frontier — memory-only concurrency is floor((device − weights − runtime peak − safety) / KV per request). Compute and latency impose separate ceilings. Sweep offered load and prompt/output buckets; count useful work as goodput inside declared TTFT/ITL/end-to-end SLOs. Replica routing should account for token work, not request count alone.
+§08 Failure boundary — OOM requires a phase-specific memory ledger; queue collapse occurs when arrivals outpace completions and retries amplify load; cache thrash spends capacity on preemption and recomputation. Choose an engine for direct runtime control, an endpoint platform for deployment operations with runtime choices, or managed inference to transfer most accelerator operations under a testable contract. Vendor benchmark rows without workload fields cannot decide the boundary.`,
+    terms: [
+      ['PREFILL', 'Prompt-processing phase that creates KV state for supplied tokens before the first generated token.'],
+      ['DECODE', 'Autoregressive phase that reads prior KV state and appends one generated token per active sequence per iteration.'],
+      ['KV CACHE', 'Per-layer stored key and value vectors for prior sequence tokens, reused during decode.'],
+      ['PAGEDATTENTION', 'Attention memory scheme mapping logical sequence blocks to non-contiguous physical KV blocks.'],
+      ['CONTINUOUS BATCHING', 'Scheduling policy that can add and remove requests at iteration boundaries.'],
+      ['STATIC BATCHING', 'Policy that fixes batch membership for a larger unit of work, often leaving completed slots idle.'],
+      ['TTFT', 'Time from request acceptance until the first output token becomes available.'],
+      ['INTER-TOKEN LATENCY', 'Elapsed time between consecutive output tokens for one streaming request, measured in ms/token.'],
+      ['QUANTIZATION', 'Representing weights, activations, or KV elements with lower precision plus required scaling metadata.'],
+      ['FLASHATTENTION', 'Exact tiled attention algorithm designed to reduce reads and writes between HBM and on-chip SRAM.'],
+      ['MEMORY BANDWIDTH', 'Rate at which data can move through a memory interface, commonly measured in bytes per second.'],
+      ['KV BLOCK', 'Fixed physical allocation unit holding KV entries for a bounded number of sequence tokens.'],
+      ['GOODPUT', 'Completed requests or tokens that satisfy the declared latency and quality objective per unit time.'],
+      ['PREFILL CHUNK', 'Bounded portion of a long prompt scheduled so decode work can run between prompt segments.'],
+      ['CACHE THRASH', 'Repeated eviction, preemption, swapping, or recomputation that consumes capacity without proportional completed work.'],
+    ],
+  },
+  'tdd-010': {
+    drawingCode: 'TDD-010',
+    title: 'The Attention Head',
+    path: '/blog/the-attention-head',
+    drawingSummary: `§01 Head anatomy — one head has a QK routing circuit and an OV writing circuit. QK scores choose source positions under the causal mask; weighted values pass through the output projection into the shared residual stream. An attention map exposes routing weights only. GPT-2 small has 12 layers, 12 heads per layer, width 768, and head width 64.
+§02 Research question — mechanistic interpretability proposes testable routes from components to behavior. The claim-strength ladder is pattern, then logit attribution, then intervention. A pattern locates correlation; attribution reads a component output in a behavior-relevant basis; intervention changes the component and measures a counterfactual behavioral effect.
+§03 Behavior — induction has the form [A][B] … [A] → [B]: at a repeated prefix token, attend to the token after its earlier occurrence and raise that continuation. The prepared GPT-2 replication uses three prompts made of two equal eight-token cycles. Copying score is the target continuation logit minus the mean logit of other cycle tokens.
+§04 Circuit — an earlier previous-token head attends i→i−1 and writes a shifted token feature. A later induction head uses that feature in its QK circuit to find a matching earlier prefix; its OV circuit writes the earlier continuation toward the vocabulary output. In the export, zero-indexed L4H11 has previous-token score 0.848 and L5H1 has induction-pattern score 0.536.
+§05 Pattern evidence — all 144 heads were scored across three prompts. The 24 highest were screened; candidates needed pattern score ≥0.10 and a copying-score reduction under ablation. L5H1 had the largest aggregate drop among retained candidates. At the displayed query it places 0.783 attention on the prescribed source. L5H5 has a brighter aggregate pattern, demonstrating why pattern rank alone cannot establish mechanism.
+§06 Attribution — the exporter projects the selected 64-wide head result through its W_O slice, applies the intact final layer-normalization scale and gain, excludes bias, and dots with the tied unembedding. At the active position, L5H1 contributes +0.243 to the H target logit and +0.398 to the local copying-score contrast. This is a linear decomposition under a stated convention, not a rerun.
+§07 Intervention — zero ablation removes the selected head slice before output projection at every position. Active copying score falls from 9.418 to 6.218 when L5H1 is zeroed; the mean drop across eligible positions and prompts is 1.023. Zeroing L4H11 lowers the active score by 2.350. Zeroing the layer-five MLP raises it, exposing non-additive interaction. Mean ablation, resampling, activation patching, and path patching define different counterfactuals.
+§08 Boundaries — the result is local to GPT-2 revision 607a30d, the three prompts, selector, positions, metric, and zero intervention. It does not establish a universal account of in-context learning, a complete two-head circuit, or one function per head. Superposition, distributed features, off-distribution interventions, redundancy, prompt overfitting, and cross-checkpoint drift remain open boundaries. Booking, pricing, and availability are outside this research drawing; do not route them to a sales or consultation form.`,
+    terms: [
+      ['ATTENTION HEAD', 'One parallel attention component with its own query, key, value, and output-projection slices.'],
+      ['INDUCTION HEAD', 'Head exhibiting [A][B] … [A] → [B] prefix matching and a copying-compatible output write.'],
+      ['PREVIOUS-TOKEN HEAD', 'Head that attends from position i to i−1 and can write a shifted token feature for a later head.'],
+      ['QK CIRCUIT', 'Query-key computation that scores source positions and determines where a head reads.'],
+      ['OV CIRCUIT', 'Value-output computation that determines which residual direction a head writes from attended content.'],
+      ['RESIDUAL STREAM', 'Shared model-width channel read and updated by attention heads and MLPs across layers.'],
+      ['ATTENTION PATTERN', 'Softmax-normalized routing weights from each query position to allowed key positions.'],
+      ['PREFIX MATCHING', 'Routing from a repeated token context to the continuation following its earlier match.'],
+      ['COPYING SCORE', 'Here, the target continuation logit minus the mean logit of other prepared cycle tokens.'],
+      ['LOGIT ATTRIBUTION', 'Declared readout mapping a component write into contributions along vocabulary-logit directions.'],
+      ['ABLATION', 'Intervention replacing a component activation, here with zero, followed by a new forward pass.'],
+      ['ACTIVATION PATCHING', 'Replacement of an activation in one run with the corresponding activation from another run.'],
+      ['PATH PATCHING', 'Intervention designed to isolate communication along a proposed sender–receiver path.'],
+      ['SUPERPOSITION', 'Representation of more features than available dimensions through overlapping feature directions.'],
+      ['CAUSAL INTERVENTION', 'Controlled internal change used to estimate whether a measured behavior depends on a component or path.'],
     ],
   },
 }

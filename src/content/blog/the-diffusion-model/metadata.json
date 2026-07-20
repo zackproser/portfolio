@@ -1,0 +1,22 @@
+{
+  "title": "The Diffusion Model",
+  "author": "Zachary Proser",
+  "date": "2026-07-19",
+  "description": "A coordinate-consistent visual guide to diffusion and flow: forward noise, learned denoising, guidance, latent compression, DiT, sampling, and flow matching.",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-diffusion-model-hero.webp",
+  "tags": ["AI", "Diffusion Models", "Generative Vision", "Flow Matching", "Computer Vision"],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "013",
+    "subject": "GENERATIVE VISION",
+    "readTime": "15 MIN",
+    "eyebrow": "Noise schedule · Latent path · Complete working drawing",
+    "subtitle": "Diffusion and flow turn a simple noise distribution into images by learning how a data distribution moves.",
+    "rfiSuggestions": [
+      "What actually is the 'noise' the model removes?",
+      "Why does Stable Diffusion work in latent space?",
+      "How is flow matching different from diffusion?"
+    ],
+    "nextDrawing": { "number": "014", "title": "The Benchmark", "subject": "EVALUATION", "status": "in-production" }
+  }
+}

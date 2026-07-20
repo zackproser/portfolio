@@ -1,0 +1,33 @@
+{
+  "title": "The Inference Engine",
+  "author": "Zachary Proser",
+  "date": "2026-07-19",
+  "description": "A worked guide to LLM inference memory, KV-cache paging, continuous batching, prefill, decode, quantization, and latency-capacity planning.",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-inference-engine-hero.webp",
+  "tags": [
+    "AI",
+    "LLM Inference",
+    "Model Serving",
+    "PagedAttention",
+    "GPU Systems"
+  ],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "011",
+    "subject": "SERVING",
+    "readTime": "15 MIN",
+    "eyebrow": "Memory ledger · Scheduling trace · Complete working drawing",
+    "subtitle": "A request becomes tokens only after the engine fits weights, activations, and growing KV state inside a schedule with explicit latency costs.",
+    "rfiSuggestions": [
+      "Why is my p95 latency fine but p99 terrible?",
+      "How much VRAM do I actually need for N concurrent users?",
+      "When does quantization stop being free?"
+    ],
+    "nextDrawing": {
+      "number": "012",
+      "title": "The Guard",
+      "subject": "AGENT SECURITY",
+      "status": "in-production"
+    }
+  }
+}
