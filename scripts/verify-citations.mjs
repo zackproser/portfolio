@@ -122,6 +122,9 @@ for (const slug of slugs) {
     if (r.status >= 400) {
       // Bot-blocked publishers (OUP, Springer, ACM, doi.org) — real page, not verifiable by us
       if ([401, 403, 429].includes(r.status) || host.includes('doi.org')) { console.log(`  UNVER  ${url}  (HTTP ${r.status} — publisher bot-block; verify by hand)`); unverified++; continue }
+      // 5xx is a server-side error on the citation's host, not evidence of a
+      // dead or wrong link — flag for a human eyeball instead of failing the build.
+      if (r.status >= 500) { console.log(`  UNVER  ${url}  (HTTP ${r.status} — upstream server error; verify by hand)`); unverified++; continue }
       console.log(`  FAIL   ${url}  (HTTP ${r.status})`); failures++; continue
     }
     if (titleHost && label && r.title) {

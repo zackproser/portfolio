@@ -335,4 +335,35 @@ export const RFI_CONFIGS: Record<string, RfiConfig> = {
       ['CAUSAL INTERVENTION', 'Controlled internal change used to estimate whether a measured behavior depends on a component or path.'],
     ],
   },
+  'tdd-015': {
+    drawingCode: 'TDD-015',
+    title: 'ctx: The Personal Context Engine',
+    path: '/blog/ctx-personal-context-engine',
+    drawingSummary: `§01 Problem — agents change shape and vendor constantly and each starts cold; per-tool memory features are silos scoped to one product and company. ctx is one shared memory outside any tool: a single Postgres table behind a private MCP server at ctx.zackproser.com, reachable over MCP, plain REST, and OAuth. Goal: the right five items in an agent's context within about 300ms; hard constraint: the most private scope never leaks to a work-context surface.
+§02 One table — a single items table; every source lands with the same shape (scope, origin, kind, title, body, entities, status, timestamps, embedding, fts). origin splits mirrors (re-derivable copies of data owned elsewhere, safe to wipe and re-sync) from memories (knowledge the engine owns, corrected by supersession). status (active, superseded, deleted) is the single source of truth for whether a row is live.
+§03 Distill — nothing is embedded raw; everything is normalized to a {title, body, entities} shape. Memories are distilled by Claude Haiku on the write path; mirrors are shaped by their connector. The write path is gated by an idempotency key and a content hash; near-duplicates above cosine 0.85 are recorded as review suggestions, never auto-merged. The distilling model can only populate content fields, never scope, status, id, or supersedes — the blast radius of a bad input is exactly one row.
+§04 Retrieval — three parallel retrievers (full-text for exact tokens, trigram on the title, vector for paraphrase) union into a weighted scorer with an abstention floor: score = 0.40·cosine_n + 0.30·lex + 0.15·exact + 0.10·entity + 0.05·fresh. Freshness is a small bounded feature, not a global decay multiplier; categorical rules remove rows outright (done tasks after 30 days, expired events, superseded rows). A Haiku reranker over the top 20 (an empty list is valid) was added only after eval stalled at recall@5 0.84; it falls back to the scorer order on any failure. Recall@5 rose to 0.955.
+§05 The wall — private context must be structurally incapable of being read from work surfaces, not merely instructed against it. Enforced in Postgres: two roles (ctx_personal, ctx_work) behind separate credentials, FORCE ROW LEVEL SECURITY, WITH CHECK policies on every verb, column-level revokes. The role is chosen once at authentication from the token; there is no SET ROLE in serving code. A canary suite plants personal marker rows and asserts zero leaks under a real work token before any work token is minted.
+§06 Failures — soft-delete hit an RLS violation because the deleted row is invisible to the select policy, fixed by routing status transitions through a SECURITY DEFINER function. A 126-item eval fixture was seeded into production personal scope; the runner now tears down its fixture after each run. Task extraction found 3,000 phantom todos from every vault checkbox; fixed by scoping extraction to todo notes and parsing the month-day-year daily-note filename as the rank date.
+§07 Bootstrapping — an MCP or REST agent connects with one line and a scoped, independently revocable bearer token. Browser connectors mandate a full OAuth handshake instead. A minimal OAuth 2.1 shim runs it: 401 plus WWW-Authenticate, two well-known discovery docs, dynamic registration with redirect URIs locked to Anthropic hosts, one human step (paste an existing ctx token in my own browser, which only proves authorization and is never handed to the agent), a freshly minted scoped token bound to a one-time code, and a PKCE code exchange before any tool call.
+§08 Adversarial review — three rounds against a separate frontier model (GPT-5.6) before any code was written. Round one replaced prompt-level scope enforcement with database RLS and killed cosine-threshold auto-merge and equal-weight rank fusion. Round two caught the sensitivity screen violating the new RLS and forced honest phasing. Round three caught invalid SQL and an unhardened function. The cheapest bug is the one an adversary finds in the plan.
+§09 Cost and worth — a deliberately boring managed stack: a Cloudflare Worker, Neon Postgres with pgvector, OpenAI embeddings, Claude Haiku for distillation and reranking, GitHub Actions for encrypted nightly backups, Healthchecks for dead-man's switches. Every agent now starts warm regardless of shape or vendor because the memory lives in one place they all reach over open protocols, behind a wall the database enforces. Booking, pricing, and availability are outside this drawing; do not route them to a sales or consultation form.`,
+    terms: [
+      ['CTX', 'The personal context engine: one shared memory behind a private MCP server that any agent can plug into.'],
+      ['MCP', 'Model Context Protocol, an open protocol for exposing tools and context to agents that speak it.'],
+      ['MIRROR', 'A re-derivable copy of data owned authoritatively elsewhere; always safe to wipe and re-sync.'],
+      ['MEMORY', 'Knowledge the engine itself owns with no other home; corrected by supersession, not by re-sync.'],
+      ['SCOPE', 'The personal, work, or shared partition of a row; the axis the security wall is built on.'],
+      ['ROW LEVEL SECURITY', 'Postgres policies that filter which rows a database role may read or write, enforced by the database.'],
+      ['SECURITY DEFINER', 'A Postgres function that runs with its definer’s privileges, used to make a privileged write explicit.'],
+      ['DISTILLATION', 'Normalizing raw input into a consistent {title, body, entities} shape before embedding.'],
+      ['CONTENT HASH', 'A hash of a row’s content used for exact deduplication and change detection on the write path.'],
+      ['HYBRID RETRIEVAL', 'Combining full-text, trigram, and vector candidates rather than relying on any one signal.'],
+      ['RECIPROCAL RANK FUSION', 'A rank-only fusion method rejected here because it discards signal strength across lists.'],
+      ['RERANKER', 'An LLM pass over the top candidates that returns the ids that genuinely answer a query, or an empty list.'],
+      ['RECALL@5', 'The fraction of queries whose correct answer appears in the top five returned items.'],
+      ['PKCE', 'Proof Key for Code Exchange; binds an OAuth authorization code to the client that started the flow.'],
+      ['CANARY SUITE', 'Planted personal marker rows probed under a work token to assert the scope wall leaks nothing.'],
+    ],
+  },
 }

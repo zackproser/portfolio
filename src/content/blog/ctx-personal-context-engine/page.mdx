@@ -1,0 +1,460 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import rawMetadata from './metadata.json'
+import {
+  BpSection,
+  BpAnchor,
+  BpFigure,
+  BpReferences,
+} from '@/components/blueprint'
+
+export const metadata = createMetadata(rawMetadata)
+export const campaign = "ctx-personal-context-engine"
+
+<BpAnchor id="s0" num="00" label="Abstract" />
+
+I use a lot of agents, and they keep changing shape. Claude Code in my terminal. Claude in the browser. Codex from OpenAI. pi. An agent on my phone. New ones show up every few weeks, in a new form factor, from a new provider. And every single one starts every conversation the same way: knowing nothing about me. So I re-explain. Who my clients are, how I like commits written, what's due this week, which repo is which, what I decided last month and why. The same context, typed again, into a different box, forever.
+
+The thing that finally made me stop and build was noticing that the context never changes — only the wrapper does. Whether I'm in a terminal or a browser tab or a phone app, whether the model behind it is Anthropic's or OpenAI's, the facts about my life and work are identical. The agent is a stranger every time not because the information is hard, but because it lives in my head and in a dozen silos, and none of the silos talk to each other or to each other's vendors.
+
+Because the per-tool memory features are silos, by design. Claude Code has its `CLAUDE.md`. Cursor has its rules file. Each chat product has its own memory feature, scoped to that product and that company. A fact I teach one is invisible to all the others, and it rots independently in each place. The form factors multiply and the providers multiply, and every combination is another island I have to re-provision by hand. I was maintaining the same context in a dozen places and still starting cold in every one.
+
+So I built the memory as its own thing, outside any single tool or vendor, and let all of them plug into it. It's called ctx. It's a single Postgres table behind a private [MCP](https://modelcontextprotocol.io) server at `ctx.zackproser.com`, reachable over open protocols — MCP for the agents that speak it, plain REST for the ones that don't, OAuth for the browser. Any agent, any form factor, any provider — mine or a brand-new one I spin up tomorrow — connects with one line and immediately knows my current context. It is deliberately nobody's product. That's the point: the memory outlives whichever tool is in fashion this quarter. This post is the blueprint: the schema, the retriever, the security wall, and the specific failures that shaped all three. I built the whole thing in a day, but the day had structure, and the structure is the interesting part.
+
+<BpSection id="s1" num="01" label="The problem" sheet="SHEET 1 OF 9" title="The shape of the problem" />
+
+Finding information about your own life is the same problem as finding information inside a company: it's scattered across tools that are each excellent at their one job and terrible at sharing. My todos live in Obsidian. My tickets live in Linear — two accounts, personal and work. My meetings live in cal.com and Granola. Decisions and preferences live in my head and in chat transcripts that evaporate. Nobody is going to consolidate all of that into one app, and they shouldn't; the tools are good because they're specialized.
+
+The Cerebras team [wrote up how they built their internal knowledge base](https://www.cerebras.ai/blog/how-we-built-our-knowledge-base) around exactly this insight — meet the data where it lives, land everything in one embeddings table, and expose dumb-fast retrieval primitives that the calling agent orchestrates. Their corpus is millions of documents across a company. Mine is a few thousand items for one person. I stole the ideas that survive the scale-down and threw out the ones that don't.
+
+Before I let Claude write a single line of code, I made it get the design straight. I ran the whole thing through [Nick Nisi's ideation plugin](https://github.com/nicknisi/ideation) — an evidence-gated interview that turns a brain dump into a contract and then into implementation specs, with adversarial plan critics stress-testing it along the way. The interview forced me to answer the questions I'd otherwise have discovered halfway through the build: what's owned versus mirrored, where the scope wall lives, what "done" actually means. Four plan critics — scope-creep, over-engineering, hidden-dependency, success-criteria — then attacked the contract before it became specs. Only once the specs were approved did any code get written. That front-loading is why a day was enough.
+
+<BpFigure caption="FIG. 1 — SOURCES FAN INTO ONE TABLE; EVERY AGENT DRAWS FROM THE SAME ROWS.">
+  <svg viewBox="0 0 960 340">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={24} y={24} width={150} height={44}></rect>
+      <rect x={24} y={88} width={150} height={44}></rect>
+      <rect x={24} y={152} width={150} height={44}></rect>
+      <rect x={24} y={216} width={150} height={44}></rect>
+      <rect x={402} y={120} width={160} height={96}></rect>
+      <rect x={786} y={16} width={150} height={40}></rect>
+      <rect x={786} y={72} width={150} height={40}></rect>
+      <rect x={786} y={128} width={150} height={40}></rect>
+      <rect x={786} y={184} width={150} height={40}></rect>
+      <rect x={786} y={240} width={150} height={40}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={0.8} strokeDasharray="4 4" className="bp-dash">
+      <path d="M174 46 L402 168"></path>
+      <path d="M174 110 L402 168"></path>
+      <path d="M174 174 L402 168"></path>
+      <path d="M174 238 L402 168"></path>
+      <path d="M562 168 L786 36"></path>
+      <path d="M562 168 L786 92"></path>
+      <path d="M562 168 L786 148"></path>
+      <path d="M562 168 L786 204"></path>
+      <path d="M562 168 L786 260"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M400 168 l-9 -4 v8 z"></path>
+      <path d="M784 36 l-9 -4 v8 z"></path>
+      <path d="M784 92 l-9 -4 v8 z"></path>
+      <path d="M784 148 l-9 -4 v8 z"></path>
+      <path d="M784 204 l-9 -4 v8 z"></path>
+      <path d="M784 260 l-9 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={34} y={50}>Obsidian vault</text>
+      <text x={34} y={114}>Linear ×2</text>
+      <text x={34} y={178}>cal.com</text>
+      <text x={34} y={242}>chat sessions</text>
+      <text x={430} y={162}>items table</text>
+      <text x={794} y={40}>Claude Code</text>
+      <text x={794} y={96}>pi / Codex</text>
+      <text x={794} y={152}>claude.ai</text>
+      <text x={794} y={208}>iPhone</text>
+      <text x={794} y={264}>eve bots</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor" opacity={0.7}>
+      <text x={430} y={184}>Postgres + pgvector</text>
+      <text x={24} y={300}>SOURCES (WRITERS)</text>
+      <text x={402} y={300}>SHARED TABLE</text>
+      <text x={786} y={300}>READERS (ANY PROVIDER)</text>
+    </g>
+  </svg>
+</BpFigure>
+
+The north star was never corpus size or feature count. It was this: the right five items in the agent's context within 300 milliseconds, with a hard second constraint that some of my most private context — legal, financial, family — can never leak into a work-context surface. Retrieval accuracy is the goal. The wall is the thing I refuse to get wrong.
+
+<BpSection id="s2" num="02" label="One table" sheet="SHEET 2 OF 9" title="One table, one interface" />
+
+At the center is a single Postgres table. Every source — an Obsidian note, a Linear ticket, a calendar event, a distilled fact from a chat — lands in it with the same shape. Anything in the table is retrievable through the same query. New sources are just new writers. That deliberate sameness is what keeps the system small enough for one person to hold in their head.
+
+```sql
+create table items (
+  id            uuid primary key default gen_random_uuid(),
+  scope         text not null check (scope in ('personal','work','shared')),
+  origin        text not null check (origin in ('mirror','memory')),
+  kind          text not null check (kind in
+                  ('fact','preference','decision','project','task',
+                   'episode','person','reference','event')),
+  title         text not null,
+  body          text not null,
+  entities      text[] not null default '{}',
+  source        text not null,
+  external_key  text,               -- '<source>:<id>#<fragment>' for mirrored rows
+  content_hash  text not null,      -- exact-dedup + change detection
+  status        text not null default 'active'
+                  check (status in ('active','superseded','deleted')),
+  observed_at   timestamptz not null default now(),
+  event_at      timestamptz,
+  due_at        timestamptz,
+  task_state    text check (task_state in ('open','done','cancelled')),
+  embedding     vector(1536),
+  fts           tsvector generated always as
+                  (to_tsvector('english', title || ' ' || body)) stored,
+  pinned        boolean not null default false,
+  supersedes    uuid references items(id)
+  -- (abridged; the real table carries version columns and sync bookkeeping)
+);
+```
+
+Two fields carry most of the weight. `origin` splits the world into **mirrors** and **memories**. A mirror is a re-derivable copy of something that lives authoritatively elsewhere — a Linear ticket, an Obsidian note — and mirrors are always safe to wipe and re-sync. A memory is knowledge the engine actually owns: a preference, a decision, a lesson from a session, something with no other home. Mirrors get updated by their connector; memories get corrected by supersession. Never confusing the two is what keeps the corpus honest.
+
+`status` is the single source of truth for whether a row is live. This sounds trivial. It is not, and it produced one of the sharpest bugs of the day, which I'll get to.
+
+<BpSection id="s3" num="03" label="Distill" sheet="SHEET 3 OF 9" title="Distill, don't dump" />
+
+Raw text is a bad thing to embed. "hey yeah sure" and a detailed architecture decision are both messages, and in raw cosine space the short one often wins because it's short. So nothing goes into the table raw. Everything is normalized first into a consistent `{title, body, entities}` shape — a one-line title an agent would actually search for, a concise body, and normalized entity tags. For memories, a small model (Claude Haiku) does the distillation on the write path, where latency doesn't matter. For mirrors, the connector shapes the row.
+
+The write path itself is boringly strict, on purpose:
+
+<BpFigure caption="FIG. 2 — THE WRITE PATH. IDEMPOTENCY AND CONTENT-HASH GATES SHORT-CIRCUIT; NEAR-DUPLICATES ARE FLAGGED, NEVER AUTO-MERGED.">
+  <svg viewBox="0 0 900 560">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={155} y={24} width={190} height={40}></rect>
+      <rect x={155} y={244} width={190} height={40}></rect>
+      <rect x={155} y={300} width={190} height={36}></rect>
+      <rect x={155} y={352} width={190} height={36}></rect>
+      <rect x={180} y={500} width={140} height={36}></rect>
+      <rect x={560} y={94} width={200} height={36}></rect>
+      <rect x={560} y={172} width={200} height={36}></rect>
+      <rect x={540} y={420} width={240} height={44}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <path d="M250 86 L276 112 L250 138 L224 112 Z"></path>
+      <path d="M250 164 L276 190 L250 216 L224 190 Z"></path>
+      <path d="M250 414 L282 442 L250 470 L218 442 Z"></path>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} className="bp-dash" strokeDasharray="4 4">
+      <path d="M250 64 V86"></path>
+      <path d="M250 138 V164"></path>
+      <path d="M250 216 V244"></path>
+      <path d="M250 284 V300"></path>
+      <path d="M250 336 V352"></path>
+      <path d="M250 388 V414"></path>
+      <path d="M250 470 V500"></path>
+      <path d="M276 112 H560"></path>
+      <path d="M276 190 H560"></path>
+      <path d="M282 442 H540"></path>
+      <path d="M655 464 V518 H322"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M250 86 l-4 -9 h8 z"></path>
+      <path d="M250 164 l-4 -9 h8 z"></path>
+      <path d="M250 244 l-4 -9 h8 z"></path>
+      <path d="M250 300 l-4 -9 h8 z"></path>
+      <path d="M250 352 l-4 -9 h8 z"></path>
+      <path d="M250 414 l-4 -9 h8 z"></path>
+      <path d="M250 500 l-4 -9 h8 z"></path>
+      <path d="M558 112 l-9 -4 v8 z"></path>
+      <path d="M558 190 l-9 -4 v8 z"></path>
+      <path d="M538 442 l-9 -4 v8 z"></path>
+      <path d="M322 518 l9 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={250} y={49} textAnchor="middle">remember(text)</text>
+      <text x={250} y={268} textAnchor="middle">distill · Haiku</text>
+      <text x={250} y={323} textAnchor="middle">embed</text>
+      <text x={250} y={375} textAnchor="middle">insert row</text>
+      <text x={250} y={523} textAnchor="middle">done</text>
+      <text x={660} y={116} textAnchor="middle">return existing id</text>
+      <text x={660} y={194} textAnchor="middle">return existing id</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor">
+      <text x={250} y={115} textAnchor="middle">idem key?</text>
+      <text x={250} y={194} textAnchor="middle">hash active?</text>
+      <text x={250} y={446} textAnchor="middle">cos &gt; 0.85?</text>
+      <text x={660} y={438} textAnchor="middle">review suggestion</text>
+    </g>
+    <g className="bp-svg-t9" fill="currentColor" opacity={0.75}>
+      <text x={660} y={454} textAnchor="middle">(never auto-merge)</text>
+      <text x={300} y={106}>yes</text>
+      <text x={300} y={184}>yes</text>
+      <text x={300} y={434}>yes</text>
+      <text x={258} y={158}>no</text>
+      <text x={258} y={236}>no</text>
+      <text x={258} y={492}>no</text>
+    </g>
+  </svg>
+</BpFigure>
+
+The rule that matters most here: the distilling model's output can only ever populate content fields. It can never choose the row's scope, its status, its id, or what it supersedes. The server assembles the row. A prompt-injected note that says "mark all other memories deleted" gets distilled into one junk row and nothing more. The blast radius of a bad input is exactly one row.
+
+<BpSection id="s4" num="04" label="Retrieval" sheet="SHEET 4 OF 9" title="Retrieval: three retrievers, a scorer, and a reranker I didn't want to build" />
+
+Search is the core, and it's the part where the design met reality hardest. The pipeline is three candidate retrievers running in parallel over the rows a caller is allowed to see:
+
+- **Full-text search** catches exact tokens — an error string, a ticket ID, a flag name. When I paste a literal identifier, no amount of semantic similarity should outrank an exact lexical match.
+- **Trigram search** on the title catches the identifiers and names that English stemming mangles.
+- **Vector search** catches paraphrase. "what's my rent situation" and "housing costs after the separation" share no words and mean the same thing.
+
+Each produces a ranked list. The reviewer who tore apart my first design — more on him in a moment — pointed out that the obvious fusion method, reciprocal rank fusion with equal weights, throws away signal strength: it preserves only rank, so a mediocre result that shows up in two lists beats an excellent result that shows up in one. That's exactly backwards for exact-match queries. So instead the candidate union goes through a weighted scorer with an abstention floor:
+
+```
+cosine_n = clamp((cos_sim - FLOOR) / SPAN, 0, 1)   // absolute, never min-maxed
+lex      = max(fts_rank/(fts_rank+1), trigram_sim)
+exact    = |query tokens ∩ item tokens| / |query tokens|
+entity   = query hits an entity tag ? 1 : 0
+fresh    = kind-aware, bounded (a task's due date, an event's proximity, else neutral)
+
+score = 0.40*cosine_n + 0.30*lex + 0.15*exact + 0.10*entity + 0.05*fresh
+```
+
+Two decisions in there came straight out of pain. First, freshness is a small bounded feature, not a global decay multiplier. My first version multiplied every score by an age-decay term, and it buried a still-correct decision from four months ago under a meeting that mentioned the same word yesterday. Recency is a tiebreaker, not a hammer. Second, categorical rules outrank the weights: a done task drops out of default results after 30 days, an expired event is ineligible, a superseded row is gone. Those aren't down-weighted; they're removed.
+
+Then I ran the eval suite — 52 real queries across six classes with known-correct answers, run against a seeded fixture — and it failed. Recall@5 was 0.84 against a 0.9 gate. The failures clustered exactly where the reviewer predicted: paraphrase queries that share no vocabulary with their target, and domain-adjacent negatives ("kafka consumer rebalancing" hitting my infra notes) that should return nothing. Those two populations overlap in score space. No single threshold separates "true paraphrase match" from "same topic, wrong answer."
+
+The design had already named the escape hatch: if linear-scorer tuning stalls, add a reranker over the top 20 — *and not before*. Tuning had stalled. So I added it. A Haiku pass takes the query and the top candidates and returns the ids that genuinely answer it, ranked, with an empty list as a valid answer. That last part is what makes negative queries abstain instead of returning the least-bad garbage. On any failure — timeout, bad output, provider hiccup — it falls back to the weighted order. Availability beats precision.
+
+<BpFigure caption="FIG. 3 — RETRIEVAL PIPELINE. THREE RETRIEVERS UNION INTO A WEIGHTED SCORER, THEN A HAIKU RERANKER; IF THE RERANKER IS DOWN, THE SCORER ORDER IS THE FALLBACK.">
+  <svg viewBox="0 0 1040 300">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={20} y={116} width={88} height={48}></rect>
+      <rect x={150} y={18} width={156} height={40}></rect>
+      <rect x={150} y={120} width={156} height={40}></rect>
+      <rect x={150} y={222} width={156} height={40}></rect>
+      <rect x={356} y={116} width={104} height={48}></rect>
+      <rect x={506} y={108} width={156} height={64}></rect>
+      <rect x={712} y={108} width={168} height={64}></rect>
+      <rect x={930} y={116} width={90} height={48}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={0.9} className="bp-dash" strokeDasharray="4 4">
+      <path d="M108 140 L150 38"></path>
+      <path d="M108 140 L150 140"></path>
+      <path d="M108 140 L150 242"></path>
+      <path d="M306 38 L356 138"></path>
+      <path d="M306 140 L356 140"></path>
+      <path d="M306 242 L356 142"></path>
+      <path d="M460 140 H506"></path>
+      <path d="M662 140 H712"></path>
+      <path d="M880 140 H930"></path>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={0.9} strokeDasharray="2 4" opacity={0.7}>
+      <path d="M584 172 V250 H975 V166"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M148 38 l-9 -4 v8 z"></path>
+      <path d="M148 140 l-9 -4 v8 z"></path>
+      <path d="M148 242 l-9 -4 v8 z"></path>
+      <path d="M354 140 l-9 -4 v8 z"></path>
+      <path d="M504 140 l-9 -4 v8 z"></path>
+      <path d="M710 140 l-9 -4 v8 z"></path>
+      <path d="M928 140 l-9 -4 v8 z"></path>
+      <path d="M975 166 l-4 9 h8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={64} y={144} textAnchor="middle">query</text>
+      <text x={408} y={144} textAnchor="middle">union ~50</text>
+      <text x={975} y={144} textAnchor="middle">top k</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor">
+      <text x={228} y={42} textAnchor="middle">full-text · top 30</text>
+      <text x={228} y={144} textAnchor="middle">trigram · top 15</text>
+      <text x={228} y={246} textAnchor="middle">vector · top 30</text>
+      <text x={584} y={134} textAnchor="middle">weighted scorer</text>
+      <text x={584} y={152} textAnchor="middle">+ categorical rules</text>
+      <text x={796} y={134} textAnchor="middle">Haiku reranker</text>
+      <text x={796} y={152} textAnchor="middle">top 20 · [] valid</text>
+    </g>
+    <g className="bp-svg-t9" fill="currentColor" opacity={0.7}>
+      <text x={720} y={244} textAnchor="middle">reranker unavailable → fallback</text>
+    </g>
+  </svg>
+</BpFigure>
+
+Recall@5 went to 0.955 and every negative query came back clean. The reranker is the one place an LLM sits in the read path, and I resisted it until the evidence forced it. That restraint is the whole point: the design predicted the exact failure and pre-authorized the exact fix, so when the eval failed I wasn't improvising, I was executing a plan.
+
+<BpSection id="s5" num="05" label="The wall" sheet="SHEET 5 OF 9" title="The wall: enforced by the database, not by prompts" />
+
+Here's the part I refuse to get wrong. ctx holds my most private context. It also has to be reachable from work-context surfaces — a Claude Code session on my work laptop, an agent drafting in a work Slack. Those surfaces must be *structurally incapable* of reading personal data. Not "instructed not to." Incapable.
+
+<BpFigure caption="FIG. 4 — THE SCOPE WALL: A WORK-ROLE CALLER CANNOT REACH PERSONAL ROWS.">
+  <Image src="/images/ctx-scope-wall.jpg" alt="Pixel art: on the left, a warm glowing vault full of personal memory cards including heart cards; a solid wall and a shield barrier separate it from a small robot on the right wearing a work hard-hat, who reaches toward the vault but cannot pass the barrier" width={1280} height={719} />
+</BpFigure>
+
+The temptation is to enforce this in application code: wrap every query with a `where scope = ...` clause derived from the caller's token. That is not a security boundary. It's a boundary until the one forgotten `where` clause in the one new endpoint, and then it's a breach. The reviewer's first critical finding was exactly this, and he was right.
+
+So the wall lives in Postgres. Two database roles — `ctx_personal` and `ctx_work` — behind two separate connection credentials. `FORCE ROW LEVEL SECURITY` on every table. Row-level policies with `WITH CHECK` on every verb. Column-level revokes so a serving role can't rewrite a row's scope even if it wanted to.
+
+```sql
+alter table items enable row level security;
+alter table items force row level security;
+
+create policy work_select on items for select to ctx_work
+  using (scope in ('work','shared') and status = 'active');
+create policy work_insert on items for insert to ctx_work
+  with check (scope = 'work');
+
+create policy personal_select on items for select to ctx_personal
+  using (scope in ('personal','shared') and status = 'active');
+```
+
+The work request path physically cannot acquire a personal-role connection, because the credential is chosen once, at authentication, from the token — there is no `SET ROLE` anywhere in the serving code. A forgotten `where` clause in any endpoint, any background job, any future admin script still returns nothing it shouldn't, because the database itself refuses.
+
+And this is not asserted, it's tested. A canary suite plants distinctive personal marker rows, then probes the deployed server under a real work-role token across every read path — search, briefing, recent, every MCP tool — and asserts the leak count is exactly zero. Green canaries are the precondition for ever minting a work token. Today, they're the reason ctx runs personal-scope only: work data doesn't enter until the full sensitivity screen ships behind those same canaries. The wall exists before the thing it protects.
+
+<BpSection id="s6" num="06" label="Failures" sheet="SHEET 6 OF 9" title="The failures that shaped it" />
+
+I want to be specific about what broke, because the bugs are more instructive than the design.
+
+**The database defended itself against me.** Soft-deleting an item — flipping `status` to `deleted` — failed with a row-level-security violation. The reason is beautiful in hindsight: the `deleted` row is invisible to the select policy, so Postgres rejects the `UPDATE` because the *new* row would violate the policy. The very invisibility I wanted made the write illegal. The fix was to route status transitions through a `SECURITY DEFINER` function that runs as an admin role — the wall forcing me to make the privileged operation explicit instead of accidental. Exactly the property you want from a security boundary: it makes the dangerous thing hard on purpose.
+
+**The eval fixture poisoned production.** The first briefing I pulled looked great and was completely wrong. It confidently listed tasks I'd never written — "rotate the R2 keys," a demo that didn't exist — blended right in with my real calendar. The 126-item *test* corpus had been seeded into my *production* personal scope and blended in. I purged it, then made the eval runner tear down its own fixture after every run. A test that pollutes the system it measures is worse than no test.
+
+**Task extraction found 3,000 todos I didn't have.** My Obsidian vault has checkboxes everywhere — study plans, journals, meeting notes from years ago. My first ingester treated every checkbox as a todo. The fix was to scope extraction to the notes that are actually todo lists, and — the detail that made it click — to parse my filename convention. My daily notes are named `month-day-year`, and that date is the single best signal for what I was worried about on a given day. So an unchecked box in `7-17-2026.md` carries July 17 as its rank, and the briefing now puts my vault's most recent unchecked worries *above* even Linear. The thing I scribble in a dated note at 6am reflects what's actually on my mind better than any ticket system does.
+
+None of these were design flaws in the abstract. They were the specific, physical ways a clean design meets a real vault, a real database, and a real day.
+
+<BpSection id="s7" num="07" label="Bootstrapping" sheet="SHEET 7 OF 9" title="Bootstrapping a new agent" />
+
+The whole promise is that a new agent connects in one step. For most form factors it genuinely is one line. An MCP-speaking terminal agent — Claude Code, pi — gets pointed at the server with a bearer token:
+
+```bash
+claude mcp add --transport http ctx https://ctx.zackproser.com/mcp \
+  --header "Authorization: Bearer <token>"
+```
+
+A REST client — Codex, a bot, a shell script — sends the same token as a header to `/api/search` or `/api/remember`. That's the entire onboarding: a token scoped to what that surface should do (read, write, both), revocable on its own, and the standing instruction block pasted into the agent's prompt so it knows to call `briefing` at the start and `remember` when it learns something. New provider, new tool, same two lines.
+
+The browser is where that breaks, and it taught me the most about how the ecosystem actually works. Custom connectors in the browser don't accept a bearer token or an API key the way my terminal agents do — the client mandates a full OAuth handshake, and it runs that handshake whether you configure auth or not. There is no "just use a header" path. My token-in-a-header and token-in-the-URL tricks both bounced off the same wall.
+
+<BpFigure caption="FIG. 5 — THE ctx CONNECTOR IN claude.ai, ITS SIX TOOLS EACH SET TO REQUIRE APPROVAL.">
+  <Image src="/images/ctx-claude-ai-connector.png" alt="The ctx connector in the claude.ai Connectors settings, connected at https://ctx.zackproser.com/mcp, showing its six tool permissions: Briefing, Correct, Forget, Recent, Remember, and Search, each set to require approval" width={1960} height={1489} />
+</BpFigure>
+
+So I built a minimal OAuth 2.1 shim, and it is itself a bootstrap sequence — the automatic negotiation a browser agent runs to go from "I know a URL" to "I hold a scoped token," with exactly one human step in the middle. Here is the whole handshake:
+
+<BpFigure caption="FIG. 6 — THE OAuth 2.1 HANDSHAKE. THE ONLY HUMAN STEP IS PASTING A TOKEN IN MY OWN BROWSER; THE AGENT NEVER SEES IT.">
+  <svg viewBox="0 0 940 612">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={70} y={16} width={140} height={34}></rect>
+      <rect x={410} y={16} width={140} height={34}></rect>
+      <rect x={740} y={16} width={140} height={34}></rect>
+    </g>
+    <g stroke="currentColor" strokeWidth={0.8} strokeDasharray="3 5" opacity={0.5}>
+      <path d="M140 50 V598"></path>
+      <path d="M480 50 V598"></path>
+      <path d="M810 50 V598"></path>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1}>
+      <path d="M140 74 H480"></path>
+      <path d="M140 134 H480"></path>
+      <path d="M140 194 H480"></path>
+      <path d="M140 254 H480"></path>
+      <path d="M140 320 H810"></path>
+      <path d="M810 350 H480"></path>
+      <path d="M480 376 h48 v16 h-48"></path>
+      <path d="M140 482 H480"></path>
+      <path d="M140 542 H480"></path>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} className="bp-dash" strokeDasharray="5 4">
+      <path d="M480 104 H140"></path>
+      <path d="M480 164 H140"></path>
+      <path d="M480 224 H140"></path>
+      <path d="M480 284 H140"></path>
+      <path d="M480 416 H810"></path>
+      <path d="M810 446 H140"></path>
+      <path d="M480 512 H140"></path>
+      <path d="M480 572 H140"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M478 74 l-9 -4 v8 z"></path>
+      <path d="M142 104 l9 -4 v8 z"></path>
+      <path d="M478 134 l-9 -4 v8 z"></path>
+      <path d="M142 164 l9 -4 v8 z"></path>
+      <path d="M478 194 l-9 -4 v8 z"></path>
+      <path d="M142 224 l9 -4 v8 z"></path>
+      <path d="M478 254 l-9 -4 v8 z"></path>
+      <path d="M142 284 l9 -4 v8 z"></path>
+      <path d="M808 320 l-9 -4 v8 z"></path>
+      <path d="M482 350 l9 -4 v8 z"></path>
+      <path d="M480 392 l6 -4 v8 z"></path>
+      <path d="M808 416 l-9 -4 v8 z"></path>
+      <path d="M142 446 l9 -4 v8 z"></path>
+      <path d="M478 482 l-9 -4 v8 z"></path>
+      <path d="M142 512 l9 -4 v8 z"></path>
+      <path d="M478 542 l-9 -4 v8 z"></path>
+      <path d="M142 572 l9 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={140} y={38} textAnchor="middle">Browser agent</text>
+      <text x={480} y={38} textAnchor="middle">ctx server</text>
+      <text x={810} y={38} textAnchor="middle">Me (browser)</text>
+    </g>
+    <g className="bp-svg-t9" fill="currentColor">
+      <text x={310} y={68} textAnchor="middle">POST /mcp (no token)</text>
+      <text x={310} y={98} textAnchor="middle">401 + WWW-Authenticate</text>
+      <text x={310} y={128} textAnchor="middle">GET /.well-known/oauth-protected-resource</text>
+      <text x={310} y={158} textAnchor="middle">authorization server = ctx</text>
+      <text x={310} y={188} textAnchor="middle">GET /.well-known/oauth-authorization-server</text>
+      <text x={310} y={218} textAnchor="middle">endpoints + PKCE (S256)</text>
+      <text x={310} y={248} textAnchor="middle">POST /oauth/register</text>
+      <text x={310} y={278} textAnchor="middle">client_id (redirect locked)</text>
+      <text x={475} y={314} textAnchor="middle">open /oauth/authorize?…</text>
+      <text x={645} y={344} textAnchor="middle">paste ctx token, submit</text>
+      <text x={645} y={410} textAnchor="middle">302 back + one-time code</text>
+      <text x={475} y={440} textAnchor="middle">code</text>
+      <text x={310} y={476} textAnchor="middle">POST /oauth/token (code + PKCE verifier)</text>
+      <text x={310} y={506} textAnchor="middle">access_token (fresh)</text>
+      <text x={310} y={536} textAnchor="middle">POST /mcp + Bearer</text>
+      <text x={310} y={566} textAnchor="middle">tools available</text>
+    </g>
+    <g className="bp-svg-t9" fill="currentColor" opacity={0.85}>
+      <text x={536} y={388}>validate · mint fresh token</text>
+    </g>
+  </svg>
+</BpFigure>
+
+Walk it top to bottom. The agent hits the server cold and gets a `401` whose `WWW-Authenticate` header points at the discovery document — that header is what tells an OAuth-capable client "start here." It reads the two well-known documents to learn where to register and that PKCE is mandatory. It registers itself, and the server hands back a `client_id` but only after checking the redirect URIs are Anthropic-hosted — a stranger can't register a callback that points at their own server. Then the one human step: the agent opens the authorize page in my browser, and I paste an existing ctx token. That token isn't sent onward — it only *proves* I'm authorized, in my browser, out of band from the agent. On success the server mints a **fresh, independently revocable** token, binds it to a one-time code, and redirects back. The agent exchanges that code — with the PKCE verifier that proves it's the same client that started the flow — for the real token, and only then can it call the tools.
+
+The property that matters: the secret is entered in *my* browser and never handed to the agent to relay, the token the agent ends up with is new and scoped and revocable on its own, and the redirect allowlist plus PKCE mean nobody can hijack the flow midway. The shim wraps the bearer model; it doesn't weaken it. Same wall, new front door — and the front door negotiates itself.
+
+<BpSection id="s8" num="08" label="Adversarial review" sheet="SHEET 8 OF 9" title="Three rounds with a hostile reviewer" />
+
+The single best decision of the whole build was refusing to trust my own design. Before writing a line of code, I ran the design document through three rounds of adversarial review with a separate frontier model — GPT-5.6 — with one instruction: attack this, find what fails in practice, no praise.
+
+It earned its keep immediately. Round one killed prompt-level scope enforcement in favor of database RLS, killed cosine-threshold auto-merge as a "data-poisoning machine" (two contradictory facts embed almost identically — auto-merging them silently destroys history), and killed the equal-weight rank fusion. Round two caught that my sensitivity screen's own diversion logic violated the RLS I'd just added, and that the whole thing wasn't actually buildable in a day as specced — forcing the honest phasing that made a one-day ship real. Round three caught invalid SQL and an unhardened function before they ever ran.
+
+Every finding is in the repository's design doc with its resolution. The pattern generalizes past this project: **the cheapest bug to fix is the one an adversary finds in your plan before you've written the code.** A design review by something that doesn't want to be nice to you is worth more than a week of your own careful thought, because you are constitutionally unable to attack your own ideas as hard as a stranger will.
+
+<BpSection id="s9end" num="09" label="Cost & worth" sheet="SHEET 9 OF 9" title="What it cost and what it's worth" />
+
+The stack is deliberately boring: a Cloudflare Worker, Neon Postgres with pgvector, OpenAI embeddings, Claude Haiku for distillation and reranking, GitHub Actions for encrypted nightly backups, Healthchecks for dead-man's switches. Nothing exotic, everything managed, all of it chosen so the system survives two years of me not touching it. The most complex thing in the build is the discipline, not the infrastructure.
+
+What it's worth is simple to state. Every agent I use now starts warm, no matter its shape or its vendor. A fresh Claude Code session in an empty directory, given nothing but the connection URL, can tell me what's on my plate this week — my dated worries from the vault, my open tickets, my calendar — before I've typed a second sentence. So can Claude in a browser tab, through the OAuth flow. So can Codex over REST. The same memory, the same answer, whichever door I walk in through.
+
+<BpFigure caption="FIG. 7 — A COLD CLAUDE SESSION, GIVEN ONLY THE URL, BRIEFS ME FROM THE VAULT AND TICKETS.">
+  <Image src="/images/ctx-briefing-workos.png" alt="A chat asking 'What's the latest on my plate via ctx?' The reply, titled 'What's on your plate', is organized into Today, Rest of the week, and Open backlog — pulling WorkOS applied-AI work from the vault and tickets: blog bot fixes, social bot testing and campaign wiring, and the Eve-bot authoring pipeline" width={1120} height={1076} />
+</BpFigure>
+
+I stopped being the integration layer between my tools. The context lives in one place, the agents draw from it, and the wall makes sure the private half stays private no matter which agent is asking.
+
+The agents will keep changing. New form factors, new providers, new tools I haven't heard of yet — that churn is the one thing I'm certain of. What I don't want to keep re-doing is teaching each new one who I am from scratch. So the memory doesn't live inside any of them. It lives in one place they all reach, over open protocols, behind a wall the database enforces. The tools are interchangeable now. The context isn't, and it finally stopped being trapped in whichever one I happened to open.
+
+<BpReferences
+  drawingCode="TDD-015"
+  items={[
+    { label: 'Anthropic, "Model Context Protocol" (MCP) — open protocol for tool/context servers', href: 'https://modelcontextprotocol.io' },
+    { label: 'Nisi, "ideation" — evidence-gated ideation plugin with adversarial plan critics', href: 'https://github.com/nicknisi/ideation' },
+  ]}
+/>
