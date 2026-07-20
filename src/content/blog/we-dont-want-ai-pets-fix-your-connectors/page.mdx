@@ -7,49 +7,55 @@ export const metadata = createMetadata(rawMetadata)
 
 # We don't want AI pets. Fix your fucking connectors.
 
-This started as a Slack message. A colleague asked who thought the Codex pets thing was a good idea — "these people have so much time and tokens on their hands." I said the quiet part: when the connector I actually pay for is broken, a virtual pet just advertises where the team spent the sprint.
+This started as a Slack message. A colleague asked who thought the Codex pets thing was a good idea — "these people have so much time and tokens on their hands." My answer: when the connector I pay for is broken, a virtual pet advertises where the company spent its attention.
 
-So here is the hate mail, from the edge of applied AI, where the tools meet real work.
+Open-weight models keep proving how capable they are. Developers will keep building local inference pools around them. The frontier labs still have a moat: the product experience around the model. Every connector that lies about its state punches another hole in it. When the paid, hosted experience breaks on basic work, "just run it yourself" becomes a rational response.
+
+So here is the hate mail from the edge of applied AI, where these products meet real work.
 
 ## The pets
 
-In May, OpenAI added AI-generated pets to Codex — animated companions that float over your editor and tell you what the agent is doing. They don't write code. They don't fix anything. There's a promotion attached: thirty days of free ChatGPT Pro for the creators of the ten most popular community pets, which is a polite way of saying the pets are a funnel into the subscription.
+In May, OpenAI added [AI-generated pets to Codex](https://tech.yahoo.com/ai/chatgpt/articles/openai-introduces-ai-generated-pets-193153770.html): animated companions that float over your editor and report what the agent is doing. They do no coding. OpenAI also offered thirty days of ChatGPT Pro to the creators of ten favorite community pets. The pets come with a subscription funnel.
 
-I don't begrudge anyone a Clippy homage. Delight is fine. The problem is what delight costs to ship versus what it's shipping next to.
+I can enjoy a Clippy homage. Delight belongs in a finished product. A broken connector sitting beside it turns delight into evidence about priorities.
 
 ## Exhibit A: the ChatGPT Work Google Drive connector doesn't work
 
-I tested this today. On ChatGPT Work, I connected the Google Drive connector, reloaded the conversation, reconnected, reloaded again — the whole ritual. The tool still returns that it has been disabled.
+I tested this today on ChatGPT Work. I connected the Google Drive connector, reloaded the conversation, reconnected, and reloaded again. The tool still returned that it had been disabled.
 
 <Image src="https://zackproser.b-cdn.net/images/chatgpt-drive-disabled.webp" alt="A ChatGPT conversation: after reconnecting the Google Drive connector and reloading multiple times, the assistant confirms it invoked the connector directly and it returned 'The Google_Drive tool has been disabled' — concluding the connector is failing on the platform side, not a permissions or folder-link problem" width={1785} height={636} />
 
-That is not my permissions. It's not the folder link. It's not something another reload fixes. The connector is failing on the platform's side, in the conversation, after it says it's connected.
+My permissions and folder link were fine. Reloading did nothing. The connector said it was connected while failing on the platform side inside the conversation.
 
-I'm not special here. The OpenAI community forums are full of the identical symptom: connector shows *Connected*, then returns "no access," or greys out in the composer with a disabled icon and — this is the tell — no error message and no explanation. [Suddenly disabled, still shows connected, returns "No Access."](https://community.openai.com/t/google-drive-connector-suddenly-disabled-still-shows-as-connected-but-returns-no-access/1361965) [Connected but ChatGPT sees no files.](https://community.openai.com/t/googledrive-connector-is-connected-but-chatgpt-does-not-see-anyfiles/1375549) [Shows connected but can't be selected in chat.](https://community.openai.com/t/google-drive-connector-shows-as-connected-but-cant-be-selected-in-chat-interface/1247537) A connector that lies about its own state is worse than one that's honestly missing, because it burns your time proving the vendor's bug for them.
+The OpenAI community forums show the same failure: the connector displays *Connected*, then returns "no access" or greys out in the composer with a disabled icon and no explanation. [Suddenly disabled, still shows connected, returns "No Access."](https://community.openai.com/t/google-drive-connector-suddenly-disabled-still-shows-as-connected-but-returns-no-access/1361965) [Connected but ChatGPT sees no files.](https://community.openai.com/t/googledrive-connector-is-connected-but-chatgpt-does-not-see-anyfiles/1375549) [Shows connected but can't be selected in chat.](https://community.openai.com/t/google-drive-connector-shows-as-connected-but-cant-be-selected-in-chat-interface/1247537)
+
+A connector that lies about its state burns my time proving the vendor's bug for them. It also makes a local model look better. Offline software never claims it connected to Drive and then quietly disables the tool.
 
 ## Exhibit B: Claude's GitHub integration can't hold two orgs in its head
 
-This one I hit last week. The Claude GitHub integration — the same plumbing behind the Claude tag and Claude Code on the web — piggybacks off the GitHub org settings already wired into the admin panel. Try to connect a personal GitHub org alongside an org you've already connected and it simply does not take. No error. No documentation that addresses it. The repos just aren't there.
+I hit this one last week. The Claude GitHub integration — the same plumbing behind the Claude tag and Claude Code on the web — uses the GitHub org settings wired into the admin panel. Connect a personal GitHub org beside an existing org and it fails silently. The repos never appear.
 
-Again: not a me problem. This exact failure is filed, and open, in Anthropic's own tracker.
+This exact failure is documented and open in Anthropic's own tracker.
 
 <Image src="https://zackproser.b-cdn.net/images/issue-personal-repos.webp" alt="Open GitHub issue #57161 on anthropics/claude-code: 'Personal GitHub repos not showing in Claude Code web repo picker despite app installed and connector connected.' The issue is labeled duplicate and open; the body states repos show 'No repos match' even though the GitHub App is installed and the connector shows Connected" width={1000} height={900} />
 
-Note the label: **duplicate**. It's been reported enough times that triage tags new copies as repeats of the known bug. [#57161](https://github.com/anthropics/claude-code/issues/57161) is one of a set: [#18467](https://github.com/anthropics/claude-code/issues/18467) (only organization repos work, personal ones invisible), [#68517](https://github.com/anthropics/claude-code/issues/68517) (full access granted, still can't read the repo — a backend sync issue), [#32479](https://github.com/anthropics/claude-code/issues/32479) (connected but not recognized at all), and [#64130](https://github.com/anthropics/claude-code/issues/64130) (OAuth-only flow leaves private repos inaccessible to remote agents).
+Note the label: **duplicate**. Triage already recognizes repeat reports of the bug. [#57161](https://github.com/anthropics/claude-code/issues/57161) sits beside [#18467](https://github.com/anthropics/claude-code/issues/18467) (organization repos work while personal repos stay invisible), [#68517](https://github.com/anthropics/claude-code/issues/68517) (full access granted, repo still unreadable because of backend sync), [#32479](https://github.com/anthropics/claude-code/issues/32479) (connected and unrecognized), and [#64130](https://github.com/anthropics/claude-code/issues/64130) (the OAuth-only flow leaves private repos inaccessible to remote agents).
 
-Volume, since I promised receipts: the `anthropics/claude-code` repository has over 11,000 open issues, roughly 2,500 of them mentioning GitHub integration. That repo covers the CLI, the web app, and the GitHub app together, so not every one is this specific bug — but the GitHub-integration slice alone is measured in thousands, and the connector class of failure is a fat, well-documented seam. Anthropic's own [help article](https://support.claude.com/en/articles/10167454-use-the-github-integration) quietly documents the SSO-and-org-authorization footgun that trips people the moment they have more than one org, which tells you they know the shape of it.
+The `anthropics/claude-code` repository has about 11,000 open issues, with roughly 2,500 touching GitHub integration. The repository covers the CLI, web app, and GitHub app together, so those issues cover more than this bug. The volume still measures the connector failure class in the thousands. Anthropic's own [help article](https://support.claude.com/en/articles/10167454-use-the-github-integration) documents the SSO and organization-authorization footgun waiting for anyone with more than one org.
 
-And the Claude tag isn't the cheap way to burn tokens. It draws on separate usage credits and is one of the most expensive ways to run AI right now — at the exact moment open-weight models are matching the frontier labs on benchmark after benchmark. Paying a premium is defensible when the premium thing works. It is not defensible when the premium thing can't attach a second GitHub org.
+The Claude tag draws on separate usage credits and is one of the most expensive ways to run AI right now. Meanwhile, open-weight models keep approaching the frontier on benchmarks and proving capable in developers' hands. A premium earns its price through the whole product experience. A GitHub integration that cannot attach a second org throws that advantage away.
 
 ## The actual complaint
 
-I like these companies. I use both every day; I run a fleet of agents on this stack. That's why this is hate mail and not a shrug — you write angry letters to the things you care about.
+I like these companies. I use both every day. I run a fleet of agents on this stack. I care enough to be angry when the expensive path loses to the simple one on reliability.
 
-The complaint is priorities. Connectors are the seam where a model stops being a demo and starts touching your real work: your Drive, your repos, your systems of record. When that seam is flaky, everything built on top of it is flaky, and the flakiness is invisible in a keynote and brutal in a Tuesday afternoon. A floating pet is a great use of a spare sprint *after* the connector works. Before that, it reads as a team optimizing for the screenshot instead of the workflow.
+Connectors are where the model touches my real work: Drive, repos, systems of record. Their reliability is the product. A flaky connector poisons everything above it, wastes a Tuesday afternoon, and sends developers toward inference they control.
 
-Ship the boring fix. Make the connector tell the truth about its own state. Let me attach two orgs. Return a real error when something fails instead of a disabled tool and a shrug. Do that, and I'll happily name a virtual goblin after you.
+I know different teams build pets and connectors. From my seat outside the org, that is an explanation of the org chart, not a defense of the product. Prioritization is an org-level signal. You can make it rain tamagotchis once the basic connectors are rock solid and GitHub integration is bulletproof. Until then, you are doing something wrong.
 
-Until then: we don't want AI pets. Fix your connectors.
+My new MacBook arrives tomorrow. I'm excited to bring up llama.cpp, switch the wifi radio off entirely, run open-weight models, and see what damage I can do. No hosted workflow. No connector state to distrust. The exit ramp exists, and every broken integration makes me more interested in taking it.
+
+Make the connectors tell the truth. Let me attach two orgs. Return a real error when something fails. Then make it rain tamagotchis. Until then, fix your fucking connectors.
 
 <ReadNextCard
   image="https://zackproser.b-cdn.net/images/the-autonomy-boundary-hero.jpg"
