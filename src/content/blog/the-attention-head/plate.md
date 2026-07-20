@@ -2,7 +2,7 @@
 
 Drawing: TDD-010  
 Artifact: BP-010 — Circuit Tracing Field Sheet  
-Format: A1 poster + editable worksheet
+Format: A2 poster + editable worksheet
 
 ## Claim-strength ladder
 

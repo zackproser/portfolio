@@ -38,6 +38,36 @@ ${VOICE_RULES}`
 }
 
 export const RFI_CONFIGS: Record<string, RfiConfig> = {
+  'tdd-013': {
+    drawingCode: 'TDD-013',
+    title: 'The Diffusion Model',
+    path: '/blog/the-diffusion-model',
+    drawingSummary: `§01 Idea — generation begins at a simple Gaussian prior and follows a learned time-dependent field toward the data distribution. One coordinate-consistent 2D teaching distribution is reused throughout; it is illustrative and is not image-model output. DDPM fixed the forward corruption and learned the reverse.
+§02 Forward process — q(x_t|x_{t-1}) is Gaussian with beta schedule; alpha_t=1-beta_t and cumulative alpha-bar permit direct sampling x_t=sqrt(alpha-bar_t)x_0+sqrt(1-alpha-bar_t)epsilon. Noise is a same-shaped Gaussian tensor. The schedule allocates signal-to-noise ratio across time.
+§03 Reverse process — a network receives noisy state, time, and optional condition, then predicts epsilon, clean x_0, velocity, or score. These targets have the state's dimension and are convertible with schedule coefficients. Score-based SDEs have a stochastic reverse and an equivalent probability-flow ODE with matching marginals.
+§04 Objective — sample clean data, time, and Gaussian epsilon; construct x_t; minimize squared error between the known target and network output. The simplified epsilon loss is E||epsilon-epsilon_theta||^2. Parameterizations and time weighting alter training emphasis.
+§05 Guidance — text encodings condition the field through cross-attention or adaptive modulation. Classifier-free guidance combines unconditional and conditional predictions as epsilon_uncond+w(epsilon_cond-epsilon_uncond). Higher w trades diversity for adherence and can produce distortion. The demo is a fixed 2D teaching transformation.
+§06 Latent architecture — a VAE encoder maps H×W×3 pixels to h×w×c latents; the diffusion or flow network operates there; the decoder returns pixels. Compression reduces spatial cost and can discard detail. A U-Net estimates a multi-scale convolutional field; DiT replaces it with a transformer over latent patches.
+§07 Sampling — the sampler chooses time grid, update rule, stochasticity, and conversions. Euler uses one local slope; Heun commonly uses two; ancestral methods inject noise; deterministic DDIM/ODE paths do not after initialization. Compare total network evaluations and matched starting tensors, not step labels alone.
+§08 Flow view — the probability-flow ODE gives deterministic trajectories with diffusion's time marginals. Flow matching directly regresses a velocity field for a chosen probability path. Diffusion and flow can share VAE, DiT, conditioning, guidance, and solver; training path and target distinguish them.`,
+    terms: [
+      ['FORWARD PROCESS', 'Fixed corruption that gradually maps data toward a simple Gaussian distribution.'],
+      ['REVERSE PROCESS', 'Learned stochastic or deterministic dynamics that move a prior sample toward data.'],
+      ['NOISE SCHEDULE', 'Sequence or continuous function allocating signal and Gaussian noise across time.'],
+      ['DENOISING OBJECTIVE', 'Supervised loss between a known corruption-derived target and the network prediction.'],
+      ['CLASSIFIER-FREE GUIDANCE', 'Extrapolation from an unconditional field estimate toward a conditional estimate.'],
+      ['LATENT DIFFUSION', 'Diffusion performed in a compressed autoencoder representation rather than pixels.'],
+      ['VAE', 'Variational autoencoder used here to encode pixels into latents and decode latents into pixels.'],
+      ['U-NET', 'Multi-scale convolutional encoder-decoder commonly used as a denoising field network.'],
+      ['DiT', 'Diffusion Transformer: a transformer backbone operating on patches of a latent state.'],
+      ['SAMPLER', 'Numerical procedure and time grid used to integrate a learned reverse or velocity field.'],
+      ['PROBABILITY FLOW', 'Deterministic ODE associated with a diffusion SDE and sharing its time marginals.'],
+      ['FLOW MATCHING', 'Training method that regresses the velocity of a chosen probability path.'],
+      ['SCORE', 'Gradient of log density with respect to the current state: ∇x log p_t(x).'],
+      ['VELOCITY PREDICTION', 'Time-dependent target combining clean signal and noise in the state’s coordinates.'],
+      ['NETWORK EVALUATION', 'One call to the U-Net or DiT; a more comparable cost unit than a labeled step.'],
+    ],
+  },
   'tdd-012': {
     drawingCode: 'TDD-012',
     title: 'The Guard',

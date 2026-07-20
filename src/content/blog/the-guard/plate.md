@@ -2,7 +2,7 @@
 
 Drawing: TDD-012  
 Artifact: BP-012 — Agent Threat-Model Pack  
-Format: A1 trust-boundary diagram + worksheets · PDF
+Format: A2 trust-boundary diagram + worksheets · PDF
 
 ## Trust-boundary diagram
 

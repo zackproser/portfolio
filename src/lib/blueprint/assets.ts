@@ -28,4 +28,9 @@ export const ASSET_REGISTRY: Record<string, BlueprintAsset> = {
     drawingCode: 'TDD-012',
     fileUrl: 'https://zackproser.b-cdn.net/plates/bp-012-threat-model.pdf',
   },
+  'bp-013-generative-poster': {
+    name: 'Generative Image Process Poster',
+    drawingCode: 'TDD-013',
+    fileUrl: 'https://zackproser.b-cdn.net/plates/bp-013-generative-poster.pdf',
+  },
 }

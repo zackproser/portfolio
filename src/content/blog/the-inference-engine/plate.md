@@ -2,7 +2,7 @@
 
 Drawing: TDD-011  
 Artifact: BP-011 — Inference Capacity Workbook  
-Format: A1 poster + editable workbook · PDF
+Format: A2 poster + editable workbook · PDF
 
 ## Memory ledger
 
