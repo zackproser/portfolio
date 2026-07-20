@@ -7,17 +7,13 @@ export const metadata = createMetadata(rawMetadata)
 
 # We don't want AI pets. Fix your fucking connectors.
 
-This started as a Slack message. A colleague asked who thought the Codex pets thing was a good idea — "these people have so much time and tokens on their hands." My answer: when the connector I pay for is broken, a virtual pet advertises where the company spent its attention.
-
-Open-weight models keep proving how capable they are. Developers will keep building local inference pools around them. The frontier labs still have a moat: the product experience around the model. Every connector that lies about its state punches another hole in it. When the paid, hosted experience breaks on basic work, "just run it yourself" becomes a rational response.
-
-So here is the hate mail from the edge of applied AI, where these products meet real work.
-
-## The pets
-
 In May, OpenAI added [AI-generated pets to Codex](https://tech.yahoo.com/ai/chatgpt/articles/openai-introduces-ai-generated-pets-193153770.html): animated companions that float over your editor and report what the agent is doing. They do no coding. OpenAI also offered thirty days of ChatGPT Pro to the creators of ten favorite community pets. The pets come with a subscription funnel.
 
-I can enjoy a Clippy homage. Delight belongs in a finished product. A broken connector sitting beside it turns delight into evidence about priorities.
+A colleague asked who thought the Codex pets thing was a good idea — "these people have so much time and tokens on their hands." 
+
+Here's what I think: when AI pets are shipped for both frontier labs, but basic connectors in their most expensive paid products demonstrably don't work for weeks and months at a time (somehow despite the fact that software engineers are going away - any day now - and that most if not all code in the orgs is written by AI) then the charitable read is poor prioritization. The honest one is people with their heads inserted squarely inside their own rectums. 
+
+Open-weight models keep proving how capable they are. Developers will keep building local inference pools around them. The frontier labs still have a moat: the product experience around the model. Every connector that lies about its state punches another hole in it. When the paid, hosted experience regularly breaks on basic shit, "just run it yourself" becomes a rational response.
 
 ## Exhibit A: the ChatGPT Work Google Drive connector doesn't work
 
@@ -31,9 +27,11 @@ The OpenAI community forums show the same failure: the connector displays *Conne
 
 A connector that lies about its state burns my time proving the vendor's bug for them. It also makes a local model look better. Offline software never claims it connected to Drive and then quietly disables the tool.
 
+I ship bugs, too. My deployed software has issues with it, too. I'm not perfect either. But I'm also not a rapidly expanding team of top talent sitting on unlimited tokens with access to some of the best models available.
+
 ## Exhibit B: Claude's GitHub integration can't hold two orgs in its head
 
-I hit this one last week. The Claude GitHub integration — the same plumbing behind the Claude tag and Claude Code on the web — uses the GitHub org settings wired into the admin panel. Connect a personal GitHub org beside an existing org and it fails silently. The repos never appear.
+I hit this one last week. The Claude GitHub integration — the same plumbing behind the Claude tag and Claude Code on the web — uses the GitHub org settings wired into the admin panel. Connect a personal GitHub org beside an existing org and it fails silently. The repos never appear. No error messages, nothing to chase down in logs. No relevant troubleshooting docs. The one thing I needed to use this regularly for actual development just doesn't fucking work - out of the box. But it's still expensive as shit to use! I guess here is where I'd go talk to the digital fucking tamagotchi and ask if it knows how to file tickets that'll actually get routed to the right team?
 
 This exact failure is documented and open in Anthropic's own tracker.
 
@@ -45,17 +43,29 @@ The `anthropics/claude-code` repository has about 11,000 open issues, with rough
 
 The Claude tag draws on separate usage credits and is one of the most expensive ways to run AI right now. Meanwhile, open-weight models keep approaching the frontier on benchmarks and proving capable in developers' hands. A premium earns its price through the whole product experience. A GitHub integration that cannot attach a second org throws that advantage away.
 
+When I first heard the Claude tag was ready to use, I got excited. Excited enough to go through the absolute ass pain of standing up a separate team-level account — [a dedicated business mailbox, Cloudflare DNS, an hour and a half of fiddly record-setting and waiting on propagation](/blog/the-agent-fleet) — just to provision a work email that could run it. Excited enough to hand Anthropic more money, because I was completely sold on running my whole business operation on the go, from Slack, in a chat and a thread.
+
+Then I signed in, opened the admin panel experience for the Claude tag, and knew in my heart that this shipped before it was ready. I've been doing this long enough to reconstruct the internal thread almost word for word: *we forgot the admin panel experience — just piggyback off the Claude Code GitHub connector settings — that'll look like ass — we can fix it later — gotta ship and iterate.* Except we're a month and a half from there with no iteration, and the core experience is broken enough that I'm now actively turning people off of using the Claude tag, because a core piece of its functionality IS STILL FUCKING BROKEN — and there is no communication about where or when it gets fixed.
+
+We're at the point in this competition — labs trading blows, open-weight and non-US models surging — where the top providers would do well to clean up their own release processes and communications: define what "done enough to ship" actually looks like, define what testing at scale actually looks like, and deliver reliability before they ask people to stake their business operations on software that is currently this broken, buggy, and constantly offline.
+
 ## The actual complaint
 
 I like these companies. I use both every day. I run a fleet of agents on this stack. I care enough to be angry when the expensive path loses to the simple one on reliability.
 
-Connectors are where the model touches my real work: Drive, repos, systems of record. Their reliability is the product. A flaky connector poisons everything above it, wastes a Tuesday afternoon, and sends developers toward inference they control.
+Connectors are where the model touches my actual context: Drive, repos, systems of record. Their reliability is the product. A flaky connector poisons everything above it, wastes a Tuesday afternoon, and sends developers toward inference they control.
 
 I know different teams build pets and connectors. From my seat outside the org, that is an explanation of the org chart, not a defense of the product. Prioritization is an org-level signal. You can make it rain tamagotchis once the basic connectors are rock solid and GitHub integration is bulletproof. Until then, you are doing something wrong.
 
-My new MacBook arrives tomorrow. I'm excited to bring up llama.cpp, switch the wifi radio off entirely, run open-weight models, and see what damage I can do. No hosted workflow. No connector state to distrust. The exit ramp exists, and every broken integration makes me more interested in taking it.
+My new MacBook arrives tomorrow. I'm excited to bring up llama.cpp, switch the wifi radio off entirely, run open-weight models, and see what damage I can do. 
 
-Make the connectors tell the truth. Let me attach two orgs. Return a real error when something fails. Then make it rain tamagotchis. Until then, fix your fucking connectors.
+No hosted workflow. No opaque timelines on when core functionality will work. No integrations that were shipped before they were ready and fully tested to meet some invisible internal timeline. 
+
+Make the connectors tell the truth. Let me attach two orgs. Return a real error when something fails. 
+
+Then fuck around with the cutesy AI pets. 
+
+Until then, fix your fucking connectors.
 
 <ReadNextCard
   image="https://zackproser.b-cdn.net/images/the-autonomy-boundary-hero.jpg"
