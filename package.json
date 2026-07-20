@@ -34,7 +34,8 @@
     "og:hero": "node scripts/og/hero-snap.mjs",
     "blueprint:art": "node scripts/blueprint/generate-art.mjs",
     "blueprint:art:upload": "node scripts/blueprint/upload-art.mjs",
-    "blueprint:issue-email": "node scripts/blueprint/issue-email.mjs"
+    "blueprint:issue-email": "node scripts/blueprint/issue-email.mjs",
+    "verify:citations": "node scripts/verify-citations.mjs"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
