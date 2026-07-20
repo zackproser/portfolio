@@ -6,11 +6,20 @@ import {
   BpNote,
   BpFigure,
   BpQA,
-  BpReferences,
+  makeCitations,
   BlueprintRfpDesk,
 } from '@/components/blueprint'
 
 export const metadata = createMetadata(rawMetadata)
+
+export const { Cite, References } = makeCitations([
+  { id: 'proser-gold-standard', label: 'Proser, “What Makes an AI Workshop the Gold Standard,” 2026', href: 'https://zackproser.com/blog/gold-standard-ai-workshops' },
+  { id: 'proser-nisi-mastra', label: 'Proser and Nisi, “AI Pipelines and Agents in Pure TypeScript with Mastra.ai,” workshop repository, 2025', href: 'https://github.com/zackproser/ai-eng-world-faire-workshop' },
+  { id: 'proser-cowork-repo', label: 'Proser, “Claude Cowork GTM Workshop,” workshop repository, 2026', href: 'https://github.com/zackproser/cowork-workshop' },
+  { id: 'proser-skills-runbooks', label: 'Proser, “Claude Skills as Self-Documenting Runbooks/Processes You Share With Your Team,” 2025', href: 'https://zackproser.com/blog/claude-skills-internal-training' },
+  { id: 'proser-cowork-anthropic', label: 'Proser, “Claude Cowork Workshop with Anthropic: Building a Complete GTM Pipeline in One Session,” 2026', href: 'https://zackproser.com/blog/claude-cowork-workshop-anthropic' },
+  { id: 'proser-workshop-playbook', label: 'Proser, “A Conference Workshop Playbook: What We Learned Teaching 200+ Engineers,” 2026', href: 'https://zackproser.com/blog/conference-workshop-playbook' },
+])
 
 <BpAnchor id="s0" num="00" label="Abstract" />
 
@@ -26,7 +35,7 @@ A talk transfers a point of view. A good one can change what a room notices, giv
 
 That distinction changes the build. Slides become one interface in a small product. Setup is onboarding. Exercises are the core interaction. A visible finish line is the acceptance test. Questions are user research. The repo, glossary, and recap are retention mechanisms. The session itself is one scheduled release of the system.
 
-At the 2026 AI Engineer World’s Fair in San Francisco, conference founder swyx told Nick Nisi and me that our workshops were “the gold standard” for AI Engineer content and asked for help raising the bar across the event. The comment supplied useful provenance, but the work behind it matters more: a hand-built deck served to phones, a real-time room board, a glossary with chat, a local coach, and exercises with failing checks. The hour onstage sat on top of shipped software. [The original account describes the five principles and artifacts](/blog/gold-standard-ai-workshops).
+At the 2026 AI Engineer World’s Fair in San Francisco, conference founder swyx told Nick Nisi and me that our workshops were “the gold standard” for AI Engineer content and asked for help raising the bar across the event. The comment supplied useful provenance, but the work behind it matters more: a hand-built deck served to phones, a real-time room board, a glossary with chat, a local coach, and exercises with failing checks. The hour onstage sat on top of shipped software. [The original account describes the five principles and artifacts](/blog/gold-standard-ai-workshops)<Cite id="proser-gold-standard" />.
 
 <BpNote>The World’s Fair session ran for one hour. The supporting deck, board, glossary, coach, and playground were designed to remain useful after that hour.</BpNote>
 
@@ -171,13 +180,13 @@ Check comprehension through use, not a vocabulary recital. Ask an attendee to ch
 
 A lab needs a real input, real state changes, and an output worth keeping. Lorem ipsum can prove that a button renders; it cannot teach the judgment required to use a system at work. The workshop repository should therefore contain the smallest honest version of the production pattern, with setup instructions and visible completion checks.
 
-At the 2025 AI Engineer World Fair, more than 70 engineers spent two hours building an agentic meme generator in TypeScript with Mastra. The subject was playful; the system was real. One step used structured generation and Zod schemas to extract workplace frustrations. Another fetched meme templates from Imgflip. A generation step produced typed captions. The final step called Imgflip’s caption API and returned a stable image URL. The workflow exposed modular steps, schemas, model output, external API behavior, and failure paths in a result attendees could rerun.
+At the 2025 AI Engineer World Fair, more than 70 engineers spent two hours building an agentic meme generator in TypeScript with Mastra<Cite id="proser-nisi-mastra" />. The subject was playful; the system was real. One step used structured generation and Zod schemas to extract workplace frustrations. Another fetched meme templates from Imgflip. A generation step produced typed captions. The final step called Imgflip’s caption API and returned a stable image URL. The workflow exposed modular steps, schemas, model output, external API behavior, and failure paths in a result attendees could rerun.
 
-The Cowork workshop used a different lab shape. In one hour, attendees built a go-to-market pipeline across seven modules: prospect identification, competitive intelligence, positioning, personalized outreach, blog content, a four-week calendar, and a scheduled publishing task. All seven stayed in one Cowork session. The prospect data fed the competitive work; both informed positioning; that accumulated context fed outreach and content. The architecture lesson was carried by the session history itself.
+The Cowork workshop used a different lab shape<Cite id="proser-cowork-repo" />. In one hour, attendees built a go-to-market pipeline across seven modules: prospect identification, competitive intelligence, positioning, personalized outreach, blog content, a four-week calendar, and a scheduled publishing task. All seven stayed in one Cowork session. The prospect data fed the competitive work; both informed positioning; that accumulated context fed outreach and content. The architecture lesson was carried by the session history itself.
 
 <BpNote>The published Cowork run sheet allocated about 8, 7, 5, 5, 8, 3, and 2 minutes across the seven modules. It ended with a task scheduled for every Monday at 9 AM.</BpNote>
 
-These labs share three properties. The output is recognizable: a shareable meme or a working GTM pipeline. Each step exposes a transferable pattern rather than a product tour. The attendee keeps the implementation and can run it again. An internal training can use the same rule: the Claude skills session distributed a version-controlled skill containing plain-language instructions, code, configuration, and setup notes, so colleagues could install and adapt the workflow after training.
+These labs share three properties. The output is recognizable: a shareable meme or a working GTM pipeline. Each step exposes a transferable pattern rather than a product tour. The attendee keeps the implementation and can run it again. An internal training can use the same rule: the Claude skills session<Cite id="proser-skills-runbooks" /> distributed a version-controlled skill containing plain-language instructions, code, configuration, and setup notes, so colleagues could install and adapt the workflow after training.
 
 Repository design should reveal the learning boundary. Put completed infrastructure and irrelevant plumbing on the starting branch. Leave the target decision visible: a schema to complete, a step to connect, a prompt to constrain, or a verification rule to add. Supply a checkpoint after each block so an attendee can confirm state before carrying an error forward. Keep final code available through a separate branch or tag, but make the normal path pass through the intended work. The attendee should be able to explain what changed and why — watching dependency installation finish teaches nothing.
 
@@ -270,7 +279,7 @@ The GHX glossary promised asynchronous support from the June 17 workshop through
   </svg>
 </BpFigure>
 
-The post-event report should be plain: questions grouped by topic, blocked steps, artifacts completed, unresolved items, and recommended changes. Send the answers. Patch the setup instructions. Add the missing glossary term. Publish a recap that links the deck, repo, outputs, and recording where available. [The Cowork recap](/blog/claude-cowork-workshop-anthropic) does this publicly; internal engagements can use the same structure inside the client’s systems.
+The post-event report should be plain: questions grouped by topic, blocked steps, artifacts completed, unresolved items, and recommended changes. Send the answers. Patch the setup instructions. Add the missing glossary term. Publish a recap that links the deck, repo, outputs, and recording where available. [The Cowork recap](/blog/claude-cowork-workshop-anthropic)<Cite id="proser-cowork-anthropic" /> does this publicly; internal engagements can use the same structure inside the client’s systems.
 
 Finally, test the outcome sentence. Evidence may come from completed repository checks, submitted artifacts, a rerun during the support window, or a short follow-up demonstration. Attendance and satisfaction describe reach and experience. They do not prove the room can perform the target task. Measure the action that was promised.
 
@@ -290,15 +299,4 @@ See [/workshops](/workshops) for current workshop formats and examples. To commi
 
 <BlueprintRfpDesk drawingCode="TDD-005" letter="A" />
 
-<BpReferences
-  drawingCode="TDD-005"
-  letter="B"
-  items={[
-    { label: 'Proser, “What Makes an AI Workshop the Gold Standard,” 2026', href: 'https://zackproser.com/blog/gold-standard-ai-workshops' },
-    { label: 'Proser, “A Conference Workshop Playbook: What We Learned Teaching 200+ Engineers,” 2026', href: 'https://zackproser.com/blog/conference-workshop-playbook' },
-    { label: 'Proser, “Claude Cowork Workshop with Anthropic: Building a Complete GTM Pipeline in One Session,” 2026', href: 'https://zackproser.com/blog/claude-cowork-workshop-anthropic' },
-    { label: 'Proser, “Claude Skills as Self-Documenting Runbooks/Processes You Share With Your Team,” 2025', href: 'https://zackproser.com/blog/claude-skills-internal-training' },
-    { label: 'Proser and Nisi, “AI Pipelines and Agents in Pure TypeScript with Mastra.ai,” workshop repository, 2025', href: 'https://github.com/zackproser/ai-eng-world-faire-workshop' },
-    { label: 'Proser, “Claude Cowork GTM Workshop,” workshop repository, 2026', href: 'https://github.com/zackproser/cowork-workshop' },
-  ]}
-/>
+<References drawingCode="TDD-005" letter="B" />

@@ -8,12 +8,23 @@ import {
   BpEquation,
   BpFrac,
   BpQA,
-  BpReferences,
+  makeCitations,
   CosineSimilarityDemo,
   NearestNeighborDemo,
 } from '@/components/blueprint'
 
 export const metadata = createMetadata(rawMetadata)
+
+export const { Cite, References } = makeCitations([
+  { id: 'harris-1954', label: 'Harris, "Distributional Structure", Word 1954', href: 'https://doi.org/10.1080/00437956.1954.11659520' },
+  { id: 'mikolov-2013a', label: 'Mikolov et al., "Efficient Estimation of Word Representations in Vector Space", ICLR 2013', href: 'https://arxiv.org/abs/1301.3781' },
+  { id: 'mikolov-2013b', label: 'Mikolov et al., "Distributed Representations of Words and Phrases and their Compositionality", NeurIPS 2013', href: 'https://arxiv.org/abs/1310.4546' },
+  { id: 'pennington-2014', label: 'Pennington, Socher, and Manning, "GloVe: Global Vectors for Word Representation", EMNLP 2014', href: 'https://aclanthology.org/D14-1162/' },
+  { id: 'reimers-2019', label: 'Reimers and Gurevych, "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks", EMNLP-IJCNLP 2019', href: 'https://arxiv.org/abs/1908.10084' },
+  { id: 'oord-2018', label: 'Oord, Li, and Vinyals, "Representation Learning with Contrastive Predictive Coding", 2018', href: 'https://arxiv.org/abs/1807.03748' },
+  { id: 'gao-2021', label: 'Gao, Yao, and Chen, "SimCSE: Simple Contrastive Learning of Sentence Embeddings", EMNLP 2021', href: 'https://arxiv.org/abs/2104.08821' },
+  { id: 'malkov-2018', label: 'Malkov and Yashunin, "Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs", IEEE TPAMI 2018', href: 'https://arxiv.org/abs/1603.09320' },
+])
 
 <BpAnchor id="s0" num="00" label="Abstract" />
 
@@ -31,7 +42,7 @@ A lexical search engine is excellent when the query contains the language of the
 
 Synonym tables patch the obvious gaps, then collapse under real language. *Bank* changes meaning beside *river* or *loan*. *Jaguar* may be an animal, a car, or a software release. Intent also crosses languages and formats: a support ticket, stack trace, and runbook can all point to one failure without looking alike as strings.
 
-The underlying idea predates neural networks. Zellig Harris argued in 1954 that differences in meaning correspond to differences in linguistic environments. J. R. Firth compressed the intuition into the line most people remember: &quot;You shall know a word by the company it keeps.&quot; This **distributional hypothesis** turns surrounding language into evidence. If *physician* and *doctor* repeatedly appear beside patients, clinics, and treatment, their shared company reveals a relationship without a hand-written synonym entry.
+The underlying idea predates neural networks. Zellig Harris argued in 1954 that differences in meaning correspond to differences in linguistic environments<Cite id="harris-1954" />. J. R. Firth compressed the intuition into the line most people remember: &quot;You shall know a word by the company it keeps.&quot; This **distributional hypothesis** turns surrounding language into evidence. If *physician* and *doctor* repeatedly appear beside patients, clinics, and treatment, their shared company reveals a relationship without a hand-written synonym entry.
 
 <BpNote>Harris, &quot;Distributional Structure&quot; (1954), supplied the formal linguistic lineage. Firth's often-quoted formulation appeared in his 1957 essay on linguistic theory.</BpNote>
 
@@ -64,7 +75,7 @@ The underlying idea predates neural networks. Zellig Harris argued in 1954 that 
 
 Embeddings attack this mismatch directly. Instead of designing a longer list of linguistic rules, train a model to produce representations where items used in similar ways occupy nearby regions. Search then compares the query vector with document vectors, regardless of whether their characters overlap.
 
-That route became practical at scale with word2vec in 2013. Its skip-gram objective learned a word vector by predicting nearby words; the efficient training procedure produced useful geometry from huge text collections. GloVe followed in 2014 with an objective built from global word co-occurrence counts. Both assigned one vector to each vocabulary word, so *bank* had to occupy one location whether the sentence concerned money or a river.
+That route became practical at scale with word2vec in 2013<Cite id="mikolov-2013a" />. Its skip-gram objective learned a word vector by predicting nearby words; the efficient training procedure produced useful geometry from huge text collections<Cite id="mikolov-2013b" />. GloVe followed in 2014<Cite id="pennington-2014" /> with an objective built from global word co-occurrence counts. Both assigned one vector to each vocabulary word, so *bank* had to occupy one location whether the sentence concerned money or a river.
 
 <BpQA q="Did embeddings begin with modern language models?">
 No. Researchers have represented words with vectors for decades, and word2vec made the approach widely practical in 2013. Modern transformer encoders add context: the vector for *bank* can change when the sentence mentions a loan versus a river.
@@ -78,7 +89,7 @@ An embedding is an ordered list of numbers: **x** ∈ ℝ<sup>d</sup>. The dimen
 
 The encoder is the important part. A text embedding model tokenizes the input, runs it through a transformer, pools token representations into one vector, and often normalizes that vector. Both sides of a comparison must follow the model's documented encoding contract — some retrieval models pair a query encoder with a document encoder trained together, and instruction prefixes are part of that contract. Coordinates from unrelated models live in unrelated spaces, even when their vectors have the same length.
 
-Contextual language models changed the unit being represented. Instead of looking up one permanent vector per word, the encoder produces token representations conditioned on the whole sentence. Sentence-BERT, published in 2019, adapted BERT with siamese and triplet training so a sentence could be encoded once and compared efficiently with other sentence vectors. That distinction matters operationally: ordinary cross-encoded BERT can compare a pair carefully, but it cannot precompute one reusable vector per corpus item for fast nearest-neighbor search.
+Contextual language models changed the unit being represented. Instead of looking up one permanent vector per word, the encoder produces token representations conditioned on the whole sentence. Sentence-BERT, published in 2019, adapted BERT with siamese and triplet training so a sentence could be encoded once and compared efficiently with other sentence vectors<Cite id="reimers-2019" />. That distinction matters operationally: ordinary cross-encoded BERT can compare a pair carefully, but it cannot precompute one reusable vector per corpus item for fast nearest-neighbor search.
 
 Pooling decides how many contextual token vectors become one object vector. Mean pooling averages the eligible token states; other models use a designated token or a learned pooling layer. A title plus body may be encoded together, or separately and combined downstream. These choices alter the coordinate system, which is why the model name alone is insufficient version metadata.
 
@@ -147,7 +158,7 @@ It means the encoder and metric ranked that item closest among the candidates se
 
 The geometry comes from examples. A **positive pair** says these two inputs should be close: a query and its clicked result, two translations, a caption and its image, or two views of the same item. **Negatives** say which inputs should separate. Training adjusts encoder weights so positives gain similarity relative to negatives in the batch.
 
-Contrastive training turned this into a reusable recipe. Put related examples together, place many alternatives beside them, and ask the encoder to identify the matching partner. Work on contrastive predictive coding supplied the InfoNCE form used below; later systems applied related losses across images, sentences, and query-passage pairs at much larger batch and dataset scales. The resulting model learns a comparison space directly, rather than hoping a representation trained for another objective happens to rank well.
+Contrastive training turned this into a reusable recipe. Put related examples together, place many alternatives beside them, and ask the encoder to identify the matching partner. Work on contrastive predictive coding supplied the InfoNCE form used below<Cite id="oord-2018" />; later systems applied related losses across images, sentences<Cite id="gao-2021" />, and query-passage pairs at much larger batch and dataset scales. The resulting model learns a comparison space directly, rather than hoping a representation trained for another objective happens to rank well.
 
 <BpFigure caption="FIG. 4 — CONTRASTIVE TRAINING: POSITIVE PAIRS PULL TOGETHER; NEGATIVES SUPPLY THE PRESSURE THAT SHAPES THE REST OF THE SPACE.">
   <svg viewBox="0 0 900 270">
@@ -229,7 +240,7 @@ Exact search computes the query's similarity against every stored vector. That i
 
 HNSW — Hierarchical Navigable Small World — builds a graph. Upper layers contain sparse long-range links; lower layers contain dense local links. Search enters high, makes greedy jumps toward the query, then descends and explores a candidate frontier. Parameters controlling construction quality, graph degree, and search breadth trade memory and latency for recall.
 
-Malkov and Yashunin's design joins two useful ideas. Navigable small-world graphs provide short paths across a neighborhood graph, while hierarchy gives the search coarse entry points before it spends work locally. During insertion, the index connects a new vector to selected neighbors and prunes connections to control degree. During search, a wider candidate frontier improves the chance of escaping a locally attractive route, at the price of more distance calculations.
+Malkov and Yashunin's design joins two useful ideas<Cite id="malkov-2018" />. Navigable small-world graphs provide short paths across a neighborhood graph, while hierarchy gives the search coarse entry points before it spends work locally. During insertion, the index connects a new vector to selected neighbors and prunes connections to control degree. During search, a wider candidate frontier improves the chance of escaping a locally attractive route, at the price of more distance calculations.
 
 The graph is approximate because search visits only a fraction of the stored points. It may enter the wrong neighborhood or prune a route that leads to an exact top result. Increasing search breadth usually raises recall and latency together. Increasing construction effort can improve graph quality but makes indexing slower. Those knobs should be chosen from measured recall-versus-latency curves, not copied from a default configuration.
 
@@ -334,16 +345,4 @@ Deduplication illustrates threshold economics. A false positive can merge two re
 
 The enduring design is simple: turn complicated objects into coordinates, define the neighborhood your task needs, and measure whether the geometry serves it. The vector is the interface. The training data, index, and evaluation make it useful.
 
-<BpReferences
-  drawingCode="TDD-002"
-  items={[
-    { label: 'Harris, "Distributional Structure", Word 1954', href: 'https://doi.org/10.1080/00437956.1954.11659520' },
-    { label: 'Mikolov et al., "Efficient Estimation of Word Representations in Vector Space", ICLR 2013', href: 'https://arxiv.org/abs/1301.3781' },
-    { label: 'Mikolov et al., "Distributed Representations of Words and Phrases and their Compositionality", NeurIPS 2013', href: 'https://arxiv.org/abs/1310.4546' },
-    { label: 'Pennington, Socher, and Manning, "GloVe: Global Vectors for Word Representation", EMNLP 2014', href: 'https://aclanthology.org/D14-1162/' },
-    { label: 'Reimers and Gurevych, "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks", EMNLP-IJCNLP 2019', href: 'https://arxiv.org/abs/1908.10084' },
-    { label: 'Oord, Li, and Vinyals, "Representation Learning with Contrastive Predictive Coding", 2018', href: 'https://arxiv.org/abs/1807.03748' },
-    { label: 'Gao, Yao, and Chen, "SimCSE: Simple Contrastive Learning of Sentence Embeddings", EMNLP 2021', href: 'https://arxiv.org/abs/2104.08821' },
-    { label: 'Malkov and Yashunin, "Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs", IEEE TPAMI 2018', href: 'https://arxiv.org/abs/1603.09320' },
-  ]}
-/>
+<References drawingCode="TDD-002" />

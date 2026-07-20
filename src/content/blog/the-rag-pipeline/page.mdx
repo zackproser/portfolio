@@ -7,12 +7,23 @@ import {
   BpFigure,
   BpEquation,
   BpQA,
-  BpReferences,
+  makeCitations,
   ChunkingDemo,
   RetrievalScoreDemo,
 } from '@/components/blueprint'
 
 export const metadata = createMetadata(rawMetadata)
+
+export const { Cite, References } = makeCitations([
+  { id: 'chen-2017', label: 'Chen et al., "Reading Wikipedia to Answer Open-Domain Questions", ACL 2017', href: 'https://arxiv.org/abs/1704.00051' },
+  { id: 'karpukhin-2020', label: 'Karpukhin et al., "Dense Passage Retrieval for Open-Domain Question Answering", EMNLP 2020', href: 'https://arxiv.org/abs/2004.04906' },
+  { id: 'guu-2020', label: 'Guu et al., "REALM: Retrieval-Augmented Language Model Pre-Training", ICML 2020', href: 'https://arxiv.org/abs/2002.08909' },
+  { id: 'lewis-2020', label: 'Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", NeurIPS 2020', href: 'https://arxiv.org/abs/2005.11401' },
+  { id: 'robertson-2009', label: 'Robertson and Zaragoza, "The Probabilistic Relevance Framework: BM25 and Beyond", Foundations and Trends in Information Retrieval 2009', href: 'https://www.staff.city.ac.uk/~sbrp622/papers/foundations_bm25_review.pdf' },
+  { id: 'cormack-2009', label: 'Cormack, Clarke, and Büttcher, "Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods", SIGIR 2009', href: 'https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf' },
+  { id: 'khattab-2020', label: 'Khattab and Zaharia, "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT", SIGIR 2020', href: 'https://arxiv.org/abs/2004.12832' },
+  { id: 'liu-2024', label: 'Liu et al., "Lost in the Middle: How Language Models Use Long Contexts", TACL 2024', href: 'https://arxiv.org/abs/2307.03172' },
+])
 
 <BpAnchor id="s0" num="00" label="Abstract" />
 
@@ -32,9 +43,9 @@ Fine-tuning changes behavior: style, format, task habits, and sometimes domain p
 
 <BpNote>A model can answer from retrieved evidence without changing a single parameter. Updating the corpus can take minutes; retraining or fine-tuning follows a different and usually slower lifecycle.</BpNote>
 
-The lineage runs through open-domain question answering. DrQA, published by Chen and collaborators in 2017, searched Wikipedia with lexical features and passed selected passages to a neural reader. The architecture already contained the enduring split: a fast document retriever narrowed the corpus, then a more expensive model read the shortlist for an answer. The reader could only succeed if retrieval put the evidence in reach.
+The lineage runs through open-domain question answering. DrQA, published by Chen and collaborators in 2017<Cite id="chen-2017" />, searched Wikipedia with lexical features and passed selected passages to a neural reader. The architecture already contained the enduring split: a fast document retriever narrowed the corpus, then a more expensive model read the shortlist for an answer. The reader could only succeed if retrieval put the evidence in reach.
 
-Dense Passage Retrieval replaced that first-stage lexical representation with learned query and passage encoders in 2020. REALM trained a language model to retrieve from an external corpus as part of pretraining. Lewis and collaborators' 2020 RAG paper joined a neural retriever with a sequence generator and gave the pattern its durable name. These systems differed in training and generation details, but they shared one practical premise: knowledge can remain in an inspectable corpus and enter computation when a question arrives.
+Dense Passage Retrieval replaced that first-stage lexical representation with learned query and passage encoders in 2020<Cite id="karpukhin-2020" />. REALM trained a language model to retrieve from an external corpus as part of pretraining<Cite id="guu-2020" />. Lewis and collaborators' 2020 RAG paper joined a neural retriever with a sequence generator and gave the pattern its durable name<Cite id="lewis-2020" />. These systems differed in training and generation details, but they shared one practical premise: knowledge can remain in an inspectable corpus and enter computation when a question arrives.
 
 <BpNote>DrQA (Chen et al., 2017), REALM (Guu et al., 2020), DPR (Karpukhin et al., 2020), and RAG (Lewis et al., 2020) mark the path from retrieve-then-read QA to retrieval-conditioned generation.</BpNote>
 
@@ -195,11 +206,11 @@ Chunk size creates a precision-context trade. Small chunks give the retriever a 
 
 **Keyword retrieval**, commonly BM25, rewards terms that appear in a passage and discounts terms common across the corpus. It excels at error codes, function names, legal clauses, product SKUs, and quoted language. It misses paraphrases when query and document vocabulary diverge.
 
-BM25 belongs to the Okapi retrieval tradition and remains strong because its assumptions match many real queries. Term frequency helps when a query term appears repeatedly, document-length normalization prevents long documents from winning by accumulation alone, and inverse document frequency gives rare terms more influence. Robertson and Zaragoza's 2009 survey describes the probabilistic lineage and the family of weighting choices behind the familiar formula.
+BM25 belongs to the Okapi retrieval tradition and remains strong because its assumptions match many real queries. Term frequency helps when a query term appears repeatedly, document-length normalization prevents long documents from winning by accumulation alone, and inverse document frequency gives rare terms more influence. Robertson and Zaragoza's 2009 survey<Cite id="robertson-2009" /> describes the probabilistic lineage and the family of weighting choices behind the familiar formula.
 
 Dense Passage Retrieval demonstrated the complementary case: a learned bi-encoder could retrieve relevant Wikipedia passages when questions and answers used different surface language. Dense retrieval still has a vocabulary and training distribution, so it does not erase lexical failure. Hybrid search keeps both routes open.
 
-Hybrid retrieval runs both and combines normalized scores or fuses ranks. The blend coefficient α below is an intuition aid; production systems often use reciprocal rank fusion because dense and BM25 score scales are unrelated.
+Hybrid retrieval runs both and combines normalized scores or fuses ranks. The blend coefficient α below is an intuition aid; production systems often use reciprocal rank fusion<Cite id="cormack-2009" /> because dense and BM25 score scales are unrelated.
 
 <BpEquation tag="EQ. 4.1">
   score(d, q) = α · dense(d, q) + (1 − α) · bm25(d, q)
@@ -213,7 +224,7 @@ Query rewriting can help either branch and can also destroy signal. Expanding &q
 
 <BpSection id="s5" num="05" label="Reranking" sheet="SHEET 5 OF 8" title="Retrieve wide, then read carefully" />
 
-Embedding search uses a **bi-encoder**: query and passage are encoded separately, so passage vectors can be precomputed. That makes search fast enough for millions of candidates, but query and passage cannot inspect each other's tokens during scoring.
+Embedding search uses a **bi-encoder**: query and passage are encoded separately, so passage vectors can be precomputed. That makes search fast enough for millions of candidates, but query and passage cannot inspect each other's tokens during scoring<Cite id="khattab-2020" />.
 
 A **cross-encoder** reads the query and one candidate together. Full token-level attention produces a more precise relevance judgment at much higher cost. The common cascade retrieves tens or hundreds of candidates cheaply, reranks that short list, and sends only the best few passages to the prompt.
 
@@ -294,7 +305,7 @@ Ordering matters. Models can underuse evidence buried in the middle of a long co
 
 <BpNote>Count tokens with the target model's tokenizer. Character estimates can fail badly on code, tables, non-English text, and long identifiers.</BpNote>
 
-Liu and collaborators measured this behavior in 2023 by moving relevant information through long inputs. Performance was often strongest when evidence appeared near the beginning or end and weaker when it sat in the middle, even for models whose context window covered the full input. A context window tells you how many tokens the model can accept. It does not promise equal use of every position.
+Liu and collaborators measured this behavior in 2023<Cite id="liu-2024" /> by moving relevant information through long inputs. Performance was often strongest when evidence appeared near the beginning or end and weaker when it sat in the middle, even for models whose context window covered the full input. A context window tells you how many tokens the model can accept. It does not promise equal use of every position.
 
 <BpNote>Liu et al., &quot;Lost in the Middle: How Language Models Use Long Contexts&quot; (2023). Position sensitivity should be tested on the exact generator and prompt shape used in production.</BpNote>
 
@@ -393,16 +404,4 @@ These choices compose. A support agent can retrieve policy, call an order API, a
 
 The working pipeline ends where it began: with evidence. Keep sources current, make retrieval measurable, preserve provenance through prompt assembly, require the generator to stay inside the supplied record, and expose every handoff in the trace. Then a wrong answer becomes an engineering problem with a location.
 
-<BpReferences
-  drawingCode="TDD-003"
-  items={[
-    { label: 'Chen et al., "Reading Wikipedia to Answer Open-Domain Questions", ACL 2017', href: 'https://arxiv.org/abs/1704.00051' },
-    { label: 'Robertson and Zaragoza, "The Probabilistic Relevance Framework: BM25 and Beyond", Foundations and Trends in Information Retrieval 2009', href: 'https://doi.org/10.1561/1500000019' },
-    { label: 'Guu et al., "REALM: Retrieval-Augmented Language Model Pre-Training", ICML 2020', href: 'https://arxiv.org/abs/2002.08909' },
-    { label: 'Karpukhin et al., "Dense Passage Retrieval for Open-Domain Question Answering", EMNLP 2020', href: 'https://arxiv.org/abs/2004.04906' },
-    { label: 'Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", NeurIPS 2020', href: 'https://arxiv.org/abs/2005.11401' },
-    { label: 'Khattab and Zaharia, "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT", SIGIR 2020', href: 'https://arxiv.org/abs/2004.12832' },
-    { label: 'Cormack, Clarke, and Büttcher, "Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods", SIGIR 2009', href: 'https://doi.org/10.1145/1571941.1572114' },
-    { label: 'Liu et al., "Lost in the Middle: How Language Models Use Long Contexts", TACL 2024', href: 'https://arxiv.org/abs/2307.03172' },
-  ]}
-/>
+<References drawingCode="TDD-003" />

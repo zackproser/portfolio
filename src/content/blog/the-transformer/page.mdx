@@ -8,7 +8,7 @@ import {
   BpEquation,
   BpFrac,
   BpQA,
-  BpReferences,
+  makeCitations,
   AttentionDemo,
   TemperatureDemo,
   PositionalEncodingDemo,
@@ -16,9 +16,21 @@ import {
 
 export const metadata = createMetadata(rawMetadata)
 
+export const { Cite, References } = makeCitations([
+  { id: 'vaswani-2017', label: 'Vaswani et al., "Attention Is All You Need", NeurIPS 2017', href: 'https://arxiv.org/abs/1706.03762' },
+  { id: 'sutskever-2014', label: 'Sutskever, Vinyals, and Le, "Sequence to Sequence Learning with Neural Networks", NeurIPS 2014', href: 'https://arxiv.org/abs/1409.3215' },
+  { id: 'bahdanau-2015', label: 'Bahdanau, Cho, and Bengio, "Neural Machine Translation by Jointly Learning to Align and Translate", ICLR 2015', href: 'https://arxiv.org/abs/1409.0473' },
+  { id: 'luong-2015', label: 'Luong, Pham, and Manning, "Effective Approaches to Attention-based Neural Machine Translation", EMNLP 2015', href: 'https://arxiv.org/abs/1508.04025' },
+  { id: 'radford-2018', label: 'Radford et al., "Improving Language Understanding by Generative Pre-Training", OpenAI 2018', href: 'https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf' },
+  { id: 'radford-2019', label: 'Radford et al., "Language Models are Unsupervised Multitask Learners", OpenAI 2019', href: 'https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf' },
+  { id: 'brown-2020', label: 'Brown et al., "Language Models are Few-Shot Learners", NeurIPS 2020', href: 'https://arxiv.org/abs/2005.14165' },
+  { id: 'kaplan-2020', label: 'Kaplan et al., "Scaling Laws for Neural Language Models", 2020', href: 'https://arxiv.org/abs/2001.08361' },
+  { id: 'hoffmann-2022', label: 'Hoffmann et al., "Training Compute-Optimal Large Language Models", NeurIPS 2022', href: 'https://arxiv.org/abs/2203.15556' },
+])
+
 <BpAnchor id="s0" num="00" label="Abstract" />
 
-In 2017, eight researchers at Google published a paper whose central claim sounded like a provocation: you can throw away recurrence entirely — the thing every serious sequence model had been built on for two decades — and replace it with nothing but attention. The paper was called *Attention Is All You Need*, and the title turned out to be an understatement. Nine years later, the architecture it introduced is effectively the only one that matters. Language, code, images, audio, protein folding — all of it now runs through the same machine.
+In 2017, eight researchers at Google published a paper whose central claim sounded like a provocation: you can throw away recurrence entirely — the thing every serious sequence model had been built on for two decades — and replace it with nothing but attention. The paper was called *Attention Is All You Need*<Cite id="vaswani-2017" />, and the title turned out to be an understatement. Nine years later, the architecture it introduced is effectively the only one that matters. Language, code, images, audio, protein folding — all of it now runs through the same machine.
 
 <BpNote>Vaswani et al., *Attention Is All You Need*, NeurIPS 2017. Eight authors; roughly 200k citations and counting.</BpNote>
 
@@ -30,7 +42,7 @@ This drawing takes the machine apart piece by piece. By the bottom of the page y
 
 Before 2017, sequence models were recurrent. An RNN reads a sentence the way you read a ticker tape: one token per clock tick, compressing everything seen so far into a single fixed-size hidden state. That design has two fatal flaws. First, memory: by token 500, whatever happened at token 3 has been squeezed through 497 lossy updates. Second, and worse for hardware: it's *sequential*. You cannot compute step 500 before step 499. GPUs, whose entire value is doing thousands of things at once, sit mostly idle.
 
-The transformer arrived through machine translation, where both flaws were easy to see. Sutskever, Vinyals, and Le's 2014 sequence-to-sequence system used one recurrent network to compress a source sentence and another to unfold a translation. Reversing the source sentence helped shorten some dependency paths, but the encoder still had to squeeze the whole source through its final state. Bahdanau, Cho, and Bengio then let the decoder consult all encoder states through a learned alignment mechanism. Luong, Pham, and Manning refined that family of attention functions in 2015. Attention began as a relief valve attached to recurrence.
+The transformer arrived through machine translation, where both flaws were easy to see. Sutskever, Vinyals, and Le's 2014 sequence-to-sequence system<Cite id="sutskever-2014" /> used one recurrent network to compress a source sentence and another to unfold a translation. Reversing the source sentence helped shorten some dependency paths, but the encoder still had to squeeze the whole source through its final state. Bahdanau, Cho, and Bengio then let the decoder consult all encoder states through a learned alignment mechanism<Cite id="bahdanau-2015" />. Luong, Pham, and Manning refined that family of attention functions in 2015<Cite id="luong-2015" />. Attention began as a relief valve attached to recurrence.
 
 <BpNote>Sutskever et al. introduced neural sequence-to-sequence learning in 2014; Bahdanau et al. and Luong et al. developed the attention lineage that followed.</BpNote>
 
@@ -338,7 +350,7 @@ The residual stream explains how specialized operations cooperate. Each attentio
 
 That's the entire architecture. A GPT-class model is: embedding table → N copies of this block → one final projection back to vocabulary size. Each layer reads the residual stream, adds its two cents, and passes it up. By the top, &quot;it&quot; doesn't mean a pronoun anymore — it means *the tired animal, subject of the next clause*.
 
-The original translation transformer used both encoder and decoder stacks. GPT took the decoder side, kept causal self-attention, and trained it on one plain objective: predict the next token across large unlabeled text. GPT-1 showed in 2018 that generative pretraining could be adapted to varied language tasks. GPT-2 enlarged the model and dataset in 2019; GPT-3 enlarged them again in 2020 and demonstrated that examples written directly in the prompt could steer behavior without a gradient update.
+The original translation transformer used both encoder and decoder stacks. GPT took the decoder side, kept causal self-attention, and trained it on one plain objective: predict the next token across large unlabeled text. GPT-1 showed in 2018 that generative pretraining could be adapted to varied language tasks<Cite id="radford-2018" />. GPT-2 enlarged the model and dataset in 2019<Cite id="radford-2019" />; GPT-3 enlarged them again in 2020 and demonstrated that examples written directly in the prompt could steer behavior without a gradient update<Cite id="brown-2020" />.
 
 <BpNote>Radford et al., GPT-1 (2018) and GPT-2 (2019); Brown et al., GPT-3 (2020). The decoder-only line turned the transformer into a general text continuation engine.</BpNote>
 
@@ -366,9 +378,9 @@ Sampling settings also interact with the prompt. A low temperature can make repe
 
 Here is the uncomfortable secret of the last nine years: almost nothing in this drawing has changed since 2017. GPT-4 is the same circuit as the original transformer, with bigger matrices, more layers, and vastly more data. Parameters grow roughly as 12·N·d², and the field discovered that loss falls as a smooth, boringly reliable power law in compute. Capability was purchased, order of magnitude by order of magnitude.
 
-Kaplan and collaborators quantified that thread in 2020: over the regimes they measured, language-model loss followed power-law relationships with model size, dataset size, and compute. The curves gave teams a planning instrument. Run smaller experiments, fit the trend, and estimate what a much larger training run might buy before spending the full budget.
+Kaplan and collaborators quantified that thread in 2020<Cite id="kaplan-2020" />: over the regimes they measured, language-model loss followed power-law relationships with model size, dataset size, and compute. The curves gave teams a planning instrument. Run smaller experiments, fit the trend, and estimate what a much larger training run might buy before spending the full budget.
 
-Hoffmann and collaborators revisited the allocation in 2022 with Chinchilla. Their result was operational: many large models had too many parameters for the number of training tokens they received. Under a fixed compute budget, a smaller model trained on substantially more data could win. Scale therefore has at least three coupled dials — parameters, training tokens, and compute — and the best allocation depends on the budget and target.
+Hoffmann and collaborators revisited the allocation in 2022 with Chinchilla<Cite id="hoffmann-2022" />. Their result was operational: many large models had too many parameters for the number of training tokens they received. Under a fixed compute budget, a smaller model trained on substantially more data could win. Scale therefore has at least three coupled dials — parameters, training tokens, and compute — and the best allocation depends on the budget and target.
 
 <BpQA q="Does making a model bigger always make it better?">
 Average training loss tends to improve predictably when size, data, and compute are scaled together, within the ranges measured. A particular capability or benchmark can move unevenly, and poor data can waste an enormous run. Chinchilla's lesson was that parameter count alone is a weak description of how much useful training a model received.
@@ -416,17 +428,4 @@ Average training loss tends to improve predictably when size, data, and compute 
 
 The refinements since — RoPE, RMSNorm, SwiGLU, grouped-query attention, mixture-of-experts — are real engineering, but they are pencil revisions in the margins of this sheet, not new sheets. If you understand the drawing above, you understand the machine that is currently rewriting the economics of knowledge work. It fits on one page. It always did.
 
-<BpReferences
-  drawingCode="TDD-001"
-  items={[
-    { label: 'Sutskever, Vinyals, and Le, "Sequence to Sequence Learning with Neural Networks", NeurIPS 2014', href: 'https://arxiv.org/abs/1409.3215' },
-    { label: 'Bahdanau, Cho, and Bengio, "Neural Machine Translation by Jointly Learning to Align and Translate", ICLR 2015', href: 'https://arxiv.org/abs/1409.0473' },
-    { label: 'Luong, Pham, and Manning, "Effective Approaches to Attention-based Neural Machine Translation", EMNLP 2015', href: 'https://arxiv.org/abs/1508.04025' },
-    { label: 'Vaswani et al., "Attention Is All You Need", NeurIPS 2017', href: 'https://arxiv.org/abs/1706.03762' },
-    { label: 'Radford et al., "Improving Language Understanding by Generative Pre-Training", OpenAI 2018', href: 'https://cdn.openai.com/research-covers/language-unsupervised/language_understanding_paper.pdf' },
-    { label: 'Radford et al., "Language Models are Unsupervised Multitask Learners", OpenAI 2019', href: 'https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf' },
-    { label: 'Brown et al., "Language Models are Few-Shot Learners", NeurIPS 2020', href: 'https://arxiv.org/abs/2005.14165' },
-    { label: 'Kaplan et al., "Scaling Laws for Neural Language Models", 2020', href: 'https://arxiv.org/abs/2001.08361' },
-    { label: 'Hoffmann et al., "Training Compute-Optimal Large Language Models", NeurIPS 2022', href: 'https://arxiv.org/abs/2203.15556' },
-  ]}
-/>
+<References drawingCode="TDD-001" />

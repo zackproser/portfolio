@@ -7,12 +7,22 @@ import {
   BpFigure,
   BpEquation,
   BpQA,
-  BpReferences,
+  makeCitations,
   BpeMergeBench,
   TokenBoundaryInspector,
 } from '@/components/blueprint'
 
 export const metadata = createMetadata(rawMetadata)
+
+export const { Cite, References } = makeCitations([
+  { id: 'sennrich-2016', label: 'Sennrich, Haddow, and Birch, "Neural Machine Translation of Rare Words with Subword Units", ACL 2016', href: 'https://arxiv.org/abs/1508.07909' },
+  { id: 'radford-2019', label: 'Radford et al., "Language Models are Unsupervised Multitask Learners", OpenAI 2019', href: 'https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf' },
+  { id: 'rust-2021', label: 'Rust et al., "How Good is Your Tokenizer? On the Monolingual Performance of Multilingual Language Models", ACL-IJCNLP 2021', href: 'https://arxiv.org/abs/2012.15613' },
+  { id: 'kudo-2018-subword', label: 'Kudo, "Subword Regularization: Improving Neural Network Translation Models with Multiple Subword Candidates", ACL 2018', href: 'https://arxiv.org/abs/1804.10959' },
+  { id: 'kudo-2018-sentencepiece', label: 'Kudo and Richardson, "SentencePiece: A Simple and Language Independent Subword Tokenizer and Detokenizer for Neural Text Processing", EMNLP 2018', href: 'https://arxiv.org/abs/1808.06226' },
+  { id: 'xue-2022', label: 'Xue et al., "ByT5: Towards a Token-Free Future with Pre-trained Byte-to-Byte Models", TACL 2022', href: 'https://arxiv.org/abs/2105.13626' },
+  { id: 'clark-2022', label: 'Clark et al., "CANINE: Pre-training an Efficient Tokenization-Free Encoder for Language Representation", TACL 2022', href: 'https://arxiv.org/abs/2103.06874' },
+])
 
 <BpAnchor id="s0" num="00" label="Abstract" />
 
@@ -86,7 +96,7 @@ Training starts by expressing every corpus word as base symbols and retaining it
 
 Suppose `low`, `lower`, and `lowest` occur often. Early counts may select `l` + `o` → `lo`, then `lo` + `w` → `low`. Later merges can use `low` as one symbol. A different corpus might favor `e` + `r` first. Frequency ties also need a deterministic convention. The resulting merge order records the path taken through these choices.
 
-<BpNote>Sennrich, Haddow, and Birch adapted BPE segmentation to rare-word neural machine translation in 2016. Their method let an open vocabulary be represented through a fixed subword inventory.</BpNote>
+<BpNote>Sennrich, Haddow, and Birch adapted BPE segmentation to rare-word neural machine translation in 2016<Cite id="sennrich-2016" />. Their method let an open vocabulary be represented through a fixed subword inventory.</BpNote>
 
 <BpFigure caption="FIG. 2 — BPE TRAINING IS A FEEDBACK LOOP: COUNT PAIRS, SELECT THE MOST FREQUENT, MERGE IT THROUGH THE CORPUS, THEN COUNT AGAIN.">
   <svg viewBox="0 0 920 270">
@@ -118,7 +128,7 @@ Suppose `low`, `lower`, and `lowest` occur often. Early counts may select `l` + 
 
 WordPiece belongs to the same subword lineage but does not use raw pair frequency as its defining selection rule. The system described by Schuster and Nakajima for Japanese and Korean voice search optimized a wordpiece inventory around language-model likelihood. Later WordPiece tokenizers commonly encode with greedy longest matching, marking continuation pieces such as `##ing`.
 
-GPT-2 used a byte-level BPE variant. It maps the 256 possible bytes into visible Unicode symbols, then learns merges over that alphabet. This makes the base inventory complete for arbitrary byte strings while still allowing frequent sequences to collapse into larger tokens.
+GPT-2 used a byte-level BPE variant<Cite id="radford-2019" />. It maps the 256 possible bytes into visible Unicode symbols, then learns merges over that alphabet. This makes the base inventory complete for arbitrary byte strings while still allowing frequent sequences to collapse into larger tokens.
 
 <BpNote>GPT-2 used a vocabulary of 50,257 entries and byte-level BPE, described in Radford et al.'s 2019 report. Vocabulary sizes and preprocessing rules differ across model families.</BpNote>
 
@@ -265,7 +275,7 @@ Many APIs price input and output per token, often at different rates. The arithm
   request price = input tokens × input rate + output tokens × output rate
 </BpEquation>
 
-**Fertility** measures how many tokens a tokenizer produces per word or another comparable text unit. Lower fertility packs that language more compactly. Comparing across scripts requires care because whitespace-delimited words are not universal; parallel translations, characters, bytes, or linguistically segmented units can provide fairer denominators for a specific study.
+**Fertility** measures how many tokens a tokenizer produces per word or another comparable text unit<Cite id="rust-2021" />. Lower fertility packs that language more compactly. Comparing across scripts requires care because whitespace-delimited words are not universal; parallel translations, characters, bytes, or linguistically segmented units can provide fairer denominators for a specific study.
 
 <BpFigure caption="FIG. 8 — TOKEN FERTILITY CHANGES CONTEXT OCCUPANCY AND PRICE. BAR VALUES ARE AN ILLUSTRATIVE SCHEMATIC, NOT A MODEL BENCHMARK.">
   <svg viewBox="0 0 920 300">
@@ -319,13 +329,13 @@ These failures share a diagnostic method: inspect boundaries with the correct to
 
 BPE, WordPiece, and Unigram all seek reusable subwords, but their training and encoding rules differ. BPE builds symbols through a sequence of pair merges and replays their ranks. WordPiece vocabulary construction is associated with improving a language-model objective, then commonly uses greedy longest-match encoding. Unigram starts from a large candidate inventory, assigns piece probabilities, and repeatedly prunes candidates while preserving likely segmentations.
 
-Taku Kudo's subword regularization work showed another benefit of a probabilistic tokenizer: training can sample multiple valid segmentations instead of presenting one fixed boundary every time. The model learns that nearby segmentations express the same text. At inference, a best-scoring segmentation can remain deterministic.
+Taku Kudo's subword regularization work<Cite id="kudo-2018-subword" /> showed another benefit of a probabilistic tokenizer: training can sample multiple valid segmentations instead of presenting one fixed boundary every time. The model learns that nearby segmentations express the same text. At inference, a best-scoring segmentation can remain deterministic.
 
-SentencePiece, developed by Kudo and John Richardson, is a tokenizer toolkit rather than one segmentation algorithm. It supports BPE and Unigram models and trains directly from raw sentences. Treating whitespace as a normal symbol removes dependence on an external language-specific word splitter and supports detokenization from the emitted pieces.
+SentencePiece, developed by Kudo and John Richardson<Cite id="kudo-2018-sentencepiece" />, is a tokenizer toolkit rather than one segmentation algorithm. It supports BPE and Unigram models and trains directly from raw sentences. Treating whitespace as a normal symbol removes dependence on an external language-specific word splitter and supports detokenization from the emitted pieces.
 
-Byte-level models move the boundary down. ByT5 processes UTF-8 bytes directly and reported competitive results on a range of multilingual tasks, with particular strength under noisy inputs. The cost is longer sequences. Removing a large subword vocabulary saves parameters in the embedding and output layers, but transformer computation now spans many more positions.
+Byte-level models move the boundary down. ByT5 processes UTF-8 bytes directly<Cite id="xue-2022" /> and reported competitive results on a range of multilingual tasks, with particular strength under noisy inputs. The cost is longer sequences. Removing a large subword vocabulary saves parameters in the embedding and output layers, but transformer computation now spans many more positions.
 
-Token-free and character-level research pushes further. CANINE operates on character sequences with downsampling to control sequence length. Other designs learn segmentation inside the network or compress byte/character patches dynamically. These approaches can reduce dependence on a frozen language-specific vocabulary, while moving complexity into longer inputs, downsampling, local encoders, or learned patching.
+Token-free and character-level research pushes further. CANINE operates on character sequences with downsampling to control sequence length<Cite id="clark-2022" />. Other designs learn segmentation inside the network or compress byte/character patches dynamically. These approaches can reduce dependence on a frozen language-specific vocabulary, while moving complexity into longer inputs, downsampling, local encoders, or learned patching.
 
 There is no context-free winner. A larger subword vocabulary shortens well-represented text and enlarges token-dependent matrices. A smaller vocabulary improves base coverage and parameter efficiency while increasing sequence length. Multilingual breadth competes for entries with domain-specific compactness. Code, DNA, speech units, and ordinary prose have different frequency structures.
 
@@ -343,15 +353,4 @@ The decision belongs beside the architecture and data plan:
 
 The tokenizer is the first learned interface in the language-model circuit. It decides which strings earn one address, which must be assembled from smaller units, and how much sequence the rest of the model receives. Every later layer works within that allocation.
 
-<BpReferences
-  drawingCode="TDD-004"
-  items={[
-    { label: 'Sennrich, Haddow, and Birch, "Neural Machine Translation of Rare Words with Subword Units", ACL 2016', href: 'https://arxiv.org/abs/1508.07909' },
-    { label: 'Radford et al., "Language Models are Unsupervised Multitask Learners", OpenAI 2019', href: 'https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf' },
-    { label: 'Kudo, "Subword Regularization: Improving Neural Network Translation Models with Multiple Subword Candidates", ACL 2018', href: 'https://arxiv.org/abs/1804.10959' },
-    { label: 'Kudo and Richardson, "SentencePiece: A Simple and Language Independent Subword Tokenizer and Detokenizer for Neural Text Processing", EMNLP 2018', href: 'https://arxiv.org/abs/1808.06226' },
-    { label: 'Xue et al., "ByT5: Towards a Token-Free Future with Pre-trained Byte-to-Byte Models", TACL 2022', href: 'https://arxiv.org/abs/2105.13626' },
-    { label: 'Clark et al., "CANINE: Pre-training an Efficient Tokenization-Free Encoder for Language Representation", TACL 2022', href: 'https://arxiv.org/abs/2103.06874' },
-    { label: 'Rust et al., "How Good is Your Tokenizer? On the Monolingual Performance of Multilingual Language Models", ACL-IJCNLP 2021', href: 'https://arxiv.org/abs/2012.15613' },
-  ]}
-/>
+<References drawingCode="TDD-004" />
