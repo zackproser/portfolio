@@ -658,6 +658,51 @@
   color: var(--bp-link-hover);
   border-bottom-color: var(--bp-link-hover);
 }
+.bp-references-list li { scroll-margin-top: 96px; }
+.bp-references-list .bp-ref-back {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-left: 12px;
+  color: var(--bp-accent);
+  border-bottom: none;
+  opacity: 0.55;
+}
+.bp-references-list .bp-ref-back:hover {
+  color: var(--bp-link-hover);
+  border-bottom: none;
+  opacity: 1;
+}
+
+/* ---------- inline citation markers ---------- */
+
+.bp-cite {
+  font-family: var(--bp-mono);
+  font-size: 0.72em;
+  line-height: 0;
+  white-space: nowrap;
+  scroll-margin-top: 96px;
+}
+.bp-cite a {
+  color: var(--bp-accent);
+  text-decoration: none;
+  border-bottom: none;
+  padding: 0 1px;
+}
+.bp-cite a:hover { color: var(--bp-link-hover); }
+
+/* flash the jump target (marker → reference and back) */
+.bp-references-list li:target {
+  background: var(--bp-accent-soft);
+  outline: 2px solid var(--bp-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.bp-cite:target a {
+  background: var(--bp-accent-soft);
+  outline: 2px solid var(--bp-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
 
 /* ---------- RFI desk (appendix panel) ---------- */
 

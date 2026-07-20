@@ -63,6 +63,27 @@ function extractCitations(mdx) {
   return out
 }
 
+// Bidirectional-citation integrity. Posts using makeCitations([...]) declare
+// each source's stable id once; the body cites it with <Cite id="..." />.
+// A body cite pointing at an id the post never declared is a broken jump link
+// (and a sign of a miscopied reference) — that fails. A declared source never
+// cited inline is reported, not failed (an appendix may list further reading).
+function extractCiteIntegrity(mdx) {
+  const declared = []
+  const call = mdx.match(/makeCitations\(\s*\[([\s\S]*?)\]\s*\)/)
+  if (call) for (const m of call[1].matchAll(/\bid:\s*(['"])([^'"]+)\1/g)) declared.push(m[2])
+  const used = []
+  for (const m of mdx.matchAll(/<Cite\s+id=(['"])([^'"]+)\1\s*\/>/g)) used.push(m[2])
+  const declaredSet = new Set(declared)
+  const usedSet = new Set(used)
+  return {
+    declared,
+    used,
+    unknown: [...usedSet].filter((id) => !declaredSet.has(id)), // cited but not declared → FAIL
+    uncited: declared.filter((id) => !usedSet.has(id)), // declared but never cited → note
+  }
+}
+
 async function head(url) {
   const ctrl = new AbortController()
   const t = setTimeout(() => ctrl.abort(), 20000)
@@ -88,8 +109,11 @@ let unverified = 0
 for (const slug of slugs) {
   const mdx = fs.readFileSync(path.join(blogDir, slug, 'page.mdx'), 'utf8')
   const cites = extractCitations(mdx)
-  if (!cites.length) continue
-  console.log(`\n${slug} — ${cites.length} citation(s)`)
+  const link = extractCiteIntegrity(mdx)
+  if (!cites.length && !link.declared.length) continue
+  console.log(`\n${slug} — ${cites.length} citation(s)${link.used.length ? `, ${link.used.length} inline marker(s)` : ''}`)
+  for (const id of link.unknown) { console.log(`  FAIL   <Cite id="${id}"> has no matching source in makeCitations — broken jump link`); failures++ }
+  for (const id of link.uncited) console.log(`  note   source "${id}" is listed but never cited inline`)
   for (const { url, label } of cites) {
     let r
     try { r = await head(url) } catch (e) { console.log(`  FAIL   ${url}  (${e.name === 'AbortError' ? 'timeout' : e.message})`); failures++; continue }
