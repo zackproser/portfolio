@@ -3,6 +3,25 @@
   "author": "Zachary Proser",
   "date": "2026-07-20",
   "description": "Every agent I use — terminal, browser, phone, across Anthropic and OpenAI — started every conversation knowing nothing about me. So I built one shared memory they all plug into: a technical blueprint for a provider-agnostic personal context engine — one Postgres table, a hybrid retriever with an LLM reranker, and a scope wall enforced by the database, not by prompts.",
-  "image": "https://zackproser.b-cdn.net/images/ctx-personal-context-engine-hero.jpg",
-  "tags": ["AI", "Agents", "RAG", "Postgres", "MCP", "Cloudflare", "Applied AI", "Retrieval"]
+  "image": "https://zackproser.b-cdn.net/images/blueprint-ctx-personal-context-engine-hero.webp",
+  "tags": ["AI", "Agents", "RAG", "Postgres", "MCP", "Cloudflare", "Applied AI", "Retrieval"],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "015",
+    "subject": "PERSONAL CONTEXT",
+    "readTime": "15 MIN",
+    "eyebrow": "Applied AI · Complete working drawing",
+    "subtitle": "One Postgres table, a hybrid retriever with an LLM reranker, and a scope wall the database enforces — the shared memory every agent plugs into, whatever its shape or vendor.",
+    "rfiSuggestions": [
+      "Why enforce the scope wall in Postgres instead of app code?",
+      "How does the hybrid retriever rank results?",
+      "What is the OAuth shim for browser agents doing?"
+    ],
+    "nextDrawing": {
+      "number": "016",
+      "title": "The Eval Harness",
+      "subject": "EVALUATION",
+      "status": "planned"
+    }
+  }
 }
