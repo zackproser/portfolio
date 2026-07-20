@@ -1,0 +1,22 @@
+{
+  "title": "The Benchmark",
+  "author": "Zachary Proser",
+  "date": "2026-07-19",
+  "description": "Trace an AI benchmark score from sampled tasks through prompts, scorers, aggregation, uncertainty, contamination, and the decision it can support.",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-benchmark-hero.webp",
+  "tags": ["AI", "Evaluation", "Benchmarks", "Model Selection", "Measurement"],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "014",
+    "subject": "EVALUATION",
+    "readTime": "15 MIN",
+    "eyebrow": "Score provenance · Measurement validity · Complete working drawing",
+    "subtitle": "A leaderboard number is the output of a measurement pipeline built to support a particular decision.",
+    "rfiSuggestions": [
+      "Can I trust a leaderboard ranking?",
+      "What makes a benchmark contaminated?",
+      "How do I evaluate a model for my own use case?"
+    ],
+    "nextDrawing": { "number": "015", "title": "The Data Mixture", "subject": "TRAINING DATA", "status": "planned" }
+  }
+}

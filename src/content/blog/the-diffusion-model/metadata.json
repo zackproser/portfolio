@@ -17,6 +17,6 @@
       "Why does Stable Diffusion work in latent space?",
       "How is flow matching different from diffusion?"
     ],
-    "nextDrawing": { "number": "014", "title": "The Benchmark", "subject": "EVALUATION", "status": "planned" }
+    "nextDrawing": { "number": "014", "title": "The Benchmark", "subject": "EVALUATION", "status": "in-production" }
   }
 }

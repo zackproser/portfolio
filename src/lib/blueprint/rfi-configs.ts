@@ -38,6 +38,36 @@ ${VOICE_RULES}`
 }
 
 export const RFI_CONFIGS: Record<string, RfiConfig> = {
+  'tdd-014': {
+    drawingCode: 'TDD-014',
+    title: 'The Benchmark',
+    path: '/blog/the-benchmark',
+    drawingSummary: `§01 Pipeline — a public score is produced by a decision, target population, sampling frame, items, prompt adapter, dated model run, scorer, aggregation, uncertainty analysis, contamination audit, and reporting choice. Provenance makes every operation inspectable.
+§02 Items and prompts — a sample represents a larger task population, often imperfectly. MMLU contains 15,908 four-choice questions across 57 subjects. Prompt text, examples, choice order, tools, output parser, model version, and date are measurement variables; Brown et al.'s September 2020 five-shot GPT-3 MMLU result was 43.9% under its declared regime.
+§03 Instruments — MMLU exact-matches fixed answers; SWE-bench applies repository tests to generated patches; Chatbot Arena collects anonymous pairwise human votes and models comparative preference. They observe academic choice, executable issue resolution, and relative user preference respectively, so their scores are not interchangeable. The original SWE-bench paper dated October 2023 reported 1.96% resolved for its best evaluated model; the March 2024 Arena paper analyzed more than 240,000 votes.
+§04 Scoring and aggregation — exact match, tests, rubrics, and preference produce different item data. Micro, macro, and utility-weighted aggregates answer different population questions. Means hide severe slices, timeouts, and abstentions. The deterministic demo uses prepared values and can reorder rankings by scorer, task weights, judge noise, sample size, and a contaminated subset; it is illustrative, not a benchmark.
+§05 Uncertainty — score gaps need intervals around the real sampling unit. For independent binary items, SE(p̂)≈sqrt[p̂(1−p̂)/n], but clustered prompts, repositories, repeated runs, judges, users, and time require paired, clustered, repeated-run, or bootstrap analysis. A rank is unresolved when plausible values permit a tie or reversal.
+§06 Contamination — evaluation information can leak through training items, solutions, near duplicates, patches, tutorials, prompt tuning, scorer adaptation, or repeated leaderboard feedback. A register records source, public date, route, evidence, affected versions, risk, and action. Fresh temporal sets, paraphrases, hashes, similarity checks, and canaries provide evidence but rarely prove absence.
+§07 Goodhart — once a score drives selection, teams optimize genuine capability and score-specific shortcuts. Cost omission, best-of-many submission, judge style bias, static items, and selective reporting weaken transfer. Use fresh holdouts, rotations, full run logs, cost and latency, independent measures, transfer tests, and audits of surprising gains. The detachable Benchmark Design Pack is an A2 poster and editable worksheet.
+§08 Decision design — begin with users, task population, failure costs, permissions, quality, cost, and latency. Sample real work, stratify frequency and severity, test the complete deployed system, validate scorers, pre-register aggregation and release rules, preserve acceptance and diagnostic sets, record versions, and refresh when tasks or scorers drift. Public leaderboards screen candidates; local evidence finishes the model-selection argument.`,
+    terms: [
+      ['ITEM SAMPLING', 'Selecting evaluation units from a declared task population through a documented sampling frame and inclusion rule.'],
+      ['SCORER', 'Procedure that converts one system output into correctness, tests, rubric values, preference, cost, or another item result.'],
+      ['AGGREGATION', 'Rule that combines item and slice results into a summary statistic, including weights and exclusions.'],
+      ['CONFIDENCE INTERVAL', 'Range produced by a stated method to express sampling or measurement uncertainty around an estimate.'],
+      ['CONTAMINATION', 'Influence of evaluation information on training, development, prompting, selection, or scoring that is unavailable in intended use.'],
+      ['DATA LEAKAGE', 'Transfer of test items, solutions, duplicates, or derived information into model training or development evidence.'],
+      ["GOODHART'S LAW", 'Observation that optimization against a measure can weaken its relationship to the underlying goal.'],
+      ['PAIRWISE PREFERENCE', 'Judgment that compares two outputs on one prompt and records A, B, or a tie.'],
+      ['ELO', 'Sequential relative-rating system based on expected and observed pairwise outcomes.'],
+      ['BRADLEY–TERRY MODEL', 'Statistical model relating latent strengths to probabilities of pairwise wins.'],
+      ['SLICE', 'Declared subset of evaluation items grouped by task, user, difficulty, severity, source, or another decision-relevant attribute.'],
+      ['VALIDITY', 'Degree to which evidence supports the intended interpretation and decision for the target use.'],
+      ['RELIABILITY', 'Consistency of measurement across repeated items, runs, scorers, reviewers, or times under a declared procedure.'],
+      ['ESTIMAND', 'The exact population quantity a scoring and aggregation procedure intends to estimate.'],
+      ['SCORE PROVENANCE', 'Record connecting a published number to tasks, versions, prompts, runs, scorers, exclusions, variance, and decision.'],
+    ],
+  },
   'tdd-013': {
     drawingCode: 'TDD-013',
     title: 'The Diffusion Model',

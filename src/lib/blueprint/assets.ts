@@ -33,4 +33,9 @@ export const ASSET_REGISTRY: Record<string, BlueprintAsset> = {
     drawingCode: 'TDD-013',
     fileUrl: 'https://zackproser.b-cdn.net/plates/bp-013-generative-poster.pdf',
   },
+  'bp-014-benchmark-pack': {
+    name: 'Benchmark Design Pack',
+    drawingCode: 'TDD-014',
+    fileUrl: 'https://zackproser.b-cdn.net/plates/bp-014-benchmark-pack.pdf',
+  },
 }
