@@ -155,7 +155,7 @@ while IFS= read -r line; do
 # Only ROOT-relative internal links — markdown ](/blog/slug) or href="/blog/slug".
 # A bare /blog/ grep also matches EXTERNAL urls (e.g. https://site/blog/post),
 # which are citations, not internal links, and must not be checked here.
-done < <(grep -oE '\]\(/blog/[a-z0-9-]+|href="/blog/[a-z0-9-]+' "$MDX" 2>/dev/null | sed -E 's|.*/blog/||' | sort -u)
+done < <(grep -oE '\]\(/blog/[a-z0-9-]+|href="/blog/[a-z0-9-]+|href=\{"/blog/[a-z0-9-]+' "$MDX" 2>/dev/null | sed -E 's|.*/blog/||' | sort -u)
 if [[ ${#LINKS[@]} -gt 0 ]]; then
   for L in "${LINKS[@]}"; do
     [[ "$L" == "$SLUG" ]] && continue
