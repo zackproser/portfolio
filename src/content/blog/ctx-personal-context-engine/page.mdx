@@ -1,0 +1,262 @@
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import Mermaid from '@/components/Mermaid'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+export const campaign = "ctx-personal-context-engine"
+
+# ctx: The Personal Context Engine Every One of My Agents Shares
+
+<Image src="/images/ctx-personal-context-engine-hero.jpg" alt="Pixel art on a warm parchment background: a glowing central vault of memory cards, with a fleet of small worker bots — Claude Code, a phone, a browser, calendar and ticket bots — all drawing a single beam of context from it, and a tall wall down the middle separating a personal side from a work side" width={1200} height={675} />
+
+I use a lot of agents, and they keep changing shape. Claude Code in my terminal. Claude in the browser. Codex from OpenAI. pi. An agent on my phone. New ones show up every few weeks, in a new form factor, from a new provider. And every single one starts every conversation the same way: knowing nothing about me. So I re-explain. Who my clients are, how I like commits written, what's due this week, which repo is which, what I decided last month and why. The same context, typed again, into a different box, forever.
+
+The thing that finally made me stop and build was noticing that the context never changes — only the wrapper does. Whether I'm in a terminal or a browser tab or a phone app, whether the model behind it is Anthropic's or OpenAI's, the facts about my life and work are identical. The agent is a stranger every time not because the information is hard, but because it lives in my head and in a dozen silos, and none of the silos talk to each other or to each other's vendors.
+
+Because the per-tool memory features are silos, by design. Claude Code has its `CLAUDE.md`. Cursor has its rules file. Each chat product has its own memory feature, scoped to that product and that company. A fact I teach one is invisible to all the others, and it rots independently in each place. The form factors multiply and the providers multiply, and every combination is another island I have to re-provision by hand. I was maintaining the same context in a dozen places and still starting cold in every one.
+
+So I built the memory as its own thing, outside any single tool or vendor, and let all of them plug into it. It's called ctx. It's a single Postgres table behind a private [MCP](https://modelcontextprotocol.io) server at `ctx.zackproser.com`, reachable over open protocols — MCP for the agents that speak it, plain REST for the ones that don't, OAuth for the browser. Any agent, any form factor, any provider — mine or a brand-new one I spin up tomorrow — connects with one line and immediately knows my current context. It is deliberately nobody's product. That's the point: the memory outlives whichever tool is in fashion this quarter. This post is the blueprint: the schema, the retriever, the security wall, and the specific failures that shaped all three. I built the whole thing in a day, but the day had structure, and the structure is the interesting part.
+
+## The shape of the problem
+
+Finding information about your own life is the same problem as finding information inside a company: it's scattered across tools that are each excellent at their one job and terrible at sharing. My todos live in Obsidian. My tickets live in Linear — two accounts, personal and work. My meetings live in cal.com and Granola. Decisions and preferences live in my head and in chat transcripts that evaporate. Nobody is going to consolidate all of that into one app, and they shouldn't; the tools are good because they're specialized.
+
+The Cerebras team [wrote up how they built their internal knowledge base](https://www.cerebras.ai/blog/how-we-built-our-knowledge-base) around exactly this insight — meet the data where it lives, land everything in one embeddings table, and expose dumb-fast retrieval primitives that the calling agent orchestrates. Their corpus is millions of documents across a company. Mine is a few thousand items for one person. I stole the ideas that survive the scale-down and threw out the ones that don't.
+
+Before I let Claude write a single line of code, I made it get the design straight. I ran the whole thing through [Nick Nisi's ideation plugin](https://github.com/nicknisi/ideation) — an evidence-gated interview that turns a brain dump into a contract and then into implementation specs, with adversarial plan critics stress-testing it along the way. The interview forced me to answer the questions I'd otherwise have discovered halfway through the build: what's owned versus mirrored, where the scope wall lives, what "done" actually means. Four plan critics — scope-creep, over-engineering, hidden-dependency, success-criteria — then attacked the contract before it became specs. Only once the specs were approved did any code get written. That front-loading is why a day was enough.
+
+<Mermaid chart={`
+flowchart LR
+  subgraph Sources
+    O["Obsidian vault"]
+    L["Linear x2"]
+    C["cal.com"]
+    S["chat / agent sessions"]
+  end
+  subgraph ctx["ctx.zackproser.com"]
+    T["one items table<br/>Postgres + pgvector"]
+  end
+  subgraph Readers
+    CC["Claude Code"]
+    PI["pi / Codex"]
+    W["claude.ai (browser)"]
+    PH["iPhone"]
+    EV["eve bots"]
+  end
+  O --> T
+  L --> T
+  C --> T
+  S --> T
+  T --> CC
+  T --> PI
+  T --> W
+  T --> PH
+  T --> EV
+`} />
+
+The north star was never corpus size or feature count. It was this: the right five items in the agent's context within 300 milliseconds, with a hard second constraint that some of my most private context — legal, financial, family — can never leak into a work-context surface. Retrieval accuracy is the goal. The wall is the thing I refuse to get wrong.
+
+## One table, one interface
+
+At the center is a single Postgres table. Every source — an Obsidian note, a Linear ticket, a calendar event, a distilled fact from a chat — lands in it with the same shape. Anything in the table is retrievable through the same query. New sources are just new writers. That deliberate sameness is what keeps the system small enough for one person to hold in their head.
+
+```sql
+create table items (
+  id            uuid primary key default gen_random_uuid(),
+  scope         text not null check (scope in ('personal','work','shared')),
+  origin        text not null check (origin in ('mirror','memory')),
+  kind          text not null check (kind in
+                  ('fact','preference','decision','project','task',
+                   'episode','person','reference','event')),
+  title         text not null,
+  body          text not null,
+  entities      text[] not null default '{}',
+  source        text not null,
+  external_key  text,               -- '<source>:<id>#<fragment>' for mirrored rows
+  content_hash  text not null,      -- exact-dedup + change detection
+  status        text not null default 'active'
+                  check (status in ('active','superseded','deleted')),
+  observed_at   timestamptz not null default now(),
+  event_at      timestamptz,
+  due_at        timestamptz,
+  task_state    text check (task_state in ('open','done','cancelled')),
+  embedding     vector(1536),
+  fts           tsvector generated always as
+                  (to_tsvector('english', title || ' ' || body)) stored,
+  pinned        boolean not null default false,
+  supersedes    uuid references items(id)
+  -- (abridged; the real table carries version columns and sync bookkeeping)
+);
+```
+
+Two fields carry most of the weight. `origin` splits the world into **mirrors** and **memories**. A mirror is a re-derivable copy of something that lives authoritatively elsewhere — a Linear ticket, an Obsidian note — and mirrors are always safe to wipe and re-sync. A memory is knowledge the engine actually owns: a preference, a decision, a lesson from a session, something with no other home. Mirrors get updated by their connector; memories get corrected by supersession. Never confusing the two is what keeps the corpus honest.
+
+`status` is the single source of truth for whether a row is live. This sounds trivial. It is not, and it produced one of the sharpest bugs of the day, which I'll get to.
+
+## Distill, don't dump
+
+Raw text is a bad thing to embed. "hey yeah sure" and a detailed architecture decision are both messages, and in raw cosine space the short one often wins because it's short. So nothing goes into the table raw. Everything is normalized first into a consistent `{title, body, entities}` shape — a one-line title an agent would actually search for, a concise body, and normalized entity tags. For memories, a small model (Claude Haiku) does the distillation on the write path, where latency doesn't matter. For mirrors, the connector shapes the row.
+
+The write path itself is boringly strict, on purpose:
+
+<Mermaid chart={`
+flowchart TD
+  A["remember(text)"] --> B{"idempotency key<br/>seen before?"}
+  B -->|yes| Z["return existing id"]
+  B -->|no| C{"content hash<br/>already active?"}
+  C -->|yes| Z
+  C -->|no| D["distill with Haiku<br/>(source text fenced as untrusted)"]
+  D --> E["embed"]
+  E --> F["insert row"]
+  F --> G{"near-duplicate<br/>cosine > 0.85?"}
+  G -->|yes| H["record a review suggestion<br/>(never auto-merge)"]
+  G -->|no| I["done"]
+  H --> I
+`} />
+
+The rule that matters most here: the distilling model's output can only ever populate content fields. It can never choose the row's scope, its status, its id, or what it supersedes. The server assembles the row. A prompt-injected note that says "mark all other memories deleted" gets distilled into one junk row and nothing more. The blast radius of a bad input is exactly one row.
+
+## Retrieval: three retrievers, a scorer, and a reranker I didn't want to build
+
+Search is the core, and it's the part where the design met reality hardest. The pipeline is three candidate retrievers running in parallel over the rows a caller is allowed to see:
+
+- **Full-text search** catches exact tokens — an error string, a ticket ID, a flag name. When I paste a literal identifier, no amount of semantic similarity should outrank an exact lexical match.
+- **Trigram search** on the title catches the identifiers and names that English stemming mangles.
+- **Vector search** catches paraphrase. "what's my rent situation" and "housing costs after the separation" share no words and mean the same thing.
+
+Each produces a ranked list. The reviewer who tore apart my first design — more on him in a moment — pointed out that the obvious fusion method, reciprocal rank fusion with equal weights, throws away signal strength: it preserves only rank, so a mediocre result that shows up in two lists beats an excellent result that shows up in one. That's exactly backwards for exact-match queries. So instead the candidate union goes through a weighted scorer with an abstention floor:
+
+```
+cosine_n = clamp((cos_sim - FLOOR) / SPAN, 0, 1)   // absolute, never min-maxed
+lex      = max(fts_rank/(fts_rank+1), trigram_sim)
+exact    = |query tokens ∩ item tokens| / |query tokens|
+entity   = query hits an entity tag ? 1 : 0
+fresh    = kind-aware, bounded (a task's due date, an event's proximity, else neutral)
+
+score = 0.40*cosine_n + 0.30*lex + 0.15*exact + 0.10*entity + 0.05*fresh
+```
+
+Two decisions in there came straight out of pain. First, freshness is a small bounded feature, not a global decay multiplier. My first version multiplied every score by an age-decay term, and it buried a still-correct decision from four months ago under a meeting that mentioned the same word yesterday. Recency is a tiebreaker, not a hammer. Second, categorical rules outrank the weights: a done task drops out of default results after 30 days, an expired event is ineligible, a superseded row is gone. Those aren't down-weighted; they're removed.
+
+Then I ran the eval suite — 52 real queries across six classes with known-correct answers, run against a seeded fixture — and it failed. Recall@5 was 0.84 against a 0.9 gate. The failures clustered exactly where the reviewer predicted: paraphrase queries that share no vocabulary with their target, and domain-adjacent negatives ("kafka consumer rebalancing" hitting my infra notes) that should return nothing. Those two populations overlap in score space. No single threshold separates "true paraphrase match" from "same topic, wrong answer."
+
+The design had already named the escape hatch: if linear-scorer tuning stalls, add a reranker over the top 20 — *and not before*. Tuning had stalled. So I added it. A Haiku pass takes the query and the top candidates and returns the ids that genuinely answer it, ranked, with an empty list as a valid answer. That last part is what makes negative queries abstain instead of returning the least-bad garbage. On any failure — timeout, bad output, provider hiccup — it falls back to the weighted order. Availability beats precision.
+
+<Mermaid chart={`
+flowchart LR
+  Q["query"] --> F["full-text top 30"]
+  Q --> T["trigram top 15"]
+  Q --> V["vector top 30"]
+  F --> U["union ~50"]
+  T --> U
+  V --> U
+  U --> S["weighted scorer<br/>+ categorical rules"]
+  S --> R["Haiku reranker<br/>(top 20; [] is valid)"]
+  R --> O["top k"]
+  S -.->|reranker unavailable| O
+`} />
+
+Recall@5 went to 0.955 and every negative query came back clean. The reranker is the one place an LLM sits in the read path, and I resisted it until the evidence forced it. That restraint is the whole point: the design predicted the exact failure and pre-authorized the exact fix, so when the eval failed I wasn't improvising, I was executing a plan.
+
+## The wall: enforced by the database, not by prompts
+
+Here's the part I refuse to get wrong. ctx holds my most private context. It also has to be reachable from work-context surfaces — a Claude Code session on my work laptop, an agent drafting in a work Slack. Those surfaces must be *structurally incapable* of reading personal data. Not "instructed not to." Incapable.
+
+<Image src="/images/ctx-scope-wall.jpg" alt="Pixel art: on the left, a warm glowing vault full of personal memory cards including heart cards; a solid wall and a shield barrier separate it from a small robot on the right wearing a work hard-hat, who reaches toward the vault but cannot pass the barrier" width={1280} height={719} />
+
+The temptation is to enforce this in application code: wrap every query with a `where scope = ...` clause derived from the caller's token. That is not a security boundary. It's a boundary until the one forgotten `where` clause in the one new endpoint, and then it's a breach. The reviewer's first critical finding was exactly this, and he was right.
+
+So the wall lives in Postgres. Two database roles — `ctx_personal` and `ctx_work` — behind two separate connection credentials. `FORCE ROW LEVEL SECURITY` on every table. Row-level policies with `WITH CHECK` on every verb. Column-level revokes so a serving role can't rewrite a row's scope even if it wanted to.
+
+```sql
+alter table items enable row level security;
+alter table items force row level security;
+
+create policy work_select on items for select to ctx_work
+  using (scope in ('work','shared') and status = 'active');
+create policy work_insert on items for insert to ctx_work
+  with check (scope = 'work');
+
+create policy personal_select on items for select to ctx_personal
+  using (scope in ('personal','shared') and status = 'active');
+```
+
+The work request path physically cannot acquire a personal-role connection, because the credential is chosen once, at authentication, from the token — there is no `SET ROLE` anywhere in the serving code. A forgotten `where` clause in any endpoint, any background job, any future admin script still returns nothing it shouldn't, because the database itself refuses.
+
+And this is not asserted, it's tested. A canary suite plants distinctive personal marker rows, then probes the deployed server under a real work-role token across every read path — search, briefing, recent, every MCP tool — and asserts the leak count is exactly zero. Green canaries are the precondition for ever minting a work token. Today, they're the reason ctx runs personal-scope only: work data doesn't enter until the full sensitivity screen ships behind those same canaries. The wall exists before the thing it protects.
+
+## The failures that shaped it
+
+I want to be specific about what broke, because the bugs are more instructive than the design.
+
+**The database defended itself against me.** Soft-deleting an item — flipping `status` to `deleted` — failed with a row-level-security violation. The reason is beautiful in hindsight: the `deleted` row is invisible to the select policy, so Postgres rejects the `UPDATE` because the *new* row would violate the policy. The very invisibility I wanted made the write illegal. The fix was to route status transitions through a `SECURITY DEFINER` function that runs as an admin role — the wall forcing me to make the privileged operation explicit instead of accidental. Exactly the property you want from a security boundary: it makes the dangerous thing hard on purpose.
+
+**The eval fixture poisoned production.** The first briefing I pulled looked great and was completely wrong. It confidently listed tasks I'd never written — "rotate the R2 keys," a demo that didn't exist — blended right in with my real calendar. The 126-item *test* corpus had been seeded into my *production* personal scope and blended in. I purged it, then made the eval runner tear down its own fixture after every run. A test that pollutes the system it measures is worse than no test.
+
+**Task extraction found 3,000 todos I didn't have.** My Obsidian vault has checkboxes everywhere — study plans, journals, meeting notes from years ago. My first ingester treated every checkbox as a todo. The fix was to scope extraction to the notes that are actually todo lists, and — the detail that made it click — to parse my filename convention. My daily notes are named `month-day-year`, and that date is the single best signal for what I was worried about on a given day. So an unchecked box in `7-17-2026.md` carries July 17 as its rank, and the briefing now puts my vault's most recent unchecked worries *above* even Linear. The thing I scribble in a dated note at 6am reflects what's actually on my mind better than any ticket system does.
+
+None of these were design flaws in the abstract. They were the specific, physical ways a clean design meets a real vault, a real database, and a real day.
+
+## Bootstrapping a new agent
+
+The whole promise is that a new agent connects in one step. For most form factors it genuinely is one line. An MCP-speaking terminal agent — Claude Code, pi — gets pointed at the server with a bearer token:
+
+```bash
+claude mcp add --transport http ctx https://ctx.zackproser.com/mcp \
+  --header "Authorization: Bearer <token>"
+```
+
+A REST client — Codex, a bot, a shell script — sends the same token as a header to `/api/search` or `/api/remember`. That's the entire onboarding: a token scoped to what that surface should do (read, write, both), revocable on its own, and the standing instruction block pasted into the agent's prompt so it knows to call `briefing` at the start and `remember` when it learns something. New provider, new tool, same two lines.
+
+The browser is where that breaks, and it taught me the most about how the ecosystem actually works. Custom connectors in the browser don't accept a bearer token or an API key the way my terminal agents do — the client mandates a full OAuth handshake, and it runs that handshake whether you configure auth or not. There is no "just use a header" path. My token-in-a-header and token-in-the-URL tricks both bounced off the same wall.
+
+<Image src="/images/ctx-claude-ai-connector.png" alt="The ctx connector in the claude.ai Connectors settings, connected at https://ctx.zackproser.com/mcp, showing its six tool permissions: Briefing, Correct, Forget, Recent, Remember, and Search, each set to require approval" width={1960} height={1489} />
+
+So I built a minimal OAuth 2.1 shim, and it is itself a bootstrap sequence — the automatic negotiation a browser agent runs to go from "I know a URL" to "I hold a scoped token," with exactly one human step in the middle. Here is the whole handshake:
+
+<Mermaid chart={`
+sequenceDiagram
+  participant A as Browser agent
+  participant C as ctx server
+  participant Z as Me (browser)
+  A->>C: POST /mcp (no token)
+  C-->>A: 401 + WWW-Authenticate: resource_metadata=…
+  A->>C: GET /.well-known/oauth-protected-resource
+  C-->>A: authorization server = ctx
+  A->>C: GET /.well-known/oauth-authorization-server
+  C-->>A: endpoints + PKCE (S256) required
+  A->>C: POST /oauth/register (redirect_uris)
+  C-->>A: client_id (redirect locked to Anthropic hosts)
+  A->>Z: open /oauth/authorize?client_id&code_challenge…
+  Z->>C: paste an existing ctx token, submit
+  C->>C: validate token, mint a FRESH scoped token
+  C-->>Z: 302 back to redirect_uri with one-time code
+  Z-->>A: code
+  A->>C: POST /oauth/token (code + PKCE verifier)
+  C-->>A: access_token (the fresh token)
+  A->>C: POST /mcp with Bearer access_token
+  C-->>A: tools available
+`} />
+
+Walk it top to bottom. The agent hits the server cold and gets a `401` whose `WWW-Authenticate` header points at the discovery document — that header is what tells an OAuth-capable client "start here." It reads the two well-known documents to learn where to register and that PKCE is mandatory. It registers itself, and the server hands back a `client_id` but only after checking the redirect URIs are Anthropic-hosted — a stranger can't register a callback that points at their own server. Then the one human step: the agent opens the authorize page in my browser, and I paste an existing ctx token. That token isn't sent onward — it only *proves* I'm authorized, in my browser, out of band from the agent. On success the server mints a **fresh, independently revocable** token, binds it to a one-time code, and redirects back. The agent exchanges that code — with the PKCE verifier that proves it's the same client that started the flow — for the real token, and only then can it call the tools.
+
+The property that matters: the secret is entered in *my* browser and never handed to the agent to relay, the token the agent ends up with is new and scoped and revocable on its own, and the redirect allowlist plus PKCE mean nobody can hijack the flow midway. The shim wraps the bearer model; it doesn't weaken it. Same wall, new front door — and the front door negotiates itself.
+
+## Three rounds with a hostile reviewer
+
+The single best decision of the whole build was refusing to trust my own design. Before writing a line of code, I ran the design document through three rounds of adversarial review with a separate frontier model — GPT-5.6 — with one instruction: attack this, find what fails in practice, no praise.
+
+It earned its keep immediately. Round one killed prompt-level scope enforcement in favor of database RLS, killed cosine-threshold auto-merge as a "data-poisoning machine" (two contradictory facts embed almost identically — auto-merging them silently destroys history), and killed the equal-weight rank fusion. Round two caught that my sensitivity screen's own diversion logic violated the RLS I'd just added, and that the whole thing wasn't actually buildable in a day as specced — forcing the honest phasing that made a one-day ship real. Round three caught invalid SQL and an unhardened function before they ever ran.
+
+Every finding is in the repository's design doc with its resolution. The pattern generalizes past this project: **the cheapest bug to fix is the one an adversary finds in your plan before you've written the code.** A design review by something that doesn't want to be nice to you is worth more than a week of your own careful thought, because you are constitutionally unable to attack your own ideas as hard as a stranger will.
+
+## What it cost and what it's worth
+
+The stack is deliberately boring: a Cloudflare Worker, Neon Postgres with pgvector, OpenAI embeddings, Claude Haiku for distillation and reranking, GitHub Actions for encrypted nightly backups, Healthchecks for dead-man's switches. Nothing exotic, everything managed, all of it chosen so the system survives two years of me not touching it. The most complex thing in the build is the discipline, not the infrastructure.
+
+What it's worth is simple to state. Every agent I use now starts warm, no matter its shape or its vendor. A fresh Claude Code session in an empty directory, given nothing but the connection URL, can tell me what's on my plate this week — my dated worries from the vault, my open tickets, my calendar — before I've typed a second sentence. So can Claude in a browser tab, through the OAuth flow. So can Codex over REST. The same memory, the same answer, whichever door I walk in through.
+
+<Image src="/images/ctx-briefing-workos.png" alt="A chat asking 'What's the latest on my plate via ctx?' The reply, titled 'What's on your plate', is organized into Today, Rest of the week, and Open backlog — pulling WorkOS applied-AI work from the vault and tickets: blog bot fixes, social bot testing and campaign wiring, and the Eve-bot authoring pipeline" width={1120} height={1076} /> I stopped being the integration layer between my tools. The context lives in one place, the agents draw from it, and the wall makes sure the private half stays private no matter which agent is asking.
+
+The agents will keep changing. New form factors, new providers, new tools I haven't heard of yet — that churn is the one thing I'm certain of. What I don't want to keep re-doing is teaching each new one who I am from scratch. So the memory doesn't live inside any of them. It lives in one place they all reach, over open protocols, behind a wall the database enforces. The tools are interchangeable now. The context isn't, and it finally stopped being trapped in whichever one I happened to open.
