@@ -7,13 +7,23 @@ import {
   BpFigure,
   BpEquation,
   BpQA,
-  BpReferences,
+  makeCitations,
   BpDetachablePlate,
   RequestSchedulerDemo,
   KvLedgerDemo,
 } from '@/components/blueprint'
 
 export const metadata = createMetadata(rawMetadata)
+
+export const { Cite, References } = makeCitations([
+  { id: 'agrawal-2023-sarathi', label: 'Agrawal et al., “SARATHI: Efficient LLM Inference by Piggybacking Decodes with Chunked Prefills,” 2023', href: 'https://arxiv.org/abs/2308.16369' },
+  { id: 'zhong-2024-distserve', label: 'Zhong et al., “DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving,” OSDI 2024', href: 'https://arxiv.org/abs/2401.09670' },
+  { id: 'ainslie-2023-gqa', label: 'Ainslie et al., “GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints,” EMNLP 2023', href: 'https://arxiv.org/abs/2305.13245' },
+  { id: 'kwon-2023-pagedattention', label: 'Kwon et al., “Efficient Memory Management for Large Language Model Serving with PagedAttention,” SOSP 2023', href: 'https://arxiv.org/abs/2309.06180' },
+  { id: 'yu-2022-orca', label: 'Yu et al., “Orca: A Distributed Serving System for Transformer-Based Generative Models,” OSDI 2022', href: 'https://www.usenix.org/conference/osdi22/presentation/yu' },
+  { id: 'dao-2022-flashattention', label: 'Dao et al., “FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness,” NeurIPS 2022', href: 'https://arxiv.org/abs/2205.14135' },
+  { id: 'xiao-2023-smoothquant', label: 'Xiao et al., “SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models,” ICML 2023', href: 'https://arxiv.org/abs/2211.10438' },
+])
 
 <BpAnchor id="s0" num="00" label="Abstract" />
 
@@ -92,7 +102,7 @@ The weight file may fit while the complete runtime does not. Kernel workspaces, 
   </svg>
 </BpFigure>
 
-The distinction predicts interference. A long prefill admitted whole may occupy the runner long enough to widen decode gaps for sequences already streaming. Chunked prefill divides that prompt into bounded token work so decode iterations can run between chunks. SARATHI formalized this piggybacking approach; DistServe later treated prefill and decode as separable phases that can be provisioned around different latency objectives.
+The distinction predicts interference. A long prefill admitted whole may occupy the runner long enough to widen decode gaps for sequences already streaming. Chunked prefill divides that prompt into bounded token work so decode iterations can run between chunks. SARATHI<Cite id="agrawal-2023-sarathi" /> formalized this piggybacking approach; DistServe<Cite id="zhong-2024-distserve" /> later treated prefill and decode as separable phases that can be provisioned around different latency objectives.
 
 Token throughput needs two counters because input and output tokens represent different shapes. A prefill-heavy service may report a large total-token rate while generating few streamed tokens. A decode-heavy service may spend most of its time rereading weights and growing KV for small one-token batches. Report input tokens/s and output tokens/s separately, alongside request lengths. End-to-end latency also scales with requested output: approximately TTFT plus the sum of later ITLs, so comparing requests with different completion lengths without bucketing them mixes workload with system behavior.
 
@@ -124,7 +134,7 @@ The safety line is deliberate capacity, not unidentified waste. It absorbs measu
 
 <KvLedgerDemo fig={3} />
 
-Grouped-query attention lowers **H**<sub>kv</sub> below the query-head count, which is why the cache formula needs KV heads rather than total attention heads. The GQA paper describes converting multi-head checkpoints to fewer KV heads. The model configuration, not its marketing size, supplies the ledger inputs.
+Grouped-query attention lowers **H**<sub>kv</sub> below the query-head count, which is why the cache formula needs KV heads rather than total attention heads. The GQA paper<Cite id="ainslie-2023-gqa" /> describes converting multi-head checkpoints to fewer KV heads. The model configuration, not its marketing size, supplies the ledger inputs.
 
 <BpQA q="How many concurrent 4,096-token requests fit in the worked 40 GiB device?">
 The memory-only ceiling is floor((40 − 13.04 − 3.00 − 4.00) GiB ÷ 0.50 GiB/request) = 39 requests. That does not promise acceptable latency or 39 simultaneous compute slots. It says the declared memory categories leave room for 39 equal-size KV allocations under these assumptions.
@@ -134,7 +144,7 @@ The memory-only ceiling is floor((40 − 13.04 − 3.00 − 4.00) GiB ÷ 0.50 Gi
 
 A naïve allocator reserves one contiguous region for a request’s maximum sequence. If the output ends early, the unused tail becomes internal waste. If many differently sized regions are allocated and freed, total free memory can be large while no single contiguous hole satisfies the next request. Copying a cache to grow it adds traffic precisely when the engine is busy.
 
-PagedAttention applies an operating-system idea to KV storage. A request’s logical cache is divided into fixed-size token blocks. Its block table maps logical block numbers to non-contiguous physical blocks. The next token fills the current block or allocates another; completion returns those blocks to a shared pool. Only the last block can contain ordinary rounding waste. The vLLM paper also describes copy-on-write sharing for common prompt state and parallel sampling.
+PagedAttention<Cite id="kwon-2023-pagedattention" /> applies an operating-system idea to KV storage. A request’s logical cache is divided into fixed-size token blocks. Its block table maps logical block numbers to non-contiguous physical blocks. The next token fills the current block or allocates another; completion returns those blocks to a shared pool. Only the last block can contain ordinary rounding waste. The vLLM paper also describes copy-on-write sharing for common prompt state and parallel sampling.
 
 <BpFigure caption="FIG. 4 — CONTIGUOUS RESERVATION STRANDS UNUSED TAILS AND HOLES. PAGING MAPS EACH LOGICAL SEQUENCE TO FIXED PHYSICAL KV BLOCKS; ONLY ITS LAST BLOCK NEEDS PARTIAL OCCUPANCY.">
   <svg viewBox="0 0 920 390">
@@ -161,7 +171,7 @@ Paging improves allocation efficiency; it does not reduce the logical KV bytes r
 
 Static batching fixes a group of requests for a larger span of work. Padding makes short prompts pay for a long prompt’s shape, and a short generation can leave its slot idle until longer peers finish. New arrivals wait for the batch boundary. This policy is simple and can work for homogeneous offline jobs, but interactive traffic rarely arrives or ends in lockstep.
 
-Continuous batching revisits membership at iteration boundaries. Finished sequences leave; admitted sequences join when token and memory budgets permit. Orca called the underlying move **iteration-level scheduling** and paired it with selective batching. Paged KV allocation makes changing membership practical because each request carries a block table rather than a fixed rectangular cache slab.
+Continuous batching revisits membership at iteration boundaries. Finished sequences leave; admitted sequences join when token and memory budgets permit. Orca<Cite id="yu-2022-orca" /> called the underlying move **iteration-level scheduling** and paired it with selective batching. Paged KV allocation makes changing membership practical because each request carries a block table rather than a fixed rectangular cache slab.
 
 The scheduler still chooses whose latency to spend. First-come, first-served is predictable until long prompts block the line. Prioritizing prefills can lower new-request TTFT while stretching ITL for active decodes. Prioritizing decodes preserves streaming cadence while queues age. Chunking prefills caps interference. Tenant weights, deadlines, maximum batched tokens, preemption cost, and replica routing all change the trace.
 
@@ -191,7 +201,7 @@ A small class of long prompts, burst arrivals, allocator retries, preempted sequ
 
 <BpSection id="s6" num="06" label="Kernels + bits" sheet="SHEET 6 OF 8" title="IO-aware attention and quantization attack different costs" />
 
-Standard attention materializes or repeatedly moves intermediates between high-bandwidth memory and faster on-chip memory. FlashAttention tiles queries, keys, and values, computes attention blocks on chip, and maintains the softmax statistics needed to combine tiles exactly. The result changes memory traffic and temporary storage without approximating dense attention. IO-awareness matters because fewer floating-point operations do not guarantee less wall-clock time when data movement is the limiting resource.
+Standard attention materializes or repeatedly moves intermediates between high-bandwidth memory and faster on-chip memory. FlashAttention<Cite id="dao-2022-flashattention" /> tiles queries, keys, and values, computes attention blocks on chip, and maintains the softmax statistics needed to combine tiles exactly. The result changes memory traffic and temporary storage without approximating dense attention. IO-awareness matters because fewer floating-point operations do not guarantee less wall-clock time when data movement is the limiting resource.
 
 <BpFigure caption="FIG. 6 — FLASHATTENTION TILES ATTENTION SO Q, K, AND V BLOCKS ARE REUSED IN FAST ON-CHIP MEMORY WHILE SOFTMAX STATISTICS ARE ACCUMULATED; THE FULL SCORE MATRIX NEED NOT BE WRITTEN TO HBM.">
   <svg viewBox="0 0 920 340">
@@ -203,7 +213,7 @@ Standard attention materializes or repeatedly moves intermediates between high-b
 
 Quantization changes representation. Lower-bit weights reduce stored bytes and memory traffic; lower-bit activations can enable different matrix kernels; lower-bit KV reduces the per-token cache line. These are three decisions with different calibration, kernel, and quality consequences. A nominal four-bit weight file may still dequantize into higher precision for unsupported operations, carry scales and outliers, or use kernels that underperform at small batches.
 
-SmoothQuant targets activation outliers that make W8A8 post-training quantization difficult. For a channel-wise scale **s**, the transformation divides activation channel **X** by **s** and multiplies the matching weight channel by **s**. Their matrix product is mathematically unchanged before quantization; the difficulty moves from activations toward weights, which are easier to calibrate under the method’s assumptions. The quantized computation can still introduce error.
+SmoothQuant<Cite id="xiao-2023-smoothquant" /> targets activation outliers that make W8A8 post-training quantization difficult. For a channel-wise scale **s**, the transformation divides activation channel **X** by **s** and multiplies the matching weight channel by **s**. Their matrix product is mathematically unchanged before quantization; the difficulty moves from activations toward weights, which are easier to calibrate under the method’s assumptions. The quantized computation can still introduce error.
 
 <BpEquation tag="EQ. 6.1">
   (**X** diag(**s**)<sup>−1</sup>)(diag(**s**) **W**) = **XW** &nbsp; [same real-valued product before rounding]
@@ -266,15 +276,4 @@ Portability has limits. An engine configuration couples model architecture, quan
 Compare the exact model and revision, supported precision, maximum input/output tokens, isolation, cold-start behavior, streaming semantics, cancellation, observability, measured TTFT/ITL under your traffic, failure policy, data handling, and total operating ownership. A vendor throughput row without those fields cannot support the decision.
 </BpQA>
 
-<BpReferences
-  drawingCode="TDD-011"
-  items={[
-    { label: 'Kwon et al., “Efficient Memory Management for Large Language Model Serving with PagedAttention,” SOSP 2023', href: 'https://arxiv.org/abs/2309.06180' },
-    { label: 'Dao et al., “FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness,” NeurIPS 2022', href: 'https://arxiv.org/abs/2205.14135' },
-    { label: 'Xiao et al., “SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models,” ICML 2023', href: 'https://arxiv.org/abs/2211.10438' },
-    { label: 'Yu et al., “Orca: A Distributed Serving System for Transformer-Based Generative Models,” OSDI 2022', href: 'https://www.usenix.org/conference/osdi22/presentation/yu' },
-    { label: 'Agrawal et al., “SARATHI: Efficient LLM Inference by Piggybacking Decodes with Chunked Prefills,” 2023', href: 'https://arxiv.org/abs/2308.16369' },
-    { label: 'Zhong et al., “DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving,” OSDI 2024', href: 'https://arxiv.org/abs/2401.09670' },
-    { label: 'Ainslie et al., “GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints,” EMNLP 2023', href: 'https://arxiv.org/abs/2305.13245' },
-  ]}
-/>
+<References drawingCode="TDD-011" />

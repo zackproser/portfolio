@@ -1,8 +1,19 @@
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json'
-import { BpSection, BpAnchor, BpNote, BpFigure, BpEquation, BpQA, BpReferences, BpDetachablePlate, NoiseReverseDemo } from '@/components/blueprint'
+import { BpSection, BpAnchor, BpNote, BpFigure, BpEquation, BpQA, makeCitations, BpDetachablePlate, NoiseReverseDemo } from '@/components/blueprint'
 
 export const metadata = createMetadata(rawMetadata)
+
+export const { Cite, References } = makeCitations([
+  { id: 'ho-2020-ddpm', label: 'Ho, Jain, and Abbeel, “Denoising Diffusion Probabilistic Models,” arXiv:2006.11239v2, 2020', href: 'https://arxiv.org/abs/2006.11239' },
+  { id: 'song-2021-sde', label: 'Song et al., “Score-Based Generative Modeling through Stochastic Differential Equations,” arXiv:2011.13456v2, 2021', href: 'https://arxiv.org/abs/2011.13456' },
+  { id: 'nichol-2021-improved', label: 'Nichol and Dhariwal, “Improved Denoising Diffusion Probabilistic Models,” arXiv:2102.09672, 2021', href: 'https://arxiv.org/abs/2102.09672' },
+  { id: 'ho-2022-cfg', label: 'Ho and Salimans, “Classifier-Free Diffusion Guidance,” arXiv:2207.12598, 2022', href: 'https://arxiv.org/abs/2207.12598' },
+  { id: 'rombach-2022-ldm', label: 'Rombach et al., “High-Resolution Image Synthesis with Latent Diffusion Models,” arXiv:2112.10752v2, 2022', href: 'https://arxiv.org/abs/2112.10752' },
+  { id: 'peebles-2023-dit', label: 'Peebles and Xie, “Scalable Diffusion Models with Transformers,” arXiv:2212.09748v2, 2023', href: 'https://arxiv.org/abs/2212.09748' },
+  { id: 'song-2022-ddim', label: 'Song, Meng, and Ermon, “Denoising Diffusion Implicit Models,” arXiv:2010.02502v4, 2022', href: 'https://arxiv.org/abs/2010.02502' },
+  { id: 'lipman-2023-flow', label: 'Lipman et al., “Flow Matching for Generative Modeling,” arXiv:2210.02747v2, 2023', href: 'https://arxiv.org/abs/2210.02747' },
+])
 
 <BpAnchor id="s0" num="00" label="Abstract" />
 
@@ -18,7 +29,7 @@ Suppose clean samples follow a curved two-moon distribution in coordinates `(x�
 
 Generation starts at the opposite endpoint. Draw a fresh Gaussian cloud, ask a learned network which way points should move at the current time, take a numerical step, and repeat. The network has learned local directions from corrupted training examples. It does not retrieve a hidden finished image from inside the initial noise. The initial array supplies a random coordinate in the learned distribution; prompt conditioning bends the route.
 
-Ho, Jain, and Abbeel’s 2020 DDPM paper connected a practical image model to denoising score matching and a variational objective. Its clean operational split still organizes the subject: the forward process is fixed; the reverse process is learned. Later work changed the representation, the conditioning strength, the network backbone, and the path used at sampling time.
+Ho, Jain, and Abbeel’s 2020 DDPM paper<Cite id="ho-2020-ddpm" /> connected a practical image model to denoising score matching and a variational objective. Its clean operational split still organizes the subject: the forward process is fixed; the reverse process is learned. Later work changed the representation, the conditioning strength, the network backbone, and the path used at sampling time.
 
 <BpNote>The same point index and axes are preserved across every diagram. That coordinate consistency makes a displaced mode, compressed axis, or curved path visible rather than rhetorical.</BpNote>
 
@@ -73,7 +84,7 @@ The reverse mean is uncertain even when the network is accurate. Near the data d
   <svg viewBox="0 0 920 320"><g fill="none" stroke="currentColor" strokeWidth={1.2}><circle cx={455} cy={156} r={7} fill="var(--bp-accent)"></circle><path d="M455 156 L240 86 M455 156 L678 78 M455 156 L690 234"></path></g><g fill="currentColor"><path d="M240 86 l12 -1 -5 10 z M678 78 l-10 8 12 3 z M690 234 l-12 -1 6 -10 z"></path></g><g className="bp-svg-t13" fill="currentColor"><text x={166} y={74}>ε PREDICTION</text><text x={661} y={65}>x₀ PREDICTION</text><text x={690} y={259}>v PREDICTION</text></g><text x={395} y={187} className="bp-svg-t11" fill="currentColor">xₜ ∈ ℝᵈ</text></svg>
 </BpFigure>
 
-Song and colleagues’ score-based SDE framework makes the field interpretation explicit. The score `∇ₓ log pₜ(x)` points toward increasing density at time `t`. The reverse-time SDE combines the known forward drift and diffusion with an estimated score. Its probability-flow ordinary differential equation has matching time marginals while following deterministic paths. One trained field can therefore support stochastic and deterministic numerical procedures.
+Song and colleagues’ score-based SDE framework<Cite id="song-2021-sde" /> makes the field interpretation explicit. The score `∇ₓ log pₜ(x)` points toward increasing density at time `t`. The reverse-time SDE combines the known forward drift and diffusion with an estimated score. Its probability-flow ordinary differential equation has matching time marginals while following deterministic paths. One trained field can therefore support stochastic and deterministic numerical procedures.
 
 <BpQA q="Does denoising mean sharpening blurry pixels each step?">Only as a loose visual analogy. Intermediate states are tensors at known noise levels, and the network estimates a distribution-dependent direction. In latent models those tensors are compressed features, so many steps have no direct pixel-level interpretation.</BpQA>
 
@@ -89,7 +100,7 @@ For `x₀` or velocity prediction, replace the target and retain a declared weig
 
 Minibatch training updates a shared field, never a lookup table of reverse paths. Generalization comes from recurring visual structure and conditioning relationships across the dataset. Dataset composition, captions, VAE loss, resolution, augmentation, and filtering influence what the learned distribution contains. The diffusion equation cannot recover concepts absent from training evidence.
 
-<BpNote>DDPM’s 2020 result made the simplified epsilon objective central. Improved DDPM later studied learned reverse variances and fewer sampling evaluations; those changes belong to the sampler contract, not a new data endpoint.</BpNote>
+<BpNote>DDPM’s 2020 result made the simplified epsilon objective central. Improved DDPM<Cite id="nichol-2021-improved" /> later studied learned reverse variances and fewer sampling evaluations; those changes belong to the sampler contract, not a new data endpoint.</BpNote>
 
 The loss also explains a common fine-tuning failure. If a small dataset repeatedly pairs one concept with narrow backgrounds, poses, or lighting, the update entangles them. Noise augmentation creates many corruption levels, not independent semantic examples. Caption quality and visual variation still matter.
 
@@ -101,7 +112,7 @@ Loss value alone cannot rank visual models across datasets and parameterizations
 
 Text-to-image training encodes a caption into conditioning vectors and gives them to the denoiser, commonly through cross-attention or adaptive modulation. The spatial tensor asks where and what to change; text features supply a requested semantic direction. Read [The Transformer](/blog/the-transformer) for the query-key-value mechanism used by DiT and cross-attention.
 
-Classifier-free guidance trains one network on conditional and deliberately dropped-conditioning examples. At sampling time it evaluates an unconditional prediction and a conditional prediction, then extrapolates from the former toward the latter. For epsilon parameterization:
+Classifier-free guidance<Cite id="ho-2022-cfg" /> trains one network on conditional and deliberately dropped-conditioning examples. At sampling time it evaluates an unconditional prediction and a conditional prediction, then extrapolates from the former toward the latter. For epsilon parameterization:
 
 <BpEquation tag="EQ. 5.1">εCFG = εθ(xₜ,t,∅) + w[εθ(xₜ,t,c) − εθ(xₜ,t,∅)] ∈ ℝᵈ</BpEquation>
 
@@ -123,9 +134,9 @@ Pixel diffusion applies every network evaluation to the full image tensor. Laten
 
 Compression removes some pixel detail and organizes the remaining signal into learned coordinates. That reduces training and sampling cost because the denoiser processes fewer spatial positions. It also creates a ceiling: details discarded or biased by the VAE cannot be recovered faithfully by a perfect latent denoiser. The [Embedding Space](/blog/the-embedding-space) provides intuition for learned coordinates and neighborhoods; image latents are structured tensors rather than a single semantic point.
 
-Rombach and colleagues’ latent diffusion work paired pretrained autoencoding with diffusion and cross-attention conditioning. “Stable Diffusion” names product and checkpoint families built from this broad recipe, while latent diffusion names the architectural separation. The explanation survives changes in checkpoint, text encoder, resolution, and user interface.
+Rombach and colleagues’ latent diffusion work<Cite id="rombach-2022-ldm" /> paired pretrained autoencoding with diffusion and cross-attention conditioning. “Stable Diffusion” names product and checkpoint families built from this broad recipe, while latent diffusion names the architectural separation. The explanation survives changes in checkpoint, text encoder, resolution, and user interface.
 
-The denoising backbone historically favored a U-Net: a convolutional encoder-decoder with skip connections that mixes local detail and multi-scale context. Peebles and Xie’s DiT replaced the common U-Net backbone with a transformer over latent patches. Patchify converts `z` into a token sequence; transformer blocks mix information; an output projection returns a tensor-shaped prediction. Diffusion remains the training/generation process. DiT is the field estimator’s backbone.
+The denoising backbone historically favored a U-Net: a convolutional encoder-decoder with skip connections that mixes local detail and multi-scale context. Peebles and Xie’s DiT<Cite id="peebles-2023-dit" /> replaced the common U-Net backbone with a transformer over latent patches. Patchify converts `z` into a token sequence; transformer blocks mix information; an output projection returns a tensor-shaped prediction. Diffusion remains the training/generation process. DiT is the field estimator’s backbone.
 
 The architecture change shifts inductive bias and scaling behavior. Convolutions build locality and translation structure into their operations. A transformer exposes latent patches to content-dependent mixing through attention, while positional information preserves the patch grid. Time and class or text conditions can enter through tokens, cross-attention, or modulation. The final projection unpatchifies the sequence so the scheduler receives a tensor exactly aligned with the noisy latent. That shape contract is why a DiT can replace a U-Net without redefining the forward process.
 
@@ -141,7 +152,7 @@ Memory savings from latent diffusion are substantial but not described by spatia
 
 Training learns a field across time. Sampling chooses discrete times and numerically follows it. A sampler or scheduler specifies the time grid, update equation, stochasticity, parameterization conversion, and sometimes correction stages. “Thirty steps” means roughly thirty denoiser evaluations only for a one-evaluation method; a second-order method may call the network more than once per reported step.
 
-Euler takes the current field as constant over a small interval. Heun evaluates a provisional endpoint and averages slopes, usually reducing local integration error at extra field cost. Ancestral methods inject noise during reverse steps and can produce variation from the same intermediate state. Deterministic DDIM-style paths remove that per-step randomness and can reach a result with a subsequence of training times. Solver order, network-evaluation count, and stochasticity are separate attributes.
+Euler takes the current field as constant over a small interval. Heun evaluates a provisional endpoint and averages slopes, usually reducing local integration error at extra field cost. Ancestral methods inject noise during reverse steps and can produce variation from the same intermediate state. Deterministic DDIM-style paths<Cite id="song-2022-ddim" /> remove that per-step randomness and can reach a result with a subsequence of training times. Solver order, network-evaluation count, and stochasticity are separate attributes.
 
 <BpFigure caption="FIG. 6 — MATCHED START, CONDITION, AND COORDINATES; ONLY THE NUMERICAL ROUTE CHANGES. COARSER EULER STEPS DEVIATE MORE FROM THE PREPARED CURVE THAN THE TWO-SLOPE ALTERNATIVE.">
   <svg viewBox="0 0 920 330"><g fill="none" stroke="currentColor"><path d="M90 260 C254 22 546 300 826 72" stroke="currentColor" opacity={0.3}></path><path d="M90 260 L260 118 L455 202 L640 132 L826 72" stroke="var(--bp-accent)" strokeWidth={2}></path><path d="M90 260 C220 92 332 144 455 187 C584 230 668 107 826 72" strokeWidth={2} strokeDasharray="7 5" className="bp-dash"></path></g><g fill="var(--bp-accent)"><circle cx={90} cy={260} r={5}></circle><circle cx={260} cy={118} r={5}></circle><circle cx={455} cy={202} r={5}></circle><circle cx={640} cy={132} r={5}></circle><circle cx={826} cy={72} r={5}></circle></g><g className="bp-svg-t11" fill="currentColor"><text x={91} y={292}>NOISE</text><text x={770} y={52}>DATA</text><text x={311} y={86}>EULER: ONE SLOPE</text><text x={514} y={250}>PREPARED TWO-SLOPE PATH</text></g></svg>
@@ -170,7 +181,7 @@ Continuous-time diffusion defines a forward stochastic differential equation wit
 
 <BpEquation tag="EQ. 8.1">dx = [f(x,t) − ½g(t)²∇ₓ log pₜ(x)]dt, where dx and f dt are in ℝᵈ</BpEquation>
 
-This ODE view turns generation into velocity integration. Lipman and colleagues’ flow matching trains a vector field `vθ(x,t)` by regressing against a target conditional probability path. A simple pedagogical path linearly interpolates paired endpoints, `xₜ = (1−t)x₀ + t x₁`, whose conditional velocity is `x₁−x₀`. Practical flow-matching constructions choose probability paths and couplings carefully; straight lines in a drawing do not guarantee straight unconditional transport or easy image generation.
+This ODE view turns generation into velocity integration. Lipman and colleagues’ flow matching<Cite id="lipman-2023-flow" /> trains a vector field `vθ(x,t)` by regressing against a target conditional probability path. A simple pedagogical path linearly interpolates paired endpoints, `xₜ = (1−t)x₀ + t x₁`, whose conditional velocity is `x₁−x₀`. Practical flow-matching constructions choose probability paths and couplings carefully; straight lines in a drawing do not guarantee straight unconditional transport or easy image generation.
 
 <BpEquation tag="EQ. 8.2">LFM(θ) = 𝔼ₜ,ₓₜ [ ‖vθ(xₜ,t) − uₜ(xₜ)‖₂² ], with vθ,uₜ ∈ ℝᵈ</BpEquation>
 
@@ -188,13 +199,4 @@ The durable checklist is therefore short. Declare the source and target distribu
 
 <BpQA q="How is flow matching different from diffusion?">Diffusion usually defines a Gaussian noising process and learns a score- or noise-related reverse field. Flow matching chooses a probability path and directly trains its velocity field. They can use the same latent representation, DiT, text conditioning, guidance, and ODE solver, so the distinction lives mainly in the training path and target.</BpQA>
 
-<BpReferences drawingCode="TDD-013" items={[
-  { label: 'Ho, Jain, and Abbeel, “Denoising Diffusion Probabilistic Models,” arXiv:2006.11239v2, 2020', href: 'https://arxiv.org/abs/2006.11239' },
-  { label: 'Song et al., “Score-Based Generative Modeling through Stochastic Differential Equations,” arXiv:2011.13456v2, 2021', href: 'https://arxiv.org/abs/2011.13456' },
-  { label: 'Song, Meng, and Ermon, “Denoising Diffusion Implicit Models,” arXiv:2010.02502v4, 2022', href: 'https://arxiv.org/abs/2010.02502' },
-  { label: 'Nichol and Dhariwal, “Improved Denoising Diffusion Probabilistic Models,” arXiv:2102.09672, 2021', href: 'https://arxiv.org/abs/2102.09672' },
-  { label: 'Ho and Salimans, “Classifier-Free Diffusion Guidance,” arXiv:2207.12598, 2022', href: 'https://arxiv.org/abs/2207.12598' },
-  { label: 'Rombach et al., “High-Resolution Image Synthesis with Latent Diffusion Models,” arXiv:2112.10752v2, 2022', href: 'https://arxiv.org/abs/2112.10752' },
-  { label: 'Peebles and Xie, “Scalable Diffusion Models with Transformers,” arXiv:2212.09748v2, 2023', href: 'https://arxiv.org/abs/2212.09748' },
-  { label: 'Lipman et al., “Flow Matching for Generative Modeling,” arXiv:2210.02747v2, 2023', href: 'https://arxiv.org/abs/2210.02747' },
-]} />
+<References drawingCode="TDD-013" />

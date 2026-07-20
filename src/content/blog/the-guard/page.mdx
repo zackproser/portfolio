@@ -7,12 +7,20 @@ import {
   BpFigure,
   BpEquation,
   BpQA,
-  BpReferences,
+  makeCitations,
   BpDetachablePlate,
   TrustBoundaryDemo,
 } from '@/components/blueprint'
 
 export const metadata = createMetadata(rawMetadata)
+
+export const { Cite, References } = makeCitations([
+  { id: 'greshake-2023-injection', label: 'Greshake et al., “Not what you’ve signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection,” arXiv:2302.12173v2, May 5, 2023', href: 'https://arxiv.org/abs/2302.12173' },
+  { id: 'owasp-llm-top10', label: 'OWASP Foundation, “OWASP Top 10 for Large Language Model Applications,” project page (accessed July 19, 2026)', href: 'https://owasp.org/www-project-top-10-for-large-language-model-applications/' },
+  { id: 'owasp-llm-top10-v2025', label: 'OWASP Foundation, “OWASP Top 10 for LLM Applications v2.0,” 2025 edition', href: 'https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-v2025.pdf' },
+  { id: 'debenedetti-2024-agentdojo', label: 'Debenedetti et al., “AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents,” arXiv:2406.13352v3, November 24, 2024', href: 'https://arxiv.org/abs/2406.13352' },
+  { id: 'nist-caisi-hijacking', label: 'NIST CAISI, “Technical Blog: Strengthening AI Agent Hijacking Evaluations,” January 17, 2025; updated December 19, 2025', href: 'https://www.nist.gov/news-events/news/2025/01/technical-blog-strengthening-ai-agent-hijacking-evaluations' },
+])
 
 <BpAnchor id="s0" num="00" label="Abstract" />
 
@@ -98,7 +106,7 @@ Prompt text cannot create a dependable privilege boundary. A system message can 
 
 **Direct prompt injection** enters through a channel where the user can address the model. The security impact depends on the caller’s identity and the application’s granted capabilities. A hostile authenticated user may attempt to exceed their own resource scope; an anonymous caller may try to reach tools intended for an operator. Ordinary API authorization still applies.
 
-**Indirect prompt injection** arrives inside data the agent retrieves: a message, document, website, issue, calendar entry, or tool response. Greshake and coauthors named and demonstrated this remote route in arXiv 2302.12173, first submitted February 23, 2023 and revised May 5, 2023. Their durable observation is the blurred instruction/data distinction in LLM-integrated applications. The defensive consequence is to inventory every source that can enter context and every effect reachable afterward.
+**Indirect prompt injection** arrives inside data the agent retrieves: a message, document, website, issue, calendar entry, or tool response. Greshake and coauthors named and demonstrated this remote route in arXiv 2302.12173<Cite id="greshake-2023-injection" />, first submitted February 23, 2023 and revised May 5, 2023. Their durable observation is the blurred instruction/data distinction in LLM-integrated applications. The defensive consequence is to inventory every source that can enter context and every effect reachable afterward.
 
 The hero route has three hops. First, an attacker influences a document or record likely to be retrieved. Second, the application selects and serializes it into model context beside trusted task material. Third, the model emits a tool proposal that the application accepts under a privileged credential. Breaking any hop can stop a prepared case. Only the third hop controls authority directly.
 
@@ -123,7 +131,7 @@ An attack tree makes the dependencies reviewable. The root event is an unauthori
   </svg>
 </BpFigure>
 
-The 2025 OWASP Top 10 for LLM Applications lists prompt injection as LLM01 and excessive agency as LLM06. Those dated names help a review connect model influence to permission design. The permanent model here avoids depending on list numbers: untrusted sources enter a deputy, and an enforcement point decides whether the deputy may create an effect.
+The 2025 OWASP Top 10 for LLM Applications<Cite id="owasp-llm-top10" /> lists prompt injection as LLM01 and excessive agency as LLM06<Cite id="owasp-llm-top10-v2025" />. Those dated names help a review connect model influence to permission design. The permanent model here avoids depending on list numbers: untrusted sources enter a deputy, and an enforcement point decides whether the deputy may create an effect.
 
 <BpNote>Attack classes belong in review artifacts. Working payloads do not. Record source type, attacker goal class, reachable operation, expected state change, and security oracle without keeping reusable exploit text in the post or demo.</BpNote>
 
@@ -219,11 +227,11 @@ Permission matrices should separate discovery from use. A model may know that a 
 
 <BpSection id="s7" num="07" label="Testing" sheet="SHEET 7 OF 8" title="Security results need utility, attack, and refusal measures" />
 
-AgentDojo provides a useful evaluation shape: run legitimate tasks in stateful tool environments, pair user goals with attacker goals, and inspect environment state with deterministic utility and security functions. Version 3 of arXiv 2406.13352, dated November 24, 2024, contains 97 user tasks and 629 security test cases across workspace, Slack, travel, and banking environments. The paper reports three distinct measures: benign utility, utility under attack, and targeted attack success rate.
+AgentDojo<Cite id="debenedetti-2024-agentdojo" /> provides a useful evaluation shape: run legitimate tasks in stateful tool environments, pair user goals with attacker goals, and inspect environment state with deterministic utility and security functions. Version 3 of arXiv 2406.13352, dated November 24, 2024, contains 97 user tasks and 629 security test cases across workspace, Slack, travel, and banking environments. The paper reports three distinct measures: benign utility, utility under attack, and targeted attack success rate.
 
 Its dated results also show why a single headline misleads. In the November 24, 2024 paper version, current agents solved fewer than 66% of tasks without attack; attacks against the best-performing agents succeeded in fewer than 25% of cases; one evaluated detector reduced attack success to 8%. These figures describe that paper’s agents, defenses, attacks, tasks, and revisions. They are not durable security properties.
 
-NIST’s “Technical Blog: Strengthening AI Agent Hijacking Evaluations,” published January 17, 2025 and updated December 19, 2025, demonstrates evaluation drift directly. In its stated Claude 3.5 Sonnet setup, a strongest baseline attack measured 11% success while a newly developed adaptive attack measured 81%. Across a selected five-task collection, repeated attempts raised average measured success from 57% on one attempt to 80% over 25 attempts. Those numbers belong to NIST’s dated setup; the lasting lesson is to test adaptive variants, task-level impact, and retries.
+NIST’s “Technical Blog: Strengthening AI Agent Hijacking Evaluations,” published January 17, 2025 and updated December 19, 2025<Cite id="nist-caisi-hijacking" />, demonstrates evaluation drift directly. In its stated Claude 3.5 Sonnet setup, a strongest baseline attack measured 11% success while a newly developed adaptive attack measured 81%. Across a selected five-task collection, repeated attempts raised average measured success from 57% on one attempt to 80% over 25 attempts. Those numbers belong to NIST’s dated setup; the lasting lesson is to test adaptive variants, task-level impact, and retries.
 
 <BpEquation tag="EQ. 7.1">
   release evidence = task success + attack success + blocked-legitimate-action rate + impact by action class
@@ -276,13 +284,4 @@ The [Autonomy Boundary](/blog/the-autonomy-boundary) offers an operator rule for
 
 The defensible claim is narrower and more useful: hostile data may reach the model, yet it receives no authority merely by appearing in context. Every privileged effect requires a grant tied to the user and task, enforced outside the model, measured against both attack success and legitimate utility, and retested as the system changes.
 
-<BpReferences
-  drawingCode="TDD-012"
-  items={[
-    { label: 'OWASP Foundation, “OWASP Top 10 for Large Language Model Applications,” project page (accessed July 19, 2026)', href: 'https://owasp.org/www-project-top-10-for-large-language-model-applications/' },
-    { label: 'OWASP Foundation, “OWASP Top 10 for LLM Applications v2.0,” 2025 edition', href: 'https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-v2025.pdf' },
-    { label: 'NIST CAISI, “Technical Blog: Strengthening AI Agent Hijacking Evaluations,” January 17, 2025; updated December 19, 2025', href: 'https://www.nist.gov/news-events/news/2025/01/technical-blog-strengthening-ai-agent-hijacking-evaluations' },
-    { label: 'Debenedetti et al., “AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents,” arXiv:2406.13352v3, November 24, 2024', href: 'https://arxiv.org/abs/2406.13352' },
-    { label: 'Greshake et al., “Not what you’ve signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection,” arXiv:2302.12173v2, May 5, 2023', href: 'https://arxiv.org/abs/2302.12173' },
-  ]}
-/>
+<References drawingCode="TDD-012" />

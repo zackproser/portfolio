@@ -7,12 +7,23 @@ import {
   BpFigure,
   BpEquation,
   BpQA,
-  BpReferences,
+  makeCitations,
   BpDetachablePlate,
   InductionCircuitDemo,
 } from '@/components/blueprint'
 
 export const metadata = createMetadata(rawMetadata)
+
+export const { Cite, References } = makeCitations([
+  { id: 'vaswani-2017', label: "Vaswani et al., ‘Attention Is All You Need,’ NeurIPS 2017", href: "https://arxiv.org/abs/1706.03762" },
+  { id: 'elhage-2021-framework', label: "Elhage et al., ‘A Mathematical Framework for Transformer Circuits,’ 2021", href: "https://transformer-circuits.pub/2021/framework/index.html" },
+  { id: 'michel-2019', label: "Michel, Levy, and Neubig, ‘Are Sixteen Heads Really Better than One?,’ NeurIPS 2019", href: "https://arxiv.org/abs/1905.10650" },
+  { id: 'vig-2019', label: "Vig, ‘A Multiscale Visualization of Attention in the Transformer Model,’ ACL 2019", href: "https://arxiv.org/abs/1906.05714" },
+  { id: 'olsson-2022', label: "Olsson et al., ‘In-context Learning and Induction Heads,’ 2022", href: "https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html" },
+  { id: 'elhage-2022-superposition', label: "Elhage et al., ‘Toy Models of Superposition,’ 2022", href: "https://transformer-circuits.pub/2022/toy_model/index.html" },
+  { id: 'meng-2022', label: "Meng et al., ‘Locating and Editing Factual Associations in GPT,’ NeurIPS 2022", href: "https://arxiv.org/abs/2202.05262" },
+  { id: 'wang-2023-ioi', label: "Wang et al., ‘Interpretability in the Wild: a Circuit for Indirect Object Identification in GPT-2 small,’ ICLR 2023", href: "https://arxiv.org/abs/2211.00593" },
+])
 
 <BpAnchor id="s0" num="00" label="Abstract" />
 
@@ -24,7 +35,7 @@ The worked example is a real CPU export from the 124-million-parameter GPT-2 che
 
 <BpSection id="s1" num="01" label="Head anatomy" sheet="SHEET 1 OF 8" title="A head routes one write into a shared stream" />
 
-An attention head has two coupled jobs. Its **QK circuit** decides where to read. Its **OV circuit** decides what to write. The compact account in [The Transformer §03](/blog/the-transformer#s3) derives scaled dot-product attention; [§04](/blog/the-transformer#s4) shows how many heads run in parallel. Here the same machinery becomes an object of investigation.
+An attention head has two coupled jobs. Its **QK circuit** decides where to read. Its **OV circuit** decides what to write. The compact account in [The Transformer §03](/blog/the-transformer#s3) derives scaled dot-product attention<Cite id="vaswani-2017" />; [§04](/blog/the-transformer#s4) shows how many heads run in parallel. Here the same machinery becomes an object of investigation.
 
 For residual-stream matrix **X**, one head projects queries **Q** = **XW**<sub>Q</sub>, keys **K** = **XW**<sub>K</sub>, and values **V** = **XW**<sub>V</sub>. The causal mask removes future keys. Softmax turns the remaining QK scores into a row of weights. That row mixes values, and **W**<sub>O</sub> maps the result back to model width.
 
@@ -76,7 +87,7 @@ Usually no. “Head” names an architectural component, not a guarantee of one 
 
 A trained model gives us weights, activations, and outputs. A mechanism claim adds structure: component A detects a condition, passes information to component B, and changes behavior C. The claim should predict what appears inside the model and what happens when the proposed route is disrupted.
 
-The transformer-circuits framework treats the residual stream as a shared communication channel. Heads and MLPs read from it and write back to it. This view makes composition concrete. A late head can read a feature written by an earlier head; its QK circuit and OV circuit can be studied as products of weight matrices rather than as isolated parameter names.
+The transformer-circuits framework<Cite id="elhage-2021-framework" /> treats the residual stream as a shared communication channel. Heads and MLPs read from it and write back to it. This view makes composition concrete. A late head can read a feature written by an earlier head; its QK circuit and OV circuit can be studied as products of weight matrices rather than as isolated parameter names.
 
 Three evidence layers keep the language disciplined. First, observe an activation or attention pattern associated with the behavior. Second, read the component’s output into a behavior-relevant basis, such as vocabulary logits. Third, intervene at the proposed component or path and compare the measured behavior. Correlation enters at the first layer. Causal evidence begins with a controlled change at the third.
 
@@ -98,9 +109,9 @@ Three evidence layers keep the language disciplined. First, observe an activatio
   </svg>
 </BpFigure>
 
-<BpNote>Michel, Levy, and Neubig ablated attention heads and found that many could be removed at test time with limited effect, while some heads mattered sharply. Component count and component necessity are separate facts.</BpNote>
+<BpNote>Michel, Levy, and Neubig ablated attention heads and found that many could be removed at test time with limited effect, while some heads mattered sharply<Cite id="michel-2019" />. Component count and component necessity are separate facts.</BpNote>
 
-The ladder also blocks a common category error. A visualization answers “where was weight placed?” A causal statement answers “what would have changed under an intervention?” The same experiment can produce a beautiful pattern and a weak, reversed, or prompt-dependent ablation effect. Those disagreements are results, not blemishes to hide.
+The ladder also blocks a common category error. A visualization<Cite id="vig-2019" /> answers “where was weight placed?” A causal statement answers “what would have changed under an intervention?” The same experiment can produce a beautiful pattern and a weak, reversed, or prompt-dependent ablation effect. Those disagreements are results, not blemishes to hide.
 
 A mechanism hypothesis becomes useful when it risks failure. “This head pays attention to repeated material” can absorb almost any heatmap after the fact. “[A][B] … [A] routes to the earlier [B], writes toward B, and loses that copying effect when the route is removed” predicts three measurements before the tensors are opened. It also predicts controls: break the repeated prefix and the stripe should weaken; preserve the prefix while changing the continuation and the copied target should change; patch the clean route into a corrupted run and the score should recover.
 
@@ -110,7 +121,7 @@ Candidate discovery and hypothesis testing therefore deserve separate data whene
 
 Take a sequence `A B C D … A B`. After the second `B`, a model that uses the earlier pattern can raise `C` as the next token. More generally, when a token **A** appears again, an induction pattern attends to the token **B** that followed the earlier **A**, then writes in a direction that helps predict **B** now. The behavior has the form `[A][B] … [A] → [B]`.
 
-This is a form of in-context pattern completion. The relevant association lives in the current sequence; no weight update occurs during the prompt. Olsson and collaborators studied heads with this pattern across small attention-only models and larger language models, connecting their emergence to a sharp change in in-context learning during training.
+This is a form of in-context pattern completion. The relevant association lives in the current sequence; no weight update occurs during the prompt. Olsson and collaborators<Cite id="olsson-2022" /> studied heads with this pattern across small attention-only models and larger language models, connecting their emergence to a sharp change in in-context learning during training.
 
 Induction heads became a useful case study because they connect a visible algorithm, a compact weight-level account, and a behavioral capability. They also expose the limits of that connection. The training evidence in the original study associates induction-head formation with improved in-context loss; it does not reduce every instance of in-context learning to this one circuit. The repeated-token behavior gives us a tractable microscope slide, not a catalog of everything a language model learns from context.
 
@@ -295,11 +306,11 @@ No. It shows that the measured behavior depends on the altered component under t
 
 This replication supports a bounded statement: GPT-2 contains heads that match a prepared induction template; one selected head writes positively toward the copied token under a frozen-scale logit readout; and zeroing that head reduces the declared copying score across the prompt set. It does not establish that every in-context behavior uses induction heads, that L5H1 has one exclusive function, or that the two named heads form a complete circuit.
 
-**Superposition** is a central boundary. A model can represent more features than it has dimensions by placing features in overlapping directions. Polysemantic components and distributed features make one-head labels lossy. Anthropic’s toy models show how sparsity and feature geometry can produce superposition; they provide a conceptual model, not a direct decomposition of GPT-2’s residual stream.
+**Superposition** is a central boundary. A model can represent more features than it has dimensions by placing features in overlapping directions. Polysemantic components and distributed features make one-head labels lossy. Anthropic’s toy models<Cite id="elhage-2022-superposition" /> show how sparsity and feature geometry can produce superposition; they provide a conceptual model, not a direct decomposition of GPT-2’s residual stream.
 
 The same boundary applies to vocabulary attribution. A positive token direction is legible because the unembedding supplies a convenient basis. Many useful intermediate features have no single-token name. Sparse autoencoders and related feature-discovery methods try to recover more interpretable directions, but they introduce training objectives, dictionary size, reconstruction error, and feature-splitting choices. They remain outside this drawing’s circuit claim.
 
-Causal tracing work such as ROME locates states whose restoration can recover a factual prediction after a corrupted input. Circuit studies such as the GPT-2 indirect-object-identification work combine path patching, component analysis, and adversarial tests over a richer behavior. Those methods extend the same principle: write a hypothesis that predicts an internal route, intervene on that route, and measure a task-relevant effect.
+Causal tracing work such as ROME<Cite id="meng-2022" /> locates states whose restoration can recover a factual prediction after a corrupted input. Circuit studies such as the GPT-2 indirect-object-identification work<Cite id="wang-2023-ioi" /> combine path patching, component analysis, and adversarial tests over a richer behavior. Those methods extend the same principle: write a hypothesis that predicts an internal route, intervene on that route, and measure a task-relevant effect.
 
 <BpNote>The shipped JSON is 14,780 bytes, far below the 200 KB cap. It records GPT-2 revision `607a30d…`, Transformers 4.57.6, Torch 2.8.0, Python 3.9.6, the prompt set, selection rule, three display heads’ tensor rows for one prompt, eight intervention conditions, and the script SHA-256.</BpNote>
 
@@ -311,16 +322,4 @@ Another extension would trace training checkpoints. If the proposed composition 
 
 That standard is the durable lesson. Attention maps are useful maps. Attribution connects a component to an output direction. Intervention supplies the counterfactual evidence required for a causal mechanism claim. Keeping those layers separate makes interpretability results easier to reproduce, challenge, and improve.
 
-<BpReferences
-  drawingCode="TDD-010"
-  items={[
-    { label: "Vaswani et al., ‘Attention Is All You Need,’ NeurIPS 2017", href: "https://arxiv.org/abs/1706.03762" },
-    { label: "Elhage et al., ‘A Mathematical Framework for Transformer Circuits,’ 2021", href: "https://transformer-circuits.pub/2021/framework/index.html" },
-    { label: "Olsson et al., ‘In-context Learning and Induction Heads,’ 2022", href: "https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html" },
-    { label: "Elhage et al., ‘Toy Models of Superposition,’ 2022", href: "https://transformer-circuits.pub/2022/toy_model/index.html" },
-    { label: "Michel, Levy, and Neubig, ‘Are Sixteen Heads Really Better than One?,’ NeurIPS 2019", href: "https://arxiv.org/abs/1905.10650" },
-    { label: "Vig, ‘A Multiscale Visualization of Attention in the Transformer Model,’ ACL 2019", href: "https://arxiv.org/abs/1906.05714" },
-    { label: "Wang et al., ‘Interpretability in the Wild: a Circuit for Indirect Object Identification in GPT-2 small,’ ICLR 2023", href: "https://arxiv.org/abs/2211.00593" },
-    { label: "Meng et al., ‘Locating and Editing Factual Associations in GPT,’ NeurIPS 2022", href: "https://arxiv.org/abs/2202.05262" },
-  ]}
-/>
+<References drawingCode="TDD-010" />
