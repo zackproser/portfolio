@@ -39,15 +39,26 @@ export function makeCitations(items: CiteItem[]) {
   }
   const numberOf = new Map(items.map((it, i) => [it.id, i + 1]))
 
+  // Ids that actually appear inline via <Cite>. Populated during render so
+  // References only draws a ↩ back-link when a matching `cite-{id}` anchor
+  // exists (a source may be listed as further reading and never cited). This
+  // is safe with Next's module-singleton semantics: the returned object is
+  // created once and reused, and <Cite> markers always sit above <References>
+  // in document order, so the set is fully populated before References renders
+  // — and, being a growing union of the same per-post markers on every render,
+  // it can only ever be correct, never stale or cross-contaminated.
+  const cited = new Set<string>()
+
   /**
-   * Inline citation marker. Stateless so it is safe to reuse across
-   * requests (the returned object is a module-level singleton in Next).
-   * Citing the same id twice emits the same `cite-{id}` anchor twice;
-   * hash navigation resolves to the first, which is the intended target.
+   * Inline citation marker. Records its id as cited, then renders a
+   * superscript [n] anchored at `cite-{id}` that jumps to the reference.
+   * Citing the same id twice emits the anchor twice; hash navigation
+   * resolves to the first, which is the intended target.
    */
   function Cite({ id }: { id: string }) {
     const n = numberOf.get(id)
     if (!n) throw new Error(`Cite: unknown citation id "${id}" — not in this post's source list`)
+    cited.add(id)
     return (
       <sup className="bp-cite" id={`cite-${id}`}>
         <a href={`#ref-${id}`} aria-label={`Jump to reference ${n}`}>
@@ -80,9 +91,11 @@ export function makeCitations(items: CiteItem[]) {
               <a href={ref.href} target="_blank" rel="noreferrer">
                 {ref.label}
               </a>
-              <a className="bp-ref-back" href={`#cite-${ref.id}`} aria-label="Back to where this is cited in the text">
-                ↩
-              </a>
+              {cited.has(ref.id) ? (
+                <a className="bp-ref-back" href={`#cite-${ref.id}`} aria-label="Back to where this is cited in the text">
+                  ↩
+                </a>
+              ) : null}
             </li>
           ))}
         </ol>
