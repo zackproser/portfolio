@@ -20,7 +20,7 @@ An attention map can look like a copying algorithm. The bright diagonal is an ob
 
 This drawing climbs those questions in order. **Pattern evidence** locates a candidate. **Logit attribution** asks whether its output points toward the expected next token. **Intervention** removes or replaces the component and measures whether the behavior changes. Each layer supports a stronger claim while adding assumptions of its own.
 
-The worked example is a real CPU export from the 124-million-parameter GPT-2 checkpoint, revision `607a30d…`, over three repeated-token prompts. The export script, tokenized inputs, attention tensors, attribution, ablations, versions, and failed pattern candidates ship with the page. It is a small replication of an induction-like circuit, bounded to this model, selector, prompt set, and metric.
+The worked example is a real CPU export from the 124-million-parameter GPT-2 checkpoint, revision `607a30d…`, over three repeated-token prompts. The export script and page data record the prompt set, one tokenized display prompt, three display heads’ attention tensors, attribution, eight ablation conditions, versions, and selection rule. It is a small replication of an induction-like circuit, bounded to this model, selector, prompt set, and metric.
 
 <BpSection id="s1" num="01" label="Head anatomy" sheet="SHEET 1 OF 8" title="A head routes one write into a shared stream" />
 
@@ -271,7 +271,7 @@ A clean–corrupted pair makes restoration especially legible. Start with a repe
 
 Necessity, sufficiency, and mediation are different claims. Ablation probes necessity under a replacement. Restoration probes a form of sufficiency. A path-specific experiment asks whether the sender’s effect reaches behavior through a named receiver rather than through every downstream consumer. None of these tests identifies a component’s natural-language “purpose”; each measures a counterfactual defined by the investigator.
 
-Good controls include heads with similar attention entropy, nearby heads without the target pattern, shuffled continuation tokens, prompts with no repeat, and several token families. Report adverse cases. In our screen, L7H10 had a 0.431 pattern score yet zeroing it increased the aggregate copying metric by 0.238. A pattern-only reading would have assigned the wrong causal direction.
+Good controls include heads with similar attention entropy, nearby heads without the target pattern, shuffled continuation tokens, prompts with no repeat, and several token families. Report adverse cases, including candidates whose ablation changes the metric in the opposite direction. A pattern-only reading would assign those cases the wrong causal direction.
 
 <BpQA q="Does ablation prove this head is the only way the model copies?">
 No. It shows that the measured behavior depends on the altered component under this replacement, to the observed degree. Redundant routes can preserve some behavior, and zeroing can disturb computations beyond the hypothesized path. Sufficiency needs a separate test, such as restoring or transplanting the proposed activation into a suitable control run.
@@ -301,7 +301,7 @@ The same boundary applies to vocabulary attribution. A positive token direction 
 
 Causal tracing work such as ROME locates states whose restoration can recover a factual prediction after a corrupted input. Circuit studies such as the GPT-2 indirect-object-identification work combine path patching, component analysis, and adversarial tests over a richer behavior. Those methods extend the same principle: write a hypothesis that predicts an internal route, intervene on that route, and measure a task-relevant effect.
 
-<BpNote>The shipped JSON is 15 KB, far below the 200 KB cap. It records GPT-2 revision `607a30d…`, Transformers 4.57.6, Torch 2.8.0, Python 3.9.6, all prompts, the selector, tensor rows, eight intervention conditions, and the script SHA-256.</BpNote>
+<BpNote>The shipped JSON is 14,780 bytes, far below the 200 KB cap. It records GPT-2 revision `607a30d…`, Transformers 4.57.6, Torch 2.8.0, Python 3.9.6, the prompt set, selection rule, three display heads’ tensor rows for one prompt, eight intervention conditions, and the script SHA-256.</BpNote>
 
 Several open problems remain. Candidate selection can overfit a prompt set. Interventions can move activations off distribution. Effects can be nonlinear and redundant. A circuit found in one checkpoint can drift during training or change across scales. Feature-level accounts can conflict with component-level accounts. The strongest work publishes the selector, inputs, metric, tensors, controls, and failures so another investigator can attack the claim rather than admire the diagram.
 

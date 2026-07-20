@@ -14,7 +14,7 @@ The lineage runs from denoising diffusion probabilistic models (DDPMs), through 
 
 <BpSection id="s1" num="01" label="The idea" sheet="SHEET 1 OF 8" title="Generation reverses a corruption whose rules are known" />
 
-Suppose clean samples follow a curved two-moon distribution in coordinates `(x₁, x₂)`. It is easy to destroy that structure: add independent Gaussian noise a little at a time. After enough additions, the moons blur into a nearly standard normal cloud. Every forward step is available in closed form, so training can choose any noise level without simulating all earlier steps.
+Suppose clean samples follow a curved two-moon distribution in coordinates `(x₁, x₂)`. It is easy to destroy that structure: shrink the existing signal and add independent Gaussian noise a little at a time. After enough steps, the moons blur into a nearly standard normal cloud. Every forward marginal is available in closed form, so training can choose any noise level without simulating all earlier steps.
 
 Generation starts at the opposite endpoint. Draw a fresh Gaussian cloud, ask a learned network which way points should move at the current time, take a numerical step, and repeat. The network has learned local directions from corrupted training examples. It does not retrieve a hidden finished image from inside the initial noise. The initial array supplies a random coordinate in the learned distribution; prompt conditioning bends the route.
 
@@ -51,7 +51,7 @@ The noise schedule controls signal-to-noise ratio across time. A linear schedule
 
 The destruction is chosen, not learned. That gives the learner unlimited paired examples `(xₜ, x₀, ε, t)` from finite clean data. It also sets a contract: at the terminal time, the corrupted distribution must be close enough to the simple prior used to begin generation. Too little terminal noise leaves data structure in the endpoint; a badly allocated schedule wastes model evaluations where little changes.
 
-The forward variables describe distributions, not one irreversible editing history. For a fixed `x₀`, two draws of `ε` land at different `xₜ` values while obeying the same marginal. Training asks the network to perform well across those draws. At high noise, several clean examples can plausibly explain one corrupted state, so a squared-error predictor averages compatible directions. The reverse process becomes generative because later stochastic draws or small differences in an initial prior sample can select different valid modes.
+The forward variables describe distributions, not one irreversible editing history. For a fixed `x₀`, two draws of `ε` land at different `xₜ` values while obeying the same marginal. Training asks the network to perform well across those draws. At high noise, several clean examples can plausibly explain one corrupted state, so a squared-error predictor averages compatible directions. Different initial prior samples can select different valid modes; stochastic samplers can add further variation during the reverse path.
 
 Signal-to-noise ratio supplies a more portable clock than a raw integer timestep. Two implementations can both say `t=500` while using different step counts and cumulative schedules. Comparing `ᾱₜ/(1−ᾱₜ)` states how much clean signal remains relative to perturbation. Training weights, distillation schemes, and solver grids are often easier to reason about in that coordinate. Always pair a timestep with its schedule.
 
