@@ -122,6 +122,57 @@ Two fields carry most of the weight. `origin` splits the world into **mirrors** 
 
 `status` is the single source of truth for whether a row is live. This sounds trivial. It is not, and it produced one of the sharpest bugs of the day, which I'll get to.
 
+Every reader reaches that table through the same six tools. The shapes below are the live responses from `ctx.zackproser.com`, with my private values redacted — this is the whole interface:
+
+```text
+search(query, kinds?, k=8)                → ranked items
+briefing()                                → { pinned, open_tasks, upcoming_events, recently_learned }
+recent(days=7, kinds?)                    → items, newest first
+remember(text, idempotency_key?, pinned?) → { id, title, kind, near_dups }
+forget(id)                                → soft-delete   (requires review grant)
+correct(id, new_body, new_title?)         → supersede     (requires review grant)
+```
+
+`search` returns scored, distilled rows. This paraphrase query shares no vocabulary with the preference it lands — the vector retriever earns its place:
+
+```json
+// search({ query: "how I like git commits written", k: 3 })
+[
+  {
+    "id": "b1f2…",
+    "title": "…",            // distilled: a line an agent would search for
+    "body": "…",
+    "kind": "preference",    // fact | preference | decision | project | task | episode | person | reference | event
+    "source": "…",
+    "source_ref": null,
+    "observed_at": "2026-07-19T20:26:00.377Z",
+    "event_at": null,
+    "due_at": null,
+    "score": 1
+  }
+]
+```
+
+`briefing` is what a cold agent pulls at session start — four buckets, each a list of that same row shape:
+
+```json
+// briefing()
+{
+  "pinned":           [ /* items flagged always-surface */ ],
+  "open_tasks":       [ /* task_state: "open", ordered by due_at */ ],
+  "upcoming_events":  [ /* event_at within the next 7 days */ ],
+  "recently_learned": [ /* newest memories first */ ],
+  "generated_at":     "2026-07-20T…Z"
+}
+```
+
+The write and delete paths report exactly what happened — and the wall shows up here too. A delete refuses unless the token carries the review grant:
+
+```text
+remember("…")  → { "id": "8aa5…", "title": "…", "kind": "reference", "near_dups": 0 }
+forget("…")    → error 403: token lacks 'review' grant
+```
+
 <BpSection id="s3" num="03" label="Distill" sheet="SHEET 3 OF 9" title="Distill, don't dump" />
 
 Raw text is a bad thing to embed. "hey yeah sure" and a detailed architecture decision are both messages, and in raw cosine space the short one often wins because it's short. So nothing goes into the table raw. Everything is normalized first into a consistent `{title, body, entities}` shape — a one-line title an agent would actually search for, a concise body, and normalized entity tags. For memories, a small model (Claude Haiku) does the distillation on the write path, where latency doesn't matter. For mirrors, the connector shapes the row.
