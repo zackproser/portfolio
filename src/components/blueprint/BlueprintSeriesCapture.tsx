@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useLayoutEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { track } from '@vercel/analytics'
 
@@ -63,7 +63,7 @@ export function BlueprintSeriesCapture({
   // Coexistence rule: a drawing with a DETACHABLE PLATE never shows
   // three email fields. The title-block form collapses to a link that
   // scrolls to the plate offer.
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (variant === 'title-block') {
       // Re-check per navigation: the App Router reconciles this client
       // component across /blog/[slug] params instead of remounting, so
