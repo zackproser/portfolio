@@ -137,6 +137,14 @@ export default function BlogClient({ articles }: BlogClientProps) {
     else url.searchParams.set("kind", kind);
     window.history.replaceState(null, "", url.toString());
   }, [kind]);
+  useEffect(() => {
+    const onPop = () => {
+      const k = new URLSearchParams(window.location.search).get("kind");
+      setKind(k && (k === "All" || KIND_LABEL[k]) ? k : "All");
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();

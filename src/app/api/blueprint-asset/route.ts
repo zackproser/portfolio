@@ -101,7 +101,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Subscription failed — try again shortly' }, { status: 502 })
   }
   dedup.set(key, Date.now())
-  if (dedup.size > 5000) dedup.clear()
+  if (dedup.size > 5000) {
+    const now = Date.now()
+    for (const [k, ts] of dedup) if (now - ts > 30_000) dedup.delete(k)
+    while (dedup.size > 5000) {
+      const oldest = dedup.keys().next().value
+      if (oldest === undefined) break
+      dedup.delete(oldest)
+    }
+  }
   console.log(
     `[blueprint-asset] ${assetId} → ${email.trim().slice(0, 3)}… (referrer: ${typeof referrer === 'string' ? referrer.slice(0, 80) : 'n/a'})`,
   )
