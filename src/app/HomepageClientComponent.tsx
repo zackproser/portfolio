@@ -779,7 +779,7 @@ export default function HomepageClientComponent({
         <ContentRail
           num="02"
           title="Open-source projects"
-          moreHref="/projects"
+          moreHref="https://github.com/zackproser"
           moreLabel="All projects →"
           articles={mlProjects}
           keyPrefix="ml-project"

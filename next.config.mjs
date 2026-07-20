@@ -61,6 +61,11 @@ const nextConfig = {
         permanent: true
       },
       {
+        source: '/projects',
+        destination: 'https://github.com/zackproser',
+        permanent: false
+      },
+      {
         source: '/:path*',
         has: [{ type: 'host', value: 'www.zackproser.com' }],
         destination: 'https://zackproser.com/:path*',

@@ -11,7 +11,6 @@ import { AuthStatus } from './AuthStatus'
 // Flat editorial navigation — a single line, sans title-case
 export const navItems = [
   { name: 'Writing', href: '/blog' },
-  { name: 'Projects', href: '/projects' },
   { name: 'Videos', href: '/videos' },
   { name: 'Speaking', href: '/speaking' },
   { name: 'Workshops', href: '/workshops' },

@@ -351,10 +351,10 @@ export default function ServicesPage() {
               </div>
               <div className="flex justify-center mt-8 gap-4">
                 <Button asChild size="lg" className="bg-white text-burnt-500 hover:bg-white/90">
-                  <Link href="/projects">
+                  <a href="https://github.com/zackproser" target="_blank" rel="noopener noreferrer">
                     See more of my projects
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                  </a>
                 </Button>
               </div>
             </TabsContent>

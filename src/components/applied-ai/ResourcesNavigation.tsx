@@ -86,7 +86,7 @@ export function ResourcesNavigation() {
             </div>
           </a>
 
-          <a href="/projects" className="group relative rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-lg transition-all">
+          <a href="https://github.com/zackproser" target="_blank" rel="noopener noreferrer" className="group relative rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-lg transition-all">
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-sky-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="relative flex items-start gap-4">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-sky-600 text-white shadow-md">
@@ -95,7 +95,7 @@ export function ResourcesNavigation() {
               <div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">Projects</h3>
                 <p className="text-gray-700 dark:text-gray-300 mb-3">Open-source and production builds across AI and infra.</p>
-                <div className="text-blue-600 dark:text-blue-400 font-semibold">See /projects →</div>
+                <div className="text-blue-600 dark:text-blue-400 font-semibold">See my GitHub →</div>
               </div>
             </div>
           </a>

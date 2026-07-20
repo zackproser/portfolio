@@ -288,7 +288,7 @@ export default function AuthorityHero() {
                   Demos
                 </Link>
                 <Link
-                  href="/projects"
+                  href={'https://github.com/zackproser' as Route}
                   className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
                       ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-sky-400/50 hover:text-sky-400'
@@ -785,7 +785,7 @@ export default function AuthorityHero() {
                 { label: 'AI & ML', count: '40+', href: '/collections/ai' as Route },
                 { label: 'DevTools', count: '25+', href: '/devtools' as Route },
                 { label: 'Infrastructure', count: '20+', href: '/blog' as Route },
-                { label: 'Projects', count: '25+', href: '/projects' as Route },
+                { label: 'Projects', count: '25+', href: 'https://github.com/zackproser' as Route },
               ].map((cat) => (
                 <Link
                   key={cat.label}
