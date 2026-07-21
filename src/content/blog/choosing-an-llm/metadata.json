@@ -49,7 +49,7 @@
       "How do I test a model on my own task instead of trusting a leaderboard?"
     ],
     "nextDrawing": {
-      "number": "011",
+      "number": "009",
       "title": "The Adapter",
       "subject": "FINE-TUNING",
       "status": "planned"
