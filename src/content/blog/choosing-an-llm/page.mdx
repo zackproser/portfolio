@@ -409,4 +409,4 @@ Keep the eval after you choose, because the decision is not permanent. Models ar
 
 The last field is the boundary between local and hosted. A big-memory local machine has a real ceiling: the best model you can run is the largest capable one whose weights fit, which for a mixture-of-experts design can be near-frontier and fast, while the very largest open models stay out of reach at usable quantization and belong on a GPU host or an API. Local buys privacy, zero marginal cost, and offline use; hosted buys the frontier models and elastic concurrency. Most serious setups end up with both, and the model sheet is how you decide which job goes where. For the memory-and-bandwidth side of that ceiling, [The Transformer](/blog/the-transformer) covers how the weights and cache are used per token; for fitting evidence into a bounded prompt once a model is chosen, [The RAG Pipeline](/blog/the-rag-pipeline) covers the context budget; and [My 2026 AI Engineer Setup](/blog/2026-ai-engineer-setup) shows where these choices land in daily practice.
 
-<References drawingCode="TDD-010" />
+<References drawingCode="TDD-006" />
