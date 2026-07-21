@@ -87,13 +87,13 @@ export function ModelFitDemo({ fig = 4 }: { fig?: number } = {}) {
         <div>
           <div style={row}>
             <span style={{ ...label, width: 120 }}>Total params</span>
-            <input type="range" min={1} max={400} value={total} onChange={(e) => setTotal(+e.target.value)} style={{ flex: 1 }} />
+            <input type="range" min={1} max={400} value={total} onChange={(e) => { const newTotal = +e.target.value; setTotal(newTotal); setActive(a => Math.min(a, newTotal)) }} style={{ flex: 1 }} />
             <span style={{ ...val, width: 56, textAlign: 'right' }}>{total}B</span>
           </div>
           <div style={row}>
             <span style={{ ...label, width: 120 }}>Architecture</span>
             <button
-              onClick={() => { const n = !moe; setMoe(n); if (!n) setActive(total) }}
+              onClick={() => { const n = !moe; setMoe(n); if (n) { setActive(a => Math.min(a, total)) } else { setActive(total) } }}
               style={{ border: '1px solid currentColor', background: 'transparent', color: 'inherit', padding: '3px 10px', fontSize: 12, cursor: 'pointer' }}
             >
               {moe ? 'MoE' : 'DENSE'}
