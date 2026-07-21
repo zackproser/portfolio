@@ -9,6 +9,7 @@ import {
   BpQA,
   makeCitations,
   ModelFitDemo,
+  QuantLadderDemo,
 } from '@/components/blueprint'
 
 export const metadata = createMetadata(rawMetadata)
@@ -18,6 +19,8 @@ export const { Cite, References } = makeCitations([
   { id: 'shazeer-2017', label: 'Shazeer et al., "Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer", ICLR 2017', href: 'https://arxiv.org/abs/1701.06538' },
   { id: 'jiang-2024', label: 'Jiang et al., "Mixtral of Experts", 2024', href: 'https://arxiv.org/abs/2401.04088' },
   { id: 'ouyang-2022', label: 'Ouyang et al., "Training Language Models to Follow Instructions with Human Feedback" (InstructGPT), NeurIPS 2022', href: 'https://arxiv.org/abs/2203.02155' },
+  { id: 'hinton-2015', label: 'Hinton, Vinyals, and Dean, "Distilling the Knowledge in a Neural Network", NeurIPS 2015 Deep Learning Workshop', href: 'https://arxiv.org/abs/1503.02531' },
+  { id: 'sanh-2019', label: 'Sanh et al., "DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter", 2019', href: 'https://arxiv.org/abs/1910.01108' },
   { id: 'arditi-2024', label: 'Arditi et al., "Refusal in Language Models Is Mediated by a Single Direction", NeurIPS 2024', href: 'https://arxiv.org/abs/2406.11717' },
   { id: 'dettmers-2022', label: 'Dettmers et al., "LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale", NeurIPS 2022', href: 'https://arxiv.org/abs/2208.07339' },
   { id: 'frantar-2022', label: 'Frantar et al., "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers", ICLR 2023', href: 'https://arxiv.org/abs/2210.17323' },
@@ -26,11 +29,11 @@ export const { Cite, References } = makeCitations([
 
 <BpAnchor id="s0" num="00" label="Abstract" />
 
-A model's name is a label chosen by whoever released it. The specification is a short list of numbers underneath: how many parameters it has, how many of those it uses per token, how many bits each weight is stored in, and how long a sequence it can attend to. Add one more field — what training stage produced it — and you can predict whether a model will fit your machine, run fast enough to be useful, and behave the way your task needs.
+A model's name is a label chosen by whoever released it. The specification is a short list of numbers underneath: how many parameters it has, how many of those it uses per token, how many bits each weight is stored in, and how long a sequence it can attend to. Add the fields that record how it was made and modified — what training stage produced it, whether it was distilled from a larger teacher, whether its weights were edited after release — and you can predict whether a model will fit your machine, run fast enough to be useful, and behave the way your task needs.
 
 Most disappointment with local and open models comes from choosing on the name and the leaderboard rank, then discovering the download will not load, crawls at reading speed, or refuses the format you needed. Those are not surprises. They are readable from the spec sheet before you spend the bandwidth.
 
-This drawing reads that spec sheet field by field, does the memory arithmetic that decides what runs on a given machine, and ends with a procedure: define the task, shortlist by specification, quantize to fit, and test on your own work rather than someone else's benchmark.
+This drawing reads that spec sheet field by field. It covers how a model is trained and distilled, what abliteration and merging do to released weights, how quantization trades bits for size and speed, and where open weights live and how to vet them. It does the memory arithmetic that decides what runs on a given machine, and it ends with a procedure: define the task, shortlist by specification, quantize to fit, and test on your own work rather than someone else's benchmark.
 
 <BpSection id="s1" num="01" label="The name" sheet="SHEET 1 OF 8" title="A model name is a compressed spec sheet" />
 
@@ -38,7 +41,7 @@ Take a filename a local runtime actually loads: `Qwen2.5-Coder-32B-Instruct-Q5_K
 
 The consumer's job is to decompose the name into those fields and check each against a constraint you own: your memory, your latency tolerance, your task, your license terms. A leaderboard collapses all of that into a single rank on tasks that may not resemble yours. Rank is a weak prior. The fields are the decision.
 
-<BpNote>The order and vocabulary of these fields is a community convention, not a standard. Providers who repackage a model (quantizers, fine-tuners, mergers) append their own tags, which is why one weight file can carry a dozen dash-separated fragments.</BpNote>
+<BpNote>The order and vocabulary of these fields is a community convention, not a standard. Providers who repackage a model (quantizers, fine-tuners, mergers, distillers) append their own tags, which is why one weight file can carry a dozen dash-separated fragments. The rest of this drawing takes those fragments one at a time.</BpNote>
 
 <BpQA q="Isn't a higher benchmark score enough to pick a model?">
 A score tells you how one model did on one task suite at one point in time, and popular suites leak into training data over time. It cannot tell you whether the model fits your 16GB or 128GB of memory, answers in your format, or handles your domain. Use rank to build a shortlist, then decide on the fields and your own test.
@@ -85,7 +88,9 @@ The field that matters most for local use is one the marketing name often hides:
 
 <BpNote>Written as total-A-active: a "235B-A22B" model holds 235B parameters but activates 22B per token. It occupies memory like a 235B model and generates at roughly the speed of a 22B one.</BpNote>
 
-Mixtral made the pattern ordinary in open weights: eight experts, two active per token, near the quality of a much larger dense model at a fraction of the per-token compute<Cite id="jiang-2024" />. For anyone running locally, this is the single most useful thing to understand. A 100B-total, 12B-active MoE gives you close-to-frontier quality at the speed of a 12B model, provided the full 100B fits in memory. Sheet 5 turns that into the arithmetic.
+Mixtral made the pattern ordinary in open weights: eight experts, two active per token, near the quality of a much larger dense model at a fraction of the per-token compute<Cite id="jiang-2024" />. For anyone running locally, this is the single most useful thing to understand. A 100B-total, 12B-active MoE gives you close-to-frontier quality at the speed of a 12B model, provided the full 100B fits in memory. Sheet 7 turns that into the arithmetic.
+
+The specifics of the routing vary and are worth a glance in the model card. Newer designs use many more, smaller experts — dozens or hundreds — and route to several per token, sometimes with a handful of always-on "shared" experts that every token passes through. The two numbers you care about survive all of that: total parameters, which set the memory footprint, and active parameters per token, which set the speed. When a card lists only total, look for the active count before you judge how fast it will run; a 30B-total MoE with 3B active behaves at the keyboard like a small model wearing a large coat.
 
 <BpFigure caption="FIG. 2 — DENSE READS EVERY WEIGHT PER TOKEN. MoE STORES MANY EXPERTS AND READS ONLY THE ROUTED FEW.">
   <svg viewBox="0 0 940 260">
@@ -128,29 +133,127 @@ Mixtral made the pattern ordinary in open weights: eight experts, two active per
   </svg>
 </BpFigure>
 
-<BpSection id="s3" num="03" label="Post-training" sheet="SHEET 3 OF 8" title="Base, instruct, chat, reasoning, abliterated" />
+<BpSection id="s3" num="03" label="Lineage" sheet="SHEET 3 OF 8" title="From pretraining to reasoning, and distillation" />
 
-Two models with the same parameter count can behave nothing alike, because the last training stage shapes behavior. A **base** model predicts the next token from raw text. It completes; it does not converse, and prompting it like a chatbot produces drift. **Instruction-tuned** models are trained on instruction-response pairs and human preference feedback so they follow requests and hold a helpful register<Cite id="ouyang-2022" />. **Chat** variants add a turn structure and a conversation template. **Reasoning** models are trained to emit a hidden thinking span before the answer, which raises accuracy on hard problems and spends tokens doing it.
+A model is built in stages, and the stage it stopped at is the field that most changes how it behaves. **Pretraining** runs next-token prediction over a large text corpus and produces a **base** model: it completes text and does not converse, so prompting it like a chatbot produces drift. **Instruction tuning** continues training on instruction-response pairs, and reinforcement learning from human feedback aligns the model toward preferred answers, producing an **instruct** or **chat** model that follows requests and holds a helpful register<Cite id="ouyang-2022" />. **Reasoning** training rewards a model for emitting a hidden thinking span before its visible answer, which raises accuracy on hard problems and spends tokens doing it. Two models with the same parameter count can behave nothing alike because they stopped at different stages.
 
-Then there are community modifications. A **fine-tune** continues training on a narrower distribution to specialize a base or instruct model. A **merge** blends the weights of several models. An **abliterated** model has had its refusal behavior surgically reduced: work on interpretability found that refusal is largely mediated by a single direction in activation space, and removing that direction drops most refusals without retraining<Cite id="arditi-2024" />. That is what the "abliterated" and "uncensored" tags mean in practice.
+**Distillation** is a separate lever, and it is worth understanding because it explains why some small models behave far above their size. Distillation transfers what a large **teacher** model knows into a smaller **student**<Cite id="hinton-2015" />. Instead of training the student only on hard labels — the single correct next token — it trains the student to match the teacher's full output distribution, the soft probabilities the teacher spreads across the whole vocabulary. That distribution carries much more information per example than a one-hot target: it records that the teacher thought the answer was probably *A*, plausibly *B*, and never *C*. The student learns the teacher's relative preferences, not only its top choice.
 
-<BpNote>Post-training changes behavior far more than knowledge. An instruction-tuned model knows roughly what its base knew; it has learned to present that knowledge on request. Choose the stage that matches how you will prompt, not the one with the most impressive tag.</BpNote>
+<BpNote>Distillation and quantization both shrink a model, but they change different fields. Distillation produces a genuinely smaller network — fewer parameters — trained to imitate a larger one. Quantization keeps the same parameters and stores each in fewer bits. A model can be both distilled and quantized; the two tags describe independent steps.</BpNote>
+
+Because it inherits structure the teacher already discovered, a distilled model usually outperforms a same-size model trained from scratch. DistilBERT reproduced most of BERT's performance with roughly 40% fewer parameters and ran faster for it<Cite id="sanh-2019" />. In consumer terms, a 7B or 8B "distill" of a much larger model can behave closer to a mid-size model than its parameter count suggests — you get some of the teacher's competence at the student's memory footprint and speed. That is a strong bargain on a laptop.
+
+The pattern now shows up most often in reasoning models, and it is written into the name. A large reasoning teacher generates long chains of thought, and a smaller student is fine-tuned on those traces until it reasons in the same style. On Hugging Face a tag like `DeepSeek-R1-Distill-Qwen-7B` reads as a Qwen-7B student taught to reason by a DeepSeek-R1 teacher: the architecture is Qwen, the behavior came from R1. Read a `Distill` field as student-then-teacher, and expect the student to carry the teacher's habits at the student's ceiling.
+
+Distillation is also why the small models you can run keep getting better without your machine changing. Frontier labs train an enormous flagship, then distill it into the compact sizes people actually deploy, so each generation of an 8B model starts from a stronger teacher than the last. The alignment steps and the reasoning steps described above can happen on the teacher, the student, or both — the model card is where a serious release records which. When a card says a small model was distilled from a named larger one, that lineage is a better predictor of behavior than the parameter count alone, and it is the kind of field a leaderboard rank throws away.
+
+<BpQA q="Is a distilled model just a smaller copy of the big one?">
+No. It is a separate, smaller network trained to imitate the teacher's outputs. It has less capacity, so it cannot match the teacher on the hardest cases; it captures the teacher's common behavior at a size you can actually run. Treat a distill as a strong small model with a familiar accent, not as the large model in miniature.
+</BpQA>
 
 <BpQA q="Why did a 'thinking' model return an empty answer when I capped its output?">
 Reasoning models spend output tokens on an internal thinking span before the visible reply. If the token limit is small, the whole budget can go to thinking and the answer field comes back empty. Give reasoning models a generous output budget, or use a non-reasoning variant when you want short, direct replies.
 </BpQA>
 
-The practical failure lines are specific. Loading a base model and expecting chat gets you rambling completions. Reaching for a reasoning model on a task that needs a one-line answer wastes latency and tokens. Picking an abliterated merge for a production feature inherits whatever the merge did to the model's calibration, with provenance that can be hard to reconstruct. The tag is information; read it as behavior, not as a quality score.
+<BpFigure caption="FIG. 3 — DISTILLATION: A LARGE TEACHER'S SOFT OUTPUT DISTRIBUTION TRAINS A SMALLER STUDENT, WHICH INHERITS BEHAVIOR ABOVE ITS PARAMETER COUNT.">
+  <svg viewBox="0 0 940 240">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={30} y={92} width={110} height={54}></rect>
+      <rect x={200} y={54} width={170} height={120}></rect>
+      <rect x={430} y={78} width={130} height={72}></rect>
+      <rect x={640} y={94} width={150} height={54}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.4}>
+      <path d="M457 140 V96 M480 140 V84 M503 140 V104 M526 140 V72 M549 140 V112"></path>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M140 119 H198 M370 114 H428 M560 116 H638"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M196 119 l-8 -4 v8 z M426 114 l-8 -4 v8 z M636 116 l-8 -4 v8 z"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={52} y={123}>TEXT</text>
+      <text x={252} y={118}>TEACHER</text>
+      <text x={690} y={123}>STUDENT</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor" opacity={0.75}>
+      <text x={438} y={172}>SOFT TARGETS</text>
+      <text x={30} y={206}>SOFT TARGETS CARRY THE TEACHER'S RELATIVE PREFERENCES, NOT ONLY THE TOP TOKEN</text>
+      <text x={30} y={228}>STUDENT · FEWER PARAMETERS · INHERITS STRUCTURE THE TEACHER ALREADY FOUND</text>
+    </g>
+  </svg>
+</BpFigure>
 
-<BpSection id="s4" num="04" label="Precision" sheet="SHEET 4 OF 8" title="Quantization trades bits for size and speed" />
+<BpSection id="s4" num="04" label="Modification" sheet="SHEET 4 OF 8" title="Abliteration, merges, and fine-tunes" />
 
-A trained weight is a number, stored by default in 16-bit floating point. **Quantization** stores it in fewer bits — 8, 6, 5, 4, sometimes 3 or 2 — with a small amount of per-block scaling metadata to preserve range. Fewer bits mean a smaller file, less memory traffic per token, and faster generation, paid for in precision. The research line runs from 8-bit inference that held accuracy at scale<Cite id="dettmers-2022" />, through post-training methods that quantize to 4 bits with careful error correction<Cite id="frantar-2022" />, to 4-bit representations designed so a model can still be trained through them<Cite id="dettmers-2023" />.
+Beyond the official training stages, the community modifies released weights, and those modifications carry their own tags. A **fine-tune** continues training on a narrower distribution to specialize a base or instruct model toward a domain, a format, or a persona. A **merge** blends the weights of two or more models — averaging or interpolating their tensors — to combine behaviors without any training at all. An **abliterated** model has had its refusal behavior removed by editing activations rather than by retraining. Each tag means a different thing was done to the weights.
 
-In the GGUF files most local runtimes load, you will see labels like `Q8_0`, `Q6_K`, `Q5_K_M`, `Q4_K_M`, `Q3_K_M`, `Q2_K`. The number is the approximate bits per weight; `_K` denotes the k-quant family that allocates bits unevenly across a block; `_S/_M/_L` are size variants. The useful mental model: each step down roughly shrinks the file and speeds generation, and quality erodes slowly at first, then sharply.
+Abliteration is the one worth understanding in mechanism, because it explains what the "uncensored" downloads actually are. Interpretability work found that in many chat models, refusal is largely mediated by a single direction in activation space: one linear feature whose presence pushes the model toward declining a request<Cite id="arditi-2024" />. You can estimate that direction from the difference between the model's activations on harmful and harmless prompts, then subtract it — orthogonalize the weights against it at every layer — and the model stops refusing, with no gradient training involved. The name is a blend of *ablate* and *obliterate*: the refusal direction is removed.
+
+<BpNote>"Uncensored" is a loose label for any model with reduced refusals, often produced by fine-tuning on a compliant dataset. "Abliterated" is the specific case where the refusal direction was removed by editing activations. A "merge" may fold an abliterated model into another to spread the behavior. Different mechanisms, different footprints on the model's calibration.</BpNote>
+
+Merging deserves its own note because it is common and invisible in the name. A merge combines the tensors of several models with no training: spherical interpolation blends two models weight-for-weight, and task arithmetic adds the difference a fine-tune introduced onto a different base, so a "coding" adjustment can be grafted onto a "chat" model. Merges can produce a capable model cheaply, and they can also produce a confident one that quietly lost a skill neither parent's card would predict. The only defense is the same one abliteration needs: read the card for what was combined, and test the result.
+
+Removing a direction is not free either. The same direction can carry signal the model relied on elsewhere, so abliteration can degrade calibration, weaken instruction-following, and remove refusals of genuinely bad requests you did want kept. Provenance compounds the risk: an abliterated merge inherits whatever both parents did, and the lineage can be hard to reconstruct from the filename alone. The org **huihui-ai** publishes many abliterated variants; they are useful for research into model behavior, for red-teaming, and for tasks where a well-meaning model over-refuses legitimate content — and a poor foundation for a production feature that needs stable, calibrated behavior. Editing a model's safety behavior is a choice you own the consequences of, so match the modification to a real need and keep the plain instruct model as your default.
+
+<BpQA q="Does 'abliterated' mean the model is better or worse?">
+Neither by default. It means refusal behavior was removed by editing activations. That helps when a model over-refuses legitimate work and hurts when the edit degrades calibration or removes refusals you wanted. The tag tells you what was changed, not whether it improved. Test an abliterated model against your task like any other candidate, and read the card for who produced it and how.
+</BpQA>
+
+<BpFigure caption="FIG. 4 — ABLITERATION: REFUSAL IS MEDIATED BY ONE DIRECTION r IN ACTIVATION SPACE. ORTHOGONALIZE THE WEIGHTS AGAINST r AND REFUSALS DROP WITHOUT RETRAINING.">
+  <svg viewBox="0 0 940 250">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={30} y={100} width={120} height={50}></rect>
+      <rect x={230} y={40} width={380} height={170}></rect>
+      <rect x={700} y={100} width={130} height={50}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M150 125 H228 M610 125 H698"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M226 125 l-8 -4 v8 z M696 125 l-8 -4 v8 z"></path>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.8}>
+      <path d="M270 190 L370 80"></path>
+    </g>
+    <g fill="currentColor">
+      <path d="M370 80 l-10 2 l6 6 z"></path>
+      <circle cx={470} cy={120} r={3.5}></circle>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={0.9} strokeDasharray="3 4" opacity={0.7}>
+      <path d="M470 120 L346 118"></path>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={44} y={129}>PROMPT</text>
+      <text x={712} y={129}>RESPONSE</text>
+      <text x={330} y={70}>r</text>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor" opacity={0.75}>
+      <text x={244} y={200}>ACTIVATION SPACE</text>
+      <text x={382} y={128}>ACTIVATION</text>
+      <text x={30} y={236}>REMOVING r DROPS REFUSALS · IT CAN ALSO DISTURB CALIBRATION AND WANTED REFUSALS</text>
+    </g>
+  </svg>
+</BpFigure>
+
+<BpSection id="s5" num="05" label="Precision" sheet="SHEET 5 OF 8" title="Quantization: bits per weight, k-quants, and the cliff" />
+
+A trained weight is a number, stored by default in 16-bit floating point (FP16 or BF16). **Quantization** stores it in fewer bits — 8, 6, 5, 4, sometimes 3 or 2 — together with a small amount of per-block scaling metadata: a shared scale, and often an offset, that maps the low-bit integers back to an approximate range. Fewer bits mean a smaller file, less memory traffic per token, and faster generation, paid for in precision. The research line runs from 8-bit inference that held accuracy at scale<Cite id="dettmers-2022" />, through post-training methods that quantize to 4 bits with careful error correction<Cite id="frantar-2022" />, to 4-bit representations designed so a model can still be trained through them<Cite id="dettmers-2023" />.
+
+In the GGUF files most local runtimes load, you will see labels like `Q8_0`, `Q6_K`, `Q5_K_M`, `Q4_K_M`, `Q3_K_M`, `Q2_K`. The number is the approximate bits per weight. The `_0` suffix is a legacy scheme that quantizes every weight in a block the same way. The `_K` suffix marks the **k-quant** family, which allocates bits unevenly across a block — spending more on the weights that matter and fewer on the rest — and holds more quality at the same average bit rate. The trailing `_S`, `_M`, or `_L` is the size variant within a k-quant level, trading a little more file size for a little more fidelity. So `Q4_K_M` reads as a medium 4-bit k-quant, which is the usual default.
+
+<BpNote>Weights are quantized in small blocks, commonly 32 weights, and each block carries its own scale. That per-block scaling is why a few unusually large values in one region do not wreck the precision of every other weight around them. A GGUF file is a single container holding those quantized blocks, their scales, the tokenizer, and the metadata a runtime needs — everything to load and run the model with no other files.</BpNote>
+
+A further refinement uses an **importance matrix**, or imatrix. The quantizer runs a calibration text through the model, measures which weights most affect the output, and protects those during quantization. Files built this way are often tagged `i1` or "imatrix," and the very low-bit i-quants — `IQ2`, `IQ3` — lean on the technique heavily, holding usable quality at bit rates where a plain quant collapses. At the same bit rate an imatrix quant generally beats a non-imatrix one; the gap is large below 4 bits and small at Q5 and above.
 
 <BpNote>Rules of thumb worth internalizing: Q8 is visually indistinguishable from full precision; Q6 and Q5 are near-lossless for most work; Q4 is the standard quality/size balance; Q3 is noticeably degraded; Q2 is a last resort to make something fit at all. A larger model at Q4 usually beats a smaller model at Q8 of the same family.</BpNote>
 
-<BpFigure caption="FIG. 3 — THE QUANTIZATION LADDER. FILE SIZE AND SPEED IMPROVE DOWN THE STEPS; QUALITY HOLDS, THEN FALLS OFF A CLIFF BELOW ~Q3.">
+Weights are the large cost, but they are not the only thing you can quantize. The key-value cache also grows with context, and most runtimes can store it at 8 or even 4 bits, trading a little quality for a much longer context in the same memory — a useful lever when a model fits but its context does not. And a subtlety behind all of this: quantizing weights is comparatively safe because a shared scale recovers most of their range, while quantizing the activations that flow through the model is harder, because a few outlier activations dominate and clip badly. That difference is what the research above navigates, and it is why 8-bit weights held accuracy long before 4-bit did<Cite id="dettmers-2022" />.
+
+One more split matters when you choose where to run. Three quantization families dominate, divided by hardware. **GPTQ** and **AWQ** are 4-bit schemes aimed at GPU serving stacks like vLLM and TGI: they keep weights in a form fast GPU kernels consume, and AWQ specifically protects the weights that activations lean on most. **GGUF** is the format for CPU-and-Metal runtimes — llama.cpp, LM Studio, Ollama — and it carries the full ladder from Q8 down to Q2. The practical rule is short: GGUF for a laptop, GPTQ or AWQ for a GPU box.
+
+<BpFigure caption="FIG. 5 — THE QUANTIZATION LADDER. FILE SIZE AND SPEED IMPROVE DOWN THE STEPS; QUALITY HOLDS, THEN FALLS OFF A CLIFF BELOW ~Q3.">
   <svg viewBox="0 0 940 240">
     <g fill="none" stroke="currentColor" strokeWidth={1.2}>
       <path d="M70 200 H880"></path>
@@ -183,51 +286,100 @@ In the GGUF files most local runtimes load, you will see labels like `Q8_0`, `Q6
   </svg>
 </BpFigure>
 
-<BpSection id="s5" num="05" label="The fit" sheet="SHEET 5 OF 8" title="Will it run? The memory and speed arithmetic" />
+The ladder also settles a recurring question: given a fixed memory budget, do you run a bigger model at a lower quant or a smaller model at a higher one? For models in the same family, the bigger model at Q4 usually wins over the smaller model at Q8, because parameters buy more capability than the last bits of precision preserve — until you drop past Q3, where the bigger model's damage overtakes the smaller model's headroom. The demo makes the trade concrete: set a memory limit, then watch which rung of a large model still fits and what it costs in quality against a small model sitting comfortably at Q6.
+
+<QuantLadderDemo fig={6} />
+
+<BpSection id="s6" num="06" label="Sourcing" sheet="SHEET 6 OF 8" title="Hugging Face: finding and vetting the file" />
+
+Open weights are distributed as **repositories**, most of them on the Hugging Face Hub. A repo lives under an **org** or user — the namespace before the slash in `meta-llama/Llama-3.3-70B-Instruct` — and that namespace is your first provenance signal: the original lab, or a re-packager working from it. Inside, the repo carries the weights, a config describing the architecture, a tokenizer, a license, and a **model card**, which is the README. Reading the card is the step most people skip and most regret skipping.
+
+Read the model card for what the filename omits: the license, the base model this one derives from, how any merge or abliteration was produced, the intended use, and often prompt-format notes and benchmark numbers. A capable model with an unusable license or an unexplained lineage is a poor foundation regardless of how it scores.
+
+Two file formats dominate, split by where they run. **Safetensors** holds weights at full or near-full precision in a safe, memory-mappable container; it is what GPU serving stacks and fine-tuning load, and what the original lab usually publishes. The "safe" in the name is literal: it replaced older Python pickle checkpoints, which could execute arbitrary code on load, so a safetensors file carries data only and cannot run anything when you open it. **GGUF** is the quantized single-file format that local CPU-and-Metal runtimes load, and it is what most people run at home. The original repo is usually safetensors; the GGUF you actually download is usually published by a separate quantization provider who converted it.
+
+<BpNote>Knowing the reliable quantizers saves time. **bartowski** and **mradermacher** maintain complete, correctly-labeled GGUF ladders (mradermacher also publishes imatrix "i1" quants). **unsloth** publishes optimized quants and fine-tuning-ready weights. **DavidAU** publishes experimental merges and tuned variants. **huihui-ai** publishes abliterated variants. Pick a provider whose files are clearly labeled and whose card names the source model.</BpNote>
+
+A few repo details trip up first-timers. Large weight files are **split into numbered shards** named like `...-00001-of-00003.gguf`; the runtime reassembles them from the first, so download the whole set rather than the one file whose name you recognize. A vision-capable model ships an extra **mmproj** file — the multimodal projector that maps image features into the language model — which you only need, and must load alongside the weights, if you want image input. Some repos are **gated**: you request access, agree to the terms, and the org or an automated gate grants it before the download unlocks.
+
+Licenses vary more than the phrase "open weights" suggests. Some open-weight models are permissive; others restrict commercial use, set monthly-active-user thresholds above which you need a separate agreement, or forbid training other models on their outputs. Open weights is not the same as open source. Read the license as a constraint you own, the same way you read the memory number.
+
+<BpQA q="There are twelve quantizations of the same model. Which one do I pull?">
+Start from the fit equation, not the top of the list. Take the largest quantization that leaves comfortable room for your context and the operating system — often Q5 or Q6 on a big-memory machine, Q4 on a tighter one. Prefer an imatrix build at the low end. Pull that, test it on your task, and only move down a rung if you need more speed or headroom.
+</BpQA>
+
+<BpFigure caption="FIG. 7 — ANATOMY OF A HUGGING FACE REPO: ORG NAMESPACE, THE FILES A RUNTIME NEEDS, AND THE CARD THAT CARRIES LICENSE AND PROVENANCE.">
+  <svg viewBox="0 0 940 300">
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={30} y={40} width={520} height={230}></rect>
+      <rect x={30} y={40} width={520} height={38}></rect>
+    </g>
+    <g className="bp-svg-t12" fill="currentColor">
+      <text x={48} y={65}>meta-llama / Llama-3.3-70B-Instruct</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} opacity={0.7}>
+      <path d="M50 108 H530 M50 140 H530 M50 172 H530 M50 204 H530 M50 236 H530"></path>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor">
+      <text x={50} y={102}>config.json</text>
+      <text x={50} y={134}>tokenizer.json</text>
+      <text x={50} y={166}>model-00001-of-00003.safetensors</text>
+      <text x={50} y={198}>README.md — MODEL CARD</text>
+      <text x={50} y={230}>model-Q4_K_M.gguf · mmproj.gguf</text>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1.2}>
+      <rect x={620} y={54} width={290} height={46}></rect>
+      <rect x={620} y={122} width={290} height={46}></rect>
+      <rect x={620} y={190} width={290} height={46}></rect>
+    </g>
+    <g fill="none" stroke="currentColor" strokeWidth={1} strokeDasharray="4 4" className="bp-dash">
+      <path d="M550 190 H620 M550 220 H600 V145 H620 M550 226 H590 V213 H620"></path>
+    </g>
+    <g className="bp-svg-t10" fill="currentColor">
+      <text x={634} y={82}>LICENSE — COMMERCIAL LIMITS · USER THRESHOLDS</text>
+      <text x={634} y={150}>GATED — REQUEST ACCESS · AGREE TO TERMS</text>
+      <text x={634} y={218}>GGUF LADDER — PUBLISHED BY A QUANTIZER</text>
+    </g>
+    <text x={30} y={294} className="bp-svg-t10" fill="currentColor" opacity={0.75}>VET LAB-FIRST FOR LINEAGE AND LICENSE, QUANTIZER-SECOND FOR THE FILE YOU RUN</text>
+  </svg>
+</BpFigure>
+
+<BpSection id="s7" num="07" label="The fit" sheet="SHEET 7 OF 8" title="Will it run? The memory and speed arithmetic" />
 
 Two numbers decide whether a model is usable on a given machine, and both are readable before you download. The first is whether it fits. Weight memory is close to parameters times bits-per-weight divided by eight, plus a key-value cache that grows with context length and the number of concurrent requests. The sum has to sit inside usable memory — for a GPU, its VRAM; for Apple Silicon, the share of unified memory the system will wire for the GPU.
 
-<BpEquation tag="EQ. 5.1">
+<BpEquation tag="EQ. 7.1">
 memory ≈ (parameters × bits_per_weight ÷ 8) + KV_cache(context, concurrency) + overhead
 </BpEquation>
 
 The second number is speed. Token generation is bound by memory bandwidth, because each token streams the active weights out of memory. Divide the machine's bandwidth by the bytes read per token and you get an order-of-magnitude tokens-per-second, before software overhead. This is why a mixture-of-experts model is the sweet spot on a big-memory machine: total parameters set the fit, but only the active parameters are streamed per token, so a 100B-total model with 12B active reads like a 12B model and generates several times faster than a 70B dense one that codes no better.
 
+Two speeds hide inside that one number, and they fail differently. **Prefill** reads your whole prompt at once and is compute-bound, so a long prompt or a big document adds a pause before the first token appears. **Decode** produces the reply one token at a time and is the bandwidth-bound rate above. A model can start slowly on a long prompt yet stream quickly once it begins, or the reverse — worth knowing when a run feels sluggish, because the fix differs. Concurrency changes the arithmetic again: serving several requests at once shares the weight reads across them and raises total throughput, at the cost of a larger key-value cache and more memory. On a single-user laptop, ignore concurrency and read the decode rate; on a shared host, it is the lever that pays for a GPU.
+
 <BpNote>On Apple Silicon the operating system caps how much unified memory the GPU may wire — near 75% by default. Raising that cap (`iogpu.wired_limit_mb`) is often the difference between a model loading and failing, and is the single most useful tuning step for large local models.</BpNote>
 
-<ModelFitDemo fig={4} />
+<ModelFitDemo fig={8} />
 
 <BpQA q="A model downloaded fine but generates at reading speed. What went wrong?">
 Nothing broke — you are bandwidth-bound. A dense model streams all its weights for every token, so a large dense model on a modest memory bus produces a few tokens per second by design. Either drop to a smaller or more heavily quantized model, or switch to a mixture-of-experts model with low active parameters, which reads far less per token at the same total size.
 </BpQA>
 
-<BpSection id="s6" num="06" label="Sourcing" sheet="SHEET 6 OF 8" title="Where models live, and which file to pull" />
-
-Open weights are distributed as repositories, most of them on the Hugging Face Hub. A repository carries the weights, a config describing the architecture, a tokenizer, a license, and a model card. Two file formats dominate. **Safetensors** holds weights at full or near-full precision and is what GPU serving stacks and fine-tuning load. **GGUF** is the quantized, single-file format that local CPU-and-Metal runtimes load, and it is what most people run at home.
-
-The same model is usually re-published by quantization providers who convert it to a full ladder of GGUF sizes. Recognizing the reliable ones saves time: several community quantizers maintain complete, correctly-labeled ladders, and a large weight file is often split into numbered shards that the runtime reassembles from the first. A repository may also carry auxiliary files — a multimodal projector for vision, for instance — that you only need if you want that capability.
-
-<BpNote>Read the model card for two things the filename omits: the license (some open-weight models restrict commercial use or set user thresholds) and the provenance of any merge or abliteration (which base, modified how, by whom). A capable model with an unusable license or an unexplained lineage is a poor foundation.</BpNote>
-
-<BpQA q="There are twelve quantizations of the same model. Which one do I pull?">
-Start from the fit equation, not the top of the list. Take the largest quantization that leaves comfortable room for your context and the operating system — often Q5 or Q6 on a big-memory machine, Q4 on a tighter one. Pull that, test it on your task, and only move down a rung if you need more speed or headroom.
-</BpQA>
-
-<BpSection id="s7" num="07" label="Testing" sheet="SHEET 7 OF 8" title="Test on your task, not on a leaderboard" />
+<BpSection id="s8" num="08" label="Test & boundary" sheet="SHEET 8 OF 8" title="Test on your task, then choose" />
 
 A public benchmark measures a task that someone else defined, and the popular suites leak into training corpora over time, so a high score can reflect exposure as much as ability. A model that tops a coding leaderboard may still fail your codebase's conventions, your prompt format, or your latency budget. The rank narrows the field. Your own test decides.
 
 The test does not need a framework. Collect ten to thirty prompts that represent the work you actually do, each with a known-good or clearly-judgeable answer. Run every candidate through the same set. Score each output pass or fail against what you needed, and record two operational numbers alongside: tokens per second and, for hosted models, cost per run. A model that passes nine of ten of your prompts at usable speed is a better choice than one that ranks higher on a suite you will never run.
 
+Pass or fail beats a numeric score because it forces you to write down what "good" means before you look at the output, which is where honesty lives. Include the cases that break models: your exact output format, a long input near your real context length, an instruction the model should refuse or push back on, and one task from the hard end of your work rather than the easy end. Keep the prompts and the expected answers in a plain file under version control so the set is a fixed target and not a memory. When a tempting new model appears, the test is already written, and the only question is whether it earns the swap.
+
 <BpNote>A single impressive answer is not evidence; models vary run to run, and one lucky sample hides the failures. The smallest honest test is a fixed prompt set scored the same way for every candidate. Keep it in a file and re-run it whenever a new model tempts you.</BpNote>
 
-<BpFigure caption="FIG. 5 — THE PERSONAL EVAL: FIXED PROMPTS, EVERY CANDIDATE, SAME SCORING, WITH SPEED AND COST RECORDED BESIDE PASS/FAIL.">
+<BpFigure caption="FIG. 9 — THE PERSONAL EVAL: FIXED PROMPTS, EVERY CANDIDATE, SAME SCORING, WITH SPEED AND COST RECORDED BESIDE PASS/FAIL.">
   <svg viewBox="0 0 940 220">
     <g fill="none" stroke="currentColor" strokeWidth={1.2}>
       <rect x={40} y={50} width={150} height={110}></rect>
       <rect x={300} y={40} width={120} height={40}></rect>
       <rect x={300} y={92} width={120} height={40}></rect>
-      <rect x={300} y={130} width={120} height={0}></rect>
       <rect x={520} y={50} width={160} height={110}></rect>
       <rect x={760} y={70} width={140} height={70}></rect>
     </g>
@@ -251,9 +403,9 @@ The test does not need a framework. Collect ten to thirty prompts that represent
   </svg>
 </BpFigure>
 
-<BpSection id="s8" num="08" label="The boundary" sheet="SHEET 8 OF 8" title="A procedure for choosing" />
+Reading the fields turns into a repeatable procedure. **Define the task and its constraints** first: the format you need, the latency you will tolerate, the privacy and license terms, the budget. **Shortlist by specification** — filter to models whose size and post-training stage match those constraints before you look at any rank, and read the tags for distillation, merges, or abliteration so you know what each candidate is. **Quantize to fit** — pick the quantization that lands inside your memory with room for context, using the fit equation rather than the largest download. **Test on your own eval** — run the shortlist through your prompt set and score it the same way. **Deploy the one that passes**, and keep the eval so the next release has to earn the swap.
 
-Reading the fields turns into a repeatable procedure. **Define the task and its constraints** first: the format you need, the latency you will tolerate, the privacy and license terms, the budget. **Shortlist by specification** — filter to models whose size and post-training stage match those constraints before you look at any rank. **Quantize to fit** — pick the quantization that lands inside your memory with room for context, using the fit equation rather than the largest download. **Test on your own eval** — run the shortlist through your prompt set and score it the same way. **Deploy the one that passes**, and keep the eval so the next release has to earn the swap.
+Keep the eval after you choose, because the decision is not permanent. Models are released weekly, quantizers re-quantize, and your own tasks drift; the prompt set is what lets you re-run the comparison in an afternoon instead of re-forming an opinion from scratch. Re-test when a model in your family gets a new version, when a task starts failing in production, or when a smaller model appears that might free up memory for a longer context. The eval turns "should I switch?" from a gut call into a measurement.
 
 The last field is the boundary between local and hosted. A big-memory local machine has a real ceiling: the best model you can run is the largest capable one whose weights fit, which for a mixture-of-experts design can be near-frontier and fast, while the very largest open models stay out of reach at usable quantization and belong on a GPU host or an API. Local buys privacy, zero marginal cost, and offline use; hosted buys the frontier models and elastic concurrency. Most serious setups end up with both, and the model sheet is how you decide which job goes where. For the memory-and-bandwidth side of that ceiling, [The Transformer](/blog/the-transformer) covers how the weights and cache are used per token; for fitting evidence into a bounded prompt once a model is chosen, [The RAG Pipeline](/blog/the-rag-pipeline) covers the context budget; and [My 2026 AI Engineer Setup](/blog/2026-ai-engineer-setup) shows where these choices land in daily practice.
 

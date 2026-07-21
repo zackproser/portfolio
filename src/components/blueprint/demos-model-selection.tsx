@@ -166,3 +166,109 @@ export function ModelFitDemo({ fig = 4 }: { fig?: number } = {}) {
     </div>
   )
 }
+
+/**
+ * QuantLadderDemo — the size/quality/speed trade down the quantization ladder.
+ * File size = params × bits ÷ 8 (real arithmetic). Quality retention and the
+ * bandwidth-relative speed multiplier are hand-set illustrative values that
+ * mirror the well-known shape: near-lossless to ~Q4, then a cliff. Not a benchmark.
+ */
+
+type Rung = {
+  label: string
+  bits: number // bits per weight
+  quality: number // illustrative % of FP16 quality retained
+  note: string
+}
+
+const LADDER: Rung[] = [
+  { label: 'FP16', bits: 16, quality: 100, note: 'full precision · reference' },
+  { label: 'Q8_0', bits: 8.5, quality: 99.5, note: 'indistinguishable from FP16' },
+  { label: 'Q6_K', bits: 6.6, quality: 99, note: 'near-lossless' },
+  { label: 'Q5_K_M', bits: 5.5, quality: 98, note: 'near-lossless · roomy default' },
+  { label: 'Q4_K_M', bits: 4.5, quality: 96, note: 'standard quality/size balance' },
+  { label: 'IQ3_M', bits: 3.7, quality: 90, note: 'imatrix holds the low end' },
+  { label: 'Q3_K_M', bits: 3.4, quality: 87, note: 'noticeably degraded' },
+  { label: 'Q2_K', bits: 2.6, quality: 71, note: 'last resort to make it fit' },
+]
+
+export function QuantLadderDemo({ fig = 6 }: { fig?: number } = {}) {
+  const [params, setParams] = useState(32) // B
+  const [mem, setMem] = useState(24) // usable GB
+
+  const label: CSSProperties = { fontSize: 11, letterSpacing: '0.12em', opacity: 0.7, textTransform: 'uppercase' }
+  const val: CSSProperties = { fontVariantNumeric: 'tabular-nums', fontWeight: 600 }
+  const row: CSSProperties = { display: 'flex', alignItems: 'center', gap: 12, margin: '10px 0' }
+  const cell: CSSProperties = { padding: '6px 8px', fontVariantNumeric: 'tabular-nums' }
+
+  return (
+    <div style={{ border: '1px solid currentColor', padding: 18, margin: '1.5rem 0', fontSize: 14 }}>
+      <div style={{ ...label, marginBottom: 10 }}>
+        FIG. {fig} — QUANTIZATION LADDER · SIZE, QUALITY, AND SPEED PER RUNG
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '0 24px', marginBottom: 8 }}>
+        <div style={row}>
+          <span style={{ ...label, width: 120 }}>Model size</span>
+          <input type="range" min={1} max={400} value={params} onChange={(e) => setParams(+e.target.value)} style={{ flex: 1 }} />
+          <span style={{ ...val, width: 56, textAlign: 'right' }}>{params}B</span>
+        </div>
+        <div style={row}>
+          <span style={{ ...label, width: 120 }}>Usable memory</span>
+          <input type="range" min={8} max={192} step={8} value={mem} onChange={(e) => setMem(+e.target.value)} style={{ flex: 1 }} />
+          <span style={{ ...val, width: 56, textAlign: 'right' }}>{mem}GB</span>
+        </div>
+      </div>
+
+      <div className="bp-scroll-x" style={{ overflowX: 'auto' }}>
+        <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: 520, fontSize: 13 }}>
+          <thead>
+            <tr style={{ ...label, textAlign: 'left' }}>
+              <th style={cell}>Quant</th>
+              <th style={cell}>bpw</th>
+              <th style={cell}>Size</th>
+              <th style={cell}>Quality</th>
+              <th style={cell}>Speed</th>
+              <th style={cell}>Fits?</th>
+            </tr>
+          </thead>
+          <tbody>
+            {LADDER.map((r) => {
+              const sizeGB = (params * r.bits) / 8
+              const needGB = sizeGB + 2 // + overhead
+              const fits = needGB <= mem
+              const speed = 16 / r.bits // relative to FP16, bandwidth-bound
+              return (
+                <tr key={r.label} style={{ borderTop: '1px solid currentColor', opacity: fits ? 1 : 0.5 }}>
+                  <td style={cell}>
+                    <span style={val}>{r.label}</span>
+                    <div style={{ ...label, opacity: 0.5, letterSpacing: '0.04em' }}>{r.note}</div>
+                  </td>
+                  <td style={cell}>{r.bits.toFixed(1)}</td>
+                  <td style={cell}>{sizeGB.toFixed(1)} GB</td>
+                  <td style={cell}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ position: 'relative', display: 'inline-block', width: 70, height: 8, border: '1px solid currentColor' }}>
+                        <span style={{ position: 'absolute', inset: 0, width: `${r.quality}%`, background: 'currentColor', opacity: r.quality >= 95 ? 0.6 : r.quality >= 85 ? 0.4 : 0.22 }} />
+                      </span>
+                      <span style={val}>{r.quality}%</span>
+                    </div>
+                  </td>
+                  <td style={cell}>{speed.toFixed(1)}×</td>
+                  <td style={{ ...cell, ...val }}>{fits ? '✓' : '✗'}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{ ...label, marginTop: 14, opacity: 0.55, lineHeight: 1.5 }}>
+        ILLUSTRATIVE — NOT A BENCHMARK. Size is exact arithmetic (params × bpw ÷ 8). Quality percentages are
+        hand-set to show the shape — near-lossless to about Q4, then a cliff — not measured scores. Speed is the
+        bandwidth-bound multiplier versus FP16; the imatrix rung (IQ3_M) holds more quality than a plain quant at
+        a similar bit rate. Fit adds a flat 2 GB of overhead and ignores the KV cache.
+      </div>
+    </div>
+  )
+}
