@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-07-20",
   "description": "Every agent I use — terminal, browser, phone, across Anthropic and OpenAI — started every conversation knowing nothing about me. So I built one shared memory they all plug into: a technical blueprint for a provider-agnostic personal context engine — one Postgres table, a hybrid retriever with an LLM reranker, and a scope wall enforced by the database, not by prompts.",
-  "image": "https://zackproser.b-cdn.net/images/blueprint-ctx-personal-context-engine-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-ctx-personal-context-engine-v2-hero.webp",
   "tags": ["AI", "Agents", "RAG", "Postgres", "MCP", "Cloudflare", "Applied AI", "Retrieval"],
   "blogStyle": "blueprint",
   "blueprint": {

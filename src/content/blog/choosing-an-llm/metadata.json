@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-07-21",
   "description": "The complete guide to choosing an LLM as a consumer: read the name field by field — parameters, dense versus MoE, training stage, distillation, abliteration and merges, quantization (GGUF, k-quants, imatrix, GPTQ/AWQ) — do the memory math that decides what runs locally, source and vet a model on Hugging Face, then test it on your own task instead of trusting a benchmark.",
-  "image": "https://zackproser.b-cdn.net/images/blueprint-choosing-an-llm-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-choosing-an-llm-v2-hero.webp",
   "tags": [
     "AI",
     "LLMs",

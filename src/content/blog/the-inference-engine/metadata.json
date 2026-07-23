@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-07-19",
   "description": "A worked guide to LLM inference memory, KV-cache paging, continuous batching, prefill, decode, quantization, and latency-capacity planning.",
-  "image": "https://zackproser.b-cdn.net/images/blueprint-the-inference-engine-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-inference-engine-v2-hero.webp",
   "tags": [
     "AI",
     "LLM Inference",

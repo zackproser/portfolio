@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-07-19",
   "description": "How tokenization works: BPE tokenizer training, ordered merges, byte fallback, token IDs, costs, multilingual tradeoffs, and why LLMs use tokens.",
-  "image": "https://zackproser.b-cdn.net/images/blueprint-the-tokenizer-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-tokenizer-v2-hero.webp",
   "tags": [
     "AI",
     "Tokenization",

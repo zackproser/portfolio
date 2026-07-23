@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-07-19",
   "description": "Trace an AI benchmark score from sampled tasks through prompts, scorers, aggregation, uncertainty, contamination, and the decision it can support.",
-  "image": "https://zackproser.b-cdn.net/images/blueprint-the-benchmark-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-benchmark-v2-hero.webp",
   "tags": ["AI", "Evaluation", "Benchmarks", "Model Selection", "Measurement"],
   "blogStyle": "blueprint",
   "blueprint": {

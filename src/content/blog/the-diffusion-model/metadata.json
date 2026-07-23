@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-07-19",
   "description": "A coordinate-consistent visual guide to diffusion and flow: forward noise, learned denoising, guidance, latent compression, DiT, sampling, and flow matching.",
-  "image": "https://zackproser.b-cdn.net/images/blueprint-the-diffusion-model-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-diffusion-model-v2-hero.webp",
   "tags": ["AI", "Diffusion Models", "Generative Vision", "Flow Matching", "Computer Vision"],
   "blogStyle": "blueprint",
   "blueprint": {

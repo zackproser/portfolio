@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-07-18",
   "description": "From open-domain question answering to production RAG: ingestion, chunking, BM25 and dense retrieval, reranking, context assembly, citations, evaluation, and failure tracing.",
-  "image": "https://zackproser.b-cdn.net/images/blueprint-the-rag-pipeline-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-rag-pipeline-v2-hero.webp",
   "tags": [
     "AI",
     "RAG",
