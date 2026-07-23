@@ -1,0 +1,59 @@
+<svg viewBox="0 0 940 300" width="100%" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+  <!-- boxes: input X, three projections Q/K/V, QK^T, softmax, output -->
+  <g stroke="currentColor" stroke-width="1.5">
+    <rect x="30" y="115" width="80" height="70"/>
+    <rect x="215" y="30" width="76" height="44"/>
+    <rect x="215" y="128" width="76" height="44"/>
+    <rect x="215" y="226" width="76" height="44"/>
+    <rect x="400" y="41" width="120" height="50"/>
+    <rect x="580" y="41" width="110" height="50"/>
+    <rect x="850" y="125" width="70" height="50"/>
+    <circle cx="790" cy="150" r="28"/>
+  </g>
+  <!-- flow paths -->
+  <g stroke="currentColor" stroke-width="1.4">
+    <path d="M110 150 H162 V52 H215"/>
+    <path d="M110 150 H215"/>
+    <path d="M110 150 H162 V248 H215"/>
+    <path d="M291 52 H400"/>
+    <path d="M291 150 H352 V77 H400"/>
+    <path d="M520 66 H580"/>
+    <path d="M690 66 H790 V122"/>
+    <path d="M291 248 H790 V178"/>
+    <path d="M818 150 H850"/>
+  </g>
+  <!-- arrowheads -->
+  <g fill="currentColor" stroke="none">
+    <path d="M215 52 l-9 -5 v10 z"/>
+    <path d="M215 150 l-9 -5 v10 z"/>
+    <path d="M215 248 l-9 -5 v10 z"/>
+    <path d="M400 52 l-9 -5 v10 z"/>
+    <path d="M400 77 l-9 -5 v10 z"/>
+    <path d="M580 66 l-9 -5 v10 z"/>
+    <path d="M790 122 l-5 -9 h10 z"/>
+    <path d="M790 178 l-5 9 h10 z"/>
+    <path d="M850 150 l-9 -5 v10 z"/>
+  </g>
+  <!-- orange accent: softmax, the heart of attention -->
+  <g fill="var(--og-accent)" stroke="none">
+    <circle cx="635" cy="30" r="6"/>
+  </g>
+  <!-- labels -->
+  <g fill="currentColor" stroke="none" style="font:600 22px 'JetBrains Mono',monospace">
+    <text x="70" y="158" text-anchor="middle">X</text>
+    <text x="253" y="60" text-anchor="middle">Q</text>
+    <text x="253" y="158" text-anchor="middle">K</text>
+    <text x="253" y="256" text-anchor="middle">V</text>
+    <text x="790" y="158" text-anchor="middle">&#931;</text>
+    <text x="885" y="158" text-anchor="middle">out</text>
+  </g>
+  <g fill="currentColor" stroke="none" style="font:600 15px 'JetBrains Mono',monospace">
+    <text x="460" y="71" text-anchor="middle">QK&#8868;/&#8730;d_k</text>
+  </g>
+  <g fill="var(--og-accent)" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
+    <text x="635" y="72" text-anchor="middle">softmax</text>
+  </g>
+  <g fill="currentColor" stroke="none" opacity="0.7" style="font:500 13px 'JetBrains Mono',monospace">
+    <text x="70" y="178" text-anchor="middle">n &#215; d</text>
+  </g>
+</svg>

@@ -1,0 +1,40 @@
+<svg viewBox="0 0 940 330" width="100%" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+  <!-- axes -->
+  <g stroke="currentColor" stroke-width="1.5" opacity="0.8">
+    <path d="M90 40 V262 H870"/>
+  </g>
+  <!-- near-lossless band bracket over the plateau -->
+  <g stroke="currentColor" stroke-width="1.2" opacity="0.55">
+    <path d="M100 58 v-10 H600 v10"/>
+  </g>
+  <!-- the quality staircase: flat plateau Q8..Q4, then the cliff at Q3, Q2 -->
+  <g stroke="currentColor" stroke-width="3">
+    <path d="M100 90 H600 V160 H730 V228 H860"/>
+  </g>
+  <!-- quant tick marks -->
+  <g stroke="currentColor" stroke-width="1.2" opacity="0.5">
+    <path d="M150 262 v10 M280 262 v10 M410 262 v10 M540 262 v10 M670 262 v10 M800 262 v10"/>
+  </g>
+  <!-- cliff accent dot + drop marker -->
+  <g fill="var(--og-accent)" stroke="none">
+    <circle cx="600" cy="90" r="6"/>
+    <circle cx="730" cy="160" r="6"/>
+  </g>
+  <!-- labels -->
+  <g fill="currentColor" stroke="none" style="font:600 22px 'JetBrains Mono',monospace">
+    <text x="150" y="292" text-anchor="middle">Q8</text>
+    <text x="280" y="292" text-anchor="middle">Q6</text>
+    <text x="410" y="292" text-anchor="middle">Q5</text>
+    <text x="540" y="292" text-anchor="middle">Q4</text>
+    <text x="670" y="292" text-anchor="middle">Q3</text>
+    <text x="800" y="292" text-anchor="middle">Q2</text>
+  </g>
+  <g fill="currentColor" stroke="none" opacity="0.75" style="font:500 18px 'JetBrains Mono',monospace">
+    <text x="350" y="40" text-anchor="middle">NEAR-LOSSLESS BAND</text>
+    <text x="46" y="150" text-anchor="middle" transform="rotate(-90 46 150)">QUALITY →</text>
+    <text x="620" y="322" text-anchor="middle">FILE SIZE · SPEED →</text>
+  </g>
+  <g fill="var(--og-accent)" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
+    <text x="748" y="150">QUALITY CLIFF</text>
+  </g>
+</svg>

@@ -1,0 +1,60 @@
+<svg viewBox="0 0 940 300" width="100%" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+  <!-- zone labels -->
+  <g fill="currentColor" stroke="none" opacity="0.7" style="font:500 17px 'JetBrains Mono',monospace">
+    <text x="175" y="36" text-anchor="middle">UNTRUSTED</text>
+    <text x="715" y="36" text-anchor="middle">TRUSTED</text>
+  </g>
+
+  <!-- untrusted document / tool output -->
+  <g stroke="currentColor" stroke-width="2.5">
+    <rect x="70" y="86" width="205" height="120"/>
+  </g>
+  <g stroke="currentColor" stroke-width="2" opacity="0.55">
+    <path d="M92 116 H250 M92 146 H232 M92 176 H250"/>
+  </g>
+
+  <!-- injection attempt: arrow from doc toward the wall, stopped -->
+  <g stroke="currentColor" stroke-width="2" stroke-dasharray="7 5">
+    <path d="M275 146 H450"/>
+  </g>
+  <g fill="currentColor" stroke="none">
+    <path d="M452 146 l-12 -5 v10 z"/>
+  </g>
+
+  <!-- the wall / trust boundary -->
+  <g stroke="currentColor" stroke-width="7">
+    <path d="M470 50 V258"/>
+  </g>
+  <g stroke="currentColor" stroke-width="1.5" opacity="0.5">
+    <path d="M461 90 H479 M461 130 H479 M461 170 H479 M461 210 H479"/>
+  </g>
+
+  <!-- blocked point: orange stop cross on the wall -->
+  <g fill="var(--og-accent)" stroke="none">
+    <rect x="456" y="143" width="28" height="6" transform="rotate(45 470 146)"/>
+    <rect x="456" y="143" width="28" height="6" transform="rotate(-45 470 146)"/>
+  </g>
+
+  <!-- trusted zone: agent + tools -->
+  <g stroke="currentColor" stroke-width="2.5">
+    <rect x="545" y="92" width="165" height="108"/>
+    <rect x="755" y="108" width="125" height="76"/>
+  </g>
+  <g stroke="currentColor" stroke-width="2">
+    <path d="M710 146 H753"/>
+  </g>
+  <g fill="currentColor" stroke="none">
+    <path d="M753 146 l-12 -5 v10 z"/>
+  </g>
+
+  <!-- labels -->
+  <g fill="currentColor" stroke="none" style="font:600 20px 'JetBrains Mono',monospace">
+    <text x="627" y="152" text-anchor="middle">AGENT</text>
+    <text x="817" y="152" text-anchor="middle">TOOLS</text>
+  </g>
+  <g fill="currentColor" stroke="none" opacity="0.7" style="font:500 15px 'JetBrains Mono',monospace">
+    <text x="172" y="230" text-anchor="middle">TOOL OUTPUT</text>
+    <text x="360" y="132" text-anchor="middle">INJECTION</text>
+    <text x="498" y="154" text-anchor="middle" transform="rotate(-90 498 154)">TRUST BOUNDARY</text>
+  </g>
+</svg>

@@ -1,0 +1,58 @@
+{
+  "title": "The Model Sheet",
+  "author": "Zachary Proser",
+  "date": "2026-07-21",
+  "description": "The complete guide to choosing an LLM as a consumer: read the name field by field — parameters, dense versus MoE, training stage, distillation, abliteration and merges, quantization (GGUF, k-quants, imatrix, GPTQ/AWQ) — do the memory math that decides what runs locally, source and vet a model on Hugging Face, then test it on your own task instead of trusting a benchmark.",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-choosing-an-llm-hero.webp",
+  "tags": [
+    "AI",
+    "LLMs",
+    "Local Inference",
+    "Quantization",
+    "Model Selection"
+  ],
+  "keywords": [
+    "how to choose an LLM",
+    "local LLM",
+    "quantization",
+    "GGUF",
+    "k-quants",
+    "imatrix quant",
+    "GPTQ",
+    "AWQ",
+    "mixture of experts",
+    "MoE",
+    "dense vs MoE",
+    "model distillation",
+    "abliterated model",
+    "uncensored LLM",
+    "model merging",
+    "Hugging Face",
+    "safetensors",
+    "instruction tuning",
+    "reasoning model",
+    "local vs hosted LLM",
+    "bits per weight",
+    "VRAM requirements"
+  ],
+  "blogStyle": "blueprint",
+  "blueprint": {
+    "number": "006",
+    "subject": "MODEL SELECTION",
+    "readTime": "20 MIN",
+    "eyebrow": "Local + hosted · Reading the datasheet",
+    "subtitle": "A model's name hides how it was built, modified, and quantized — the fields that decide whether it fits your machine, your task, and your budget.",
+    "rfiSuggestions": [
+      "Dense or MoE for a 128GB machine?",
+      "What does an abliterated or distilled model actually change?",
+      "Which quantization keeps enough quality for coding?",
+      "How do I test a model on my own task instead of trusting a leaderboard?"
+    ],
+    "nextDrawing": {
+      "number": "009",
+      "title": "The Adapter",
+      "subject": "FINE-TUNING",
+      "status": "planned"
+    }
+  }
+}
