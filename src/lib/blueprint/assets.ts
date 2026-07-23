@@ -38,4 +38,9 @@ export const ASSET_REGISTRY: Record<string, BlueprintAsset> = {
     drawingCode: 'TDD-014',
     fileUrl: 'https://zackproser.b-cdn.net/plates/bp-014-benchmark-pack.pdf',
   },
+  'bp-015-ctx-field-notes': {
+    name: 'ctx Field Notes: Anatomy of a Good Memory',
+    drawingCode: 'TDD-015',
+    fileUrl: 'https://zackproser.b-cdn.net/plates/bp-015-ctx-field-notes.pdf',
+  },
 }
