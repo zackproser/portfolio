@@ -1,5 +1,6 @@
 import { createMetadata } from '@/utils/createMetadata'
 import Image from 'next/image'
+import Link from 'next/link'
 import ReadNextCard from '@/components/ReadNextCard'
 import Mermaid from '@/components/Mermaid'
 import { AffiliateLink } from '@/components/StickyAffiliateCTA'
@@ -9,7 +10,7 @@ export const metadata = createMetadata(rawMetadata)
 export const campaign = "the-agent-fleet"
 
 
-# The Agent Fleet That Runs My Business
+# The Agent Fleet That Runs My Business: a Claude Tag Over an eve Crew
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-hero-v2.jpg" alt="Pixel art hero on a warm amber-and-parchment background: the Claude spark glows like a sun at the center, with a lively swarm of small single-purpose eve worker bots — calendar, mail, writer, painter, social, ledger, contract, site-wrench — orbiting outward in bright colors that pop against the parchment" width={1200} height={675} />
 
@@ -59,6 +60,10 @@ Filesystem-first is the part that earns its keep. A bot is a directory: an `agen
 
 Durability is what makes them useful. Each session runs on Vercel Workflow, so it survives a restart, a redeploy, or a cold start, and it can pause mid-task to wait for me to approve something, then pick up where it left off when I tap the button. The session outlives the chat window that started it. I can kick off a job from the school parking lot, lose signal, and find it finished or politely parked at a gate when I look again. The first time it earned its keep, the moment was almost boring. A lead came in while I was in the pickup line. I asked the fleet to read the thread and find a slot, and a draft reply with two proposed times was waiting for my thumb before the cars moved. I never opened a laptop, and the task never turned into one of those "I'll get to it tonight" jobs that slides into next week.
 
+The same move covers the unhappy path. When Margin's scheduling logic is too eager, I don't open Margin's repo at my desk. I tag `@Claude` in Slack from wherever I am, point it at Margin, and it reads the repo, finds the bug, and opens a PR.
+
+{/* TODO: Slack recovery screenshot (image.png) — Zack to drop directly; shows Claude helping recover from a failure in Slack */}
+
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-slack-interface.jpg" alt="Pixel art of a phone held in one hand showing a Slack-style chat interface as the single control plane: a channel list, a thread where a small robot bot has posted a task with a checklist, and a glowing Approve button at the bottom of the thread" width={1200} height={675} />
 
 The roster owns my whole operation, one domain per bot: Margin (calendar and time), Inbox (Gmail triage), Resend (email marketing), Blog (writing), Image (art), Social (X and LinkedIn), Portfolio (site ops), Bookkeeping (the books), and Docs (contracts), with a Chief of Staff orchestrating the lot. Only that bot's domain holds its tools, its connectors, and its secrets: least privilege, the same as you'd scope a service. I'll walk each one below, with its own portrait.
@@ -70,6 +75,10 @@ Above all of them sits the **Claude tag**, the meta-agent that can reach into an
 ## The Claude tag is the meta-agent
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-claude-tag-meta-agent.jpg" alt="Pixel art of a central glowing Slack chat bubble marked with a Claude spark icon at the hub, light-lines radiating out to labeled control surfaces — a notes app, a LinkedIn badge, a project board, a git octopus, a billing terminal, an email envelope — with a small founder feeding instructions in from a phone" width={1200} height={675} />
+
+> **Tools / APIs:** Notion, LinkedIn, Linear, GitHub, Stripe / billing (admin-governed Slack connections, scoped per channel); Wispr Flow (dictation)
+>
+> **What it does:** Sits over the whole fleet as the meta-agent and reaches the control surfaces I run on through admin-governed Slack connections, but only the ones I've granted in that channel. From one thread it triages email, updates the blog, opens PRs against the portfolio, and rebuilds the other bots themselves. It's the agent that maintains the agents.
 
 I run the **Claude tag**, Anthropic's [`@Claude` in Slack](https://claude.com/docs/claude-tag), directly in my Slack workspace, on my phone, and I've made it the layer that sits over the fleet.
 
@@ -125,6 +134,10 @@ The banking is the piece I still hate. Right now the business runs on Chase Busi
 
 The cleanest way to see the system is as reporting lines. I sit at the top, in Slack. I have two ways in: the Claude tag and the Chief of Staff. The Chief of Staff is the front door to the specialists; the Claude tag is the layer above that can reach the specialists *and* their code. Every specialist owns its domain and nothing else.
 
+> **Chief of Staff — Tools / APIs:** Linear (workflow + task system of record), Notion (shared knowledge base), eve remote-agent calls over `POST /eve/v1/session`
+>
+> **What it does:** The primary surface I drive the whole operation from — I describe an outcome once and it decides which specialists to wake, in what order, and threads their results back into one answer. It tracks every workflow in Linear and grounds its decisions in the same Notion knowledge base the rest of the fleet shares, so anything I kick off has a record I can check, reprioritize, or hand off. It still doesn't reimplement the specialists — it coordinates them, so the complexity stays in the orchestrator instead of landing on me.
+
 <Mermaid chart={`
 flowchart TB
   me["Me — Slack, phone or laptop"]
@@ -147,6 +160,10 @@ The roster above is a snapshot. The trajectory is the interesting part, so this 
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-margin.jpg" alt="Pixel art portrait of a guardian robot holding a glowing calendar shield with a heart-rate ring orbiting its head, placing a protected rest block onto a schedule" width={900} height={900} />
 
+> **Tools / APIs:** Cal.com, Google Calendar, Oura ring API
+>
+> **What it does:** Owns time and calendar for the whole operation, reading my Oura readiness and sleep scores each morning and holding childcare blocks as immovable. It hands leads a Cal.com link that only ever offers genuinely open slots across my personal and work calendars, so meetings book themselves with no back-and-forth. If I say I need a break, it checks whether the day can afford it and drops a real 2-4 hour rest block on my calendar.
+
 Margin started as a calendar bot and became the most important one I own. It owns my time. Everything else in the fleet that needs a slot (a kickoff, a sales call, a follow-up) coordinates *to* Margin, because Margin is the one agent that holds the whole picture of where my hours go and what they're worth. Its job is guarding the two things I'm worst at protecting on my own: rest and time with my kid.
 
 Margin reads my Oura ring every morning and knows my readiness and sleep scores before I do. It holds my childcare blocks as immovable. It also has my Cal.com account, which is the part that quietly removes the most friction. When Inbox flags a real lead, Margin hands them a Cal.com link that shows my actual availability. Cal.com tracks both my personal and my work calendar, so the only slots it ever offers are ones that are genuinely open. The lead picks a time that works for them and it books itself, no back-and-forth, no me playing scheduler. When a client needs to reschedule, Margin finds the new slot and builds a buffer around it so I'm not sprinting between calls. It owns time and calendar for the whole operation.
@@ -161,11 +178,19 @@ When it moves a call, Margin owns the follow-up too. It drafts the "something ca
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-inbox.jpg" alt="Pixel art portrait of a robot mail clerk sorting incoming envelopes into labeled bins and pinning a short summary card to the most important one" width={900} height={900} />
 
+> **Tools / APIs:** Gmail (triaging the `zachary@mindonfire.net` business mailbox)
+>
+> **What it does:** Reads Gmail, classifies what comes in, and drafts replies against a real business mailbox instead of my personal inbox. A lead lands as a structured summary, a suggested reply, and a proposed next action, often a Margin calendar link, so answering is one approval, not a context-switch. It's built to own and schedule the follow-ups I always mean to send three days later.
+
 Inbox reads Gmail, classifies what comes in, and drafts replies. Now that the fleet has its own `zachary@mindonfire.net` address, Inbox triages a real business mailbox instead of fishing client mail out of my personal inbox. The direction is less about reading more mail and more about closing loops. A lead email should land as a structured summary, a suggested reply, and a proposed next action — often a calendar link Margin hands over — so answering it is one approval instead of a context-switch into my inbox. The follow-up that I always mean to send three days later is the kind of thing Inbox should own and schedule, with the draft waiting for my thumb.
 
 ### Resend: marketing that can't fire by accident
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-resend.jpg" alt="Pixel art portrait of a robot marketer at a console holding email envelopes beside a large red physical kill-switch lever, hand hovering near it, waiting for a human go-ahead" width={900} height={900} />
+
+> **Tools / APIs:** Resend API
+>
+> **What it does:** Runs email marketing and sends through the Resend API, with one defining feature: a hard outbound kill-switch, so nothing reaches a real inbox until I explicitly approve it. It keys every campaign on `campaignId + approvedRevision` so an approved send can never double-fire. The whole bot is built so a mistake costs a redraft, not 5,000 misfired emails.
 
 Resend runs email marketing, and its defining feature is the hard outbound kill-switch. Nothing leaves without my approval. As it matures, the value is in drafting whole sequences from a single brief and staging them, so a launch I describe in two sentences in Slack comes back as a full campaign for review. The kill-switch stays exactly as load-bearing as it is now, because a marketing bot that can send on its own is a way to email my entire list a mistake.
 
@@ -173,11 +198,19 @@ Resend runs email marketing, and its defining feature is the hard outbound kill-
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-image.jpg" alt="Pixel art portrait of a robot artist at an easel painting a glowing framed picture, with a stack of finished pixel-art canvases beside it and a paintbrush icon glowing above its head" width={900} height={900} />
 
+> **Tools / APIs:** Nano Banana Pro (image generation), Veo API (animation)
+>
+> **What it does:** Generates all the pixel art on the site in one consistent house style, so every post looks like it came from the same studio. Blog hands it a scene and Image returns the art — drawn with Nano Banana Pro and animated through the Veo API when a piece needs to move. No stock photos, no clip-art: one bot, one visual identity.
+
 Image is the bot behind the pixel art in this post, including the portrait directly above. It owns the house style: pixel art on the dark site palette, no text baked in, conceptually tied to whatever section it illustrates (the realistic Slack mockup earlier is the one deliberate exception). Blog hands it a scene ("a guardian robot dropping a rest block on a calendar") and Image returns art that matches the rest of the site without me opening a design tool. Splitting it out from Blog is the same separation-of-concerns move as everything else here: the writer writes, the artist draws, and neither one grows into a tangle that does both badly. Where it's headed is a tighter loop with Blog and Social, so a finished post comes with its hero, its inline images, and a social card generated in one pass.
 
 ### Bookkeeping: invoicing and reconciliation from a Slack message
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-bookkeeper.jpg" alt="Pixel art portrait of a meticulous robot accountant matching incoming transactions against ledger line items and holding up an invoice card" width={900} height={900} />
+
+> **Tools / APIs:** Plaid (on Chase Business today), Mercury API (after the bank move)
+>
+> **What it does:** Keeps the books, reading account activity through Plaid on top of Chase Business to reconcile the bank against the ledger, and reads transactions only, it never moves money. Once banking moves to Mercury it plugs straight into Mercury's API instead. Invoicing from a Slack sentence is the half it's growing into, tracked against incoming transactions until paid.
 
 Bookkeeping keeps the books. Today it reads account activity through Plaid on top of Chase Business to reconcile the bank against the ledger; once I move banking to Mercury it plugs straight into Mercury's API instead. Either way it reads transactions and does not move money. The invoicing is the part that's coming online.
 
@@ -186,6 +219,10 @@ The capability I'm building toward is invoicing from Slack. After a call, I want
 ### Docs: minting uniform business artifacts
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-document.jpg" alt="Pixel art portrait of a robot legal clerk holding a freshly minted sealed contract with a row of uniform template pages behind it" width={900} height={900} />
+
+> **Tools / APIs:** DocuSign, Google Drive
+>
+> **What it does:** Mints uniform business artifacts (SOWs, MSAs, NDAs, order forms) from templates so every contract carries the same clauses and never fat-fingers a client name or term. I describe the engagement in Slack, approve the draft, and it goes out through DocuSign for signature. When the signed copy returns it files it in the right Google Drive client folder, named consistently, where I can find it years later.
 
 Docs is the bot I'm most excited to finish. Running a consulting business means generating the same legal artifacts over and over: SOWs, MSAs, NDAs, order forms. Done by hand, each one is a chance to fat-finger a client name, a date, or a payment term.
 
@@ -217,11 +254,23 @@ sequenceDiagram
 
 <Image src="https://zackproser.b-cdn.net/images/the-agent-fleet-bot-blog.jpg" alt="Pixel art portrait of a friendly robot writer at a small desk typing a glowing article, a stack of finished pages beside it and a quill icon above" width={900} height={900} />
 
+> **Tools / APIs:** GitHub (opens the PR); internal hand-off to Image
+>
+> **What it does:** Researches and drafts each post, asks Image for the art and diagrams, then runs its own voice and anti-slop passes before anything ships. When a draft is ready it opens a pull request against my portfolio repo on GitHub, so a post arrives as a reviewable diff, never a surprise on the live site. Nothing publishes until I merge.
+
 Blog is the bot that wrote this post. I hand it a rough idea in Slack and it researches, drafts, asks Image for the art and diagrams, runs its own voice and anti-slop passes, and opens a pull request against my portfolio repo for me to review. It owns the part of my content pipeline that used to stall: the blank page. Where it grows is into a tighter loop with Image and Social, so a published piece becomes a staged thread without me copy-pasting between tools. It writes; I edit and ship.
 
 ### Social and Portfolio: the steady hands
 
-Social stages posts to X and LinkedIn through Typefully, and Portfolio handles site ops, SEO, and analytics. Both run today and need the least from the vision. They're the proof that a bot doesn't have to be ambitious to be worth it. Some of the fleet exists to keep the lights on while the rest does the heavy lifting.
+> **Social — Tools / APIs:** Typefully API
+>
+> **What it does:** Rewrites a finished post into platform-native social copy, then publishes or schedules it through Typefully, which fans one draft out to five feeds in a single shot: LinkedIn, X, Mastodon, Bluesky, and Threads. One draft, one publish, five networks.
+
+> **Portfolio — Tools / APIs:** Ahrefs (SEO + site health), Plausible (analytics)
+>
+> **What it does:** Owns site operations, watching SEO and site health through Ahrefs and reading traffic through Plausible, so growth and any broken-link or ranking regressions surface as something I can act on instead of something I learn about months late. It keeps the front door working while the writing bots fill the rooms.
+
+Social stages posts to LinkedIn, X, Mastodon, Bluesky, and Threads through Typefully, and Portfolio handles site ops, SEO, and analytics. Both run today and need the least from the vision. They're the proof that a bot doesn't have to be ambitious to be worth it. Some of the fleet exists to keep the lights on while the rest does the heavy lifting.
 
 ## Mobility was a hard requirement
 
@@ -337,11 +386,30 @@ What changed is the unit of decomposition. The module used to be a service; now 
 
 The useful part is the system underneath: decomposition, typed contracts, narrow permissions, durable execution, a meta-agent that can repair the rest, and a human at every gate where the work can hurt someone. I run that system from my phone, in a pickup line, with the same authority I'd have at my desk.
 
-## If you want this for your team
+## The point was never the bots. It's the surface area.
 
-This is the work I do: AI-transformation consulting, workshops and trainings for teams that want to ship AI in production, and helping people design their own agent fleets. In a workshop you leave with a workflow map, an autonomy-boundary table, and a spec for the first specialist or two, with the approval gates drawn before anything gets wired into a system that can spend your name or your money.
+None of this took a research lab — it's Claude, a handful of named agents, and a phone to drive them from. The fleet doesn't replace me; it gives one person a surface area they have no right to. I write the post, and the fleet ships it, illustrates it, pushes it to five networks, and pings me the moment something breaks.
 
-If that's what you need, [reach out](https://zackproser.com/services). I'll help you build the version of this that fits your business.
+That's the whole game now: agents scale infinitely, but your attention doesn't. The teams that win won't be the ones with the most agents, they'll be the ones who learn to point a fleet at the right work and then get out of its way.
+
+<div className="not-prose my-10 rounded-2xl border border-zinc-200 bg-zinc-50 p-6 dark:border-zinc-700/60 dark:bg-zinc-800/40">
+  <h3 className="mb-1 text-xl font-semibold text-zinc-900 dark:text-zinc-100">Want to run your own fleet?</h3>
+  <p className="mb-5 text-sm text-zinc-600 dark:text-zinc-400">Where I'm headed next, how I'm building it, and how to bring it to your team.</p>
+  <ul className="m-0 list-none space-y-3 p-0">
+    <li className="m-0">
+      <Link href="/subscribe" className="font-semibold text-blue-600 no-underline hover:underline dark:text-blue-400">📬 The Modern Coding letter</Link>
+      <span className="block text-sm text-zinc-600 dark:text-zinc-400">Where I publish what I'm building first. 5,000+ engineers.</span>
+    </li>
+    <li className="m-0">
+      <Link href="/workshops" className="font-semibold text-blue-600 no-underline hover:underline dark:text-blue-400">🛠️ Bring it to your team</Link>
+      <span className="block text-sm text-zinc-600 dark:text-zinc-400">Half-, full-, or two-day Claude enablement; we embed in your pods and leave you workflows, skills, and named champions.</span>
+    </li>
+    <li className="m-0">
+      <Link href="/speaking" className="font-semibold text-blue-600 no-underline hover:underline dark:text-blue-400">🎤 Have me speak</Link>
+      <span className="block text-sm text-zinc-600 dark:text-zinc-400">Agents scale infinitely, but your nervous system doesn't.</span>
+    </li>
+  </ul>
+</div>
 
 <ReadNextCard
   image="https://zackproser.b-cdn.net/images/the-mechanic-pattern-hero.webp"
