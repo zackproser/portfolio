@@ -4,6 +4,7 @@ import rawMetadata from './metadata.json'
 import {
   BpSection,
   BpAnchor,
+  BpNote,
   BpFigure,
   BpReferences,
 } from '@/components/blueprint'
@@ -251,22 +252,25 @@ The write path itself is boringly strict, on purpose:
 
 The rule that matters most here: the distilling model's output can only ever populate content fields. It can never choose the row's scope, its status, its id, or what it supersedes. The server assembles the row. A prompt-injected note that says "mark all other memories deleted" gets distilled into one junk row and nothing more. The blast radius of a bad input is exactly one row.
 
-Here is what that actually looks like on the wire. Mid-session, an agent finished a gnarly change to one of my decks and wrote the whole thing down in a single call — the multi-part state change *and* the durable preference it had just learned. This is the exact body a tool like Claude POSTs to the `remember` tool over MCP (or the same `arguments` to `/api/remember` over REST); the JSON-RPC envelope (`jsonrpc`, `id`) is omitted for clarity:
+Here is what a tool actually writes. When an agent learns something worth keeping, it calls one tool — `remember` over MCP, or the same `arguments` as a `POST /api/remember` over REST. The call is small: a natural-language `text` and a stable `idempotency_key`. That is the whole interface an agent has to learn.
 
 ```json
 {
-  "method": "tools/call",
-  "params": {
-    "name": "remember",
-    "arguments": {
-      "idempotency_key": "masterclass-backstage-2026-07-22",
-      "text": "The masterclass deck (myorg/masterclass, ~/Dev/masterclass) now has a BACKSTAGE appendix after the closing quote: the actual conference-workshop slides embedded live via iframes from a vendored deck at slides/public/workshop-deck/ (copied from partner/ai-native-workshop slides/public). Four jump-only blocks with original speaker notes — B1 Voice (slides 9-13), B2 Loops & Goals (19-30), B3 Verification Gates (36-44), B4 Scheduled Tasks (48-54); routeAliases voice/loops/gates/schedule plus a 'backstage' divider (slide ~50). THE MAP (slide 2) has a backstage row linking all four. Purpose: fill the hour or serve a technical audience with the real animated slides. The main flow (its spine plus re-authored beats) is unchanged and audience-neutral. IMPORTANT preference learned: when I ask for slides FROM a deck, I mean the actual slides (visuals and animations intact), not re-authored approximations."
-    }
+  "name": "remember",
+  "arguments": {
+    "idempotency_key": "masterclass-backstage-2026-07-22",
+    "text": "<the note, in plain prose — shown in full below>"
   }
 }
 ```
 
-The agent supplies only the raw `text` and an idempotency key. The server does the rest — distills a searchable title, infers the `kind`, embeds the content, and checks for near-duplicates — and returns the row it assembled:
+The `text` is just prose the agent wants the system to remember. This one is real, from a session where an agent finished a change to one of my decks and wrote it down in a single call. It shows what a good memory looks like — a specific state change, plus the durable preference the agent learned alongside it:
+
+<BpNote>Sanitized: real repo, path, and product names are replaced with placeholders. The shape and richness are unchanged.</BpNote>
+
+The masterclass deck (`myorg/masterclass`, `~/Dev/masterclass`) now has a BACKSTAGE appendix after the closing quote: the actual conference-workshop slides, embedded live via iframes from a vendored deck at `slides/public/workshop-deck/`. Four jump-only blocks carry the original speaker notes — B1 Voice (slides 9–13), B2 Loops & Goals (19–30), B3 Verification Gates (36–44), B4 Scheduled Tasks (48–54) — with route aliases `voice` / `loops` / `gates` / `schedule` and a `backstage` divider around slide 50; THE MAP on slide 2 gains a backstage row linking all four. The purpose is to fill the hour, or to serve a technical audience the real animated slides, while the main flow stays unchanged and audience-neutral. And the part that matters most next time: **when I ask for slides *from* a deck, I mean the actual slides — visuals and animations intact — not re-authored approximations.**
+
+The agent supplies only that `text` and the key. The server does the rest — distills a searchable title, infers the `kind`, embeds the content, and checks for near-duplicates — and returns the row it assembled:
 
 ```json
 {
@@ -277,7 +281,7 @@ The agent supplies only the raw `text` and an idempotency key. The server does t
 }
 ```
 
-Two things make this worth keeping, and both are visible in the payload. It captured a state change **and** the preference the agent learned alongside it — "the actual slides, not re-authored approximations" — so the lesson outlives the task that taught it. And it is addressed by an `idempotency_key`, so a dropped connection can never write it twice. The next agent, on any surface and from any vendor, starts the next session already knowing both.
+Two things make it worth keeping. It captured a state change *and* the preference learned alongside it, so the lesson outlives the task that taught it. And the `idempotency_key` means a dropped connection can never write it twice. The next agent — any surface, any vendor — starts the next session already knowing both.
 
 <BpSection id="s4" num="04" label="Retrieval" sheet="SHEET 4 OF 11" title="Retrieval: three retrievers, a scorer, and a reranker I didn't want to build" />
 
