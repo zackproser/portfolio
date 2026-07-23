@@ -1,0 +1,49 @@
+<svg viewBox="0 0 940 300" width="100%" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+  <!-- token row: first cycle A B C D, then repeated A, then predicted B -->
+  <g stroke="currentColor" stroke-width="2">
+    <rect x="60" y="170" width="66" height="50"/>
+    <rect x="150" y="170" width="66" height="50"/>
+    <rect x="240" y="170" width="66" height="50"/>
+    <rect x="330" y="170" width="66" height="50"/>
+    <rect x="500" y="170" width="66" height="50"/>
+  </g>
+  <!-- predicted token box (accented outline weight) -->
+  <g stroke="#f39c12" stroke-width="2.5">
+    <rect x="680" y="170" width="66" height="50"/>
+  </g>
+  <!-- prefix-matching attention arc: second A routes back to the earlier B -->
+  <g stroke="currentColor" stroke-width="1.6" stroke-dasharray="6 5">
+    <path d="M533 170 C 480 55, 236 55, 183 170"/>
+  </g>
+  <!-- prediction arrow: second A leads to predicted token -->
+  <g stroke="currentColor" stroke-width="2">
+    <path d="M578 195 H654"/>
+  </g>
+  <!-- accents: arc landing on source B, and the arrowhead into prediction -->
+  <g fill="#f39c12" stroke="none">
+    <path d="M177 162 L189 162 L183 174 z"/>
+    <path d="M654 189 L666 195 L654 201 z"/>
+  </g>
+  <!-- token labels -->
+  <g fill="currentColor" stroke="none" style="font:600 24px 'JetBrains Mono',monospace">
+    <text x="93" y="204" text-anchor="middle">A</text>
+    <text x="183" y="204" text-anchor="middle">B</text>
+    <text x="273" y="204" text-anchor="middle">C</text>
+    <text x="363" y="204" text-anchor="middle">D</text>
+    <text x="533" y="204" text-anchor="middle">A</text>
+  </g>
+  <!-- predicted token label (accented) -->
+  <g fill="#f39c12" stroke="none" style="font:600 24px 'JetBrains Mono',monospace">
+    <text x="713" y="204" text-anchor="middle">B</text>
+  </g>
+  <!-- ellipsis between cycles -->
+  <g fill="currentColor" stroke="none" style="font:600 24px 'JetBrains Mono',monospace">
+    <text x="448" y="204" text-anchor="middle">…</text>
+  </g>
+  <!-- captions -->
+  <g fill="currentColor" stroke="none" opacity="0.75" style="font:500 17px 'JetBrains Mono',monospace">
+    <text x="358" y="42" text-anchor="middle">PREFIX MATCH</text>
+    <text x="713" y="252" text-anchor="middle">PREDICT NEXT</text>
+    <text x="533" y="252" text-anchor="middle">QUERY</text>
+  </g>
+</svg>

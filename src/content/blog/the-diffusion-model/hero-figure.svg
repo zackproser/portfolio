@@ -1,0 +1,63 @@
+<svg viewBox="0 0 940 320" width="100%" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+  <!-- forward process arrow (top): x0 -> xT, adds noise -->
+  <g stroke="currentColor" stroke-width="2" opacity="0.85">
+    <path d="M60 46 H872"/>
+    <path d="M872 46 l-14 -6 v12 z" fill="currentColor" stroke="none"/>
+  </g>
+  <!-- reverse process arrow (bottom): xT -> x0, denoises -->
+  <g stroke="currentColor" stroke-width="2" opacity="0.85">
+    <path d="M880 252 H68"/>
+  </g>
+  <!-- reverse arrowhead lands on the clean x0 (accent payoff) -->
+  <path d="M68 252 l14 -6 v12 z" fill="#f39c12" stroke="none"/>
+
+  <!-- the five image tiles: x0 (clean) -> xT (pure noise) -->
+  <g stroke="currentColor" stroke-width="1.6">
+    <rect x="40" y="64" width="140" height="132"/>
+    <rect x="220" y="64" width="140" height="132"/>
+    <rect x="400" y="64" width="140" height="132"/>
+    <rect x="580" y="64" width="140" height="132"/>
+    <rect x="760" y="64" width="140" height="132"/>
+  </g>
+
+  <!-- x0: a clean reconstructed image (accent sun over horizon) -->
+  <g stroke="currentColor" stroke-width="1.6" opacity="0.9">
+    <path d="M54 156 H166"/>
+    <path d="M66 156 L94 118 L122 156"/>
+    <path d="M108 156 L138 126 L168 156"/>
+  </g>
+  <circle cx="146" cy="100" r="12" fill="#f39c12" stroke="none"/>
+  <!-- x0 accent corner tick -->
+  <path d="M40 84 V64 H60" stroke="#f39c12" stroke-width="2.5"/>
+
+  <!-- x1: light noise -->
+  <g fill="currentColor" stroke="none" opacity="0.85">
+    <circle cx="270" cy="88" r="2.6"/><circle cx="308" cy="80" r="2.6"/><circle cx="294" cy="111" r="2.6"/><circle cx="239" cy="126" r="2.6"/><circle cx="236" cy="118" r="2.6"/><circle cx="240" cy="82" r="2.6"/><circle cx="281" cy="160" r="2.6"/>
+  </g>
+  <!-- x2: more noise -->
+  <g fill="currentColor" stroke="none" opacity="0.85">
+    <circle cx="426" cy="96" r="2.6"/><circle cx="485" cy="172" r="2.6"/><circle cx="479" cy="114" r="2.6"/><circle cx="525" cy="77" r="2.6"/><circle cx="512" cy="103" r="2.6"/><circle cx="429" cy="84" r="2.6"/><circle cx="448" cy="159" r="2.6"/><circle cx="433" cy="134" r="2.6"/><circle cx="486" cy="111" r="2.6"/><circle cx="476" cy="79" r="2.6"/><circle cx="419" cy="94" r="2.6"/><circle cx="491" cy="117" r="2.6"/><circle cx="448" cy="134" r="2.6"/><circle cx="465" cy="104" r="2.6"/><circle cx="504" cy="146" r="2.6"/><circle cx="440" cy="133" r="2.6"/>
+  </g>
+  <!-- x(T-1): heavy noise -->
+  <g fill="currentColor" stroke="none" opacity="0.85">
+    <circle cx="653" cy="165" r="2.6"/><circle cx="677" cy="103" r="2.6"/><circle cx="706" cy="85" r="2.6"/><circle cx="641" cy="152" r="2.6"/><circle cx="610" cy="124" r="2.6"/><circle cx="597" cy="143" r="2.6"/><circle cx="681" cy="133" r="2.6"/><circle cx="694" cy="105" r="2.6"/><circle cx="673" cy="135" r="2.6"/><circle cx="659" cy="120" r="2.6"/><circle cx="689" cy="172" r="2.6"/><circle cx="647" cy="142" r="2.6"/><circle cx="599" cy="146" r="2.6"/><circle cx="667" cy="177" r="2.6"/><circle cx="687" cy="102" r="2.6"/><circle cx="637" cy="143" r="2.6"/><circle cx="595" cy="121" r="2.6"/><circle cx="611" cy="84" r="2.6"/><circle cx="599" cy="153" r="2.6"/><circle cx="607" cy="98" r="2.6"/><circle cx="637" cy="164" r="2.6"/><circle cx="601" cy="120" r="2.6"/><circle cx="656" cy="166" r="2.6"/><circle cx="687" cy="164" r="2.6"/><circle cx="624" cy="116" r="2.6"/><circle cx="634" cy="166" r="2.6"/><circle cx="703" cy="88" r="2.6"/><circle cx="612" cy="97" r="2.6"/>
+  </g>
+  <!-- xT: pure noise -->
+  <g fill="currentColor" stroke="none" opacity="0.85">
+    <circle cx="799" cy="123" r="2.6"/><circle cx="840" cy="100" r="2.6"/><circle cx="772" cy="116" r="2.6"/><circle cx="815" cy="132" r="2.6"/><circle cx="883" cy="145" r="2.6"/><circle cx="832" cy="137" r="2.6"/><circle cx="850" cy="78" r="2.6"/><circle cx="876" cy="155" r="2.6"/><circle cx="873" cy="157" r="2.6"/><circle cx="818" cy="114" r="2.6"/><circle cx="784" cy="139" r="2.6"/><circle cx="779" cy="79" r="2.6"/><circle cx="796" cy="89" r="2.6"/><circle cx="811" cy="78" r="2.6"/><circle cx="772" cy="88" r="2.6"/><circle cx="784" cy="111" r="2.6"/><circle cx="775" cy="165" r="2.6"/><circle cx="843" cy="88" r="2.6"/><circle cx="801" cy="109" r="2.6"/><circle cx="814" cy="85" r="2.6"/><circle cx="870" cy="177" r="2.6"/><circle cx="826" cy="123" r="2.6"/><circle cx="782" cy="83" r="2.6"/><circle cx="812" cy="100" r="2.6"/><circle cx="868" cy="89" r="2.6"/><circle cx="775" cy="173" r="2.6"/><circle cx="833" cy="88" r="2.6"/><circle cx="835" cy="75" r="2.6"/><circle cx="833" cy="176" r="2.6"/><circle cx="872" cy="146" r="2.6"/><circle cx="802" cy="111" r="2.6"/><circle cx="791" cy="154" r="2.6"/><circle cx="834" cy="155" r="2.6"/><circle cx="810" cy="96" r="2.6"/><circle cx="866" cy="176" r="2.6"/><circle cx="871" cy="157" r="2.6"/><circle cx="867" cy="150" r="2.6"/><circle cx="798" cy="127" r="2.6"/><circle cx="813" cy="75" r="2.6"/><circle cx="775" cy="102" r="2.6"/><circle cx="802" cy="145" r="2.6"/><circle cx="883" cy="119" r="2.6"/><circle cx="881" cy="177" r="2.6"/><circle cx="883" cy="111" r="2.6"/>
+  </g>
+
+  <!-- tile labels -->
+  <g fill="currentColor" stroke="none" style="font:600 22px 'JetBrains Mono',monospace">
+    <text x="110" y="228" text-anchor="middle">x0</text>
+    <text x="290" y="228" text-anchor="middle">x1</text>
+    <text x="470" y="228" text-anchor="middle">&#8943;</text>
+    <text x="650" y="228" text-anchor="middle">xT-1</text>
+    <text x="830" y="228" text-anchor="middle">xT</text>
+  </g>
+  <!-- process captions -->
+  <g fill="currentColor" stroke="none" opacity="0.8" style="font:500 18px 'JetBrains Mono',monospace">
+    <text x="466" y="34" text-anchor="middle">FORWARD &#183; ADD NOISE</text>
+    <text x="474" y="288" text-anchor="middle">REVERSE &#183; DENOISE</text>
+  </g>
+</svg>

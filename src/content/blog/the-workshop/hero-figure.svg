@@ -1,0 +1,58 @@
+<svg viewBox="0 0 940 300" width="100%" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+  <!-- facilitator board at the head of the room, on an easel -->
+  <g stroke="currentColor" stroke-width="3">
+    <rect x="46" y="80" width="30" height="128"/>
+  </g>
+  <g stroke="currentColor" stroke-width="2">
+    <path d="M50 208 L36 236 M72 208 L86 236"/>
+  </g>
+  <!-- current agenda mark on the board -->
+  <g fill="#f39c12" stroke="none">
+    <circle cx="61" cy="106" r="6"/>
+  </g>
+
+  <!-- participant lab stations facing the board: two rows of three -->
+  <g stroke="currentColor" stroke-width="2.5">
+    <rect x="190" y="90" width="110" height="54"/>
+    <rect x="340" y="90" width="110" height="54"/>
+    <rect x="490" y="90" width="110" height="54"/>
+    <rect x="190" y="172" width="110" height="54"/>
+    <rect x="340" y="172" width="110" height="54"/>
+    <rect x="490" y="172" width="110" height="54"/>
+  </g>
+  <!-- attendees seated toward the board -->
+  <g stroke="currentColor" stroke-width="2">
+    <circle cx="208" cy="117" r="8"/>
+    <circle cx="358" cy="117" r="8"/>
+    <circle cx="508" cy="117" r="8"/>
+    <circle cx="208" cy="199" r="8"/>
+    <circle cx="358" cy="199" r="8"/>
+    <circle cx="508" cy="199" r="8"/>
+  </g>
+
+  <!-- the room flows to a shipped result -->
+  <g stroke="currentColor" stroke-width="2.5">
+    <path d="M610 149 H664"/>
+  </g>
+  <g fill="#f39c12" stroke="none">
+    <path d="M664 141 L680 149 L664 157 Z"/>
+  </g>
+
+  <!-- SHIP outcome block: the payoff -->
+  <g stroke="currentColor" stroke-width="3">
+    <rect x="694" y="98" width="182" height="102"/>
+  </g>
+  <g fill="#f39c12" stroke="none">
+    <circle cx="856" cy="116" r="7"/>
+  </g>
+
+  <!-- labels -->
+  <g fill="currentColor" stroke="none" style="font:600 26px 'JetBrains Mono',monospace">
+    <text x="785" y="150" text-anchor="middle">SHIP</text>
+  </g>
+  <g fill="currentColor" stroke="none" opacity="0.85" style="font:500 14px 'JetBrains Mono',monospace">
+    <text x="785" y="176" text-anchor="middle">OWN RESULT</text>
+    <text x="61" y="258" text-anchor="middle">FACILITATOR</text>
+    <text x="395" y="258" text-anchor="middle">LAB STATIONS</text>
+  </g>
+</svg>
