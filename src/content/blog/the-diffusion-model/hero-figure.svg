@@ -9,7 +9,7 @@
     <path d="M880 252 H68"/>
   </g>
   <!-- reverse arrowhead lands on the clean x0 (accent payoff) -->
-  <path d="M68 252 l14 -6 v12 z" fill="#f39c12" stroke="none"/>
+  <path d="M68 252 l14 -6 v12 z" fill="var(--og-accent)" stroke="none"/>
 
   <!-- the five image tiles: x0 (clean) -> xT (pure noise) -->
   <g stroke="currentColor" stroke-width="1.6">
@@ -26,9 +26,9 @@
     <path d="M66 156 L94 118 L122 156"/>
     <path d="M108 156 L138 126 L168 156"/>
   </g>
-  <circle cx="146" cy="100" r="12" fill="#f39c12" stroke="none"/>
+  <circle cx="146" cy="100" r="12" fill="var(--og-accent)" stroke="none"/>
   <!-- x0 accent corner tick -->
-  <path d="M40 84 V64 H60" stroke="#f39c12" stroke-width="2.5"/>
+  <path d="M40 84 V64 H60" stroke="var(--og-accent)" stroke-width="2.5"/>
 
   <!-- x1: light noise -->
   <g fill="currentColor" stroke="none" opacity="0.85">

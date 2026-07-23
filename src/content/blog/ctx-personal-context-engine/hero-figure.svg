@@ -30,7 +30,7 @@
     <rect x="392" y="102" width="156" height="96"/>
   </g>
   <!-- accent: the shared core hub (fan-in + fan-out anchors) -->
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <circle cx="392" cy="150" r="6"/>
     <circle cx="548" cy="150" r="6"/>
     <rect x="464" y="120" width="12" height="12"/>

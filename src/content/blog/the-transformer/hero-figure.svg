@@ -35,7 +35,7 @@
     <path d="M850 150 l-9 -5 v10 z"/>
   </g>
   <!-- orange accent: softmax, the heart of attention -->
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <circle cx="635" cy="30" r="6"/>
   </g>
   <!-- labels -->
@@ -50,7 +50,7 @@
   <g fill="currentColor" stroke="none" style="font:600 15px 'JetBrains Mono',monospace">
     <text x="460" y="71" text-anchor="middle">QK&#8868;/&#8730;d_k</text>
   </g>
-  <g fill="#f39c12" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
+  <g fill="var(--og-accent)" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
     <text x="635" y="72" text-anchor="middle">softmax</text>
   </g>
   <g fill="currentColor" stroke="none" opacity="0.7" style="font:500 13px 'JetBrains Mono',monospace">

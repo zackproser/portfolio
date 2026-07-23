@@ -23,7 +23,7 @@
     <path d="M211 227 a34 8 0 0 0 68 0 M211 240 a34 8 0 0 0 68 0" opacity="0.6"/>
   </g>
   <!-- accents: reranked selection + grounded answer -->
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <circle cx="604" cy="124" r="5.5"/>
     <circle cx="916" cy="124" r="5.5"/>
     <rect x="820" y="170" width="60" height="4"/>

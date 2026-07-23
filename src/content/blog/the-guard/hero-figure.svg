@@ -30,7 +30,7 @@
   </g>
 
   <!-- blocked point: orange stop cross on the wall -->
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <rect x="456" y="143" width="28" height="6" transform="rotate(45 470 146)"/>
     <rect x="456" y="143" width="28" height="6" transform="rotate(-45 470 146)"/>
   </g>

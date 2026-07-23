@@ -25,7 +25,7 @@
     <path d="M232 134 l-8 -4 v8 z M459 134 l-8 -4 v8 z M666 134 l-8 -4 v8 z"/>
   </g>
   <!-- accents: token-split marker + two learned vector components -->
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <circle cx="319" cy="134" r="4"/>
     <rect x="720" y="120" width="28" height="28"/>
     <rect x="804" y="120" width="28" height="28"/>

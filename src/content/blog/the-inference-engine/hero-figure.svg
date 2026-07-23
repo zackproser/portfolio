@@ -23,17 +23,17 @@
     <path d="M70 162 h62 M140 162 h62 M210 162 h62 M280 162 h62 M350 162 h62 M420 162 h62 M490 162 h62 M560 162 h62"/>
   </g>
   <!-- newest appended block (accent) -->
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <rect x="630" y="132" width="62" height="60"/>
   </g>
   <rect x="630" y="132" width="62" height="60" stroke="currentColor" stroke-width="1.6"/>
   <path d="M630 162 h62" stroke="currentColor" stroke-width="1" opacity="0.5"/>
   <!-- +1 token arrow into the newest block -->
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <path d="M661 108 v14"/>
     <path d="M661 130 l-6 -10 h12 z"/>
   </g>
-  <g stroke="#f39c12" stroke-width="1.8">
+  <g stroke="var(--og-accent)" stroke-width="1.8">
     <path d="M661 108 v12"/>
   </g>
   <!-- decode span underline -->
@@ -57,7 +57,7 @@
     <text x="101" y="182" text-anchor="middle">V</text>
     <text x="470" y="286" text-anchor="middle">M_KV GROWS ONE BLOCK / TOKEN →</text>
   </g>
-  <g fill="#f39c12" stroke="none" style="font:600 15px 'JetBrains Mono',monospace">
+  <g fill="var(--og-accent)" stroke="none" style="font:600 15px 'JetBrains Mono',monospace">
     <text x="700" y="112">+1 TOKEN</text>
   </g>
 </svg>

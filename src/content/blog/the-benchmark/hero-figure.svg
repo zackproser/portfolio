@@ -17,7 +17,7 @@
     <path d="M724 118 H748"/>
   </g>
   <!-- accent arrowhead into the final SCORE -->
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <path d="M740 118 L730 113 L730 123 Z"/>
   </g>
   <!-- confidence-interval whisker under the reported SCORE -->
@@ -25,7 +25,7 @@
     <path d="M809 150 V196"/>
     <path d="M761 208 H857 M761 200 V216 M857 200 V216"/>
   </g>
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <circle cx="809" cy="208" r="5"/>
   </g>
   <!-- stage labels -->
@@ -38,7 +38,7 @@
     <text x="665" y="123" text-anchor="middle">AGGREGATE</text>
   </g>
   <!-- accented final score -->
-  <g fill="#f39c12" stroke="none" style="font:700 17px 'JetBrains Mono',monospace">
+  <g fill="var(--og-accent)" stroke="none" style="font:700 17px 'JetBrains Mono',monospace">
     <text x="809" y="123" text-anchor="middle">SCORE</text>
   </g>
   <!-- header + uncertainty caption -->

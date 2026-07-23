@@ -7,7 +7,7 @@
     <path d="M50 208 L36 236 M72 208 L86 236"/>
   </g>
   <!-- current agenda mark on the board -->
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <circle cx="61" cy="106" r="6"/>
   </g>
 
@@ -34,7 +34,7 @@
   <g stroke="currentColor" stroke-width="2.5">
     <path d="M610 149 H664"/>
   </g>
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <path d="M664 141 L680 149 L664 157 Z"/>
   </g>
 
@@ -42,7 +42,7 @@
   <g stroke="currentColor" stroke-width="3">
     <rect x="694" y="98" width="182" height="102"/>
   </g>
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <circle cx="856" cy="116" r="7"/>
   </g>
 

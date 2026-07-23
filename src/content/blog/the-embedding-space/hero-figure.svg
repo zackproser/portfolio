@@ -29,7 +29,7 @@
     <circle cx="792" cy="97" r="5"/>
   </g>
   <!-- accent: nearest neighbor -->
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <circle cx="731" cy="31" r="7"/>
   </g>
   <!-- labels -->
@@ -39,7 +39,7 @@
   <g fill="currentColor" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
     <text x="800" y="92">QUERY</text>
   </g>
-  <g fill="#f39c12" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
+  <g fill="var(--og-accent)" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
     <text x="740" y="26">NEAREST</text>
     <text x="322" y="205">cos θ ≈ 0.99</text>
   </g>
