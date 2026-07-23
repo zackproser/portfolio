@@ -1,0 +1,25 @@
+{
+  "author": "Zachary Proser",
+  "date": "2026-07-21",
+  "title": "I Tried to Make Local Models Build a Game",
+  "description": "Five hours of fake 'shipped' features, a flopped uncensored model, a caching red herring, and the model swap that finally worked. What building an FPS with local LLMs on an M5 Max actually taught me.",
+  "image": "https://zackproser.b-cdn.net/images/local-models-build-a-game.webp",
+  "slug": "local-models-build-a-game",
+  "keywords": [
+    "local LLM game development",
+    "GLM-4.5-Air",
+    "Qwen2.5-Coder",
+    "llama.cpp Metal",
+    "M5 Max local inference",
+    "autonomous coding agents",
+    "Mixture of Experts local model",
+    "AI agent verification"
+  ],
+  "tags": [
+    "Local LLMs",
+    "AI Agents",
+    "Game Development",
+    "Apple Silicon"
+  ],
+  "hiddenFromIndex": false
+}

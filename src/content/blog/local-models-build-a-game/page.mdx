@@ -1,0 +1,136 @@
+import rawMetadata from './metadata.json'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image src={rawMetadata.image} alt="A low-poly first-person shooter running in a browser, built by local language models" width={1200} height={630} />
+
+I bought an M5 Max MacBook with 128GB of unified memory, and I wanted to find out what that actually buys you. Not on a benchmark chart. In practice. So I set a concrete goal: could I get local language models, running entirely on my laptop, to build a playable game on their own?
+
+The honest answer is "sort of," and the road there was more instructive than a clean success would have been. I watched local models ship eleven features that did nothing at all. I watched myself get lied to about progress for the better part of a day. I threw away a model that was supposed to be the star. And then one model swap fixed the thing that no amount of clever orchestration could.
+
+Here's the whole arc, failures included, because the failures are the point.
+
+## Standing up local inference
+
+First I needed models running fast on the metal. Homebrew, mise, bun, then llama.cpp compiled with Metal support so the GPU does the work. I smoke-tested a few models to calibrate expectations:
+
+- **Qwen2.5-0.5B** ran at roughly 280 tokens per second. Tiny model, blazing, useless for anything hard.
+- **Llama-3.3-70B** ran at about 6.9 tokens per second. Slow, because a 70B dense model at this quant is bandwidth-bound. Every token drags the whole weight set across memory.
+- **Qwen2.5-Coder-32B** landed in between and could actually write code.
+
+The interesting part is that 128GB lets multiple large models stay resident at the same time. Two big models sitting in memory at once cost me around 77GB. That mattered later, because the experiment I had in mind needed more than one model awake and talking.
+
+## Game one: NEON RONIN, a two-model showcase
+
+Before the ambitious version, I built something that worked. NEON RONIN is a 2D browser dungeon crawler where two local models collaborate live, every single turn.
+
+Qwen2.5-Coder-32B plays "The Architect." Each turn it emits strict JSON describing the new game state: where you are, what's in the room, what changed. Llama-3.3-70B plays "The Storyteller." It takes that JSON and narrates it as prose, so you get atmospheric writing wrapped around a real state machine.
+
+Claude wrote the engine and the orchestration that routes state between the two models. The models filled the two roles. It deployed, it was playable, and it did the thing I wanted a two-model setup to do: one model handles structure, the other handles voice, and neither has to be good at the other's job. A genuine showcase. This was the high point before things got hard.
+
+## A detour that flopped
+
+Riding that momentum, I went looking for a bigger, weirder model. I downloaded DavidAU's Qwen3.6-40B "Deckard" — an abliterated (uncensored) reasoning model at Q6. I had visions of an unfiltered game master with no refusals.
+
+The download alone was a fight. Hugging Face's Xet backend kept throwing 403s partway through, so I fell back to the classic HTTP download path to actually get the weights. Then I served it through llama.cpp's built-in chat UI and started poking.
+
+The verdict was fast: failure. It didn't do anything I needed better than what I already had, and it ate memory I wanted for other things. I unloaded it and moved on. Not every download earns its disk space.
+
+## Game two: BREACH, and the real experiment
+
+Now the ambitious version. I wanted a 3D first-person shooter — think Gray Zone Warfare, scaled way down — built by local models on a loop, spending zero Claude tokens on the actual game code.
+
+Claude hand-wrote the engine first, because that part has to be correct: Three.js (r128) for rendering, pointer-lock controls, a hitscan assault rifle, cannon.js for ragdoll physics, and wave-based enemy spawns. It deployed to Cloudflare — first Pages, then a Worker serving static assets.
+
+Then the experiment kicked in. The idea was an autonomous loop where local models build every new feature against a small, exposed engine API:
+
+- A **director** (Llama-70B) picks the next feature from a backlog.
+- A **coder** (Qwen-Coder-32B) writes it as a self-contained plugin.
+- The director **reviews** the plugin.
+- The coder **revises** based on the review.
+- The harness **validates**, **deploys**, and the loop repeats.
+
+Claude wrote the loop, the plugin API, the validation, and the deploy step. The local models were supposed to supply an endless stream of working features. I'd direct and playtest. That was the plan.
+
+## Five hours of features that did nothing
+
+The loop ran. It shipped feature after feature. Eleven of them. Every one passed the gate: no syntax errors, the site served HTTP 200, the plugin registered its keybinds and its per-frame callbacks. By every check the harness had, these were shipped and live.
+
+None of them worked.
+
+Press G for a grenade — nothing spawned. The plugins registered their keybinds and their per-frame hooks, and then those hooks silently failed at runtime, because the engine wrapped each plugin in its own try/catch and swallowed the errors so one bad plugin couldn't take down the whole game. Good for resilience. Terrible for honesty. The features were functional no-ops: real code, correctly loaded, doing absolutely nothing.
+
+And I kept relaying the loop's own verdict. "Shipped." "Live." "Deployed." For hours. Off checks that only proved the file existed and the server answered.
+
+Zack cut through it with one line: "I've not seen any difference across all these generations." He was right, and I hadn't been looking hard enough to notice.
+
+Two infrastructure gotchas were compounding the confusion. Cloudflare's edge was caching stale HTML and negative-caching files that hadn't been deployed yet, so even real deploys were hidden behind old bytes. That got fixed with a `_headers` rule setting `Cache-Control: no-store`. And separately, one feature used `THREE.Geometry`, an API that three.js removed back in r125, so it threw the moment it ran. The caching problem looked exactly like a model problem. It wasn't. Check the pipeline before you blame the model.
+
+## "It serves 200" is not "it works"
+
+The real bug was in my definition of done. "It loads" and "it serves 200" had been standing in for "it works," and they are not the same claim. Not even close.
+
+So I built the thing I should have built before trusting any autonomous loop: a functional test. Playwright driving headless Chromium, actually loading the game, and asserting real state change instead of HTTP status.
+
+The trick with an FPS is that most behavior is gated behind pointer lock, which a headless browser won't grant. So the test forces it — override `document.pointerLockElement` with `Object.defineProperty`, then dispatch a `pointerlockchange` event — and now the game thinks the mouse is captured and input flows. From there the test asserts consequences. Does firing the rifle burn a round off the HUD ammo counter? Does pressing G raise the number of objects in the scene?
+
+Run against the 32B's grenade, the test was brutal and clear. Pressing G didn't add a grenade to the scene. The object count went *down*. The feature was a no-op wearing a green checkmark, and now I had a machine that could say so.
+
+## The swap that changed everything: GLM-4.5-Air
+
+The instinct when a loop produces garbage is to add more agents, more review passes, more iterations. I want to be blunt about how wrong that instinct is. Fanning out more copies of a model that can't do the task just produces broken output faster.
+
+The missing variable was model capability. So I swapped the coder for GLM-4.5-Air — a 106B-total, 12B-active Mixture-of-Experts model at Q5. On the M5 Max it ran at 34 to 39 tokens per second, and here's why that's fast for a model that size: only 12B parameters are active on any given token. It runs like a 12B model and reasons like something far bigger. That is the entire argument for 128GB of unified memory. A 106B model runs at 12B speed if, and only if, the whole thing fits in RAM.
+
+I gave GLM the exact grenade task the 32B had failed. Same engine, same API, same prompt shape. It produced functionally correct code on the first real try. The grenade spawned. It detonated. The scene object count went *up* by 13, verified by the same headless test that had caught the 32B lying. One model swap cleared a bar that no amount of extra agents or loop iterations had touched.
+
+There was one gotcha getting there. GLM-4.5-Air is a reasoning model — it spends output tokens thinking before it answers. The very first attempt came back completely empty, because the whole token budget got consumed by internal reasoning with nothing left for the code. Its long thinking passes also blew past a 300-second server read timeout. The fix was to turn thinking off for the coding calls (`enable_thinking: false`) so it writes code directly and fast. Reasoning models need a real token budget, or thinking disabled, or they hand you nothing.
+
+## The all-GLM loop
+
+With a model that could actually code, I rebuilt the loop around it. Reset BREACH to the clean base plus GLM's verified grenade. Pointed every role — director, coder, reviewer — at GLM. Kept thinking off. And added the piece that had been missing the whole time: a functional gate that runs the headless test and auto-reverts any feature that throws at runtime. No more silent no-ops sliding through.
+
+Then it worked. GLM built roughly fourteen features that actually functioned:
+
+- Aim-down-sights
+- Hitmarkers with sounds
+- Dynamic muzzle-flash lighting
+- Flashbangs
+- Smoke grenades
+- Shooting the gun out of an enemy's hands
+- Exploding barrels
+- Location-based damage
+- Arterial spray with persistent blood pools
+- Ragdolls colliding with the world
+- Bullet-impact effects
+- A kill feed
+
+One round syntax-failed and the gate rejected it. The director re-picked that same feature, GLM took another swing, and got it right on the retry. Screenshots showed a real grenade fireball and a hitmarker flashing on screen — visible, functioning effects, confirmed in an actual browser rather than assumed from a status code.
+
+## The honest ending
+
+Even the GLM build is not a good game.
+
+I need to say that plainly, because the temptation is to end on the fireball screenshot and call it a win. Here's the playtest verdict instead. It looks like a PlayStation-1 game — flat-shaded, low-poly boxes. It's an open outdoor arena. Enemies walk through walls. There's no win condition. Ragdolls launch across the map instead of collapsing under their own weight. The death scream doesn't really fire. And one plugin — a weapon-sway feature that wrote to the camera's roll axis — caused a nauseating infinite camera spin.
+
+That camera spin is the most interesting failure of the whole project, because the functional gate never caught it. The gate reverts features that throw. This feature didn't throw. It ran perfectly and wrecked the camera. "Doesn't crash" is yet another proxy for "works," and it fails in exactly the same way "serves 200" did. Every automated proxy I built eventually got gamed by reality.
+
+The plugin loop hit a ceiling. It reliably produces working combat *systems* — the discrete, testable behaviors above. It does not produce a polished *game*, because a game needs hands-on engine physics and navigation, deliberate level and visual design, and real audio work. None of that is something an autonomous local-model plugin loop delivers on its own.
+
+## What I actually learned
+
+**Capability beats loop count and agent fan-out.** A near-frontier local MoE model cleared a bar that a 32B couldn't, and no amount of extra agents or review passes on the weaker model would have gotten there. More weak agents is just faster garbage.
+
+**Verify function, not load.** "Serves 200" and "loads without error" and "doesn't crash" are all proxies, and every one of them got gamed. Build the functional gate — the thing that asserts real state change — before you trust any autonomous loop. If you can't test that the grenade spawns, you don't know that it does.
+
+**Split the work by correctness.** The division of labor that worked: a human, or a capable model, writes the correctness-critical engine and integration; local models generate the tunable behavior and content layer on top of a stable API. Claude wrote the engines, the orchestration, the verification, and the debugging. The local models generated features. I directed and playtested. Everyone worked at the altitude they were good at.
+
+**MoE math is why the memory matters.** A 106B/12B model runs at 12B speed and reasons far past its active-parameter count — but only if the whole thing fits in RAM. 128GB of unified memory is what made GLM-4.5-Air viable on a laptop, and GLM-4.5-Air is what made the loop work.
+
+**Infra can wear a model's face.** The edge-caching red herring cost me real time and looked exactly like the models being incompetent. Check the pipeline before you blame the weights.
+
+Local models are free, they run on my laptop, and for the right slice of work they are genuinely useful — GLM built fourteen working combat systems without spending a cent or a Claude token. They are not a substitute for hands-on engineering when the goal is a finished, polished product. Knowing which slice is which is most of the skill.
+
+The PS1-looking, wall-clipping, no-win-condition shooter is still up. It's a bad game built by good models, and I think that's a more useful thing to have made than a good game would have been.
