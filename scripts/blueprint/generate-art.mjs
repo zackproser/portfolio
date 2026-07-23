@@ -48,6 +48,21 @@ const THEMES = {
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
 
+// Per-post signature figure. A post distinguishes its card by dropping a
+// standalone `hero-figure.svg` (a distilled version of one of its own
+// diagrams, currentColor, no external classes) beside its metadata. When
+// present it replaces the generic transformer block below, so a wall of
+// blueprints reads as distinct drawings instead of one card repeated.
+const heroFigurePath = path.join(root, 'src', 'content', 'blog', slug, 'hero-figure.svg')
+const HERO_FIGURE = fs.existsSync(heroFigurePath) ? fs.readFileSync(heroFigurePath, 'utf8') : null
+
+// Motif for the card center: the post's signature figure sized to `maxW`,
+// else the default transformer schematic.
+const MOTIF = (height, yOff, maxW) =>
+  HERO_FIGURE
+    ? `<div style="width:${maxW}px;max-width:100%;color:var(--bp-line);opacity:.62">${HERO_FIGURE}</div>`
+    : SCHEMATIC(height, yOff)
+
 const SCHEMATIC = (height, yOff) => `
   <svg viewBox="0 0 400 ${height}" width="380" style="color:var(--bp-line);opacity:.6">
     <g fill="none" stroke="currentColor" stroke-width="1.2">
@@ -108,7 +123,7 @@ const strip = (fs2) => `
 
 function ogBody() {
   return `
-  <div style="position:absolute;right:40px;top:0;height:100%;width:400px;display:flex;align-items:center">${SCHEMATIC(460, 40)}</div>
+  <div style="position:absolute;right:40px;top:0;height:100%;width:400px;display:flex;align-items:center;justify-content:center">${MOTIF(460, 40, 380)}</div>
   <div style="position:absolute;left:64px;top:64px;right:440px;bottom:64px;display:flex;flex-direction:column">
     ${strip(15)}
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
@@ -127,7 +142,7 @@ function heroBody() {
       <div style="font-family:'Source Serif 4',serif;font-weight:800;font-size:96px;line-height:1.02;letter-spacing:-0.02em">${esc(title)}</div>
       <div style="font-family:'Source Serif 4',serif;font-style:italic;font-size:30px;color:var(--og-muted);margin-top:26px;line-height:1.4">${esc(subtitle)}</div>
     </div>
-    <div style="flex:1;display:flex;align-items:center;justify-content:center">${SCHEMATIC(460, 20)}</div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center">${MOTIF(460, 20, 840)}</div>
     ${titleblock(14)}
   </div>`
 }
