@@ -1,0 +1,49 @@
+<svg viewBox="0 0 940 300" width="100%" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+  <!-- provenance chain: six stage boxes -->
+  <g stroke="currentColor" stroke-width="1.6">
+    <rect x="30" y="86" width="118" height="64"/>
+    <rect x="174" y="86" width="118" height="64"/>
+    <rect x="318" y="86" width="118" height="64"/>
+    <rect x="462" y="86" width="118" height="64"/>
+    <rect x="606" y="86" width="118" height="64"/>
+    <rect x="750" y="86" width="118" height="64"/>
+  </g>
+  <!-- dashed flow arrows between stages -->
+  <g stroke="currentColor" stroke-width="1.4" stroke-dasharray="6 5">
+    <path d="M148 118 H172"/>
+    <path d="M292 118 H316"/>
+    <path d="M436 118 H460"/>
+    <path d="M580 118 H604"/>
+    <path d="M724 118 H748"/>
+  </g>
+  <!-- accent arrowhead into the final SCORE -->
+  <g fill="var(--og-accent)" stroke="none">
+    <path d="M740 118 L730 113 L730 123 Z"/>
+  </g>
+  <!-- confidence-interval whisker under the reported SCORE -->
+  <g stroke="currentColor" stroke-width="1.8">
+    <path d="M809 150 V196"/>
+    <path d="M761 208 H857 M761 200 V216 M857 200 V216"/>
+  </g>
+  <g fill="var(--og-accent)" stroke="none">
+    <circle cx="809" cy="208" r="5"/>
+  </g>
+  <!-- stage labels -->
+  <g fill="currentColor" stroke="none" style="font:600 16px 'JetBrains Mono',monospace">
+    <text x="89" y="123" text-anchor="middle">TASK</text>
+    <text x="233" y="123" text-anchor="middle">SAMPLE</text>
+    <text x="377" y="112" text-anchor="middle">MODEL</text>
+    <text x="377" y="134" text-anchor="middle">RUN</text>
+    <text x="521" y="123" text-anchor="middle">SCORER</text>
+    <text x="665" y="123" text-anchor="middle">AGGREGATE</text>
+  </g>
+  <!-- accented final score -->
+  <g fill="var(--og-accent)" stroke="none" style="font:700 17px 'JetBrains Mono',monospace">
+    <text x="809" y="123" text-anchor="middle">SCORE</text>
+  </g>
+  <!-- header + uncertainty caption -->
+  <g fill="currentColor" stroke="none" opacity="0.72" style="font:500 15px 'JetBrains Mono',monospace">
+    <text x="470" y="46" text-anchor="middle">SCORE PROVENANCE CHAIN</text>
+    <text x="809" y="248" text-anchor="middle">95% CI</text>
+  </g>
+</svg>

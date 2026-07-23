@@ -1,0 +1,63 @@
+<svg viewBox="0 0 940 300" width="100%" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+  <!-- title -->
+  <g fill="currentColor" stroke="none" style="font:600 22px 'JetBrains Mono',monospace">
+    <text x="70" y="52">KV CACHE · MEMORY LEDGER</text>
+  </g>
+  <!-- prefill bracket over first five blocks -->
+  <g stroke="currentColor" stroke-width="1.4" opacity="0.7">
+    <path d="M70 112 v-14 H412 v14"/>
+  </g>
+  <!-- KV blocks: each split into K (top) / V (bottom) -->
+  <g stroke="currentColor" stroke-width="1.6">
+    <rect x="70" y="132" width="62" height="60"/>
+    <rect x="140" y="132" width="62" height="60"/>
+    <rect x="210" y="132" width="62" height="60"/>
+    <rect x="280" y="132" width="62" height="60"/>
+    <rect x="350" y="132" width="62" height="60"/>
+    <rect x="420" y="132" width="62" height="60"/>
+    <rect x="490" y="132" width="62" height="60"/>
+    <rect x="560" y="132" width="62" height="60"/>
+  </g>
+  <!-- K / V dividers -->
+  <g stroke="currentColor" stroke-width="1" opacity="0.5">
+    <path d="M70 162 h62 M140 162 h62 M210 162 h62 M280 162 h62 M350 162 h62 M420 162 h62 M490 162 h62 M560 162 h62"/>
+  </g>
+  <!-- newest appended block (accent) -->
+  <g fill="var(--og-accent)" stroke="none">
+    <rect x="630" y="132" width="62" height="60"/>
+  </g>
+  <rect x="630" y="132" width="62" height="60" stroke="currentColor" stroke-width="1.6"/>
+  <path d="M630 162 h62" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+  <!-- +1 token arrow into the newest block -->
+  <g fill="var(--og-accent)" stroke="none">
+    <path d="M661 108 v14"/>
+    <path d="M661 130 l-6 -10 h12 z"/>
+  </g>
+  <g stroke="var(--og-accent)" stroke-width="1.8">
+    <path d="M661 108 v12"/>
+  </g>
+  <!-- decode span underline -->
+  <g stroke="currentColor" stroke-width="1.2" opacity="0.6">
+    <path d="M420 214 H692"/>
+  </g>
+  <!-- growth axis -->
+  <g stroke="currentColor" stroke-width="1.5">
+    <path d="M70 258 H878"/>
+  </g>
+  <g fill="currentColor" stroke="none">
+    <path d="M878 258 l-12 -6 v12 z"/>
+  </g>
+  <!-- labels -->
+  <g fill="currentColor" stroke="none" style="font:600 15px 'JetBrains Mono',monospace">
+    <text x="241" y="90" text-anchor="middle">PREFILL</text>
+    <text x="556" y="234" text-anchor="middle">DECODE · APPEND 1 / STEP</text>
+  </g>
+  <g fill="currentColor" stroke="none" opacity="0.75" style="font:500 13px 'JetBrains Mono',monospace">
+    <text x="101" y="152" text-anchor="middle">K</text>
+    <text x="101" y="182" text-anchor="middle">V</text>
+    <text x="470" y="286" text-anchor="middle">M_KV GROWS ONE BLOCK / TOKEN →</text>
+  </g>
+  <g fill="var(--og-accent)" stroke="none" style="font:600 15px 'JetBrains Mono',monospace">
+    <text x="700" y="112">+1 TOKEN</text>
+  </g>
+</svg>

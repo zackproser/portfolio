@@ -1,0 +1,51 @@
+<svg viewBox="0 0 940 300" width="100%" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+  <!-- vector fan: several embeddings radiating from a common origin at different angles -->
+  <g stroke="currentColor" stroke-width="2.2" opacity="0.9">
+    <path d="M130 250 L864 212"/>
+    <path d="M130 250 L843 150"/>
+    <path d="M130 250 L428 49"/>
+    <path d="M130 250 L304 43"/>
+  </g>
+  <!-- the near pair: query + its nearest neighbor, foregrounded -->
+  <g stroke="currentColor" stroke-width="3">
+    <path d="M130 250 L792 97"/>
+    <path d="M130 250 L731 31"/>
+  </g>
+  <!-- wide angle: query vs a dissimilar vector (large cosine gap) -->
+  <g stroke="currentColor" stroke-width="1.2" opacity="0.4" stroke-dasharray="5 5">
+    <path d="M265 89 A 210 210 0 0 1 335 203"/>
+  </g>
+  <!-- tight angle: query vs nearest neighbor (small cosine gap) -->
+  <g stroke="currentColor" stroke-width="1.4" opacity="0.7">
+    <path d="M290 192 A 170 170 0 0 1 296 212"/>
+  </g>
+  <!-- tip dots -->
+  <g fill="currentColor" stroke="none">
+    <circle cx="130" cy="250" r="4"/>
+    <circle cx="864" cy="212" r="4"/>
+    <circle cx="843" cy="150" r="4"/>
+    <circle cx="428" cy="49" r="4"/>
+    <circle cx="304" cy="43" r="4"/>
+    <circle cx="792" cy="97" r="5"/>
+  </g>
+  <!-- accent: nearest neighbor -->
+  <g fill="var(--og-accent)" stroke="none">
+    <circle cx="731" cy="31" r="7"/>
+  </g>
+  <!-- labels -->
+  <g fill="currentColor" stroke="none" style="font:600 22px 'JetBrains Mono',monospace">
+    <text x="40" y="48">EMBEDDING SPACE</text>
+  </g>
+  <g fill="currentColor" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
+    <text x="800" y="92">QUERY</text>
+  </g>
+  <g fill="var(--og-accent)" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
+    <text x="740" y="26">NEAREST</text>
+    <text x="322" y="205">cos θ ≈ 0.99</text>
+  </g>
+  <g fill="currentColor" stroke="none" opacity="0.7" style="font:500 16px 'JetBrains Mono',monospace">
+    <text x="852" y="236" text-anchor="middle">FAR</text>
+    <text x="146" y="271">ORIGIN</text>
+    <text x="40" y="288">ANGLE, NOT LENGTH, SETS COSINE RANK</text>
+  </g>
+</svg>

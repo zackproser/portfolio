@@ -102,7 +102,7 @@ export function ModelFitDemo({ fig = 4 }: { fig?: number } = {}) {
           {moe && (
             <div style={row}>
               <span style={{ ...label, width: 120 }}>Active params</span>
-              <input type="range" min={1} max={Math.max(2, total)} value={Math.min(active, total)} onChange={(e) => setActive(+e.target.value)} style={{ flex: 1 }} />
+              <input type="range" min={1} max={Math.max(2, total)} value={Math.min(active, total)} onChange={(e) => setActive(Math.min(+e.target.value, total))} style={{ flex: 1 }} />
               <span style={{ ...val, width: 56, textAlign: 'right' }}>{Math.min(active, total)}B</span>
             </div>
           )}

@@ -16,7 +16,7 @@
     <path d="M150 262 v10 M280 262 v10 M410 262 v10 M540 262 v10 M670 262 v10 M800 262 v10"/>
   </g>
   <!-- cliff accent dot + drop marker -->
-  <g fill="#f39c12" stroke="none">
+  <g fill="var(--og-accent)" stroke="none">
     <circle cx="600" cy="90" r="6"/>
     <circle cx="730" cy="160" r="6"/>
   </g>
@@ -34,7 +34,7 @@
     <text x="46" y="150" text-anchor="middle" transform="rotate(-90 46 150)">QUALITY →</text>
     <text x="620" y="322" text-anchor="middle">FILE SIZE · SPEED →</text>
   </g>
-  <g fill="#f39c12" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
+  <g fill="var(--og-accent)" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
     <text x="748" y="150">QUALITY CLIFF</text>
   </g>
 </svg>

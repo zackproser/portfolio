@@ -1,0 +1,43 @@
+<svg viewBox="0 0 940 300" width="100%" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
+  <!-- pipeline nodes: query -> retrieve -> top-k -> rerank -> llm -> answer -->
+  <g stroke="currentColor" stroke-width="2">
+    <rect x="20" y="120" width="120" height="60"/>
+    <rect x="180" y="120" width="130" height="60"/>
+    <rect x="350" y="120" width="110" height="60"/>
+    <rect x="500" y="120" width="110" height="60"/>
+    <rect x="650" y="120" width="90" height="60"/>
+    <rect x="780" y="120" width="140" height="60"/>
+  </g>
+  <!-- flow arrows -->
+  <g stroke="currentColor" stroke-width="2">
+    <path d="M140 150 H176 M310 150 H346 M460 150 H496 M610 150 H646 M740 150 H776"/>
+  </g>
+  <g fill="currentColor" stroke="none">
+    <path d="M180 150 l-9 -5 v10 z M350 150 l-9 -5 v10 z M500 150 l-9 -5 v10 z M650 150 l-9 -5 v10 z M780 150 l-9 -5 v10 z"/>
+  </g>
+  <!-- vector store the retriever reads from -->
+  <g stroke="currentColor" stroke-width="1.6">
+    <path d="M245 180 V206" stroke-dasharray="4 4" opacity="0.7"/>
+    <ellipse cx="245" cy="214" rx="34" ry="8"/>
+    <path d="M211 214 V252 a34 8 0 0 0 68 0 V214"/>
+    <path d="M211 227 a34 8 0 0 0 68 0 M211 240 a34 8 0 0 0 68 0" opacity="0.6"/>
+  </g>
+  <!-- accents: reranked selection + grounded answer -->
+  <g fill="var(--og-accent)" stroke="none">
+    <circle cx="604" cy="124" r="5.5"/>
+    <circle cx="916" cy="124" r="5.5"/>
+    <rect x="820" y="170" width="60" height="4"/>
+  </g>
+  <!-- node labels -->
+  <g fill="currentColor" stroke="none" style="font:600 18px 'JetBrains Mono',monospace">
+    <text x="80" y="156" text-anchor="middle">QUERY</text>
+    <text x="245" y="156" text-anchor="middle">RETRIEVE</text>
+    <text x="405" y="156" text-anchor="middle">TOP-K</text>
+    <text x="555" y="156" text-anchor="middle">RERANK</text>
+    <text x="695" y="156" text-anchor="middle">LLM</text>
+    <text x="850" y="156" text-anchor="middle">ANSWER</text>
+  </g>
+  <g fill="currentColor" stroke="none" opacity="0.72" style="font:500 14px 'JetBrains Mono',monospace">
+    <text x="245" y="284" text-anchor="middle">VECTOR STORE</text>
+  </g>
+</svg>
