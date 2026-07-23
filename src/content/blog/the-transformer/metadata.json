@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-07-18",
   "description": "How seq2seq attention became the transformer, how decoder-only models generate, and how tokens, attention heads, position, residual blocks, sampling, KV caching, and scaling fit together.",
-  "image": "https://zackproser.b-cdn.net/images/blueprint-the-transformer-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-transformer-v2-hero.webp",
   "tags": [
     "AI",
     "Transformers",

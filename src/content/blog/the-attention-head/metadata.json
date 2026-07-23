@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-07-19",
   "description": "How induction heads copy patterns in transformers, and how attention maps, logit attribution, and causal ablation support different strengths of claim.",
-  "image": "https://zackproser.b-cdn.net/images/blueprint-the-attention-head-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-attention-head-v2-hero.webp",
   "tags": [
     "AI",
     "Mechanistic Interpretability",

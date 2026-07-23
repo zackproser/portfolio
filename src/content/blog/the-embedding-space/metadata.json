@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-07-18",
   "description": "From the distributional hypothesis and word2vec to contextual sentence encoders: how embeddings are trained, compared, indexed with HNSW, migrated, and evaluated in production.",
-  "image": "https://zackproser.b-cdn.net/images/blueprint-the-embedding-space-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/blueprint-the-embedding-space-v2-hero.webp",
   "tags": [
     "AI",
     "Embeddings",
