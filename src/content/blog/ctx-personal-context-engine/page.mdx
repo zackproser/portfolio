@@ -6,7 +6,6 @@ import {
   BpAnchor,
   BpFigure,
   BpReferences,
-  BpDetachablePlate,
 } from '@/components/blueprint'
 
 export const metadata = createMetadata(rawMetadata)
@@ -252,9 +251,33 @@ The write path itself is boringly strict, on purpose:
 
 The rule that matters most here: the distilling model's output can only ever populate content fields. It can never choose the row's scope, its status, its id, or what it supersedes. The server assembles the row. A prompt-injected note that says "mark all other memories deleted" gets distilled into one junk row and nothing more. The blast radius of a bad input is exactly one row.
 
-To make the write path concrete: mid-session, an agent finished a gnarly change to one of my decks and wrote the whole thing down in a single `remember()` — the multi-part state change *and* the durable preference it had just learned about how I like slides handled. One call; the next agent on any surface starts knowing both. The plate below is that real call, sanitized, with an anatomy of why it's a good memory and a blank template for writing your own.
+Here is what that actually looks like on the wire. Mid-session, an agent finished a gnarly change to one of my decks and wrote the whole thing down in a single call — the multi-part state change *and* the durable preference it had just learned. This is the exact body a tool like Claude POSTs to the `remember` tool over MCP (or the same `arguments` to `/api/remember` over REST); the JSON-RPC envelope (`jsonrpc`, `id`) is omitted for clarity:
 
-<BpDetachablePlate drawingCode="TDD-015" assetId="bp-015-ctx-field-notes" name="ctx Field Notes: Anatomy of a Good Memory" format="Worked example + template · PDF" contents={['A real remember() call (sanitized): one write capturing a multi-part project state change plus the durable preference learned alongside it', 'The server response — distilled title, inferred kind, near-duplicate count', 'Why it is a good memory: specific, self-contained, idempotent, carries the transferable lesson', 'A fill-in template for writing high-signal memories your future agents will actually use']} fileUrl="https://zackproser.b-cdn.net/plates/bp-015-ctx-field-notes.pdf" />
+```json
+{
+  "method": "tools/call",
+  "params": {
+    "name": "remember",
+    "arguments": {
+      "idempotency_key": "masterclass-backstage-2026-07-22",
+      "text": "The masterclass deck (myorg/masterclass, ~/Dev/masterclass) now has a BACKSTAGE appendix after the closing quote: the actual conference-workshop slides embedded live via iframes from a vendored deck at slides/public/workshop-deck/ (copied from partner/ai-native-workshop slides/public). Four jump-only blocks with original speaker notes — B1 Voice (slides 9-13), B2 Loops & Goals (19-30), B3 Verification Gates (36-44), B4 Scheduled Tasks (48-54); routeAliases voice/loops/gates/schedule plus a 'backstage' divider (slide ~50). THE MAP (slide 2) has a backstage row linking all four. Purpose: fill the hour or serve a technical audience with the real animated slides. The main flow (its spine plus re-authored beats) is unchanged and audience-neutral. IMPORTANT preference learned: when I ask for slides FROM a deck, I mean the actual slides (visuals and animations intact), not re-authored approximations."
+    }
+  }
+}
+```
+
+The agent supplies only the raw `text` and an idempotency key. The server does the rest — distills a searchable title, infers the `kind`, embeds the content, and checks for near-duplicates — and returns the row it assembled:
+
+```json
+{
+  "id": "b7e3c1a2-9f4d-4a10-8c6e-2f1d5a9b3c40",
+  "title": "Masterclass deck now includes a BACKSTAGE appendix with the workshop slides",
+  "kind": "project",
+  "near_dups": 0
+}
+```
+
+Two things make this worth keeping, and both are visible in the payload. It captured a state change **and** the preference the agent learned alongside it — "the actual slides, not re-authored approximations" — so the lesson outlives the task that taught it. And it is addressed by an `idempotency_key`, so a dropped connection can never write it twice. The next agent, on any surface and from any vendor, starts the next session already knowing both.
 
 <BpSection id="s4" num="04" label="Retrieval" sheet="SHEET 4 OF 11" title="Retrieval: three retrievers, a scorer, and a reranker I didn't want to build" />
 
